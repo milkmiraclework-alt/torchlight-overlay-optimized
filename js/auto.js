@@ -119,6 +119,11 @@
         answer({ state: 'used', asked });
         return;
       }
+      if (read.instrumentReading) {
+        A.expectInstrumentOffer?.();
+        answer({ read });
+        return;
+      }
       offerMissed = read.reason || 'not read';
       // A named offer still animating is not a prison board. The direct
       // runtime retries fresh pictures without searching for a different
@@ -132,6 +137,11 @@
     if (m.kind !== 'board' && m.kind !== 'instruments') {
       const pick = await A.readPick(bitmap);
       if (mine !== newest) return;
+      if (pick.instrumentReading && pick.byName >= 2) {
+        A.expectInstrumentOffer?.();
+        answer({ read: pick });
+        return;
+      }
       const sure = pick.ok ? pick.cards.map((c) => c.conf).sort((a, b) => b - a)[1] : 0;
       if (sure >= 0.5) {
         answer({ read: pick });

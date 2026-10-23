@@ -42,6 +42,11 @@ async function harness(failures,{firstMissing=false,missingCaptures=0,kind='inst
  vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../js/auto.js'),'utf8'),{window:w,document:{hasFocus:()=>false,addEventListener(){},getElementById:()=>null},BroadcastChannel:function(){},setInterval(){},setTimeout,clearTimeout,Date,Math});
  for(let i=0;i<3;i++)await w.TartarusAuto.receive({kind:'instruments',retryOffer:true,bitmap:{close(){closed++;}}},r=>replies.push(r));
  assert.equal(full,0);assert.equal(closed,3);assert.equal(replies[0].read.retryable,true);
+ let unreadOffers=0,wrongAdvice=0;
+ A.readPick=async()=>({ok:false,pick:true,instrumentReading:true,retryable:true,byName:2,reason:'One name is uncertain'});
+ A.expectInstrumentOffer=()=>{unreadOffers++;};A.usePick=()=>{wrongAdvice++;};
+ for(const kind of ['instruments','manual'])await w.TartarusAuto.receive({kind,bitmap:{close(){closed++;}}},r=>replies.push(r));
+ assert.equal(unreadOffers,2);assert.equal(wrongAdvice,0);assert.equal(full,0);assert.equal(closed,5);
  const suspicious=await harness(1,{kind:'manual',dayReading:true});await suspicious.advance(250);
  assert.equal(suspicious.captures.length,1);assert.equal(suspicious.reads.length,2);assert.equal(suspicious.status.at(-1)[1].ok,true);
  for (const kind of ['board','manual']) {

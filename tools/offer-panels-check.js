@@ -63,6 +63,21 @@ async function browserPackagedOffers(labels, boardURL) {
     check(cancelled.skipped,'An obsolete offer was accepted');worker.recognize=recognize;
     finish({data:{text:"Hangman's Noose"}});
     A.suspend();
+    const NativeWorker=window.Worker;
+    window.Worker=class extends NativeWorker{constructor(url,...args){super(url,...args);if(String(url).includes('scan-worker.js'))this.addEventListener('message',({data})=>{
+      if(data.kind==='pick'&&data.result?.ok)data.result.cards[0]={...data.result.cards[0],sim:'shackles',conf:.4,score:.88,margin:.005};
+    });}};
+    try {
+      const weakOCR=await A.prepareOCR(),normal=weakOCR.recognize;
+      weakOCR.recognize=async()=>({data:{text:''}});
+      const rejected=[];await Auto.receive({kind:'instruments',fresh:true,retryOffer:true,bitmap:await bitmap(labels[0].url)},patch=>rejected.push(patch));
+      check(rejected.some(p=>p.read?.instrumentReading&&!p.read.ok)&&!rejected.some(p=>p.asked||p.state==='used'),'An uncertain Shackles offer produced advice');
+      check(saved().toolsOffer?.unread&&!A.desktopSnapshot().move,'A failed instrument offer retained advice');
+      weakOCR.recognize=normal;
+    }finally{window.Worker=NativeWorker;A.suspend();}
+    const recovered=[];await Auto.receive({kind:'instruments',fresh:true,retryOffer:true,bitmap:await bitmap(labels[0].url)},patch=>recovered.push(patch));
+    check(recovered.some(p=>p.read?.ok)&&saved().choice.options.join()===labels[0].tools.join()&&!saved().toolsOffer.unread,'A clear fresh offer did not replace the rejected guess');
+    A.suspend();
     let dropNew=true;
     const OriginalWorker=window.Worker;
     window.Worker=class extends OriginalWorker{constructor(url,...args){super(url,...args);if(String(url).includes('scan-worker.js'))this.addEventListener('message',({data})=>{
@@ -81,7 +96,7 @@ async function browserPackagedOffers(labels, boardURL) {
       const m=saved();check(replies.at(-1)?.ok&&m.tools.join()==='ravenous,rope'&&!m.toolsOffer&&!m.toolsUncertain,'The actual later Noose panel did not recover: '+JSON.stringify({replies,m}));
     }finally{window.Worker=OriginalWorker;A.suspend();}
     check(blobCalls===0,'OCR used the idle canvas encoder');
-    return {offers:results,canvasBlobCalls:blobCalls,unfinishedOcrCancelled:true,rerolledNooseRecoveredFromFreshPixels:true};
+    return {offers:results,canvasBlobCalls:blobCalls,unfinishedOcrCancelled:true,uncertainOfferBlocked:true,clearOfferRecovered:true,rerolledNooseRecoveredFromFreshPixels:true};
   }finally{HTMLCanvasElement.prototype.toBlob=originalBlob;A.suspend();}
 }
 module.exports = { readSamples, browserOffers, browserPackagedOffers, sourceHelpers };

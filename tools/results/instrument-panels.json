@@ -2,7 +2,7 @@
   "version": "1.0.7",
   "runtimeVersion": "1.0.7",
   "sourceOverrides": false,
-  "checkedAt": "2026-10-23T17:46:59.834Z",
+  "checkedAt": "2026-10-23T17:53:44.705Z",
   "audit": false,
   "results": [
     {
@@ -27,7 +27,7 @@
         }
       ],
       "ok": true,
-      "ms": 1411
+      "ms": 1636
     },
     {
       "name": "keys-single",
@@ -44,7 +44,7 @@
         }
       ],
       "ok": true,
-      "ms": 1379
+      "ms": 1510
     },
     {
       "name": "keys-and-casket",
@@ -68,7 +68,7 @@
         }
       ],
       "ok": true,
-      "ms": 1446
+      "ms": 1414
     },
     {
       "name": "noose-single",
@@ -85,7 +85,7 @@
         }
       ],
       "ok": true,
-      "ms": 1009
+      "ms": 1410
     },
     {
       "name": "shackles-single",
@@ -102,7 +102,7 @@
         }
       ],
       "ok": true,
-      "ms": 815
+      "ms": 913
     },
     {
       "name": "coin-single",
@@ -119,7 +119,7 @@
         }
       ],
       "ok": true,
-      "ms": 1348
+      "ms": 942
     },
     {
       "name": "coin-and-keys",
@@ -143,7 +143,7 @@
         }
       ],
       "ok": true,
-      "ms": 1482
+      "ms": 1493
     },
     {
       "name": "noose-and-ravenous-extra",
@@ -167,7 +167,7 @@
         }
       ],
       "ok": true,
-      "ms": 1291
+      "ms": 1184
     },
     {
       "name": "tooltip-negative-control",

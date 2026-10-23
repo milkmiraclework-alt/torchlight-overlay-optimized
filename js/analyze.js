@@ -2710,6 +2710,7 @@
   // a run's last day (or there's none); otherwise an objective's reward.
   async function otherScreen(source) {
     const pick = await readPick(source);
+    if (pick.instrumentReading && pick.byName >= 2) { expectInstrumentOffer(); toast(pick.reason, 'bad'); return true; }
     const second = pick.ok ? pick.cards.map((c) => c.conf).sort((a, b) => b - a)[1] : 0;
     if (pick.ok && (pick.byName >= 2 || second >= 0.5)) {
       const fresh = model.day >= model.maxDays || (!model.tools.length && model.day <= 1);
@@ -2726,6 +2727,13 @@
   }
 
   let pickReadCancel = null;
+  const certainPickCard = c => c.conf >= 0.9 && (c.by !== 'art' || c.score >= 0.92 && c.margin >= 0.04);
+  function pickReadingIssue(read) {
+    const cards = read?.cards || [];
+    if (cards.length !== 3 || new Set(cards.map(c => c.sim)).size !== 3 || cards.some(c => !T.TOOLS[c.sim])) return 'The three different instrument names are not clear yet; reading a fresh offer.';
+    const uncertain = cards.filter(c => !certainPickCard(c));
+    return uncertain.length ? 'An instrument name or picture is uncertain; reading a fresh offer before advising.' : '';
+  }
   function cancelPickRead() {
     reader.pickId++;
     const cancel = pickReadCancel; pickReadCancel = null;
@@ -2755,7 +2763,7 @@
         setReading(false);
         if (error || !result) return resolve({ ok: false, pick: true, reason: error || 'no result', ms });
         if (!result.ok) return resolve({ ok: false, pick: true, reason: result.reason, ms });
-        const cards = result.cards.map((c) => ({ sim: c.sim, name: T.toolName(c.sim), conf: c.conf, alts: c.alts, by: 'art' }));
+        const cards = result.cards.map((c) => ({ sim: c.sim, name: T.toolName(c.sim), conf: c.conf, score: c.score, margin: c.margin, alts: c.alts, by: 'art' }));
         const namesAt = performance.now();
         // Each card's printed name, read where it can be, outranks its art.
         readCardNames(canvas, result.ui, () => revision === reader.pickId).then((names) => {
@@ -2763,7 +2771,10 @@
           names.forEach((n, i) => {
             if (n && cards[i]) Object.assign(cards[i], { sim: n.id, name: T.toolName(n.id), conf: 1, by: 'name' });
           });
-          resolve({ ok: true, pick: true, cards, names: cards.map((c) => c.name), unsure: cards.filter((c) => c.conf < 0.5).length, reroll: !!result.reroll, byName: cards.filter((c) => c.by === 'name').length, ocrFailed: names.failed || '', ms: Math.round(performance.now() - t0), artMs: result.ms, namesMs: Math.round(performance.now() - namesAt), workerWaitMs: Math.max(0, ms - (result.ms || 0)) });
+          const read = { ok: true, pick: true, cards, names: cards.map((c) => c.name), unsure: cards.filter(c => !certainPickCard(c)).length, reroll: !!result.reroll, byName: cards.filter((c) => c.by === 'name').length, ocrFailed: names.failed || '', ms: Math.round(performance.now() - t0), artMs: result.ms, namesMs: Math.round(performance.now() - namesAt), workerWaitMs: Math.max(0, ms - (result.ms || 0)) };
+          const issue = pickReadingIssue(read);
+          if (issue) Object.assign(read, { ok: false, retryable: true, instrumentReading: true, reason: issue });
+          resolve(read);
         }).catch(error => resolve({ ok: false, pick: true, reason: String(error.message || error), ms: Math.round(performance.now() - t0) }));
       };
       reader.pickId += 1;
@@ -2789,6 +2800,8 @@
   // named for checking.
   function usePick(read, fresh, reuse) {
     if (!read || !read.ok) return false;
+    const issue = pickReadingIssue(read);
+    if (issue) { expectInstrumentOffer(); toast(issue, 'bad'); return false; }
     const start = fresh !== false;
     reader.undoable = true;
     undo.push({ model: JSON.parse(JSON.stringify(model)), selected, shot });

@@ -1,8 +1,9 @@
 {
   "version": "1.0.7",
-  "checkedAt": "2026-10-23T17:47:33.257Z",
+  "checkedAt": "2026-10-23T17:55:51.155Z",
   "artifactsVerified": true,
   "changes": [
+    "Reject incomplete, duplicate and uncertain instrument offers before advice. Require confidence >=0.9 plus score >=0.92 and margin >=0.04 for art-only matches. Explicitly named offers retry fresh frames; manual offers identified by two names also block previous advice. Log compact per-card confidence/source diagnostics without images.",
     "Choose between existing and compact instrument-slot spacing using strong reference matches. Reuse detected label/tooltip glyphs; preserve the old layout on ties.",
     "For uncertain crops, trim sparse bright background pixels using exact foreground histograms; compete semantic labels across all crop modes and retain confidence/margin guards.",
     "Add one Avenger’s Casket panel sample from a different saved training frame; preserve all 14 previous panel samples. Use existing offer art for the three previously unrepresented classes: Blacklist, Forged Key and Short-Chained Shackles."
@@ -47,6 +48,23 @@
     "correctOfferNames": 30,
     "all31RealPanelClassesVerified": false,
     "trainingFrameIsNotHoldout": true
+  },
+  "incident": {
+    "installedVersion": "1.0.1",
+    "readAt": "2026-10-23T17:47:23.751Z",
+    "overlayRead": [
+      "shackles",
+      "forged",
+      "dogtag"
+    ],
+    "actualConfirmedByUser": [
+      "axe",
+      "forged",
+      "muzzle"
+    ],
+    "markedUncertain": 1,
+    "incorrectAdvice": "shackles",
+    "exactIncidentPixelsAvailable": false
   },
   "baseline": {
     "version": "1.0.6",
@@ -657,7 +675,7 @@
   },
   "checks": {
     "version": "1.0.7",
-    "checkedAt": "2026-10-23T17:44:46.526Z",
+    "checkedAt": "2026-10-23T17:53:07.457Z",
     "checks": [
       "routing",
       "days",
@@ -690,7 +708,7 @@
   },
   "packaged": {
     "version": "1.0.7",
-    "checkedAt": "2026-10-23T17:46:26.508Z",
+    "checkedAt": "2026-10-23T17:55:43.995Z",
     "checks": [
       "suite",
       "overlay",
@@ -706,7 +724,7 @@
     "version": "1.0.7",
     "runtimeVersion": "1.0.7",
     "sourceOverrides": false,
-    "checkedAt": "2026-10-23T17:46:59.834Z",
+    "checkedAt": "2026-10-23T17:53:44.705Z",
     "audit": false,
     "results": [
       {
@@ -731,7 +749,7 @@
           }
         ],
         "ok": true,
-        "ms": 1411
+        "ms": 1636
       },
       {
         "name": "keys-single",
@@ -748,7 +766,7 @@
           }
         ],
         "ok": true,
-        "ms": 1379
+        "ms": 1510
       },
       {
         "name": "keys-and-casket",
@@ -772,7 +790,7 @@
           }
         ],
         "ok": true,
-        "ms": 1446
+        "ms": 1414
       },
       {
         "name": "noose-single",
@@ -789,7 +807,7 @@
           }
         ],
         "ok": true,
-        "ms": 1009
+        "ms": 1410
       },
       {
         "name": "shackles-single",
@@ -806,7 +824,7 @@
           }
         ],
         "ok": true,
-        "ms": 815
+        "ms": 913
       },
       {
         "name": "coin-single",
@@ -823,7 +841,7 @@
           }
         ],
         "ok": true,
-        "ms": 1348
+        "ms": 942
       },
       {
         "name": "coin-and-keys",
@@ -847,7 +865,7 @@
           }
         ],
         "ok": true,
-        "ms": 1482
+        "ms": 1493
       },
       {
         "name": "noose-and-ravenous-extra",
@@ -871,7 +889,7 @@
           }
         ],
         "ok": true,
-        "ms": 1291
+        "ms": 1184
       },
       {
         "name": "tooltip-negative-control",
@@ -908,7 +926,7 @@
   "offers": {
     "version": "1.0.7",
     "runtimeVersion": "1.0.7",
-    "checkedAt": "2026-10-23T17:47:07.614Z",
+    "checkedAt": "2026-10-23T17:53:53.562Z",
     "packaged": true,
     "results": {
       "offers": [
@@ -936,9 +954,9 @@
               "conf": 1
             }
           ],
-          "ms": 668,
-          "artMs": 41,
-          "namesMs": 593
+          "ms": 615,
+          "artMs": 38,
+          "namesMs": 544
         },
         {
           "name": "0009-instruments.webp",
@@ -964,9 +982,9 @@
               "conf": 1
             }
           ],
-          "ms": 375,
-          "artMs": 40,
-          "namesMs": 330
+          "ms": 360,
+          "artMs": 37,
+          "namesMs": 318
         },
         {
           "name": "0002-instruments.webp",
@@ -992,9 +1010,9 @@
               "conf": 1
             }
           ],
-          "ms": 396,
-          "artMs": 15,
-          "namesMs": 376
+          "ms": 423,
+          "artMs": 27,
+          "namesMs": 393
         },
         {
           "name": "0008-instruments.webp",
@@ -1020,9 +1038,9 @@
               "conf": 1
             }
           ],
-          "ms": 308,
-          "artMs": 9,
-          "namesMs": 297
+          "ms": 304,
+          "artMs": 7,
+          "namesMs": 294
         },
         {
           "name": "0002-instruments.webp",
@@ -1048,9 +1066,9 @@
               "conf": 1
             }
           ],
-          "ms": 385,
-          "artMs": 14,
-          "namesMs": 367
+          "ms": 393,
+          "artMs": 12,
+          "namesMs": 377
         },
         {
           "name": "0018-instruments.webp",
@@ -1076,9 +1094,9 @@
               "conf": 1
             }
           ],
-          "ms": 531,
-          "artMs": 12,
-          "namesMs": 515
+          "ms": 520,
+          "artMs": 9,
+          "namesMs": 508
         },
         {
           "name": "0019-instruments.webp",
@@ -1104,9 +1122,9 @@
               "conf": 1
             }
           ],
-          "ms": 360,
-          "artMs": 12,
-          "namesMs": 343
+          "ms": 349,
+          "artMs": 11,
+          "namesMs": 333
         },
         {
           "name": "0002-instruments.webp",
@@ -1132,9 +1150,9 @@
               "conf": 1
             }
           ],
-          "ms": 445,
-          "artMs": 7,
-          "namesMs": 435
+          "ms": 430,
+          "artMs": 11,
+          "namesMs": 415
         },
         {
           "name": "0010-instruments.webp",
@@ -1160,9 +1178,9 @@
               "conf": 1
             }
           ],
-          "ms": 417,
-          "artMs": 10,
-          "namesMs": 402
+          "ms": 397,
+          "artMs": 8,
+          "namesMs": 383
         },
         {
           "name": "0005-instruments.webp",
@@ -1188,13 +1206,15 @@
               "conf": 1
             }
           ],
-          "ms": 392,
+          "ms": 360,
           "artMs": 11,
-          "namesMs": 376
+          "namesMs": 344
         }
       ],
       "canvasBlobCalls": 0,
       "unfinishedOcrCancelled": true,
+      "uncertainOfferBlocked": true,
+      "clearOfferRecovered": true,
       "rerolledNooseRecoveredFromFreshPixels": true
     },
     "gameCapture": false,
@@ -1202,7 +1222,7 @@
   },
   "days": {
     "version": "1.0.7",
-    "checkedAt": "2026-10-23T17:47:19.149Z",
+    "checkedAt": "2026-10-23T17:54:04.973Z",
     "readerSourceOverride": false,
     "results": {
       "pixels": [
@@ -1216,7 +1236,7 @@
             "days": 19,
             "conf": 0.8468549111504107
           },
-          "ms": 1094
+          "ms": 1072
         },
         {
           "name": "0004-board.webp",
@@ -1228,7 +1248,7 @@
             "days": 19,
             "conf": 0.8104097755905247
           },
-          "ms": 1407
+          "ms": 1381
         },
         {
           "name": "0004-board.webp",
@@ -1240,7 +1260,7 @@
             "days": 19,
             "conf": 0.810810754111444
           },
-          "ms": 1198
+          "ms": 1322
         },
         {
           "name": "0016-board.webp",
@@ -1252,7 +1272,7 @@
             "days": 14,
             "conf": 0.7597231008918021
           },
-          "ms": 716
+          "ms": 719
         },
         {
           "name": "0016-board.webp",
@@ -1264,7 +1284,7 @@
             "days": 14,
             "conf": 0.7383386087380349
           },
-          "ms": 1329
+          "ms": 1303
         },
         {
           "name": "0016-board.webp",
@@ -1276,7 +1296,7 @@
             "days": 14,
             "conf": 0.7280510927746077
           },
-          "ms": 1463
+          "ms": 1399
         }
       ],
       "logContext": [
@@ -1317,7 +1337,7 @@
   },
   "suite": {
     "version": "1.0.7",
-    "checkedAt": "2026-10-23T17:44:55.899Z",
+    "checkedAt": "2026-10-23T17:54:23.272Z",
     "actualNativeCapture": true,
     "nativeAdvice": true,
     "manualNativeCapture": true,
@@ -1331,7 +1351,7 @@
   },
   "launch": {
     "version": "1.0.7",
-    "checkedAt": "2026-10-23T17:44:55.482Z",
+    "checkedAt": "2026-10-23T17:53:32.358Z",
     "installerPayloadMatches": true,
     "secondInstanceOpensSettings": true,
     "boardRemainsHidden": true,
@@ -1342,11 +1362,11 @@
   "portable": {
     "version": "1.0.7",
     "executable": "Torchlight-Overlay-Portable-1.0.7-x64.exe",
-    "sha256": "f947c7435f6b24b02f7ef5784a1e590ec4c7219bd1e569a27cddb3cd6dbf9ad5",
-    "checkedAt": "2026-10-23T17:46:25.818Z",
-    "bootMs": 5624,
+    "sha256": "8f61ae4ddb165dcb3273e42e2a40d0f6ce7c1e13c3aed446c43c98e601a11db3",
+    "checkedAt": "2026-10-23T17:55:43.521Z",
+    "bootMs": 4898,
     "text": "TARTARUS 12345",
-    "ocrMs": 858,
+    "ocrMs": 734,
     "agreed": false,
     "rustSampleParity": true,
     "rustRollouts": 8,
@@ -1357,7 +1377,7 @@
   },
   "updates": {
     "version": "1.0.7",
-    "checkedAt": "2026-10-23T17:45:58.896Z",
+    "checkedAt": "2026-10-23T17:55:17.550Z",
     "settingsAndOverlay": true,
     "manualCheck": true,
     "corruptDownloadRejected": true,
@@ -1371,7 +1391,7 @@
   },
   "installer": {
     "version": "1.0.7",
-    "checkedAt": "2026-10-23T17:43:56.319Z",
+    "checkedAt": "2026-10-23T17:52:25.869Z",
     "results": [
       {
         "mode": "portable",
@@ -1406,19 +1426,20 @@
   "artifacts": [
     {
       "file": "Torchlight-Overlay-Portable-1.0.7-x64.exe",
-      "bytes": 128943857,
-      "sha256": "f947c7435f6b24b02f7ef5784a1e590ec4c7219bd1e569a27cddb3cd6dbf9ad5"
+      "bytes": 128944147,
+      "sha256": "8f61ae4ddb165dcb3273e42e2a40d0f6ce7c1e13c3aed446c43c98e601a11db3"
     },
     {
       "file": "Torchlight-Overlay-Setup-1.0.7-x64.exe",
-      "bytes": 129109092,
-      "sha256": "f5281b7c4eb73bdf4e815f286545c8dc93fa11e5f2578b1e291b0827752259e1"
+      "bytes": 129109377,
+      "sha256": "f0ae3d8628c43bc919ed2a966c20793d9938128414e329fb0bebda9b35f203f2"
     }
   ],
   "limitations": [
     "All 31 supported instruments now have a reference class, but actual pixel accuracy is verified only for the eight panel classes and twenty offer classes listed above. Reference coverage is not a substitute for held-out image tests.",
     "One Casket reference was learned from a separate saved frame. Test screenshots and user profiles are not published. Tooltip and sparkle controls are synthetic, explicitly separate from real held-out panels.",
     "No new capture-wait or full-frame speedup claim is made. Existing OCR cancellation, direct RGB input, simulation budgets and confidence guards are preserved.",
+    "The latest Axe/Key/Muzzle incident had no saved screenshot; a fault-injection test verifies uncertain Shackles cannot become advice and a real subsequent saved offer recovers. It does not establish the exact pixel-level cause for that live frame.",
     "Tests used saved frames and owned isolated windows/profiles only. No actual-game capture/input, active-profile edits, or forced restart occurred."
   ]
 }

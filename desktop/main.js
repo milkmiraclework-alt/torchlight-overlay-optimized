@@ -985,6 +985,7 @@ ipcMain.on('site:advice', (e, data) => {
     const what = r.pick ? `instrument offer: ${(r.names || []).join(', ')}` : r.objective ? `objective: ${r.name}` : r.treasure ? "Warden's Treasure" : `day ${r.day}`;
     note(`read: ${r.ok ? what + (r.unsure ? `, ${r.unsure} to check` : '') : `failed (${r.reason})`}`);
     if (r.pick && r.ok) note(`instrument timing: total=${r.ms ?? '?'}ms art=${r.artMs ?? '?'}ms names=${r.namesMs ?? '?'}ms worker-wait=${r.workerWaitMs ?? '?'}ms`);
+    if (r.pick && r.cards) note('instrument cards:', JSON.stringify(r.cards.map(c => ({ sim: c.sim, by: c.by, conf: c.conf, score: c.score, margin: c.margin }))));
     if (r.instrumentReading && r.instrumentPanel) note('instrument panel:', JSON.stringify(r.instrumentPanel));
   }
   const sum = (a) => (a.problems && a.problems.length ? `board problem: ${a.problems[0]}` : a.working ? 'working' : a.stale ? 'board changed' : a.move ? `advice: ${a.move}` : a.nothing ? 'nothing to decide' : '');

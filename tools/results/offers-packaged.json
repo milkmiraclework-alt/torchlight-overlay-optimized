@@ -1,7 +1,7 @@
 {
   "version": "1.0.7",
   "runtimeVersion": "1.0.7",
-  "checkedAt": "2026-10-23T17:47:07.614Z",
+  "checkedAt": "2026-10-23T17:53:53.562Z",
   "packaged": true,
   "results": {
     "offers": [
@@ -29,9 +29,9 @@
             "conf": 1
           }
         ],
-        "ms": 668,
-        "artMs": 41,
-        "namesMs": 593
+        "ms": 615,
+        "artMs": 38,
+        "namesMs": 544
       },
       {
         "name": "0009-instruments.webp",
@@ -57,9 +57,9 @@
             "conf": 1
           }
         ],
-        "ms": 375,
-        "artMs": 40,
-        "namesMs": 330
+        "ms": 360,
+        "artMs": 37,
+        "namesMs": 318
       },
       {
         "name": "0002-instruments.webp",
@@ -85,9 +85,9 @@
             "conf": 1
           }
         ],
-        "ms": 396,
-        "artMs": 15,
-        "namesMs": 376
+        "ms": 423,
+        "artMs": 27,
+        "namesMs": 393
       },
       {
         "name": "0008-instruments.webp",
@@ -113,9 +113,9 @@
             "conf": 1
           }
         ],
-        "ms": 308,
-        "artMs": 9,
-        "namesMs": 297
+        "ms": 304,
+        "artMs": 7,
+        "namesMs": 294
       },
       {
         "name": "0002-instruments.webp",
@@ -141,9 +141,9 @@
             "conf": 1
           }
         ],
-        "ms": 385,
-        "artMs": 14,
-        "namesMs": 367
+        "ms": 393,
+        "artMs": 12,
+        "namesMs": 377
       },
       {
         "name": "0018-instruments.webp",
@@ -169,9 +169,9 @@
             "conf": 1
           }
         ],
-        "ms": 531,
-        "artMs": 12,
-        "namesMs": 515
+        "ms": 520,
+        "artMs": 9,
+        "namesMs": 508
       },
       {
         "name": "0019-instruments.webp",
@@ -197,9 +197,9 @@
             "conf": 1
           }
         ],
-        "ms": 360,
-        "artMs": 12,
-        "namesMs": 343
+        "ms": 349,
+        "artMs": 11,
+        "namesMs": 333
       },
       {
         "name": "0002-instruments.webp",
@@ -225,9 +225,9 @@
             "conf": 1
           }
         ],
-        "ms": 445,
-        "artMs": 7,
-        "namesMs": 435
+        "ms": 430,
+        "artMs": 11,
+        "namesMs": 415
       },
       {
         "name": "0010-instruments.webp",
@@ -253,9 +253,9 @@
             "conf": 1
           }
         ],
-        "ms": 417,
-        "artMs": 10,
-        "namesMs": 402
+        "ms": 397,
+        "artMs": 8,
+        "namesMs": 383
       },
       {
         "name": "0005-instruments.webp",
@@ -281,13 +281,15 @@
             "conf": 1
           }
         ],
-        "ms": 392,
+        "ms": 360,
         "artMs": 11,
-        "namesMs": 376
+        "namesMs": 344
       }
     ],
     "canvasBlobCalls": 0,
     "unfinishedOcrCancelled": true,
+    "uncertainOfferBlocked": true,
+    "clearOfferRecovered": true,
     "rerolledNooseRecoveredFromFreshPixels": true
   },
   "gameCapture": false,
