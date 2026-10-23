@@ -1,0 +1,8 @@
+{
+  "wasmSha256": "aeb6cf4bd56542ae59980412bd0e11113f09b8fe53e5dc95783c3dd9c0c248cb",
+  "sources": {
+    "tools/scan-kernels.rs": "3fded536968c905e641d321666eece0cc5ec2ba9eeebd3e7f211d8df72f3b0b2",
+    "tools/build-scan-kernels.ps1": "635cb6a901276da555d2803dcdf4d78db1e9df3a311fd04205c3f795cf65ea3c",
+    "js/scan-accelerator.js": "7827a706bc3f784b237a36eefbd307932757b56a8172453348d89a82ed6ecacc"
+  }
+}

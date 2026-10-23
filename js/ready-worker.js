@@ -56,7 +56,7 @@ self.onmessage = async ({ data }) => {
     await accelerationReady;
     if (detector.calibration !== C) { self.postMessage({ id, ready: false }); return; }
     pixels();
-    const gray = S.grayOf(img), sharp = S.blur(gray, img.width, img.height, 1);
+    const { gray, sharp } = S.preparePixels(img);
     const prepared = S.prepareBoardSearch(img, gray, self.TARTARUS_SCAN, sharp, 1);
     const fit = S.scoreBoardAt(prepared, C.loc);
     let controls = '', board = null, doors = null, decision = null, reusedMenu = false;

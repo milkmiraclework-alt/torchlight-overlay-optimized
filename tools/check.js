@@ -5,7 +5,7 @@ const root=path.resolve(__dirname,'..'),jobs=[
  ['window-position',['tools/window-position-check.js']],
  ['instrument-reader',['tools/instrument-reader-check.js']],
  ['app-updates',['tools/app-updates-check.js']],['update-install',['tools/update-install-check.js']],
- ['rust-wasm',['tools/rust-solver-check.js','--wasm']],['strategy28',['tools/strategy-28-check.js']],
+ ['rust-wasm',['tools/rust-solver-check.js','--wasm']],['pixel-kernels',['tools/scan-kernel-check.js']],['strategy28',['tools/strategy-28-check.js']],
  ['terminal-gifts',['tools/strategy-31-check.js']],['calculation',['tools/calculation-check.js']],
  ['rust-workers',['tools/rust-worker-check.js']],['instruments',['tools/instruments-check.js']],
  ['forecast',['tools/forecast-check.js']],['forecast-menu',['tools/forecast-menu-check.js']],

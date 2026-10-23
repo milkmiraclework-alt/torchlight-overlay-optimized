@@ -59,7 +59,7 @@ async function scanBoard(img, ref, force = false, lang = 'en', fromProbe = null,
   const S = self.TartarusScan;
   if (!pool && !trackingEnabled) return S.scan(img, ref, { lang });
   const started = Date.now();
-  const gray = S.grayOf(img), sharp = S.blur(gray, img.width, img.height, 1);
+  const { gray, sharp } = S.preparePixels(img);
   let prepared = S.prepareBoardSearch(img, gray, ref, sharp, 1);
   let loc = trackingEnabled && !force ? tracker.locate(prepared, img) : null;
   // Only the exact accepted bitmap gets a handoff from the analyzer's

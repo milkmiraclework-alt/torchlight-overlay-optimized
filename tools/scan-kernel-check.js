@@ -8,11 +8,33 @@ const path = require('node:path');
 const vm = require('node:vm');
 const S = require('../js/scan.js');
 const A = require('../js/scan-accelerator.js');
+require('./scan-kernel-manifest.js');
 const ref = S.withPanelIcons(require('../js/scan-data.js'), require('../js/pick-data.js'));
 const clean = (r) => { const copy = structuredClone(r); delete copy.ms; return copy; };
 const median = (list) => list.sort((a, b) => a - b)[list.length >> 1];
 (async () => {
   const kernel = A.create((await WebAssembly.instantiate(fs.readFileSync(path.join(__dirname, '../js/scan-kernels.wasm')))).instance);
+  for (const [w, h] of [[1, 1], [2, 3], [73, 51], [640, 360]]) {
+    const img = { width: w, height: h, data: Uint8ClampedArray.from({ length: w * h * 4 }, (_, i) => i * 73 % 256) };
+    S.setKernels(null); const gray = S.grayOf(img), sharp = S.blur(gray, w, h, 1);
+    S.setKernels(kernel); const actual = S.preparePixels(img);
+    assert.deepEqual(actual, { gray, sharp }, `fused pixels ${w}x${h}`);
+    const retained = structuredClone(actual);
+    S.preparePixels({ width: 641, height: 361, data: new Uint8ClampedArray(641 * 361 * 4) });
+    assert.deepEqual(actual, retained, 'Fused output aliases reusable kernel memory');
+  }
+  // Exhaust every RGB input, including the Float32 rounding boundaries.
+  const colors = { width: 256, height: 256, data: new Uint8ClampedArray(256 * 256 * 4) };
+  for (let r = 0; r < 256; r++) {
+    for (let i = 0; i < 65536; i++) { colors.data[i*4]=r; colors.data[i*4+1]=i>>>8; colors.data[i*4+2]=i&255; }
+    assert.deepEqual(kernel.preparePixels(colors).gray, S.grayOf(colors), `RGB rounding red=${r}`);
+  }
+  const fallback = { width: 2, height: 3, data: new Uint8ClampedArray(24) };
+  S.setKernels(null); const expectedPixels = S.preparePixels(fallback);
+  S.setKernels({ preparePixels() { throw new RangeError('Simulated fused memory limit'); } });
+  assert.deepEqual(S.preparePixels(fallback), expectedPixels);
+  assert.equal(S.kernelsReady(), false);
+  console.log('PASS: fused pixels, all 16,777,216 RGB values, retained outputs and memory-limit fallback.');
   for (const [w, h] of [[1, 1], [2, 3], [73, 51], [97, 75], [640, 360]]) {
     const g = Float32Array.from({ length: w * h }, (_, i) => Math.sin(i * 17) * 130 + 120);
     for (const r of [0, 1, 3, 9, 70]) {

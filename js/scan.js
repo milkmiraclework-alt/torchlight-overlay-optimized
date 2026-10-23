@@ -62,6 +62,17 @@
     return g;
   }
 
+  function preparePixels(img) {
+    if (kernels?.preparePixels && Number.isInteger(img.width) && Number.isInteger(img.height)
+        && img.width > 0 && img.height > 0 && img.data.length === img.width * img.height * 4
+        && (img.data instanceof Uint8Array || img.data instanceof Uint8ClampedArray)) {
+      try { return kernels.preparePixels(img); }
+      catch { kernels = null; }
+    }
+    const gray = grayOf(img);
+    return { gray, sharp: blur(gray, img.width, img.height, 1) };
+  }
+
   // Separable box blur of radius r.
   function blur(g, w, h, r) {
     if (r < 1) return g;
@@ -2279,8 +2290,7 @@
   // as the player set it: not English, door cards are read by their numbers.
   function scan(img, ref, opts) {
     const t0 = Date.now();
-    const gray = grayOf(img);
-    const sharp = blur(gray, img.width, img.height, 1);
+    const { gray, sharp } = preparePixels(img);
     let loc = locateBoard(img, gray, ref, sharp);
     return scanLocated(img, ref, gray, sharp, loc, t0, null, opts);
   }
@@ -2353,6 +2363,7 @@
   api.scoreBoardAt = scoreBoardAt;
   api.matchToolFeature = matchToolFeature;
   api.setKernels = setKernels;
+  api.preparePixels = preparePixels;
   api.kernelsReady = () => !!kernels;
   api.badgeBox = badgeBox; api.readBadge = readBadge;
   if (typeof module === 'object' && module.exports) module.exports = api;

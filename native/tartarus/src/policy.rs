@@ -123,16 +123,58 @@ impl Hasher for ChainHasher {
 #[derive(Default)]
 pub struct Cache {
     chains: HashMap<ChainKey, f64, BuildHasherDefault<ChainHasher>>,
+    tables: Option<ContextTables>,
     pub hits: u64,
     pub misses: u64,
     pub clears: u64,
+}
+#[derive(Clone, Copy)]
+struct ContextTables {
+    base: u64,
+    weights: [u64; 5],
+    v: [f64; 6],
+    open_dist: [[f64; 5]; 2],
+    open_value: [f64; 2],
+}
+impl Cache {
+    fn tables(&mut self, st: &State, p: &Policy) -> ContextTables {
+        let base = p.tier_base.to_bits();
+        let weights = std::array::from_fn(|i| st.params.tier_weights[i].to_bits());
+        if let Some(t) = self
+            .tables
+            .filter(|t| t.base == base && t.weights == weights)
+        {
+            return t;
+        }
+        let v = std::array::from_fn(|t| p.tier_base.powi(t as i32));
+        let open_dist = std::array::from_fn(|hook| {
+            let mut w: [f64; 5] = std::array::from_fn(|i| st.params.tier_weights[i]);
+            if hook == 1 && w.iter().skip(1).any(|&x| x > 0.) {
+                w[0] = 0.;
+            }
+            let sum = w.iter().fold(0., |a, x| a + x.max(0.));
+            let sum = if sum == 0. { 1. } else { sum };
+            w.map(|x| x.max(0.) / sum)
+        });
+        let open_value =
+            open_dist.map(|dist| dist.iter().enumerate().fold(0., |a, (t, &x)| a + x * v[t]));
+        let tables = ContextTables {
+            base,
+            weights,
+            v,
+            open_dist,
+            open_value,
+        };
+        self.tables = Some(tables);
+        tables
+    }
 }
 pub struct Context<'a> {
     pub st: &'a State,
     pub p: &'a Policy,
     pub v: [f64; 6],
     pub r: f64,
-    pub open_dist: Vec<f64>,
+    pub open_dist: [f64; 5],
     pub open_value: f64,
     pub sealed: usize,
     pub crowd: usize,
@@ -167,51 +209,42 @@ pub fn composition(s: &State, exclude: Option<usize>) -> ([i32; 24], usize) {
 }
 impl<'a> Context<'a> {
     pub fn new(st: &'a State, p: &'a Policy, cache: &'a mut Cache) -> Self {
-        let v = std::array::from_fn(|t| p.tier_base.powi(t as i32));
+        let tables = cache.tables(st, p);
+        let v = tables.v;
         let r = if st.vault.len() >= 10 {
             v[4]
         } else {
             v[5] * p.rainbow_mult
         };
-        let mut w = st.params.tier_weights.clone();
-        if st.has(Hook) && w.iter().skip(1).any(|&x| x > 0.) {
-            w[0] = 0.
-        }
-        let open_dist = normalize(&w);
-        let open_value = open_dist
-            .iter()
-            .enumerate()
-            .fold(0., |a, (t, &x)| a + x * v[t]);
-        let board: Vec<_> = st
-            .board()
-            .into_iter()
-            .filter(|&n| st.cells[n].inmate.unwrap().tier < 5)
-            .collect();
-        let count = board.len();
-        let lift = board.iter().fold(0., |a, &n| {
-            let t = st.cells[n].inmate.unwrap().tier as usize;
-            a + (if t + 1 >= 5 { r } else { v[t + 1] }) - v[t]
-        }) / count.max(1) as f64;
-        let all_lift2 = board.iter().fold(0., |a, &n| {
-            let t = st.cells[n].inmate.unwrap().tier as usize;
-            a + (if t + 2 >= 5 { r } else { v[t + 2] }) - v[t]
-        });
+        let hook = usize::from(st.has(Hook));
+        let open_dist = tables.open_dist[hook];
+        let open_value = tables.open_value[hook];
+        // Keep cell order and floating-point operation order unchanged while
+        // counting the board directly, without allocating temporary lists.
+        let (mut count, mut sealed, mut others) = (0, 0, 0);
+        let (mut lift, mut all_lift2, mut other_value) = (0., 0., 0.);
         let mut counts = [0; 5];
-        for &n in &board {
-            counts[st.cells[n].inmate.unwrap().tier as usize] += 1
+        for c in &st.cells {
+            if c.sealed {
+                sealed += 1;
+                continue;
+            }
+            let Some(i) = c.inmate.filter(|i| i.tier < 5) else {
+                continue;
+            };
+            let t = i.tier as usize;
+            count += 1;
+            counts[t] += 1;
+            lift = lift + (if t + 1 >= 5 { r } else { v[t + 1] }) - v[t];
+            all_lift2 = all_lift2 + (if t + 2 >= 5 { r } else { v[t + 2] }) - v[t];
+            if c.n != st.position {
+                others += 1;
+                other_value += v[t];
+            }
         }
-        let others: Vec<_> = board
-            .iter()
-            .copied()
-            .filter(|&n| n != st.position)
-            .collect();
-        let scapegoat = if st.has(Scapegoat) && others.len() >= 2 && others.len() < count {
-            Some(
-                2. * others
-                    .iter()
-                    .fold(0., |a, &n| a + v[st.cells[n].inmate.unwrap().tier as usize])
-                    / others.len() as f64,
-            )
+        let lift = lift / count.max(1) as f64;
+        let scapegoat = if st.has(Scapegoat) && others >= 2 && others < count {
+            Some(2. * other_value / others as f64)
         } else {
             None
         };
@@ -239,7 +272,7 @@ impl<'a> Context<'a> {
             r,
             open_dist,
             open_value,
-            sealed: st.sealed().len(),
+            sealed,
             crowd: count,
             lift: if count > 0 { lift } else { 0. },
             lift2: if count > 0 {
@@ -856,7 +889,7 @@ impl<'a> Context<'a> {
         } else {
             1
         };
-        if self.has(Muzzle) && self.st.board().len() <= 4 {
+        if self.has(Muzzle) && self.st.board_iter().count() <= 4 {
             gain += 2;
         }
         if self.has(Skewer) && i.beast == Beast::Rat {
@@ -1065,7 +1098,7 @@ impl<'a> Context<'a> {
                     Some(if kept.iter().any(|&p| p > 0.) {
                         normalize(&kept)
                     } else {
-                        self.open_dist.clone()
+                        self.open_dist.to_vec()
                     })
                 } else {
                     None
@@ -1104,7 +1137,7 @@ impl<'a> Context<'a> {
                 score += a.max(b) + t
             } else if c.inmate.is_some() {
                 score += self.p.w_walk * self.known(n, swap_left);
-                if self.consumes != 0 && self.p.w_consume_walk != 0. && !e::meals(s, n).is_empty() {
+                if self.consumes != 0 && self.p.w_consume_walk != 0. && e::has_meal(s, n) {
                     score += self.p.w_consume_walk / self.consumes as f64
                 }
                 if let Some(event) = c.event {
@@ -1177,9 +1210,9 @@ impl<'a> Context<'a> {
 
 fn board_value(st: &State, v: &[f64; 6], r: f64) -> f64 {
     let mut value = st.vault.len() as f64 * r;
-    for n in st.board() {
+    for n in st.board_iter() {
         let i = st.cells[n].inmate.unwrap();
-        value += v[i.tier as usize] * if e::meals(st, n).is_empty() { 1. } else { 1.25 }
+        value += v[i.tier as usize] * if e::has_meal(st, n) { 1.25 } else { 1. }
     }
     value
 }
@@ -1203,7 +1236,7 @@ fn pick_gift(st: &State, ctx: &Context, options: &[Id], rng: &mut u32) -> Id {
         && final_gift
         && options.contains(&Horn)
         && !st.cells.iter().any(|c| c.n != 0 && c.sealed)
-        && st.board().iter().any(|&n| !e::meals(st, n).is_empty())
+        && st.board_iter().any(|n| e::has_meal(st, n))
     {
         return Horn;
     }
@@ -1464,6 +1497,7 @@ fn reroll_odds(st: &State, options: &[Id]) -> Option<(f64, f64)> {
         return None;
     }
     let gain = |id: &Id| gains[all.iter().position(|x| x == id).unwrap()];
+    let pool_gains: Vec<_> = pool.iter().map(gain).collect();
     let w: Vec<_> = pool.iter().map(|&id| e::tool_weight(st, id)).collect();
     let total = w.iter().sum::<f64>();
     let mut next = 0.;
@@ -1474,6 +1508,7 @@ fn reroll_odds(st: &State, options: &[Id]) -> Option<(f64, f64)> {
                 continue;
             }
             let pij = (w[i] / total) * (w[j] / (total - w[i]));
+            let best_pair = pool_gains[i].max(pool_gains[j]);
             let rest = total - w[i] - w[j];
             if rest <= 0. {
                 continue;
@@ -1483,7 +1518,7 @@ fn reroll_odds(st: &State, options: &[Id]) -> Option<(f64, f64)> {
                     continue;
                 }
                 let p = pij * (w[k] / rest);
-                next += p * gain(&pool[i]).max(gain(&pool[j])).max(gain(&pool[k]));
+                next += p * best_pair.max(pool_gains[k]);
                 mass += p
             }
         }
@@ -1532,6 +1567,33 @@ pub fn decide(st: &State, p: &Policy, rng: &mut u32, cache: &mut Cache) -> Optio
                 .copied()
                 .unwrap_or(choice.options[0]),
         });
+    }
+    // These decisions never consult board scores. Avoid preparing all scores
+    // for forced End/office moves and events with a fixed policy answer.
+    if st.chaining.is_none() {
+        if st.phase == Phase::Manage && !st.can_devour() && !st.can_swap() && !e::can_hunt(st) {
+            return Some(Action::End);
+        }
+        if st.phase == Phase::Office {
+            if let Some(choice) = st.used.office_only.or(p.office) {
+                return Some(Action::Office { choice });
+            }
+        }
+        if st.phase == Phase::Event {
+            if let Some(event) = st.event {
+                let accept = match event.kind {
+                    EventKind::Execution => None,
+                    EventKind::Chain => Some(p.accept_chain),
+                    EventKind::Trickster => {
+                        Some(st.cells[event.cell].inmate.is_some_and(|i| i.tier < 4))
+                    }
+                    _ => Some(true),
+                };
+                if let Some(accept) = accept {
+                    return Some(Action::Event { accept });
+                }
+            }
+        }
     }
     let mut ctx = Context::new(st, p, cache);
     if st.chaining.is_some() {

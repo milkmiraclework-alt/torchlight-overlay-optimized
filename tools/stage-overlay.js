@@ -10,6 +10,7 @@ const OUT = path.join(ROOT, 'desktop/dist/bundled-site');
 const DEPS = path.join(ROOT, 'desktop/node_modules');
 const metadata = require('../desktop/package.json');
 const rust = require('./rust-solver-manifest.js');
+const reader = require('./scan-kernel-manifest.js');
 const vorax = require('./vorax-manifest.js');
 const assets = new Map();
 function put(name, bytes) {
@@ -67,6 +68,7 @@ function source(name) { sourceFiles[name] = createHash('sha256').update(fs.readF
 for (const name of ['desktop/main.js', 'desktop/preload.js', 'desktop/package.json', 'desktop/package-lock.json',
   'desktop/build/icon.png', 'analyze.html', 'css/style.css', 'tools/stage-overlay.js']) source(name);
 for (const name of Object.keys(rust.sources)) source(name);
+for (const name of Object.keys(reader.sources)) source(name);
 for (const name of Object.keys(vorax.sources)) source(name);
 for (const name of ['desktop/native/vorax-backend.exe','desktop/native/vorax-build.json','desktop/native/VORAX-LICENSE.txt']) source(name);
 source('js/solver-core.build.json');

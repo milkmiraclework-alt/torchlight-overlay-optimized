@@ -44,39 +44,38 @@ pub fn can_eat(s: &State, a: Inmate, b: Inmate) -> bool {
     }
     counters || (a.beast == Lion && s.has(Crown))
 }
+fn meal_iter(s: &State, n: usize) -> impl Iterator<Item = Meal> + '_ {
+    let eater = s.cells.get(n).and_then(|c| c.inmate.filter(|_| !c.sealed));
+    s.cells.iter().filter_map(move |c| {
+        let eater = eater?;
+        if c.n == n {
+            return None;
+        }
+        if !c.sealed && c.inmate.is_some_and(|m| can_eat(s, eater, m)) {
+            return Some(Meal {
+                cell: c.n,
+                scratch: false,
+            });
+        }
+        if c.sealed
+            && c.scratch
+            && eater.beast == Wolf
+            && eater.tier < 5
+            && c.hidden.is_some_and(|m| m.tier == eater.tier)
+        {
+            return Some(Meal {
+                cell: c.n,
+                scratch: true,
+            });
+        }
+        None
+    })
+}
 pub fn meals(s: &State, n: usize) -> Vec<Meal> {
-    let Some(cell) = s.cells.get(n) else {
-        return vec![];
-    };
-    let Some(eater) = cell.inmate.filter(|_| !cell.sealed) else {
-        return vec![];
-    };
-    s.cells
-        .iter()
-        .filter_map(|c| {
-            if c.n == n {
-                return None;
-            }
-            if !c.sealed && c.inmate.is_some_and(|m| can_eat(s, eater, m)) {
-                return Some(Meal {
-                    cell: c.n,
-                    scratch: false,
-                });
-            }
-            if c.sealed
-                && c.scratch
-                && eater.beast == Wolf
-                && eater.tier < 5
-                && c.hidden.is_some_and(|m| m.tier == eater.tier)
-            {
-                return Some(Meal {
-                    cell: c.n,
-                    scratch: true,
-                });
-            }
-            None
-        })
-        .collect()
+    meal_iter(s, n).collect()
+}
+pub fn has_meal(s: &State, n: usize) -> bool {
+    meal_iter(s, n).next().is_some()
 }
 pub fn framed(s: &State, options: Vec<Meal>) -> Vec<Meal> {
     match &s.used.meal_only {
@@ -1125,7 +1124,7 @@ fn gift(s: &mut State, id: Id) {
             let ids: Vec<_> = s
                 .board()
                 .into_iter()
-                .filter(|&n| !meals(s, n).is_empty())
+                .filter(|&n| has_meal(s, n))
                 .map(|n| s.cells[n].inmate.unwrap().id)
                 .collect();
             for id in ids {
@@ -1155,14 +1154,14 @@ fn gift(s: &mut State, id: Id) {
             let pool: Vec<_> = s
                 .board()
                 .into_iter()
-                .filter(|&n| meals(s, n).is_empty())
+                .filter(|&n| !has_meal(s, n))
                 .map(|n| s.cells[n].inmate.unwrap())
                 .collect();
             for i in shuffle(&mut s.rng, pool).into_iter().take(4) {
                 let Some(n) = s.board_cell_of(i.id) else {
                     continue;
                 };
-                if !meals(s, n).is_empty() {
+                if has_meal(s, n) {
                     continue;
                 }
                 let bs: Vec<_> = Beast::ALL

@@ -344,11 +344,13 @@ impl State {
         self.start_event == Some(StartEvent::Cagefight)
     }
     pub fn board(&self) -> Vec<usize> {
+        self.board_iter().collect()
+    }
+    pub fn board_iter(&self) -> impl Iterator<Item = usize> + '_ {
         self.cells
             .iter()
             .filter(|c| !c.sealed && c.inmate.is_some())
             .map(|c| c.n)
-            .collect()
     }
     pub fn sealed(&self) -> Vec<usize> {
         self.cells

@@ -19,6 +19,19 @@
       return at;
     }
     return {
+      ...(typeof E.rgba_gray === 'function' ? {
+        preparePixels(img) {
+          begin();
+          const n = img.width * img.height, input = copy(img.data);
+          const gray = reserve(n * 4), out = reserve(n * 4), sums = reserve(img.width * 8);
+          E.rgba_gray(input, gray, n);
+          // RGBA is no longer needed after conversion; reuse its buffer for
+          // the blur's temporary rows, keeping the existing memory bound.
+          E.box_blur(gray, input, out, sums, img.width, img.height, 1);
+          return { gray: new Float32Array(E.memory.buffer, gray, n).slice(),
+            sharp: new Float32Array(E.memory.buffer, out, n).slice() };
+        },
+      } : {}),
       blur(g, w, h, r) {
         begin();
         const input = copy(g), tmp = reserve(g.byteLength), out = reserve(g.byteLength), sums = reserve(w * 8);

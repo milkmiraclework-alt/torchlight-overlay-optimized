@@ -1,0 +1,111 @@
+{
+  "version": "1.0.8",
+  "checkedAt": "2026-10-23T19:55:13.979Z",
+  "artifactsVerified": true,
+  "changes": [
+    "Cache exact per-policy tier/opening tables, count board values in one pass without temporary vectors.",
+    "Avoid score preparation for fixed policy answers; use iterator existence checks for meals and precomputed reroll pool gains.",
+    "Fuse exact RGBA conversion and blur in Rust/WASM, reuse scratch memory with owned output copies and retain JS fallback.",
+    "Restore reader kernel sources/build script and enforce source fingerprints at test/staging time."
+  ],
+  "policyUnchanged": true,
+  "simulationBudgetsUnchanged": true,
+  "recognitionThresholdsUnchanged": true,
+  "validation": {
+    "rules": {
+      "checkedAt": "2026-10-23T19:49:18.961Z",
+      "runs": 264,
+      "moves": 18454,
+      "alternativeActions": 136,
+      "monteCarloPositions": 43,
+      "analyzerCardStates": 24,
+      "elapsedMs": 10318,
+      "reference": "js",
+      "binary": "js/solver-core.wasm",
+      "gameInput": false
+    },
+    "rawBeforeAfterPositions": 43,
+    "productionBudgetPositions": 8,
+    "allRGBValues": 16777216,
+    "completeBeforeAfterReaderFrames": 2,
+    "sourceChecks": [
+      "routing",
+      "days",
+      "pick-box",
+      "picture-retry",
+      "profile-import",
+      "window-position",
+      "instrument-reader",
+      "app-updates",
+      "update-install",
+      "rust-wasm",
+      "pixel-kernels",
+      "strategy28",
+      "terminal-gifts",
+      "calculation",
+      "rust-workers",
+      "instruments",
+      "forecast",
+      "forecast-menu",
+      "solver-cache",
+      "chain-cache",
+      "worker-budget",
+      "readiness",
+      "capture",
+      "worker-recovery",
+      "worker-lifecycle",
+      "bundled-site"
+    ],
+    "packagedChecks": [
+      "suite",
+      "overlay",
+      "lifecycle",
+      "instruments",
+      "updates",
+      "portable"
+    ],
+    "offerFrames": 10,
+    "offerNames": 30,
+    "offerAcquisitionRecovered": true,
+    "panelFrames": 8,
+    "syntheticPanelControls": 2,
+    "allPanelsCorrect": true,
+    "offlinePortable": {
+      "version": "1.0.8",
+      "executable": "Torchlight-Overlay-Portable-1.0.8-x64.exe",
+      "sha256": "dd895c4687c14191798bbe0fc316464ab30361e65ddf56a9ea400ba0188d1889",
+      "checkedAt": "2026-10-23T19:52:13.212Z",
+      "bootMs": 5259,
+      "text": "TARTARUS 12345",
+      "ocrMs": 785,
+      "agreed": false,
+      "rustSampleParity": true,
+      "rustRollouts": 8,
+      "externalHttpBlocked": true,
+      "originalInstallUnavailable": true,
+      "occupiedPortIndependent": true,
+      "gameInput": false
+    }
+  },
+  "artifacts": [
+    {
+      "file": "Torchlight-Overlay-Portable-1.0.8-x64.exe",
+      "bytes": 128944720,
+      "sha256": "dd895c4687c14191798bbe0fc316464ab30361e65ddf56a9ea400ba0188d1889"
+    },
+    {
+      "file": "Torchlight-Overlay-Setup-1.0.8-x64.exe",
+      "bytes": 129109947,
+      "sha256": "e273d07ee4354036e8f58f1163747f861dfa0e0cafb84830da1ccbce813ccad4"
+    }
+  ],
+  "limitations": [
+    "Synthetic pixel preparation and two saved real board frames are separate measurements.",
+    "End-to-end game-move latency, screen waiting, capture and tool-name OCR are not measured by the reader timing.",
+    "Timing is on this PC and may vary; simulation policy, sample budgets, random draw order and recognition thresholds are preserved."
+  ],
+  "testHarnessNote": "An initial additional acquisition check used an unrelated Coin fixture; corrected to the labelled Noose/Ravenous frame and passed. No application change was made for this test input error.",
+  "realGameCapture": false,
+  "realGameInput": false,
+  "realInstallerExecuted": false
+}

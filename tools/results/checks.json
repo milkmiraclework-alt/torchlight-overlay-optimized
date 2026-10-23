@@ -1,6 +1,6 @@
 {
-  "version": "1.0.7",
-  "checkedAt": "2026-10-23T17:53:07.457Z",
+  "version": "1.0.8",
+  "checkedAt": "2026-10-23T19:49:59.979Z",
   "checks": [
     "routing",
     "days",
@@ -12,6 +12,7 @@
     "app-updates",
     "update-install",
     "rust-wasm",
+    "pixel-kernels",
     "strategy28",
     "terminal-gifts",
     "calculation",
