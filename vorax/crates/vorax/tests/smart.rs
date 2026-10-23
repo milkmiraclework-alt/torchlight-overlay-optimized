@@ -75,6 +75,47 @@ fn cache_is_exact_and_a_changed_board_is_recalculated() {
 }
 
 #[test]
+fn remaining_rounds_are_part_of_the_state_and_cache_key() {
+    let mut screen = screens().into_iter().find(|s| s.phase == ScreenPhase::Potion).unwrap();
+    screen.tanks[0].as_mut().unwrap().quantity += 5371;
+    screen.round = Some(1);
+    assert!(!smart::advise(&screen).diagnostics.cache_hit);
+    assert!(smart::advise(&screen).diagnostics.cache_hit);
+    screen.round = Some(10);
+    assert_eq!(advisor::to_state(&screen, &mut vec![]).round, 10);
+    assert!(!smart::advise(&screen).diagnostics.cache_hit, "a different remaining horizon must be simulated again");
+    assert!(smart::advise(&screen).diagnostics.cache_hit);
+}
+
+#[test]
+fn futures_start_at_the_actual_round_and_stop_at_the_run_end() {
+    use vorax::{game::{ultimate_activity, dispatch}, Action, Phase};
+    let screen = screens().into_iter().find(|s| s.phase == ScreenPhase::Potion).unwrap();
+    let mut state = advisor::to_state(&screen, &mut vec![]);
+    let la = advisor::LOOK_AHEAD;
+    let inner = bot::Chooser::Ev(bot::Policy { samples: 2, horizon: 0, roll_samples: None, steer: la.steer, value: la.value });
+    let mut results = Vec::new();
+    for round in [1, 10] {
+        state.round = round;
+        assert_eq!(state.round, round);
+        let opt = bot::options(&state)[0];
+        let got = bot::potion_futures(&state, 12345, &la, &[opt], 0, 1, false)[0];
+        let seed = bot::mix(12345, 9000);
+        state.rng_state = seed;
+        let after = bot::play_opt(&state, &opt);
+        let end = bot::finish(&after, seed, &inner, &bot::Picker::Value);
+        assert_eq!(end.phase, Phase::GameOver);
+        assert_eq!(end.round, 13, "no fictional extra rounds after the protocols");
+        assert_eq!(got.goal, bot::goal_score(ultimate_activity(&end)));
+        results.push(got.goal);
+    }
+    assert_ne!(results[0], results[1], "identical boards with different time remaining must have different futures");
+    // Confirming an ended run cannot grant another end-of-round instrument tick.
+    let end = bot::finish(&state, 12345, &inner, &bot::Picker::Value);
+    assert_eq!(ultimate_activity(&dispatch(&end, Action::Confirm)), ultimate_activity(&end));
+}
+
+#[test]
 fn unsupported_specials_and_protocols_keep_reference_behavior() {
     let mut screen = screens().remove(0);
     screen.hand = vec!["Xenopanacea: Osteotrophy".into()];

@@ -1,0 +1,48 @@
+{
+  "version": "1.1.0",
+  "checkedAt": "2026-10-23T21:32:44.203Z",
+  "cpu": "AMD Ryzen 5 3600 6-Core Processor              ",
+  "comparison": "Native structured reader versus compatible ImageBitmap/browser-worker reader in the same packaged EXE",
+  "nativeReader": {
+    "native": [
+      136.39999999850988,
+      101.10000000149012,
+      109.60000000149012,
+      92.90000000037253,
+      81.69999999925494
+    ],
+    "compatible": [
+      140,
+      109,
+      141.69999999925494,
+      114.69999999925494,
+      101.09999999962747
+    ],
+    "nativeMedianMs": 101.10000000149012,
+    "compatibleMedianMs": 114.69999999925494,
+    "reductionPercent": 11.857018306759514
+  },
+  "solver": {
+    "unchanged": true,
+    "wasmSha256": "07a5253aa0e8e0bbd7b5e55058c8ae89da14cc9dbea9c33b62a932154b9eceb2",
+    "simulationBudgetChanged": false
+  },
+  "capture": {
+    "method": "Window-client GetDC/BitBlt/CreateDIBSection in Rust DLL",
+    "testWindow": [
+      128,
+      96
+    ],
+    "repetitions": 100,
+    "exactRgba": true,
+    "gdiHandleGrowth": 0,
+    "gameCapture": false
+  },
+  "limitations": [
+    "Five measured readings after one warmup on ONE identical 2560x1440 saved frame, alternating order. Exact unchanged panels can be reused in both readers.",
+    "Does not measure a complete move, animation wait, actual game capture, cold startup, instrument OCR or simulations.",
+    "The GDI resource test uses a small owned fake window; its capture timing is not a full-resolution game benchmark.",
+    "Giboork publishes no implementation source; this adopts the verified Win32/native-processing approach, not its closed reader.",
+    "Chromium fallback remains for black/unreadable GDI frames and dimensions greater than 2600 pixels. JS recognition orchestration remains."
+  ]
+}

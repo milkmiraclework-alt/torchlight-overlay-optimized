@@ -158,7 +158,7 @@
     // A picture with no board in it: maybe the Warden's Treasure, read by
     // its printed text. A board's picture can catch it too (report 55).
     if (!read.ok && !read.skipped && A.readTreasure) {
-      const tr = await A.readTreasure(m.bitmap && A.image ? A.image() : bitmap);
+      const tr = await A.readTreasure(m.bitmap && A.image ? A.image() || bitmap : bitmap);
       if (tr.ok && mine === newest) {
         answer({ read: { ok: true, treasure: true } });
         answer({ state: 'used', asked: A.useTreasure(undefined, reuse) });

@@ -60,6 +60,7 @@
   let pace = 1; // settle times are scaled by this: the game's Speed-up runs its animations faster
   let tail = null; // { post(message), stop() }
   let track = null;
+  let nativeWindow = false, nativeFailed = false, nativeSession = null;
   let windowGeneration = 0;
   let imageCapture = null;
   let surface = ''; // what's shared: 'window', or 'monitor' only with the app's crop
@@ -484,7 +485,7 @@
   // screen or a browser tab is never accepted (see useStream), except the
   // desktop app's screen, cut to the game window (useCrop).
   function mayCapture() {
-    return agreed() && state.log === 'on' && !!track && track.readyState === 'live' && (surface === 'window' || (surface === 'monitor' && !!crop));
+    return agreed() && state.log === 'on' && (nativeWindow || !!track && track.readyState === 'live' && (surface === 'window' || (surface === 'monitor' && !!crop)));
   }
 
   // Why a picture can't be taken right now, for the page to say.
@@ -500,7 +501,7 @@
   // here at once: the log stops being read and the window share ends.
   function stopIfOff() {
     if (agreed()) return false;
-    if (tail || track) {
+    if (tail || track || nativeWindow) {
       stopLog();
       stopWindow();
       setState({ note: 'Auto Screenshot Mode was turned off.' });
@@ -593,6 +594,17 @@
   async function connectWindow(opts) {
     mustAgree();
     const generation = ++windowGeneration;
+    const desktop = window.TartarusDesktop;
+    if (desktop?.nativeReader && !nativeFailed) {
+      try {
+        const connected = await desktop.nativeReader('connect');
+        if (generation !== windowGeneration || !agreed()) return false;
+        nativeSession = connected.session;
+        nativeWindow = true;
+        setState({ window: 'on', shared: 'window', windowSize: '', note: '' });
+        return true;
+      } catch { nativeFailed = true; }
+    }
     if (!navigator.mediaDevices || typeof navigator.mediaDevices.getDisplayMedia !== 'function') throw new Error('This browser can’t share a window.');
     const screen = !!(opts && opts.screen && crop);
     // The browser's picker lists the open windows; the player picks the
@@ -660,6 +672,8 @@
 
   function stopWindow(keepPending = false) {
     windowGeneration++;
+    if (nativeWindow) window.TartarusDesktop?.nativeReader('stop').catch(() => {});
+    nativeWindow = false;
     if (!keepPending) dropBurst();
     if (track) track.stop();
     track = null;
@@ -680,6 +694,33 @@
     if (!mayCapture()) {
       stopIfOff();
       return null;
+    }
+    if (nativeWindow) {
+      const generation = windowGeneration;
+      try {
+        const desktop = window.TartarusDesktop, frame = await desktop.nativeReader('grab', { session: nativeSession });
+        frame.close = () => {
+          if (frame.closed) return;
+          frame.closed = true;
+          desktop.nativeReader('release', { token: frame.token, session: frame.session }).catch(() => {});
+          if (frame.unreadable && generation === windowGeneration) {
+            nativeFailed = true; nativeWindow = false;
+            desktop.nativeReader('stop').catch(() => {});
+            setState({ window: 'off', note: 'Using compatible window capture.' });
+          }
+        };
+        if (generation !== windowGeneration || !agreed()) { frame.close(); return null; }
+        return frame;
+      } catch {
+        if (generation !== windowGeneration || !agreed()) return null;
+        // Some GPU/driver combinations expose only black pixels to GDI.
+        // Close this path once and keep the proven window-video fallback.
+        nativeFailed = true; nativeWindow = false;
+        await window.TartarusDesktop.nativeReader('stop').catch(() => {});
+        setState({ window: 'off', note: 'Using compatible window capture.' });
+        await connectWindow();
+        return grab();
+      }
     }
     let area = null;
     if (surface === 'monitor') {
@@ -729,6 +770,7 @@
   // 362). Looked at shrunk to 16×16; nothing of it is kept.
   function isBlank(frame) {
     if (!frame) return false;
+    if (frame.native) return !!frame.blank;
     try {
       const c = document.createElement('canvas');
       c.width = 16;

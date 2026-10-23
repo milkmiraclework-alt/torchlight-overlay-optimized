@@ -1,7 +1,8 @@
 'use strict';
 const cp=require('node:child_process'),fs=require('node:fs'),path=require('node:path');
 const root=path.resolve(__dirname,'..'),jobs=[
- ['routing',['tools/unified-runtime-check.js']],['days',['tools/day-check.js']],['pick-box',['tools/pick-box-check.js']],['picture-retry',['tools/picture-retry-check.js']],['profile-import',['tools/profile-import-check.js']],
+ ['native-capture',['tools/native-capture-check.js']],
+ ['native-reader',['tools/native-reader-check.js']],['routing',['tools/unified-runtime-check.js']],['days',['tools/day-check.js']],['pick-box',['tools/pick-box-check.js']],['picture-retry',['tools/picture-retry-check.js']],['profile-import',['tools/profile-import-check.js']],
  ['window-position',['tools/window-position-check.js']],
  ['instrument-reader',['tools/instrument-reader-check.js']],
  ['app-updates',['tools/app-updates-check.js']],['update-install',['tools/update-install-check.js']],

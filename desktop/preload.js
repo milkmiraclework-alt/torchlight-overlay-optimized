@@ -15,6 +15,7 @@ const listen = (channel, fn) => {
 
 contextBridge.exposeInMainWorld('TartarusDesktop', {
   fast: process.argv.includes('--tartarus-fast'),
+  nativeReader: (cmd, args) => ipcRenderer.invoke('native:reader', cmd, args),
   suiteInfo: () => ipcRenderer.invoke('suite:info'),
   readNow: () => ipcRenderer.send('suite:read'),
   updates: () => ipcRenderer.invoke('updates:get'),

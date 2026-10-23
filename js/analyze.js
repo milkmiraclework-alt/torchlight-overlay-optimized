@@ -2026,6 +2026,14 @@
   }
   async function probeFrame(bitmap, meta) {
     if (readyDiagnostics.epoch !== meta.epoch) readyDiagnostics = { epoch: meta.epoch, probes: 0, reason: 'collecting' };
+    if (bitmap?.native) {
+      try {
+        readyDiagnostics.probes++;
+        const probe = await window.TartarusDesktop.nativeReader('probe', { token: bitmap.token, session: bitmap.session, epoch: meta.epoch });
+        if (readyDiagnostics.epoch === meta.epoch) Object.assign(readyDiagnostics, probe, { native: true });
+        return probe.ready;
+      } catch { return null; }
+    }
     if (!readyCalibration || !prepareReadyWorker()) { readyDiagnostics.reason = readyFailed ? 'worker-unavailable' : 'uncalibrated'; return null; }
     let copy;
     try {
@@ -2182,6 +2190,10 @@
 
   function readBitmap(source, opts) {
     if (FAST_DESKTOP) pauseForecast();
+    if (source?.native) {
+      runScan(null, { ...opts, native: source });
+      return;
+    }
     if (opts && opts.direct && typeof OffscreenCanvas === 'function' && readerWorker()) {
       runScan(null, opts, source);
       return;
@@ -2198,6 +2210,11 @@
     reader.image = canvas;
     if (FAST_DESKTOP) reader.lastCapture = canvas;
     runScan(ctx.getImageData(0, 0, w, h), opts);
+  }
+
+  async function nativeBitmap(source) {
+    const pixels = await window.TartarusDesktop.nativeReader('pixels', { token: source.token, session: source.session });
+    return createImageBitmap(new ImageData(new Uint8ClampedArray(pixels.buffer), pixels.width, pixels.height));
   }
 
   function runScan(imageData, opts, bitmap) {
@@ -2241,10 +2258,10 @@
         if (join) {
           const task = {};
           const cancelled = new Promise((resolve) => { task.cancel = () => { task.cancelled = true; corner.ticket++; corner.busy = false; resolve(); }; });
-          task.promise = Promise.race([cornerObjective(reader.image, result.objective, reader.reading.model.day, true), cancelled]);
+          task.promise = Promise.race([cornerObjective(o.cornerImage || reader.image, o.cornerBox || result.objective, reader.reading.model.day, true), cancelled]);
           reader.cornerPending = task;
           task.promise.finally(() => { if (reader.cornerPending === task) reader.cornerPending = null; });
-        } else cornerObjective(reader.image, result.objective, reader.reading.model.day);
+        } else cornerObjective(o.cornerImage || reader.image, o.cornerBox || result.objective, reader.reading.model.day);
       }
       scanStatus(result.ok ? `Read in ${(reader.ms / 1000).toFixed(1)} s.` : `${result.reason} Try a screenshot of the prison screen, with the whole board in view.`, !result.ok);
       // controls: the board's own door cards or decision row showed, which
@@ -2285,6 +2302,23 @@
     };
     // The worker outlives this call, so it answers whichever reading is newest.
     reader.pending = { imageData, id, done };
+    if (o.native) {
+      if (reader.image && typeof reader.image.close === 'function') reader.image.close();
+      reader.lastCapture = null;
+      reader.image = null;
+      window.TartarusDesktop.nativeReader('read', { token: o.native.token, session: o.native.session, lang: gameLang }).then(data => {
+        if (id !== reader.id) { done(null, 'a newer picture came in'); return; }
+        reader.tracking = data.tracking;
+        o.native.unreadable = !data.result?.ok;
+        if (data.corner) {
+          const c = document.createElement('canvas'); c.width = data.corner.width; c.height = data.corner.height;
+          c.getContext('2d').putImageData(new ImageData(new Uint8ClampedArray(data.corner.buffer), c.width, c.height), 0, 0);
+          o.cornerImage = c; o.cornerBox = [0, 0, c.width, c.height];
+        }
+        done(data.result);
+      }).catch(error => done(null, error.message));
+      return;
+    }
     readerWorker();
     if (reader.worker && bitmap) {
       if (bitmap.width > 2600) {
@@ -2394,6 +2428,7 @@
   // whose instrument offer comes next.
   let runObjective = null;
   function readObjective(source) {
+    if (source?.native) return nativeBitmap(source).then(bitmap => readObjective(bitmap).finally(() => bitmap.close()));
     const scale = Math.min(1, 2600 / source.width);
     const w = Math.round(source.width * scale);
     const h = Math.round(source.height * scale);
@@ -2682,6 +2717,7 @@
   // names. Follow my game knows this screen from the game's log; this is
   // for pasted pictures and Take a picture now.
   async function readTreasure(source) {
+    if (source?.native) { const bitmap = await nativeBitmap(source); try { return await readTreasure(bitmap); } finally { bitmap.close(); } }
     const worker = await ocrWorker();
     if (!worker) return { ok: false, treasure: true, reason: `the text reader couldn’t load (${ocrError || 'it didn’t load'})` };
     const scale = Math.min(1, 1600 / source.width);
@@ -2740,6 +2776,7 @@
     if (cancel) cancel();
   }
   function readPick(source) {
+    if (source?.native) return nativeBitmap(source).then(bitmap => readPick(bitmap).finally(() => bitmap.close()));
     cancelPickRead();
     const scale = Math.min(1, 2600 / source.width);
     const w = Math.round(source.width * scale);

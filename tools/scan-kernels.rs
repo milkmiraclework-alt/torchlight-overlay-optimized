@@ -2,7 +2,13 @@
 // Keep IEEE double arithmetic and iteration order identical to JavaScript.
 // No fast math, SIMD reductions or approximate matching thresholds.
 #![allow(clippy::missing_safety_doc)]
+#[cfg(target_arch = "wasm32")]
 use core::arch::wasm32::*;
+#[cfg(target_arch = "x86_64")]
+use core::arch::x86_64::*;
+#[cfg(target_os = "windows")]
+#[path = "native-window-capture.rs"]
+mod native_window_capture;
 
 #[no_mangle]
 pub extern "C" fn revision() -> u32 { 1 }
@@ -101,7 +107,7 @@ pub unsafe extern "C" fn box_blur(
 }
 
 #[no_mangle]
-#[target_feature(enable = "simd128")]
+#[cfg_attr(target_arch = "wasm32", target_feature(enable = "simd128"))]
 pub unsafe extern "C" fn search(
     pixels: *const f32, xs: *const i32, ys: *const i32, offsets: *const i32,
     interior_x: *const u8, interior_y: *const u8, weights: *const f32,
@@ -113,9 +119,34 @@ pub unsafe extern "C" fn search(
     for y in 0..ny {
         let mut x = 0;
         while x < nx {
+            #[cfg(target_arch = "x86_64")]
+            if x + 1 < nx && *interior_y.add(y) != 0
+                && *interior_x.add(x) != 0 && *interior_x.add(x + 1) != 0 {
+                let origin = (oy0 + y as i32) * w + ox0 + x as i32;
+                let mut sx = _mm_setzero_pd();
+                let mut sxx = sx;
+                let mut sxt = sx;
+                for j in 0..cn {
+                    let p = pixels.offset((origin + *offsets.add(j)) as isize);
+                    let v = _mm_cvtps_pd(_mm_castsi128_ps(_mm_loadl_epi64(p.cast())));
+                    sx = _mm_add_pd(sx, v);
+                    sxx = _mm_add_pd(sxx, _mm_mul_pd(v, v));
+                    sxt = _mm_add_pd(sxt, _mm_mul_pd(v, _mm_set1_pd(*weights.add(j) as f64)));
+                }
+                let variance = _mm_sub_pd(sxx, _mm_div_pd(_mm_mul_pd(sx, sx), _mm_set1_pd(cn as f64)));
+                let scores = _mm_div_pd(sxt, _mm_sqrt_pd(variance));
+                let mut vv = [0.; 2]; let mut ss = [0.; 2];
+                _mm_storeu_pd(vv.as_mut_ptr(), variance); _mm_storeu_pd(ss.as_mut_ptr(), scores);
+                for lane in 0..2 {
+                    let score = if vv[lane] > 1e-6 { ss[lane] } else { -1. };
+                    if score > best { best = score; bx = ox0 + x as i32 + lane as i32; by = oy0 + y as i32; }
+                }
+                x += 2; continue;
+            }
             // Adjacent candidate positions read adjacent pixels. Evaluate
             // two independent candidates per vector, retaining each lane's
             // original sum order (unlike a horizontal SIMD reduction).
+            #[cfg(target_arch = "wasm32")]
             if x + 1 < nx && *interior_y.add(y) != 0
                 && *interior_x.add(x) != 0 && *interior_x.add(x + 1) != 0 {
                 let origin = (oy0 + y as i32) * w + ox0 + x as i32;

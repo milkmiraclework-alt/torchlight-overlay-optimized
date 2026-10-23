@@ -1,0 +1,10 @@
+{
+  "architecture": "x64",
+  "librarySha256": "f97ee9ea325718adce3acc0b52738d33db76349c0662b3c6e371c5c131f1044f",
+  "sources": {
+    "tools/scan-kernels.rs": "8a7945a2028bd3d75cdad80d51c0cb9d86596c489b0ad1331f720bd34b68abfb",
+    "tools/native-window-capture.rs": "7ee048b05ffb363114dfcfb0006f1ac313e179de990cd240ce63ab428524b8e7",
+    "tools/build-native-reader.ps1": "59be63d3bd92720a7965e33190c81a84ee9b369e907413049deeef30d762d364",
+    "desktop/lib/native-reader-kernels.js": "af89082e02646194a86d77c4b75350669d411e00f6ee57df2ab88aab33ce0a0f"
+  }
+}

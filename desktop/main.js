@@ -20,6 +20,8 @@ const STANDALONE = app.isPackaged && fs.existsSync(path.join(BUNDLED_ROOT, 'bund
 const OPTIMIZED = true;
 const FAST = true;
 let suite = null;
+let nativeReader = null;
+const nativeAllowed = () => settings.consent?.version === 4 && !settings.consent.withdrawn && game.running && suite?.mode === 'tartarus';
 let updates = null;
 let updateTestOrigin = null;
 app.on('web-contents-created', (_, contents) => contents.setAudioMuted(true));
@@ -749,6 +751,7 @@ function gameInfo() {
 }
 function pushGame() {
   suite?.sync();
+  if (!nativeAllowed()) nativeReader?.stop();
   const g = gameInfo();
   send('follow', 'game', g);
   send('overlay', 'game', g);
@@ -794,11 +797,22 @@ const small = (data) => {
 ipcMain.handle('consent:get', (e) => (fromPage(e, 'follow') ? settings.consent : null));
 const fastConfig = () => ({ consent: settings.consent, speed: !!settings.speed, record: false, mode: settings.mode || 'auto', activeMode: suite?.mode || 'idle', shelley: settings.shelley || 6, threads: settings.threads || 0, suite: suite?.info() || null });
 function publishFastConfig() {
+  if (!nativeAllowed()) nativeReader?.stop();
   send('analyzer', 'fast:settings', fastConfig());
   if (wins.follow && !wins.follow.isDestroyed()) wins.follow.webContents.send('fast:settings', fastConfig());
 }
 ipcMain.handle('fast:settings', (e) => fromPage(e, 'follow') ? fastConfig() : null);
 ipcMain.handle('desktop:visible', (e) => fromPage(e, 'analyzer') && wins.analyzer.isVisible());
+ipcMain.handle('native:reader', async (e, cmd, args = {}) => {
+  if (!fromPage(e, 'analyzer') || !nativeReader) throw Error('Native reader unavailable');
+  if (cmd === 'stop') { nativeReader.stop(); return true; }
+  if (!['connect', 'grab', 'release', 'read', 'probe', 'pixels'].includes(cmd) || !nativeAllowed()) throw Error('Capture is disabled');
+  // The renderer cannot choose an HWND or read arbitrary files/windows.
+  const safe = cmd === 'connect' ? { hwnd: Number(game.hwnd) } : {
+    token: Number(args.token), session: Number(args.session), epoch: Number(args.epoch), lang: String(args.lang || 'en').slice(0, 2)
+  };
+  return nativeReader.request(cmd, safe);
+});
 ipcMain.on('fast:set-settings', (e, patch) => {
   if (!fromPage(e, 'follow') || !patch || typeof patch !== 'object') return;
   const restart = ['shelley', 'threads'].some(key => key in patch && patch[key] !== settings[key]);
@@ -811,7 +825,7 @@ ipcMain.on('fast:set-settings', (e, patch) => {
   publishFastConfig(); rebuildMenu();
 });
 ipcMain.handle('suite:info', e => (TEST || DEV) && fromPage(e, 'analyzer') ? {
-  ...suite?.info(), profile: app.getPath('userData'),
+  ...suite?.info(), nativeReader: nativeReader?.info(), profile: app.getPath('userData'),
   windows: { settings: !!wins.follow?.isVisible(), board: !!wins.analyzer?.isVisible() }
 } : null);
 ipcMain.on('suite:read', e => { if (fromPage(e, 'follow')) command('capture'); });
@@ -1160,7 +1174,7 @@ function registerHotkeys() {
   app.on('before-quit', () => {
     quitting = true;
   });
-  app.on('will-quit', () => { globalShortcut.unregisterAll(); updates?.close(); suite?.close(); });
+  app.on('will-quit', () => { globalShortcut.unregisterAll(); updates?.close(); suite?.close(); nativeReader?.stop(); });
 
   // Tests stop the app with "quit" on its input, as the tray's Quit does,
   // so the pages' storage is written out.
@@ -1204,6 +1218,11 @@ function registerHotkeys() {
       executable: path.join(STANDALONE ? process.resourcesPath : __dirname, 'native', 'vorax-backend.exe'),
       config: () => settings, game: () => gameInfo(), userData: app.getPath('userData'), test: TEST,
       note, notify: () => { publishFastConfig(); updateOverlay(); rebuildMenu(); }
+    });
+    nativeReader = require('./lib/native-reader').create({
+      site: STANDALONE ? BUNDLED_ROOT : path.resolve(__dirname, '..'),
+      library: path.join(STANDALONE ? process.resourcesPath : __dirname, 'native', 'tartarus-reader.dll'),
+      allowed: nativeAllowed, note, fixture: TEST ? arg('native-fixture') : null
     });
     allowCapture();
     await refreshLog();

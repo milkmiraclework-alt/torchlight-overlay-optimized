@@ -292,6 +292,8 @@ async function checkBrowserSearchPool(frames, previousBase, compareProbe = false
     env.LOCALAPPDATA = path.join(profile, 'missing-original-localappdata');
   }
   const launchArgs = [...(standalone ? [`--site-port=${sitePort}`, '--offline-check'] : [path.join(__dirname, 'local-overlay.js')]), '--test', '--offscreen', `--user-data=${profile}`, '--game-title=TartarusOverlayCheckOnly', `--log=${log}`, `--test-window=${standIn}`, '--remote-debugging-port=0'];
+  const nativeFixtureAt=process.argv.indexOf('--native-fixture');
+  if(nativeFixtureAt>=0)launchArgs.push('--native-fixture='+path.resolve(process.argv[nativeFixtureAt+1]));
   const launch = () => {
     const child = spawn(standalone || process.execPath, launchArgs, { cwd: standalone ? path.dirname(standalone) : ROOT, env, windowsHide: true, stdio: ['pipe', 'pipe', 'pipe'] });
     child.stdout.on('data', (s) => { output += s; });
@@ -479,6 +481,60 @@ async function checkBrowserSearchPool(frames, previousBase, compareProbe = false
       console.log(`PASS: isolated forecast integration: ${JSON.stringify(await evaluate(`(${checkForecast.toString()})()`))}`);
       return;
     }
+    if (process.argv.includes('--native-offer-only')) {
+      assert(nativeFixtureAt>=0);
+      const fixture=path.resolve(process.argv[nativeFixtureAt+1]),url='data:image/webp;base64,'+fs.readFileSync(fixture).toString('base64');
+      await evaluate('TartarusDesktop.setConsent({version:4,at:new Date().toISOString()});TartarusDesktop.setFastSettings({mode:"tartarus"});true');
+      for(let i=0;i<200&&!await evaluate('(async()=>{const s=await TartarusDesktop.suiteInfo();return s.enabled&&s.mode==="tartarus";})()');i++)await pause(25);
+      const result=await evaluate(`(async()=>{
+        const D=TartarusDesktop,A=TartarusAnalyzer,c=await D.nativeReader('connect'),frame=await D.nativeReader('grab',{session:c.session});
+        const native=await A.readPick(frame),bitmap=await createImageBitmap(await(await fetch(${JSON.stringify(url)})).blob());
+        const compatible=await A.readPick(bitmap);bitmap.close();
+        await D.nativeReader('release',{token:frame.token,session:frame.session});await D.nativeReader('stop');A.suspend();
+        return {native:{ok:native.ok,cards:native.cards?.map(c=>c.sim),byName:native.byName},compatible:{ok:compatible.ok,cards:compatible.cards?.map(c=>c.sim),byName:compatible.byName}};
+      })()`);
+      assert(result.native.ok,JSON.stringify(result));assert.deepEqual(result.native,result.compatible);
+      const expectedAt=process.argv.indexOf('--expected-tools');if(expectedAt>=0)assert.deepEqual(result.native.cards,process.argv[expectedAt+1].split(','));
+      console.log('PASS: packaged native-frame materialization and OCR preserve actual offered instrument identities: '+JSON.stringify(result));
+      return;
+    }
+    if (process.argv.includes('--native-reader-only')) {
+      assert(nativeFixtureAt>=0,'Native integration needs a saved RGBA fixture');
+      const fixture=path.resolve(process.argv[nativeFixtureAt+1]);
+      const url='data:image/webp;base64,'+fs.readFileSync(fixture).toString('base64');
+      await evaluate('TartarusDesktop.setConsent({version:4,at:new Date().toISOString()});TartarusDesktop.setFastSettings({mode:"tartarus"});true');
+      for(let i=0;i<200&&!await evaluate('(async()=>{const s=await TartarusDesktop.suiteInfo();return s.enabled&&s.mode==="tartarus";})()');i++)await pause(25);
+      const report=await evaluate(`(async()=>{
+        const D=TartarusDesktop,A=TartarusAnalyzer,times={native:[],compatible:[]};
+        A.setForecastEnabled(false);A.prepare();
+        const connected=await D.nativeReader('connect');
+        let oracle=null;
+        for(let i=0;i<6;i++)for(const mode of i%2?['native','compatible']:['compatible','native']){
+          let source;
+          if(mode==='native')source=await D.nativeReader('grab',{session:connected.session});
+          else source=await createImageBitmap(await(await fetch(${JSON.stringify(url)})).blob());
+          const start=performance.now(),read=await A.readFrameDirect(source),ms=performance.now()-start;
+          const shape={ok:read.ok,day:read.day,unsure:read.unsure,controls:read.controls,statusView:read.statusView,instrumentPanel:read.instrumentPanel};
+          if(!read.ok)throw Error('Saved-frame native integration failed: '+JSON.stringify(read));
+          if(oracle&&JSON.stringify(shape)!==JSON.stringify(oracle))throw Error('Native/compatible model conversion differs: '+JSON.stringify({oracle,shape}));
+          oracle=shape;if(i)times[mode].push(ms);
+          if(mode==='native'){
+            if(!A.readerInfo().native)throw Error('Native path was bypassed');
+            const probe=await A.probeFrame(source,{epoch:987});if(probe!==false)throw Error('An unchanged picture was accepted');
+            await D.nativeReader('release',{token:source.token,session:source.session});
+          }else source.close();
+        }
+        await D.nativeReader('stop');A.suspend();
+        const info=await D.suiteInfo();if(info.nativeReader.running)throw Error('Native reader survived stop');
+        let stale=false;try{await D.nativeReader('read',{token:1,session:connected.session});}catch{stale=true;}
+        if(!stale)throw Error('Old capture session accepted');
+        return {times,shape:oracle,staleRejected:stale,nativeStopped:!info.nativeReader.running};
+      })()`);
+      fs.mkdirSync(path.join(ROOT,'tools/results'),{recursive:true});
+      fs.writeFileSync(path.join(ROOT,'tools/results/native-reader-e2e.json'),JSON.stringify({version:require('../desktop/package.json').version,...report,gameCapture:false,gameInput:false,limitations:'Two reader paths on one saved frame; excludes animation waiting, actual game capture, OCR names and simulation. One machine.'},null,2)+'\n');
+      console.log('PASS: packaged native Rust DLL, structured IPC/model parity, repeated fresh frames, unchanged-frame rejection, stale-session rejection and native thread cleanup: '+JSON.stringify(report));
+      return;
+    }
     if (process.argv.includes('--worker-lifecycle-only')) {
       const framesAt = process.argv.indexOf('--frames');
       assert.ok(framesAt >= 0, 'Lifecycle check needs a saved frame directory');
@@ -540,6 +596,7 @@ async function checkBrowserSearchPool(frames, previousBase, compareProbe = false
       for (let i = 0; i < 200 && !await evaluate('TartarusCapture.state.window === "off" && window.liveCheckWorkers.size === 0'); i++) await pause(10);
       assert.deepEqual(await evaluate('({window:TartarusCapture.state.window,workers:window.liveCheckWorkers.size,forecast:TartarusAnalyzer.forecastInfo().enabled,image:!!TartarusAnalyzer.image(),log:TartarusCapture.state.log})'),
         { window: 'off', workers: 0, forecast: false, image: false, log: 'on' }, 'Exit retained capture, workers or image memory');
+      assert.equal((await evaluate('TartarusDesktop.suiteInfo()')).nativeReader.running, false, 'Exit retained native reader thread');
       const warm = await evaluate('window.solverWarmCount');
       await pause(1100);
       assert.equal(await evaluate('window.solverWarmCount'), warm, 'The one-second watchdog recreated workers outside the mode');

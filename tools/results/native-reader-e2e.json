@@ -1,0 +1,31 @@
+{
+  "version": "1.1.0",
+  "times": {
+    "native": [
+      136.39999999850988,
+      101.10000000149012,
+      109.60000000149012,
+      92.90000000037253,
+      81.69999999925494
+    ],
+    "compatible": [
+      140,
+      109,
+      141.69999999925494,
+      114.69999999925494,
+      101.09999999962747
+    ]
+  },
+  "shape": {
+    "ok": true,
+    "day": 1,
+    "unsure": 0,
+    "controls": true,
+    "statusView": false
+  },
+  "staleRejected": true,
+  "nativeStopped": true,
+  "gameCapture": false,
+  "gameInput": false,
+  "limitations": "Two reader paths on one saved frame; excludes animation waiting, actual game capture, OCR names and simulation. One machine."
+}

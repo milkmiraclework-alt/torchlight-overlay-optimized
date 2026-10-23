@@ -12,6 +12,7 @@ const metadata = require('../desktop/package.json');
 const rust = require('./rust-solver-manifest.js');
 const reader = require('./scan-kernel-manifest.js');
 const vorax = require('./vorax-manifest.js');
+const nativeReader = require('./native-reader-manifest.js');
 const assets = new Map();
 function put(name, bytes) {
   if (name.includes('..') || path.isAbsolute(name)) throw new Error('Invalid bundled asset');
@@ -70,6 +71,8 @@ for (const name of ['desktop/main.js', 'desktop/preload.js', 'desktop/package.js
 for (const name of Object.keys(rust.sources)) source(name);
 for (const name of Object.keys(reader.sources)) source(name);
 for (const name of Object.keys(vorax.sources)) source(name);
+for (const name of Object.keys(nativeReader.sources)) source(name);
+for (const name of ['desktop/native/tartarus-reader.dll', 'desktop/native/tartarus-reader.build.json']) source(name);
 for (const name of ['desktop/native/vorax-backend.exe','desktop/native/vorax-build.json','desktop/native/VORAX-LICENSE.txt']) source(name);
 source('js/solver-core.build.json');
 for (const directory of ['js', 'img', 'desktop/lib']) {

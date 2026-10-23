@@ -1,6 +1,7 @@
 desktop/node_modules/
 desktop/dist/
 vorax/target/
+vorax/upstream/
 native/tartarus/target/
 local/
 sandbox/

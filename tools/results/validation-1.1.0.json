@@ -1,0 +1,102 @@
+{
+  "version": "1.1.0",
+  "checkedAt": "2026-10-23T21:32:44.205Z",
+  "sourceChecks": [
+    "native-capture",
+    "native-reader",
+    "routing",
+    "days",
+    "pick-box",
+    "picture-retry",
+    "profile-import",
+    "window-position",
+    "instrument-reader",
+    "app-updates",
+    "update-install",
+    "rust-wasm",
+    "pixel-kernels",
+    "strategy28",
+    "terminal-gifts",
+    "calculation",
+    "rust-workers",
+    "instruments",
+    "forecast",
+    "forecast-menu",
+    "solver-cache",
+    "chain-cache",
+    "worker-budget",
+    "readiness",
+    "capture",
+    "worker-recovery",
+    "worker-lifecycle",
+    "bundled-site"
+  ],
+  "packagedChecks": [
+    "suite",
+    "overlay",
+    "lifecycle",
+    "instruments",
+    "updates",
+    "portable",
+    "native-reader"
+  ],
+  "nativeReader": {
+    "exactKernelTests": true,
+    "completeSavedFrameParity": 2,
+    "packagedStructuredModelParity": true,
+    "staleSessionsRejected": true,
+    "unchangedFramesRejected": true,
+    "nativeThreadCleanup": true,
+    "blackFrameFallback": true,
+    "gdiCaptures": 100,
+    "gdiHandleGrowth": 0
+  },
+  "nativeInstrumentOffer": {
+    "expected": [
+      "saw",
+      "rope",
+      "muzzle"
+    ],
+    "actual": [
+      "saw",
+      "rope",
+      "muzzle"
+    ],
+    "byName": 3,
+    "compatibleReaderMatches": true
+  },
+  "instrumentRegression": {
+    "offers": 10,
+    "offeredTools": 30,
+    "panels": 8,
+    "syntheticNegativePanels": 2,
+    "nooseAcquisition": true
+  },
+  "vorax": {
+    "engineAndAdvisorParity": 4,
+    "smartTests": 7,
+    "readerUnitTests": 5,
+    "readerParity": 3,
+    "faintLabels": 2,
+    "roundTests": 4,
+    "newTests": [
+      "Different remaining rounds change the cache key",
+      "Futures start at the actual round, terminate at round 13 and cannot tick an ended run"
+    ],
+    "strategyChanged": false
+  },
+  "artifacts": [
+    {
+      "file": "Torchlight-Overlay-Portable-1.1.0-x64.exe",
+      "bytes": 129265288,
+      "sha256": "afdc53746902eb30ebb63f359348e2b76a23a0ea902cadd5d868e8b91609162d"
+    },
+    {
+      "file": "Torchlight-Overlay-Setup-1.1.0-x64.exe",
+      "bytes": 129430514,
+      "sha256": "752c6af65e16678e2cbc3291b98fabacdb16e194e936e01adac5e19c50435bc1"
+    }
+  ],
+  "gameCapture": false,
+  "gameInput": false
+}

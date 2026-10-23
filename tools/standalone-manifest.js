@@ -30,6 +30,11 @@ assert.equal(pkg.name, 'torchlight-overlay-optimized');
 const backend = JSON.parse(fs.readFileSync(path.join(DIST,'win-unpacked/resources/native/vorax-build.json')));
 assert.equal(sha(fs.readFileSync(path.join(DIST,'win-unpacked/resources/native/vorax-backend.exe'))),backend.backendSha256,'Wrong Vorax backend');
 assert.equal(backend.backendSha256,sha(fs.readFileSync(path.join(ROOT,'desktop/native/vorax-backend.exe'))));
+const nativeReader = JSON.parse(fs.readFileSync(path.join(DIST,'win-unpacked/resources/native/tartarus-reader.build.json')));
+assert.equal(sha(fs.readFileSync(path.join(DIST,'win-unpacked/resources/native/tartarus-reader.dll'))), nativeReader.librarySha256, 'Wrong native Tartarus reader');
+assert.equal(nativeReader.librarySha256,sha(fs.readFileSync(path.join(ROOT,'desktop/native/tartarus-reader.dll'))));
+for (const name of ['lib/native-reader.js','lib/native-reader-worker.js','lib/native-reader-kernels.js'])
+  assert.equal(sha(extractFile(archive,name)), manifest.sourceFiles['desktop/'+name], 'Wrong native reader host: '+name);
 const files = listPackage(archive).map((name) => name.replaceAll('\\', '/'));
 assert.ok(files.some((name) => name.endsWith('/koffi/build/koffi/win32_x64/koffi.node')), 'Native Koffi missing');
 assert.ok(fs.existsSync(archive + '.unpacked/node_modules/koffi/build/koffi/win32_x64/koffi.node'), 'Koffi native module must be unpacked');

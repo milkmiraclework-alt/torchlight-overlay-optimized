@@ -1,7 +1,7 @@
 {
   "name": "torchlight-overlay-optimized",
   "productName": "Torchlight Overlay",
-  "version": "1.0.9",
+  "version": "1.1.0",
   "description": "Read-only Tartarus and Vorax overlays for Torchlight: Infinite",
   "author": "CoffeeBns",
   "license": "UNLICENSED",
@@ -64,6 +64,8 @@
         "to": "native",
         "filter": [
           "vorax-backend.exe",
+          "tartarus-reader.dll",
+          "tartarus-reader.build.json",
           "vorax-build.json",
           "VORAX-LICENSE.txt"
         ]

@@ -100,4 +100,35 @@ async function until(test) { for (let i = 0; i < 100 && !test(); i++) await paus
   assert.equal(timers.at(-1).delay, 600, 'The fast status view inherited the Treasure deadline');
   C.stopLog();
   console.log('PASS: a fast View Prison Status flushes the image-free Treasure and schedules its own board capture.');
+  fakeTimers=false;text='';C.useHandle(handle);await until(()=>C.state.log==='on');
+  const nativeCalls=[];let nativeGrabResolve=null,holdGrab=false;
+  window.TartarusDesktop.nativeReader=async(cmd,args)=>{
+    nativeCalls.push({cmd,args});
+    if(cmd==='connect')return {session:42};
+    if(cmd==='grab'){
+      if(holdGrab)return new Promise(resolve=>{nativeGrabResolve=resolve;});
+      return {native:true,token:7,session:42,width:1280,height:720,blank:false};
+    }
+    return true;
+  };
+  await C.connectWindow();assert.equal(C.state.window,'on');
+  const startFrames=frames.length;assert(await C.captureNow('board'));
+  assert.equal(frames.length,startFrames+1);assert(frames.at(-1).frame.native);
+  frames.at(-1).frame.close();frames.at(-1).frame.close();
+  assert.equal(nativeCalls.filter(c=>c.cmd==='release').length,1,'A frame was released twice');
+  assert.equal(nativeCalls.at(-1).args.session,42);
+  holdGrab=true;const cancelledGrab=C.captureNow('board');await until(()=>!!nativeGrabResolve);
+  C.stopWindow();nativeGrabResolve({native:true,token:8,session:42,width:1280,height:720});
+  assert.equal(await cancelledGrab,false);assert.equal(C.state.window,'off');
+  assert.equal(nativeCalls.at(-1).cmd,'release','Cancelled native pixels were retained');
+  assert.equal(nativeCalls.filter(c=>c.cmd==='connect').length,1,'Cancelled capture opened a fallback stream');
+  holdGrab=false;await C.connectWindow();
+  window.TartarusDesktop.nativeReader=async(cmd,args)=>{
+    nativeCalls.push({cmd,args});if(cmd==='grab')throw Error('Black direct capture');return true;
+  };
+  const oldResolve=displayResolve,fallback=C.captureNow('board');await until(()=>displayResolve!==oldResolve);
+  const compatible=stream();compatible.track.readyState='live';displayResolve(compatible);await fallback;
+  assert.equal(C.state.window,'on');assert.equal(nativeCalls.filter(c=>c.cmd==='grab').length,3);
+  C.stopWindow();C.stopLog();assert(compatible.track.stopped);
+  console.log('PASS: native frames bypass browser capture, release once with their session, cancellation retains no pixels and black GDI capture falls back to the compatible stream.');
 })().catch((error) => { console.error(error); process.exitCode = 1; });

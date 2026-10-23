@@ -1,13 +1,14 @@
 {
-  "version": "1.0.9",
-  "checkedAt": "2026-10-23T20:59:22.105Z",
+  "version": "1.1.0",
+  "checkedAt": "2026-10-23T21:32:44.125Z",
   "checks": [
     "suite",
     "overlay",
     "lifecycle",
     "instruments",
     "updates",
-    "portable"
+    "portable",
+    "native-reader"
   ],
   "gameCapture": false,
   "gameInput": false

@@ -1,5 +1,5 @@
 {
-  "backendSha256": "619c36cd9036ae7a94a252d8475b2618e718c472c88bab426e7ab9d3f162be26",
+  "backendSha256": "6faaff373929effecd6340383fec0c6dd82c3c74f1e8b61976822bed2a73a1cc",
   "sources": {
     "vorax/crates/vorax/Cargo.toml": "2be1ff2082138109f7774a1eae315c54ccea569aac837ad7107f25a01c8b6d00",
     "vorax/crates/vorax/src/advisor.rs": "cc47b8e7bd4757563d29be8454d72c2847fbf920ff632924515e108d2cefe61d",
@@ -16,7 +16,7 @@
     "vorax/crates/vorax/src/value.rs": "5258b1131f14d1bd0bd478c0ea4a1b9c8477842771dc4784181f804c5b21e2b7",
     "vorax/crates/vorax/tests/parity.rs": "584c022114641180034259baea8a64858c38f6ec9e247be3dfddedc1c08bf110",
     "vorax/crates/vorax/tests/rites.rs": "220d4229dd77a4cb7852b989376b8c63713817caf4405a65af39b33ee3020ba7",
-    "vorax/crates/vorax/tests/smart.rs": "84e14f84ad1add6f8ebc66761fc05b78883086e47e75570942da29f0665d6bf6",
+    "vorax/crates/vorax/tests/smart.rs": "2518151d26d78d46d2a5523fbdab59e94aee015c7c0cc97a7957d9c1c076fe38",
     "vorax/crates/vorax-cli/Cargo.toml": "48737c3b7eca3cd0f381e4f0960a04d1180587ef2dcdec5facdf672bca9f640d",
     "vorax/crates/vorax-cli/src/main.rs": "0bccda4ef7ccb32e41b74d020518254ac43120f1f7bbf464ca0bc9d1cc55c940",
     "vorax/crates/vorax-cli/src/quality.rs": "ed91f93f67361bafb280c431b48fc0eabdc3afd5b35315acf9c3ed100e1eaf8a",
