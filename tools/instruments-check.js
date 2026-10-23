@@ -4,6 +4,8 @@
 const assert = require('node:assert/strict'), fs = require('node:fs'), vm = require('node:vm');
 const T = require('../js/engine.js'), S = require('../js/solver.js'), K = require('../js/solver-cache.js'), Scan = require('../js/scan.js');
 const window = { Tartarus: T, TartarusSolver: S, TartarusSolverCache: K };
+const panelReferences=Scan.withPanelIcons(require('../js/scan-data.js'),require('../js/pick-data.js'));
+assert.deepEqual(T.TOOL_IDS.filter(id=>!panelReferences.tools.some(t=>(panelReferences.toolNames[t.id]?.sim||t.id)===id)),[], 'Some supported instruments have no panel recognition class');
 let source = fs.readFileSync(require.resolve('../js/analyze.js'), 'utf8').replace(/\r\n/g, '\n');
 const init = '  buildBoard();\n  bind();\n  render();';
 assert.ok(source.includes(init));

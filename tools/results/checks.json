@@ -1,6 +1,6 @@
 {
-  "version": "1.0.6",
-  "checkedAt": "2026-10-23T15:22:56.167Z",
+  "version": "1.0.7",
+  "checkedAt": "2026-10-23T17:44:46.526Z",
   "checks": [
     "routing",
     "days",

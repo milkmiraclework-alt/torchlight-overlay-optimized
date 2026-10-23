@@ -458,11 +458,12 @@ async function checkBrowserSearchPool(frames, previousBase, compareProbe = false
       const readerAt=process.argv.indexOf('--reader-source');
       if(readerAt>=0)await evaluate(fs.readFileSync(path.resolve(process.argv[readerAt+1]),'utf8')+'\ntrue');
       const labels = check.readSamples(process.argv[process.argv.indexOf('--instrument-panels') + 1]);
-      const results = await evaluate(`(${check.browserPanels.toString()})(${JSON.stringify(labels)})`);
+      const audit=process.argv.includes('--audit-panels');
+      const results = await evaluate(`(${check.browserPanels.toString()})(${JSON.stringify(labels)},${audit},${process.argv.includes('--negative-panels')})`);
       fs.mkdirSync(path.join(ROOT, 'tools/results'), { recursive: true });
       const runtimeVersion=await evaluate('(async()=> (await(await fetch("/bundle.json")).json()).version)()');
-      fs.writeFileSync(path.join(ROOT, 'tools/results/instrument-panels.json'), JSON.stringify({ version: require('../desktop/package.json').version, runtimeVersion, sourceOverrides: sourceAt>=0 || readerAt>=0, checkedAt: new Date().toISOString(), results, gameCapture: false, gameInput: false }, null, 2) + '\n');
-      console.log('PASS: labelled saved instrument panels, actual packaged reader: ' + JSON.stringify(results));
+      fs.writeFileSync(path.join(ROOT, 'tools/results',audit?'instrument-audit.json':'instrument-panels.json'), JSON.stringify({ version: require('../desktop/package.json').version, runtimeVersion, sourceOverrides: sourceAt>=0 || readerAt>=0, checkedAt: new Date().toISOString(), audit, results, gameCapture: false, gameInput: false }, null, 2) + '\n');
+      console.log((audit?'AUDIT:':'PASS:')+' labelled saved instrument panels, actual packaged reader: ' + JSON.stringify(results));
       return;
     }
     if (process.argv.includes('--panel-manifest')) {

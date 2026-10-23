@@ -1,88 +1,201 @@
 {
-  "version": "1.0.6",
-  "runtimeVersion": "1.0.6",
+  "version": "1.0.7",
+  "runtimeVersion": "1.0.7",
   "sourceOverrides": false,
-  "checkedAt": "2026-10-23T15:31:06.544Z",
+  "checkedAt": "2026-10-23T17:46:59.834Z",
+  "audit": false,
   "results": [
     {
-      "name": "0007-board.webp",
+      "name": "book-and-beastcage",
+      "sha256": "e52c2a53d2ef5fa6ba0b7dfd1ded850958516afb8ae1844ccad8af12a1d5a91a",
       "expected": [
-        "rope",
-        "ravenous"
+        "blacklist",
+        "cage"
       ],
       "actual": [
         {
-          "sim": "rope",
+          "sim": "blacklist",
           "conf": 1,
-          "margin": 0.11685377347668913
+          "score": 0.9656791422178885,
+          "margin": 0.07850462729265817
         },
         {
-          "sim": "ravenous",
+          "sim": "cage",
           "conf": 1,
-          "margin": 0.051897074963806356
+          "score": 0.9896979406409037,
+          "margin": 0.06301371865090521
         }
       ],
-      "ms": 1762
+      "ok": true,
+      "ms": 1411
     },
     {
-      "name": "0012-board.webp",
+      "name": "keys-single",
+      "sha256": "2e0a04c3656a54916b5cf8ea83a0ee4919405c806508bf4ae2e0a5e9b57c6fc6",
       "expected": [
-        "rope",
-        "ravenous"
+        "keys"
       ],
       "actual": [
         {
-          "sim": "rope",
+          "sim": "keys",
           "conf": 1,
-          "margin": 0.11747885265301405
-        },
-        {
-          "sim": "ravenous",
-          "conf": 1,
-          "margin": 0.058494582501440795
+          "score": 0.9903072797372384,
+          "margin": 0.12532537893928253
         }
       ],
-      "ms": 1882
+      "ok": true,
+      "ms": 1379
     },
     {
-      "name": "0018-board.webp",
+      "name": "keys-and-casket",
+      "sha256": "c0ef9e74f5c173ac1279ad6d1c666be5f24596571aa551d9761a918771493a8b",
       "expected": [
-        "rope",
-        "ravenous"
+        "keys",
+        "revenge"
       ],
       "actual": [
         {
-          "sim": "rope",
+          "sim": "keys",
           "conf": 1,
-          "margin": 0.1179270657843231
+          "score": 0.9900547076542736,
+          "margin": 0.1249523214755438
         },
         {
-          "sim": "ravenous",
+          "sim": "revenge",
           "conf": 1,
-          "margin": 0.0528941085060427
+          "score": 0.999804699152113,
+          "margin": 0.08046899609820968
         }
       ],
-      "ms": 1870
+      "ok": true,
+      "ms": 1446
     },
     {
-      "name": "0014-board.webp",
+      "name": "noose-single",
+      "sha256": "f848bf290afb9c4e2ac2e922636c5c2a6c063a12fd54754734879485417782c6",
       "expected": [
-        "shackles",
         "rope"
+      ],
+      "actual": [
+        {
+          "sim": "rope",
+          "conf": 1,
+          "score": 0.9969655714143949,
+          "margin": 0.11846801039374433
+        }
+      ],
+      "ok": true,
+      "ms": 1009
+    },
+    {
+      "name": "shackles-single",
+      "sha256": "54b991fdadf95e211145e558eaa58c51b7e4efe5b987aa0706cc4c089213c8d6",
+      "expected": [
+        "shackles"
       ],
       "actual": [
         {
           "sim": "shackles",
           "conf": 1,
-          "margin": 0.13008436310418725
+          "score": 0.9900482077712076,
+          "margin": 0.13027863413751906
+        }
+      ],
+      "ok": true,
+      "ms": 815
+    },
+    {
+      "name": "coin-single",
+      "sha256": "81db9ffe3a28183adf78a6c4ff614dbb87858ac21954756c83ff48d55142fc4c",
+      "expected": [
+        "coin"
+      ],
+      "actual": [
+        {
+          "sim": "coin",
+          "conf": 1,
+          "score": 0.9709891071518961,
+          "margin": 0.07923017035681057
+        }
+      ],
+      "ok": true,
+      "ms": 1348
+    },
+    {
+      "name": "coin-and-keys",
+      "sha256": "13474d91391a65fdd3fdd9036efb9adf0724b67d03b8cbd9875dd381673106be",
+      "expected": [
+        "coin",
+        "keys"
+      ],
+      "actual": [
+        {
+          "sim": "coin",
+          "conf": 1,
+          "score": 0.9713657327840184,
+          "margin": 0.08060856302821107
         },
+        {
+          "sim": "keys",
+          "conf": 1,
+          "score": 0.9898886849166232,
+          "margin": 0.12665090384865174
+        }
+      ],
+      "ok": true,
+      "ms": 1482
+    },
+    {
+      "name": "noose-and-ravenous-extra",
+      "sha256": "89ac19929e5a1af7f1448555afff5837426230b901e165bd60a9bd0bfcef668c",
+      "expected": [
+        "rope",
+        "ravenous"
+      ],
+      "actual": [
         {
           "sim": "rope",
           "conf": 1,
-          "margin": 0.08380736382753695
+          "score": 0.9951429788622839,
+          "margin": 0.10214297886228385
+        },
+        {
+          "sim": "ravenous",
+          "conf": 1,
+          "score": 0.9986424238995173,
+          "margin": 0.060213087854030345
         }
       ],
-      "ms": 1048
+      "ok": true,
+      "ms": 1291
+    },
+    {
+      "name": "tooltip-negative-control",
+      "synthetic": true,
+      "expected": [
+        "coin"
+      ],
+      "actual": [
+        {
+          "sim": "coin",
+          "conf": 1
+        }
+      ],
+      "ok": true
+    },
+    {
+      "name": "sparkles-negative-control",
+      "synthetic": true,
+      "expected": [
+        "rope"
+      ],
+      "actual": [
+        {
+          "sim": "rope",
+          "conf": 1
+        }
+      ],
+      "ok": true
     }
   ],
   "gameCapture": false,

@@ -1595,23 +1595,28 @@
       alts: unique.slice(0, 6).map((r) => ({ id: r.id, score: Math.round(r.score * 1000) / 1000 })) };
   }
   function readTools(img, loc, ref) {
-    const found = findToolIcons(img, loc, null, ref);
+    const legacy = findToolIcons(img, loc, null, ref);
+    const compact = legacy.label ? findToolIcons(img, loc, null, ref, { label: legacy.label, tipGlyphs: legacy._tipGlyphs, step: 5.05 }) : null;
+    const quality = panel => (panel?.icons || []).reduce((sum, icon) => sum + (icon.match?.conf >= 0.9 ? 100 + icon.match.score : -0.5), 0);
+    const found = compact && quality(compact) > quality(legacy) ? compact : legacy;
+    delete found._tipGlyphs;
     found.tools = found.icons.map((icon) => {
-      const feat = artFeature(img, ...icon.box);
+      const matched = icon.match || matchToolFeature(artFeature(img, ...icon.box), icon.box[2] - icon.box[0], ref);
+      delete icon.match;
       // A panel icon learned from a big, sharp picture (w: its width there)
       // isn't matched against one under 60% of that size: blurred small, a
       // hammer passed for a dark upright box (shrunk 1000 px reports).
-      return { ...matchToolFeature(feat, icon.box[2] - icon.box[0], ref), box: icon.box };
+      return { ...matched, box: icon.box };
     });
     return found;
   }
 
   // Finds the instrument icons: dim cards in a row under the label, laid out
   // in the label's own UI scale (its letter height).
-  function findToolIcons(img, loc, debug, ref) {
+  function findToolIcons(img, loc, debug, ref, geometry = {}) {
     const left = Math.min(at(loc, 0, 0)[0], at(loc, 0, 3)[0]) - 70 * loc.s;
     if (left < 30) return { icons: [], found: false };
-    const label = findLabel(img, [0, 0, left, img.height - 1], 17, 12.2);
+    const label = geometry.label || findLabel(img, [0, 0, left, img.height - 1], 17, 12.2);
     if (!label) return { icons: [], found: false };
     // The label is 12.2 letter heights wide; its width is steadier than its
     // height when letters come apart.
@@ -1632,11 +1637,11 @@
     // no icon's art makes (the user's run, 2026-10-17: a Muzzle tooltip read
     // as 4 more instruments).
     const top = label.y1 + 1.55 * h;
-    const tipGlyphs = textLines(img, label.x0, top, left, top + 7.45 * h, { minH: 0.5 * h, maxH: 1.8 * h })
+    const tipGlyphs = geometry.tipGlyphs || textLines(img, label.x0, top, left, top + 7.45 * h, { minH: 0.5 * h, maxH: 1.8 * h })
       .flatMap((line) => line.pieces.filter((p) => p.glyphs.length >= 6 && p.x1 - p.x0 > 5.3 * h).flatMap((p) => p.glyphs));
     const out = [];
     for (let i = 0; i < 6; i++) {
-      const x0 = label.x0 + (0.15 + 6.05 * i) * h;
+      const x0 = label.x0 + (0.15 + (geometry.step || 6.05) * i) * h;
       const x1 = x0 + 4.45 * h;
       const y0 = label.y1 + 1.55 * h;
       const y1 = y0 + 7.45 * h;
@@ -1654,11 +1659,14 @@
       let ax1 = -1;
       let ay1 = -1;
       let art = 0;
-      for (let y = Math.round(y0 + 0.4 * h); y <= y1 - 0.4 * h; y++) {
-        for (let x = Math.round(x0 + 0.4 * h); x <= x1 - 0.4 * h; x++) {
+      const bx = Math.round(x0 + 0.4 * h), by = Math.round(y0 + 0.4 * h);
+      const xs = new Uint32Array(Math.max(1, Math.floor(x1 - 0.4 * h) - bx + 1)), ys = new Uint32Array(Math.max(1, Math.floor(y1 - 0.4 * h) - by + 1));
+      for (let y = by; y <= y1 - 0.4 * h; y++) {
+        for (let x = bx; x <= x1 - 0.4 * h; x++) {
           const [, s, v] = hsvAt(img, x, y);
           if (v > thr && (s > 0.2 || v > thr * 1.3)) {
             art += 1;
+            xs[x - bx]++; ys[y - by]++;
             if (x < ax0) ax0 = x;
             if (x > ax1) ax1 = x;
             if (y < ay0) ay0 = y;
@@ -1674,17 +1682,40 @@
       // strokes spread through a tall box, or a flat strip, where an icon is
       // a solid drawing (at least 7% of its box, never much wider than
       // tall), so the panel ends there.
-      const bw = ax1 - ax0 + 1;
-      const bh = ay1 - ay0 + 1;
+      let box = [ax0, ay0, ax1, ay1];
+      let matched = ref && art ? matchToolFeature(artFeature(img, ...box), ax1 - ax0, ref) : null;
+      if (ref && art && matched.conf < 0.9) {
+        // Single bright background pixels stretch a min/max crop and turn a
+        // Noose into a cage. Try trimmed foreground bounds only when the
+        // original crop is uncertain, keeping competition across crop modes.
+        const quantile = (bins, origin, fraction) => {
+          const rank = Math.round(fraction * (art - 1)); let seen = 0;
+          for (let j = 0; j < bins.length; j++) { seen += bins[j]; if (seen > rank) return origin + j; }
+        };
+        const modes = [{ box, matched }];
+        for (const trim of [0.01, 0.025, 0.05]) {
+          const crop = [quantile(xs, bx, trim), quantile(ys, by, trim), quantile(xs, bx, 1 - trim), quantile(ys, by, 1 - trim)];
+          if (crop[2] <= crop[0] || crop[3] <= crop[1]) continue;
+          modes.push({ box: crop, matched: matchToolFeature(artFeature(img, ...crop), crop[2] - crop[0], ref) });
+        }
+        modes.sort((a, b) => b.matched.score - a.matched.score);
+        const best = modes[0], sim = ref.toolNames?.[best.matched.id]?.sim || best.matched.id;
+        const competitor = Math.max(0, ...modes.flatMap(mode => mode.matched.alts.filter(alt => (ref.toolNames?.[alt.id]?.sim || alt.id) !== sim).map(alt => alt.score)));
+        box = best.box;
+        const margin = best.matched.score - competitor;
+        matched = { ...best.matched, margin, conf: Math.min(best.matched.conf, Math.max(0.1, margin / 0.04)) };
+      }
+      const bw = box[2] - box[0] + 1;
+      const bh = box[3] - box[1] + 1;
       if (art / (bw * bh) < 0.065 || bw > 2 * bh) break;
       // A dim icon can fail the brightness test when the moving background
       // beside it becomes lighter (saved Ravenous Chains: 0.99 vs 1.0).
       // A strong reference match is independent evidence of a real icon;
       // keep the threshold for unmatched wall/tooltip fragments unchanged.
-      if (weak && (!ref || art <= 0.5 * h * h || matchToolFeature(artFeature(img, ax0, ay0, ax1, ay1), bw - 1, ref).conf < 0.9)) break;
-      out.push({ box: [ax0, ay0, ax1, ay1], card: [x0, y0, x1, y1], art });
+      if (weak && (!ref || art <= 0.5 * h * h || matched.conf < 0.9)) break;
+      out.push({ box, card: [x0, y0, x1, y1], art, ...(matched ? { match: matched } : {}) });
     }
-    return { icons: out, found: true, label };
+    return { icons: out, found: true, label, _tipGlyphs: tipGlyphs };
   }
 
   // The run's start card hangs as a round badge under the instrument panel
@@ -2038,7 +2069,17 @@
   // screenshots of the live game (tools/pick-build.js).
   function withPanelIcons(ref, pick) {
     if (!pick) return ref;
-    return Object.assign({}, ref, { tools: ref.tools.concat(pick.icons || []), toolNames: { ...ref.toolNames, ...pick.names }, badges: (ref.badges || []).concat(pick.badges || []) });
+    const toolNames = { ...ref.toolNames, ...pick.names }, tools = ref.tools.concat(pick.icons || []);
+    const represented = new Set(tools.map(t => toolNames[t.id]?.sim || t.id));
+    // Newly added simulator items can have names and offer art but no small
+    // panel sample yet. Include their art instead of making those classes
+    // impossible to recognise (Blacklist, Forged Key, Short-Chained Shackles).
+    for (const art of pick.tools || []) if (!represented.has(art.sim)) {
+      const id = Object.keys(toolNames).find(id => toolNames[id].sim === art.sim) || art.sim;
+      if (!toolNames[id]) toolNames[id] = { sim: art.sim, name: art.sim };
+      tools.push({ id, feat: art.feat, from: 'offer-art-fallback' });
+    }
+    return Object.assign({}, ref, { tools, toolNames, badges: (ref.badges || []).concat(pick.badges || []) });
   }
 
   // ---------- The run's objective ----------
