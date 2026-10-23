@@ -34,7 +34,7 @@ async function connect(url) {
   };
   const call = (method, params = {}) => new Promise((resolve) => {
     const request = ++id;
-    const timeout = method === 'Runtime.evaluate' && (process.argv.includes('--frames') || process.argv.includes('--day-panels')) ? 120000 : 45000;
+    const timeout = method === 'Runtime.evaluate' && (process.argv.includes('--frames') || process.argv.includes('--day-panels') || process.argv.includes('--offer-panels')) ? 120000 : 45000;
     const timer = setTimeout(() => { pending.delete(request); resolve({ error: { message: `${method} timed out` } }); }, timeout);
     pending.set(request, (message) => { clearTimeout(timer); resolve(message); });
     ws.send(JSON.stringify({ id: request, method, params }));
@@ -431,6 +431,15 @@ async function checkBrowserSearchPool(frames, previousBase, compareProbe = false
       console.log(`PASS: direct instrument button reopens a visible, clickable modal twice; physical confirmation across 3 progress updates; 10 conflicting/missing/growing-slot frames across reload; pending/ambiguous picks block advice and unique/manual choices recover: ${JSON.stringify({ before, after })}`);
       return;
     }
+    if (process.argv.includes('--offer-panels')) {
+      const check = require('./offer-panels-check.js'), labels = check.readSamples(process.argv[process.argv.indexOf('--offer-panels') + 1]);
+      const boardAt=process.argv.indexOf('--acquisition-board'),packaged=boardAt>=0;
+      const boardURL=packaged?'data:image/webp;base64,'+fs.readFileSync(path.resolve(process.argv[boardAt+1])).toString('base64'):null;
+      const results = packaged?await evaluate(`(${check.browserPackagedOffers.toString()})(${JSON.stringify(labels)},${JSON.stringify(boardURL)})`):await evaluate(`(()=>{const T=window.Tartarus; ${check.sourceHelpers()}; return (${check.browserOffers.toString()})(${JSON.stringify(labels)},ocrPixels,nameFromText);})()`);
+      const runtimeVersion=await evaluate('(async()=> (await(await fetch("/bundle.json")).json()).version)()');
+      fs.writeFileSync(path.join(ROOT, 'tools/results',packaged?'offers-packaged.json':'offer-panels.json'), JSON.stringify({version:require('../desktop/package.json').version,runtimeVersion,checkedAt:new Date().toISOString(),packaged,results,gameCapture:false,gameInput:false}, null, 2) + '\n');
+      console.log('PASS: saved instrument offer diagnostic: ' + JSON.stringify(results)); return;
+    }
     if (process.argv.includes('--day-panels')) {
       const check = require('./day-panels-check.js');
       const sourceAt = process.argv.indexOf('--reader-source');
@@ -444,10 +453,15 @@ async function checkBrowserSearchPool(frames, previousBase, compareProbe = false
     }
     if (process.argv.includes('--instrument-panels')) {
       const check = require('./instrument-panels-check.js');
+      const sourceAt=process.argv.indexOf('--panel-data-source');
+      if(sourceAt>=0)await evaluate(fs.readFileSync(path.resolve(process.argv[sourceAt+1]),'utf8')+'\ntrue');
+      const readerAt=process.argv.indexOf('--reader-source');
+      if(readerAt>=0)await evaluate(fs.readFileSync(path.resolve(process.argv[readerAt+1]),'utf8')+'\ntrue');
       const labels = check.readSamples(process.argv[process.argv.indexOf('--instrument-panels') + 1]);
       const results = await evaluate(`(${check.browserPanels.toString()})(${JSON.stringify(labels)})`);
       fs.mkdirSync(path.join(ROOT, 'tools/results'), { recursive: true });
-      fs.writeFileSync(path.join(ROOT, 'tools/results/instrument-panels.json'), JSON.stringify({ version: require('../desktop/package.json').version, checkedAt: new Date().toISOString(), results, gameCapture: false, gameInput: false }, null, 2) + '\n');
+      const runtimeVersion=await evaluate('(async()=> (await(await fetch("/bundle.json")).json()).version)()');
+      fs.writeFileSync(path.join(ROOT, 'tools/results/instrument-panels.json'), JSON.stringify({ version: require('../desktop/package.json').version, runtimeVersion, sourceOverrides: sourceAt>=0 || readerAt>=0, checkedAt: new Date().toISOString(), results, gameCapture: false, gameInput: false }, null, 2) + '\n');
       console.log('PASS: labelled saved instrument panels, actual packaged reader: ' + JSON.stringify(results));
       return;
     }

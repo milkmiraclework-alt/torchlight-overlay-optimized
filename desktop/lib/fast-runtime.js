@@ -14,7 +14,7 @@
   let retryTimer = 0, retryRevision = 0;
   function cancelRetry() { if (retryTimer) clearTimeout(retryTimer); retryTimer = 0; retryRevision++; }
   function retryPicture(event, mine, revision, attempt, read) {
-    if (attempt >= 2 || read?.skipped || !(['instruments', 'board', 'objective'].includes(event.kind) || ((!read || read.dayReading) && event.kind === 'manual'))) return false;
+    if (attempt >= 2 || read?.skipped || !(['instruments', 'board', 'objective'].includes(event.kind) || ((!read || read.dayReading || read.instrumentReading) && event.kind === 'manual'))) return false;
     A.setReadStatus({ at: Date.now(), kind: event.kind, phase: 'settling' }, read);
     if (retryTimer) clearTimeout(retryTimer);
     retryTimer = setTimeout(async () => {

@@ -89,6 +89,12 @@ for (const found of [false, true]) {
   assert.equal(A.confirmTools(missing), true, 'An explicitly checked empty set could not be confirmed');
 }
 console.log('PASS: unread picks never assume the recommendation; later actual picks recover; near ties/multiple candidates wait; unresolved choices survive reload and cannot be blindly confirmed; legacy guesses reopen.');
+const oldMissing = A.blankModel();oldMissing.day=4;oldMissing.tools=['ravenous'];oldMissing.toolsOffer={options:['forged','shackles','rope']};
+const nooseOnly=scan(oldMissing,[icon('rope')]);
+assert.equal(nooseOnly.tools.join(),'ravenous,rope','A clear newly selected Noose required every old icon to be visible');
+assert.equal(nooseOnly.toolsOffer,null);
+const nooseWeak=scan(oldMissing,[icon('rope',.3)]);
+assert.equal(nooseWeak.tools.join(),'ravenous');assert.ok(nooseWeak.toolsOffer,'A weak Noose guess became the selected item');
 
 const feature = { grid: Array.from({ length: 192 }, (_, i) => 1 + i % 17), hist: Array.from({ length: 32 }, (_, i) => (1 + i) / 528) };
 const reference = (id, w = 20) => ({ id, w, feat: feature });

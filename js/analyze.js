@@ -2249,7 +2249,10 @@
       scanStatus(result.ok ? `Read in ${(reader.ms / 1000).toFixed(1)} s.` : `${result.reason} Try a screenshot of the prison screen, with the whole board in view.`, !result.ok);
       // controls: the board's own door cards or decision row showed, which
       // View Prison Status never does: no Warden's Treasure is open.
-      if (o.onRead) o.onRead(result.ok ? { ok: true, day: reader.reading.model.day, unsure: reader.reading.checks.size, ms: reader.ms, controls: !!((result.doors && result.doors.cells && result.doors.cells.length) || result.decision), statusView: !!result.statusView } : { ok: false, reason: result.reason, ms: reader.ms });
+      const instrumentPanel = result.ok && reader.reading.model.toolsOffer && reader.reading.model.step !== 'choice' ? {
+        found: !!result.tools?.found, held: reader.reading.model.tools.slice(), slots: result.tools?.tools?.length || 0,
+        icons: (result.tools?.tools || []).map(t => ({ sim: t.sim || null, conf: t.conf, score: t.score, margin: t.margin })) } : undefined;
+      if (o.onRead) o.onRead(result.ok ? { ok: true, day: reader.reading.model.day, unsure: reader.reading.checks.size, ms: reader.ms, instrumentPanel, controls: !!((result.doors && result.doors.cells && result.doors.cells.length) || result.decision), statusView: !!result.statusView } : { ok: false, reason: result.reason, ms: reader.ms });
       if (o.quiet) {
         renderScan();
         return;
@@ -2446,7 +2449,7 @@
     c.getContext('2d').drawImage(source, x0, y0, w, h, 0, 0, c.width, c.height);
     let text = '';
     try {
-      text = (await worker.recognize(c)).data.text || '';
+      text = (await worker.recognize(ocrPixels(c), {}, { text: true, blocks: false, hocr: false, tsv: false })).data.text || '';
     } catch (e) {
       return { ok: false };
     }
@@ -2623,8 +2626,27 @@
   // The three cards' names, left to right, from the band under each card's
   // art (a raised card's title sits a little higher, inside the band). ui:
   // the cards' size the reader found (see scanPick).
-  async function readCardNames(canvas, ui) {
+  // Tesseract's canvas adapter schedules toBlob/PNG encoding on the page.
+  // A hidden overlay can wait seconds for each of those idle callbacks.
+  // Binary PPM carries the exact opaque RGB pixels directly to Leptonica.
+  function ocrPixels(canvas) {
+    const { width, height } = canvas;
+    const pixels = canvas.getContext('2d', { willReadFrequently: true }).getImageData(0, 0, width, height).data;
+    const header = new TextEncoder().encode(`P6\n${width} ${height}\n255\n`);
+    const bytes = new Uint8Array(header.length + width * height * 3);
+    bytes.set(header);
+    for (let i = 0, j = header.length; i < pixels.length; i += 4) {
+      // Match the white background used by the OCR image decoder for alpha.
+      const a = pixels[i + 3] / 255;
+      bytes[j++] = Math.round(pixels[i] * a + 255 * (1 - a));
+      bytes[j++] = Math.round(pixels[i + 1] * a + 255 * (1 - a));
+      bytes[j++] = Math.round(pixels[i + 2] * a + 255 * (1 - a));
+    }
+    return bytes;
+  }
+  async function readCardNames(canvas, ui, valid = () => true) {
     const worker = await ocrWorker();
+    if (!valid()) return null;
     if (!worker) {
       // No names read: why, for the reading.
       const none = [null, null, null];
@@ -2635,6 +2657,7 @@
     const top = canvas.height / 2 - 540 * s;
     const out = [];
     for (let k = -1; k <= 1; k++) {
+      if (!valid()) return null;
       const c = canvas.width / 2 + k * 480 * s;
       // Small cards' names enlarged to their size on a 1080-pixel-high
       // screen: the text reader misses the small ones.
@@ -2644,7 +2667,8 @@
       crop.height = Math.round(130 * s * z);
       crop.getContext('2d').drawImage(canvas, Math.round(c - 215 * s), Math.round(top + 420 * s), Math.round(430 * s), Math.round(130 * s), 0, 0, crop.width, crop.height);
       try {
-        const { data } = await worker.recognize(crop);
+        const { data } = await worker.recognize(ocrPixels(crop), {}, { text: true, blocks: false, hocr: false, tsv: false });
+        if (!valid()) return null;
         out.push(nameFromText(data.text || ''));
       } catch (e) {
         out.push(null);
@@ -2667,7 +2691,7 @@
     canvas.getContext('2d').drawImage(source, 0, 0, canvas.width, canvas.height);
     let text = '';
     try {
-      text = (await worker.recognize(canvas)).data.text || '';
+      text = (await worker.recognize(ocrPixels(canvas), {}, { text: true, blocks: false, hocr: false, tsv: false })).data.text || '';
     } catch (e) {
       return { ok: false, treasure: true, reason: 'the text couldn’t be read' };
     }
@@ -2701,7 +2725,14 @@
     return false;
   }
 
+  let pickReadCancel = null;
+  function cancelPickRead() {
+    reader.pickId++;
+    const cancel = pickReadCancel; pickReadCancel = null;
+    if (cancel) cancel();
+  }
   function readPick(source) {
+    cancelPickRead();
     const scale = Math.min(1, 2600 / source.width);
     const w = Math.round(source.width * scale);
     const h = Math.round(source.height * scale);
@@ -2714,24 +2745,29 @@
     const imageData = ctx.getImageData(0, 0, w, h);
     const t0 = performance.now();
     setReading(true);
-    return new Promise((resolve) => {
+    let cancel;
+    const cancelled = new Promise(resolve => { cancel = () => { setReading(false); resolve({ ok: false, pick: true, skipped: true, reason: 'a newer picture came in' }); }; });
+    pickReadCancel = cancel;
+    const task = new Promise((resolve) => {
       const done = (result, error) => {
-        setReading(false);
         const ms = Math.round(performance.now() - t0);
+        if (revision !== reader.pickId) return resolve({ ok: false, pick: true, skipped: true, reason: 'a newer picture came in', ms });
+        setReading(false);
         if (error || !result) return resolve({ ok: false, pick: true, reason: error || 'no result', ms });
         if (!result.ok) return resolve({ ok: false, pick: true, reason: result.reason, ms });
         const cards = result.cards.map((c) => ({ sim: c.sim, name: T.toolName(c.sim), conf: c.conf, alts: c.alts, by: 'art' }));
         const namesAt = performance.now();
         // Each card's printed name, read where it can be, outranks its art.
-        readCardNames(canvas, result.ui).then((names) => {
+        readCardNames(canvas, result.ui, () => revision === reader.pickId).then((names) => {
+          if (!names || revision !== reader.pickId) return resolve({ ok: false, pick: true, skipped: true, reason: 'a newer picture came in', ms: Math.round(performance.now() - t0) });
           names.forEach((n, i) => {
             if (n && cards[i]) Object.assign(cards[i], { sim: n.id, name: T.toolName(n.id), conf: 1, by: 'name' });
           });
           resolve({ ok: true, pick: true, cards, names: cards.map((c) => c.name), unsure: cards.filter((c) => c.conf < 0.5).length, reroll: !!result.reroll, byName: cards.filter((c) => c.by === 'name').length, ocrFailed: names.failed || '', ms: Math.round(performance.now() - t0), artMs: result.ms, namesMs: Math.round(performance.now() - namesAt), workerWaitMs: Math.max(0, ms - (result.ms || 0)) });
-        });
+        }).catch(error => resolve({ ok: false, pick: true, reason: String(error.message || error), ms: Math.round(performance.now() - t0) }));
       };
       reader.pickId += 1;
-      const id = `pick${reader.pickId}`;
+      const revision = reader.pickId, id = `pick${revision}`;
       if (readerWorker()) {
         reader.picks.set(id, done);
         const copy = imageData.data.slice().buffer;
@@ -2742,6 +2778,7 @@
         .then(() => done(window.TartarusScan.scanPick(imageData, window.TARTARUS_SCAN, window.TARTARUS_PICK)))
         .catch((e) => done(null, (e && e.message) || 'the screenshot reader could not load'));
     });
+    return Promise.race([task, cancelled]).finally(() => { if (pickReadCancel === cancel) pickReadCancel = null; });
   }
 
   // An instrument offer. A fresh run's (fresh, the default): the board
@@ -3057,8 +3094,10 @@
     if (sameRun && (known.length || offer.length || pending || base.runStart || m.toolsConfirmed)) {
       if (pending?.unread && !offer.length) m.toolsOffer = { ...pending };
       if (offer.length && !offer.some(has)) m.toolsOffer = { options: offer.slice() };
-      if (offer.length && slots > known.length && !offer.some(has)) {
+      if (offer.length && !offer.some(has)) {
         const choices = [...new Set(read.filter((t) => offer.includes(t.sim) && certainTool(t)).map((t) => t.sim))];
+        // A confidently seen new item identifies the choice even when an
+        // older icon is missing/dim. Slot count is not proof of selection.
         // Seeing multiple plausible offered items is not a unique selection.
         if (choices.length === 1) {
           const take = choices[0];
@@ -3107,8 +3146,18 @@
     changed();
   }
 
+  function readingIssue() {
+    if (model.dayProbe) return { retryable: true, dayReading: true, reason: model.dayProbe.reason || `The day read as ${model.dayProbe.day} after ${model.day}; verifying the countdown.` };
+    // The first board after Confirm can arrive before its new icon finishes
+    // fading in. Use fresh bounded retries, rather than leave this one weak
+    // panel as the final answer until the player makes another move.
+    if (model.toolsOffer && model.step !== 'choice') return { retryable: true, instrumentReading: true, reason: 'The newly selected instrument is not clear yet; reading a fresh panel.' };
+    return null;
+  }
+
   function beginRun(token) {
     if (!token || model.runToken === token) return;
+    cancelPickRead();
     invalidate(); reader.id++;
     reader.reading = null; reader.result = null;
     reader.cornerPending?.cancel?.(); corner.ticket++;
@@ -3964,6 +4013,7 @@
       // The log watcher stays alive outside the board. Everything expensive
       // can be recreated on entry; keep completed persistent summaries only.
       suspend: () => {
+        cancelPickRead();
         forecastEnabled = false;
         if (reader.cornerPending) reader.cornerPending.cancel();
         corner.ticket++; corner.busy = false; corner.tries = 0; corner.done = false;
@@ -3999,11 +4049,12 @@
       readinessInfo: () => ({ ...readyDiagnostics }),
       readerInfo: () => reader.tracking || null,
       prepareOCR: () => ocrWorker(),
+      cancelPickRead,
       readPick: (bitmap) => readPick(bitmap),
       usePick: (read, fresh, reuse) => usePick(read, fresh, reuse),
       expectInstrumentOffer,
       beginRun,
-      readingIssue: () => model.dayProbe ? { retryable: true, dayReading: true, reason: model.dayProbe.reason || `The day read as ${model.dayProbe.day} after ${model.day}; verifying the countdown.` } : null,
+      readingIssue,
       openTools,
       readTreasure: (bitmap) => readTreasure(bitmap),
       readObjective: (bitmap) => readObjective(bitmap),

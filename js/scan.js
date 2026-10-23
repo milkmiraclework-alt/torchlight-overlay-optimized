@@ -1595,7 +1595,7 @@
       alts: unique.slice(0, 6).map((r) => ({ id: r.id, score: Math.round(r.score * 1000) / 1000 })) };
   }
   function readTools(img, loc, ref) {
-    const found = findToolIcons(img, loc);
+    const found = findToolIcons(img, loc, null, ref);
     found.tools = found.icons.map((icon) => {
       const feat = artFeature(img, ...icon.box);
       // A panel icon learned from a big, sharp picture (w: its width there)
@@ -1608,7 +1608,7 @@
 
   // Finds the instrument icons: dim cards in a row under the label, laid out
   // in the label's own UI scale (its letter height).
-  function findToolIcons(img, loc) {
+  function findToolIcons(img, loc, debug, ref) {
     const left = Math.min(at(loc, 0, 0)[0], at(loc, 0, 3)[0]) - 70 * loc.s;
     if (left < 30) return { icons: [], found: false };
     const label = findLabel(img, [0, 0, left, img.height - 1], 17, 12.2);
@@ -1640,10 +1640,10 @@
       const x1 = x0 + 4.45 * h;
       const y0 = label.y1 + 1.55 * h;
       const y1 = y0 + 7.45 * h;
-      if (x1 > left) break;
+      if (x1 > left) { if (debug) debug.push({ slot: i, stop: 'board-edge' }); break; }
       // A slot with several of its letters is under the tooltip (a line can run
       // into the hovered icon's art, so a letter or two isn't enough).
-      if (tipGlyphs.filter((g) => (g.x0 + g.x1) / 2 > x0 && (g.x0 + g.x1) / 2 < x1 && (g.y0 + g.y1) / 2 > y0 && (g.y0 + g.y1) / 2 < y1).length >= 4) break;
+      if (tipGlyphs.filter((g) => (g.x0 + g.x1) / 2 > x0 && (g.x0 + g.x1) / 2 < x1 && (g.y0 + g.y1) / 2 > y0 && (g.y0 + g.y1) / 2 < y1).length >= 4) { if (debug) debug.push({ slot: i, stop: 'tooltip', glyphs: tipGlyphs }); break; }
       // A card is a little lighter than the wall around it.
       const inside = mean(x0 + 0.5 * h, y0 + 0.5 * h, x1 - 0.5 * h, y1 - 0.5 * h);
       const wall = mean(x1 + 0.35 * h, y0, x1 + 1.3 * h, y1);
@@ -1668,7 +1668,8 @@
       }
       // A card holds art; past the last instrument there's only wall. A dark
       // card with little art still counts if it's lighter than the wall.
-      if (art < 1.0 * h * h && !(art > 0.5 * h * h && inside > wall + 0.012)) break;
+      if (debug) debug.push({ slot: i, h, art: art / (h*h), inside, wall, box: [ax0, ay0, ax1, ay1] });
+      const weak = art < 1.0 * h * h && !(art > 0.5 * h * h && inside > wall + 0.012);
       // An open tooltip spills its text over the next slots. Text is thin
       // strokes spread through a tall box, or a flat strip, where an icon is
       // a solid drawing (at least 7% of its box, never much wider than
@@ -1676,6 +1677,11 @@
       const bw = ax1 - ax0 + 1;
       const bh = ay1 - ay0 + 1;
       if (art / (bw * bh) < 0.065 || bw > 2 * bh) break;
+      // A dim icon can fail the brightness test when the moving background
+      // beside it becomes lighter (saved Ravenous Chains: 0.99 vs 1.0).
+      // A strong reference match is independent evidence of a real icon;
+      // keep the threshold for unmatched wall/tooltip fragments unchanged.
+      if (weak && (!ref || art <= 0.5 * h * h || matchToolFeature(artFeature(img, ax0, ay0, ax1, ay1), bw - 1, ref).conf < 0.9)) break;
       out.push({ box: [ax0, ay0, ax1, ay1], card: [x0, y0, x1, y1], art });
     }
     return { icons: out, found: true, label };

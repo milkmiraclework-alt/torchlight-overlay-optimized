@@ -1,0 +1,491 @@
+{
+  "version": "1.0.6",
+  "runtimeVersion": "1.0.5",
+  "checkedAt": "2026-10-23T15:04:46.323Z",
+  "packaged": false,
+  "method": "Actual source OCR input/name functions compared inside the previous packaged Tesseract runtime; no replacement of previous application files.",
+  "results": [
+    {
+      "name": "0002-instruments.webp",
+      "expected": [
+        "stake",
+        "skewer",
+        "hook"
+      ],
+      "ui": 1.3333333333333333,
+      "timings": [
+        {
+          "mode": "png",
+          "names": [
+            {
+              "sim": "stake",
+              "ms": 170
+            },
+            {
+              "sim": "skewer",
+              "ms": 259
+            },
+            {
+              "sim": "hook",
+              "ms": 144
+            }
+          ],
+          "ms": 573
+        },
+        {
+          "mode": "rgb-bytes",
+          "names": [
+            {
+              "sim": "stake",
+              "ms": 185
+            },
+            {
+              "sim": "skewer",
+              "ms": 243
+            },
+            {
+              "sim": "hook",
+              "ms": 135
+            }
+          ],
+          "ms": 564
+        }
+      ],
+      "sameText": true
+    },
+    {
+      "name": "0009-instruments.webp",
+      "expected": [
+        "hook",
+        "cage",
+        "pestle"
+      ],
+      "ui": 1.3333333333333333,
+      "timings": [
+        {
+          "mode": "png",
+          "names": [
+            {
+              "sim": "hook",
+              "ms": 107
+            },
+            {
+              "sim": "cage",
+              "ms": 127
+            },
+            {
+              "sim": "pestle",
+              "ms": 149
+            }
+          ],
+          "ms": 384
+        },
+        {
+          "mode": "rgb-bytes",
+          "names": [
+            {
+              "sim": "hook",
+              "ms": 102
+            },
+            {
+              "sim": "cage",
+              "ms": 103
+            },
+            {
+              "sim": "pestle",
+              "ms": 155
+            }
+          ],
+          "ms": 360
+        }
+      ],
+      "sameText": true
+    },
+    {
+      "name": "0002-instruments.webp",
+      "expected": [
+        "scapegoat",
+        "pestle",
+        "keys"
+      ],
+      "ui": 1.3333333333333333,
+      "timings": [
+        {
+          "mode": "png",
+          "names": [
+            {
+              "sim": "scapegoat",
+              "ms": 134
+            },
+            {
+              "sim": "pestle",
+              "ms": 188
+            },
+            {
+              "sim": "keys",
+              "ms": 157
+            }
+          ],
+          "ms": 480
+        },
+        {
+          "mode": "rgb-bytes",
+          "names": [
+            {
+              "sim": "scapegoat",
+              "ms": 102
+            },
+            {
+              "sim": "pestle",
+              "ms": 167
+            },
+            {
+              "sim": "keys",
+              "ms": 148
+            }
+          ],
+          "ms": 417
+        }
+      ],
+      "sameText": true
+    },
+    {
+      "name": "0008-instruments.webp",
+      "expected": [
+        "revenge",
+        "dogtag",
+        "hook"
+      ],
+      "ui": 1.3333333333333333,
+      "timings": [
+        {
+          "mode": "png",
+          "names": [
+            {
+              "sim": "revenge",
+              "ms": 166
+            },
+            {
+              "sim": "dogtag",
+              "ms": 112
+            },
+            {
+              "sim": "hook",
+              "ms": 106
+            }
+          ],
+          "ms": 385
+        },
+        {
+          "mode": "rgb-bytes",
+          "names": [
+            {
+              "sim": "revenge",
+              "ms": 149
+            },
+            {
+              "sim": "dogtag",
+              "ms": 92
+            },
+            {
+              "sim": "hook",
+              "ms": 85
+            }
+          ],
+          "ms": 327
+        }
+      ],
+      "sameText": true
+    },
+    {
+      "name": "0002-instruments.webp",
+      "expected": [
+        "saw",
+        "rope",
+        "muzzle"
+      ],
+      "ui": 1.3333333333333333,
+      "timings": [
+        {
+          "mode": "png",
+          "names": [
+            {
+              "sim": "saw",
+              "ms": 132
+            },
+            {
+              "sim": "rope",
+              "ms": 152
+            },
+            {
+              "sim": "muzzle",
+              "ms": 207
+            }
+          ],
+          "ms": 491
+        },
+        {
+          "mode": "rgb-bytes",
+          "names": [
+            {
+              "sim": "saw",
+              "ms": 201
+            },
+            {
+              "sim": "rope",
+              "ms": 140
+            },
+            {
+              "sim": "muzzle",
+              "ms": 232
+            }
+          ],
+          "ms": 574
+        }
+      ],
+      "sameText": true
+    },
+    {
+      "name": "0018-instruments.webp",
+      "expected": [
+        "dogtag",
+        "collar",
+        "blacklist"
+      ],
+      "ui": 1.3333333333333333,
+      "timings": [
+        {
+          "mode": "png",
+          "names": [
+            {
+              "sim": "dogtag",
+              "ms": 153
+            },
+            {
+              "sim": "collar",
+              "ms": 218
+            },
+            {
+              "sim": "blacklist",
+              "ms": 239
+            }
+          ],
+          "ms": 613
+        },
+        {
+          "mode": "rgb-bytes",
+          "names": [
+            {
+              "sim": "dogtag",
+              "ms": 126
+            },
+            {
+              "sim": "collar",
+              "ms": 209
+            },
+            {
+              "sim": "blacklist",
+              "ms": 189
+            }
+          ],
+          "ms": 524
+        }
+      ],
+      "sameText": true
+    },
+    {
+      "name": "0019-instruments.webp",
+      "expected": [
+        "shortchain",
+        "axe",
+        "stake"
+      ],
+      "ui": 1.3333333333333333,
+      "timings": [
+        {
+          "mode": "png",
+          "names": [
+            {
+              "sim": "shortchain",
+              "ms": 171
+            },
+            {
+              "sim": "axe",
+              "ms": 165
+            },
+            {
+              "sim": "stake",
+              "ms": 76
+            }
+          ],
+          "ms": 414
+        },
+        {
+          "mode": "rgb-bytes",
+          "names": [
+            {
+              "sim": "shortchain",
+              "ms": 150
+            },
+            {
+              "sim": "axe",
+              "ms": 134
+            },
+            {
+              "sim": "stake",
+              "ms": 62
+            }
+          ],
+          "ms": 347
+        }
+      ],
+      "sameText": true
+    },
+    {
+      "name": "0002-instruments.webp",
+      "expected": [
+        "blacklist",
+        "shackles",
+        "dogtag"
+      ],
+      "ui": 1.3333333333333333,
+      "timings": [
+        {
+          "mode": "png",
+          "names": [
+            {
+              "sim": "blacklist",
+              "ms": 163
+            },
+            {
+              "sim": "shackles",
+              "ms": 121
+            },
+            {
+              "sim": "dogtag",
+              "ms": 140
+            }
+          ],
+          "ms": 425
+        },
+        {
+          "mode": "rgb-bytes",
+          "names": [
+            {
+              "sim": "blacklist",
+              "ms": 166
+            },
+            {
+              "sim": "shackles",
+              "ms": 127
+            },
+            {
+              "sim": "dogtag",
+              "ms": 158
+            }
+          ],
+          "ms": 453
+        }
+      ],
+      "sameText": true
+    },
+    {
+      "name": "0010-instruments.webp",
+      "expected": [
+        "revenge",
+        "rope",
+        "scales"
+      ],
+      "ui": 1.3333333333333333,
+      "timings": [
+        {
+          "mode": "png",
+          "names": [
+            {
+              "sim": "revenge",
+              "ms": 168
+            },
+            {
+              "sim": "rope",
+              "ms": 106
+            },
+            {
+              "sim": "scales",
+              "ms": 122
+            }
+          ],
+          "ms": 398
+        },
+        {
+          "mode": "rgb-bytes",
+          "names": [
+            {
+              "sim": "revenge",
+              "ms": 150
+            },
+            {
+              "sim": "rope",
+              "ms": 94
+            },
+            {
+              "sim": "scales",
+              "ms": 128
+            }
+          ],
+          "ms": 373
+        }
+      ],
+      "sameText": true
+    },
+    {
+      "name": "0005-instruments.webp",
+      "expected": [
+        "blacklist",
+        "fire",
+        "ravenous"
+      ],
+      "ui": 1.3333333333333333,
+      "timings": [
+        {
+          "mode": "png",
+          "names": [
+            {
+              "sim": "blacklist",
+              "ms": 160
+            },
+            {
+              "sim": "fire",
+              "ms": 84
+            },
+            {
+              "sim": "ravenous",
+              "ms": 132
+            }
+          ],
+          "ms": 377
+        },
+        {
+          "mode": "rgb-bytes",
+          "names": [
+            {
+              "sim": "blacklist",
+              "ms": 171
+            },
+            {
+              "sim": "fire",
+              "ms": 84
+            },
+            {
+              "sim": "ravenous",
+              "ms": 114
+            }
+          ],
+          "ms": 370
+        }
+      ],
+      "sameText": true
+    }
+  ],
+  "gameCapture": false,
+  "gameInput": false
+}

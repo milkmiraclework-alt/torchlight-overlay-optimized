@@ -1,6 +1,6 @@
 {
-  "version": "1.0.5",
-  "checkedAt": "2026-10-23T14:26:26.792Z",
+  "version": "1.0.6",
+  "checkedAt": "2026-10-23T15:22:56.167Z",
   "checks": [
     "routing",
     "days",
@@ -8,6 +8,7 @@
     "picture-retry",
     "profile-import",
     "window-position",
+    "instrument-reader",
     "app-updates",
     "update-install",
     "rust-wasm",

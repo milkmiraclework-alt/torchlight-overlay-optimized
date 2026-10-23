@@ -12,14 +12,19 @@ const writes = new Map(), messages = [];
 let source = fs.readFileSync(require.resolve('../js/analyze.js'), 'utf8').replace(/\r\n/g, '\n');
 const init = '  buildBoard();\n  bind();\n  render();';
 assert.ok(source.includes(init));
-source = source.replace(init, '  window.checkCalculation = { blankModel, ask, solver, reader, useScan, invalidate, confirmTools, cornerObjective, setModel: (m) => { model = m; }, getModel: () => model };');
+source = source.replace(init, '  window.checkCalculation = { blankModel, ask, solver, reader, useScan, invalidate, confirmTools, cornerObjective, readingIssue, setModel: (m) => { model = m; }, getModel: () => model };');
 vm.runInNewContext(source, {
-  window: taskWindow, document: { currentScript: { src: 'http://localhost/js/analyze.js?v=ui-only-check' }, getElementById: () => ({ classList: { toggle() {}, add() {}, remove() {} }, replaceChildren() {} }), createElement: () => ({ getContext: () => ({ drawImage() {} }) }) }, navigator: { hardwareConcurrency: 2 },
+  window: taskWindow, document: { currentScript: { src: 'http://localhost/js/analyze.js?v=ui-only-check' }, getElementById: () => ({ classList: { toggle() {}, add() {}, remove() {} }, replaceChildren() {} }), createElement: () => {const canvas={width:0,height:0,getContext:()=>({drawImage(){},getImageData:()=>({data:new Uint8ClampedArray(canvas.width*canvas.height*4)})})};return canvas;} }, navigator: { hardwareConcurrency: 2 }, TextEncoder,
   localStorage: { getItem: (key) => writes.get(key) || null, setItem: (key, value) => writes.set(key, value) },
   setTimeout, clearTimeout, queueMicrotask, console,
   Worker: class { postMessage(m) { messages.push(m); } terminate() {} }
 });
 const A = taskWindow.checkCalculation, m = A.blankModel();
+const pending=A.blankModel();pending.step='manage';pending.toolsOffer={options:['rope','forged','shackles']};
+A.setModel(pending);assert.ok(A.readingIssue()?.instrumentReading, 'Unresolved new instrument did not request a fresh picture');
+pending.step='choice';assert.equal(A.readingIssue(),null,'An offer screen was treated as a missing held icon');
+pending.step='manage';pending.toolsOffer=null;pending.toolsUncertain=true;
+assert.equal(A.readingIssue(),null,'An explicit manual instrument edit entered automatic retry');
 m.day = 19; m.dest = [1, 2, 3]; m.tools = ['crown'];
 A.setModel(m); assert.ok(A.ask(true, false, true));
 const first = messages.find(x => x.state), id = A.solver.id, shares = A.solver.shares;

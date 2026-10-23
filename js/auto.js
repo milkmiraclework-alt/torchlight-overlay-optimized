@@ -268,7 +268,7 @@
 
   // The local overlay delivers frames directly. Browser discovery, status
   // polling and focus broadcasts only serve the separate web Follow page.
-  window.TartarusAuto = { receive: onPicture, cancel: () => { newest++; } };
+  window.TartarusAuto = { receive: onPicture, cancel: () => { newest++; A.cancelPickRead?.(); } };
   if (direct) return;
   channel.onmessage = (e) => {
     const m = e.data || {};

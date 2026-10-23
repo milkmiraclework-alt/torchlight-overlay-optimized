@@ -1,0 +1,295 @@
+{
+  "version": "1.0.6",
+  "runtimeVersion": "1.0.6",
+  "checkedAt": "2026-10-23T15:21:19.970Z",
+  "packaged": true,
+  "results": {
+    "offers": [
+      {
+        "name": "0002-instruments.webp",
+        "expected": [
+          "stake",
+          "skewer",
+          "hook"
+        ],
+        "actual": [
+          {
+            "sim": "stake",
+            "by": "name",
+            "conf": 1
+          },
+          {
+            "sim": "skewer",
+            "by": "name",
+            "conf": 1
+          },
+          {
+            "sim": "hook",
+            "by": "name",
+            "conf": 1
+          }
+        ],
+        "ms": 900,
+        "artMs": 65,
+        "namesMs": 763
+      },
+      {
+        "name": "0009-instruments.webp",
+        "expected": [
+          "hook",
+          "cage",
+          "pestle"
+        ],
+        "actual": [
+          {
+            "sim": "hook",
+            "by": "name",
+            "conf": 1
+          },
+          {
+            "sim": "cage",
+            "by": "name",
+            "conf": 1
+          },
+          {
+            "sim": "pestle",
+            "by": "name",
+            "conf": 1
+          }
+        ],
+        "ms": 461,
+        "artMs": 53,
+        "namesMs": 399
+      },
+      {
+        "name": "0002-instruments.webp",
+        "expected": [
+          "scapegoat",
+          "pestle",
+          "keys"
+        ],
+        "actual": [
+          {
+            "sim": "scapegoat",
+            "by": "name",
+            "conf": 1
+          },
+          {
+            "sim": "pestle",
+            "by": "name",
+            "conf": 1
+          },
+          {
+            "sim": "keys",
+            "by": "name",
+            "conf": 1
+          }
+        ],
+        "ms": 478,
+        "artMs": 32,
+        "namesMs": 441
+      },
+      {
+        "name": "0008-instruments.webp",
+        "expected": [
+          "revenge",
+          "dogtag",
+          "hook"
+        ],
+        "actual": [
+          {
+            "sim": "revenge",
+            "by": "name",
+            "conf": 1
+          },
+          {
+            "sim": "dogtag",
+            "by": "name",
+            "conf": 1
+          },
+          {
+            "sim": "hook",
+            "by": "name",
+            "conf": 1
+          }
+        ],
+        "ms": 380,
+        "artMs": 11,
+        "namesMs": 362
+      },
+      {
+        "name": "0002-instruments.webp",
+        "expected": [
+          "saw",
+          "rope",
+          "muzzle"
+        ],
+        "actual": [
+          {
+            "sim": "saw",
+            "by": "name",
+            "conf": 1
+          },
+          {
+            "sim": "rope",
+            "by": "name",
+            "conf": 1
+          },
+          {
+            "sim": "muzzle",
+            "by": "name",
+            "conf": 1
+          }
+        ],
+        "ms": 499,
+        "artMs": 17,
+        "namesMs": 475
+      },
+      {
+        "name": "0018-instruments.webp",
+        "expected": [
+          "dogtag",
+          "collar",
+          "blacklist"
+        ],
+        "actual": [
+          {
+            "sim": "dogtag",
+            "by": "name",
+            "conf": 1
+          },
+          {
+            "sim": "collar",
+            "by": "name",
+            "conf": 1
+          },
+          {
+            "sim": "blacklist",
+            "by": "name",
+            "conf": 1
+          }
+        ],
+        "ms": 901,
+        "artMs": 14,
+        "namesMs": 883
+      },
+      {
+        "name": "0019-instruments.webp",
+        "expected": [
+          "shortchain",
+          "axe",
+          "stake"
+        ],
+        "actual": [
+          {
+            "sim": "shortchain",
+            "by": "name",
+            "conf": 1
+          },
+          {
+            "sim": "axe",
+            "by": "name",
+            "conf": 1
+          },
+          {
+            "sim": "stake",
+            "by": "name",
+            "conf": 1
+          }
+        ],
+        "ms": 625,
+        "artMs": 18,
+        "namesMs": 601
+      },
+      {
+        "name": "0002-instruments.webp",
+        "expected": [
+          "blacklist",
+          "shackles",
+          "dogtag"
+        ],
+        "actual": [
+          {
+            "sim": "blacklist",
+            "by": "name",
+            "conf": 1
+          },
+          {
+            "sim": "shackles",
+            "by": "name",
+            "conf": 1
+          },
+          {
+            "sim": "dogtag",
+            "by": "name",
+            "conf": 1
+          }
+        ],
+        "ms": 761,
+        "artMs": 12,
+        "namesMs": 740
+      },
+      {
+        "name": "0010-instruments.webp",
+        "expected": [
+          "revenge",
+          "rope",
+          "scales"
+        ],
+        "actual": [
+          {
+            "sim": "revenge",
+            "by": "name",
+            "conf": 1
+          },
+          {
+            "sim": "rope",
+            "by": "name",
+            "conf": 1
+          },
+          {
+            "sim": "scales",
+            "by": "name",
+            "conf": 1
+          }
+        ],
+        "ms": 642,
+        "artMs": 15,
+        "namesMs": 622
+      },
+      {
+        "name": "0005-instruments.webp",
+        "expected": [
+          "blacklist",
+          "fire",
+          "ravenous"
+        ],
+        "actual": [
+          {
+            "sim": "blacklist",
+            "by": "name",
+            "conf": 1
+          },
+          {
+            "sim": "fire",
+            "by": "name",
+            "conf": 1
+          },
+          {
+            "sim": "ravenous",
+            "by": "name",
+            "conf": 1
+          }
+        ],
+        "ms": 620,
+        "artMs": 18,
+        "namesMs": 596
+      }
+    ],
+    "canvasBlobCalls": 0,
+    "unfinishedOcrCancelled": true,
+    "rerolledNooseRecoveredFromFreshPixels": true
+  },
+  "gameCapture": false,
+  "gameInput": false
+}

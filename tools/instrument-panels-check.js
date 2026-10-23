@@ -25,7 +25,9 @@ async function browserPanels(labels) {
     const panel = S.readTools(img, loc, ref);
     const actual = panel.tools.map((t) => ({ sim: ref.toolNames[t.id]?.sim || t.id, conf: t.conf, margin: t.margin }));
     if (actual.length !== label.tools.length || actual.some((t, i) => t.sim !== label.tools[i] || t.conf < 0.9)) {
-      throw new Error('Wrong or uncertain saved panel: ' + JSON.stringify({ name: label.name, expected: label.tools, actual }));
+      const debug=[];S.findToolIcons(img,loc,debug,ref);
+      for(const d of debug)if(d.box&&d.box.every(Number.isFinite))d.match=S.matchToolFeature(S.artFeature(img,...d.box),d.box[2]-d.box[0],ref);
+      throw new Error('Wrong or uncertain saved panel: ' + JSON.stringify({ name: label.name, expected: label.tools, actual, loc, label:panel.label, debug }));
     }
     results.push({ name: label.name, expected: label.tools, actual, ms: Math.round(performance.now() - start) });
   }

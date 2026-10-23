@@ -1,20 +1,88 @@
 {
-  "version": "1.0.2",
-  "checkedAt": "2026-10-23T13:12:10.450Z",
+  "version": "1.0.6",
+  "runtimeVersion": "1.0.6",
+  "sourceOverrides": false,
+  "checkedAt": "2026-10-23T15:31:06.544Z",
   "results": [
     {
-      "name": "0004-board.webp",
+      "name": "0007-board.webp",
       "expected": [
-        "coin"
+        "rope",
+        "ravenous"
       ],
       "actual": [
         {
-          "sim": "coin",
+          "sim": "rope",
           "conf": 1,
-          "margin": 0.07923017035681057
+          "margin": 0.11685377347668913
+        },
+        {
+          "sim": "ravenous",
+          "conf": 1,
+          "margin": 0.051897074963806356
         }
       ],
-      "ms": 1601
+      "ms": 1762
+    },
+    {
+      "name": "0012-board.webp",
+      "expected": [
+        "rope",
+        "ravenous"
+      ],
+      "actual": [
+        {
+          "sim": "rope",
+          "conf": 1,
+          "margin": 0.11747885265301405
+        },
+        {
+          "sim": "ravenous",
+          "conf": 1,
+          "margin": 0.058494582501440795
+        }
+      ],
+      "ms": 1882
+    },
+    {
+      "name": "0018-board.webp",
+      "expected": [
+        "rope",
+        "ravenous"
+      ],
+      "actual": [
+        {
+          "sim": "rope",
+          "conf": 1,
+          "margin": 0.1179270657843231
+        },
+        {
+          "sim": "ravenous",
+          "conf": 1,
+          "margin": 0.0528941085060427
+        }
+      ],
+      "ms": 1870
+    },
+    {
+      "name": "0014-board.webp",
+      "expected": [
+        "shackles",
+        "rope"
+      ],
+      "actual": [
+        {
+          "sim": "shackles",
+          "conf": 1,
+          "margin": 0.13008436310418725
+        },
+        {
+          "sim": "rope",
+          "conf": 1,
+          "margin": 0.08380736382753695
+        }
+      ],
+      "ms": 1048
     }
   ],
   "gameCapture": false,
