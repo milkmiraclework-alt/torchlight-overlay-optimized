@@ -21,7 +21,7 @@ for (const [name, hash] of Object.entries(manifest.sourceFiles)) {
 for (const [name, hash] of Object.entries(manifest.files)) {
   assert.equal(sha(fs.readFileSync(path.join(site, name))), hash, 'Packaged asset mismatch: ' + name);
 }
-for (const name of ['main.js', 'preload.js', 'lib/bundled-site.js']) {
+for (const name of ['main.js', 'preload.js', 'lib/bundled-site.js', 'lib/app-updates.js', 'lib/update-install.js', 'lib/update-install.ps1']) {
   assert.equal(sha(extractFile(archive, name)), manifest.sourceFiles['desktop/' + name], 'Wrong app source in ASAR: ' + name);
 }
 const pkg = JSON.parse(extractFile(archive, 'package.json'));

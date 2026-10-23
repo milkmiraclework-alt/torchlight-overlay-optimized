@@ -14,4 +14,9 @@ body{background:#11191d;color:#e8eee9;font:16px system-ui;margin:24px;line-heigh
 <button id="read">Read screen now</button><button id="log">Choose UE_game.log</button>
 <p id="follow-enable-log"><small>In the game: Esc → Account Related → Enable Log, then log out and back in. Use borderless or windowed mode.</small></p>
 <p><small>Ctrl+Alt+P / X: read · Ctrl+Alt+O / V: show/hide · Ctrl+Alt+Q: quit</small></p>
+<h3>Application updates</h3>
+<label><input id="auto-updates" type="checkbox"> Check and download updates automatically</label>
+<p id="update-status">Loading update status…</p>
+<button id="update-check">Check now</button><button id="update-download" hidden>Download update</button><button id="update-install" hidden>Restart and install</button>
+<p><small>Updates come from our GitHub Releases. Background downloads wait until the overlay is idle. Installation starts only when you choose Restart and install. Recognition and calculations work without Internet.</small></p>
 <script src="settings.js"></script></html>

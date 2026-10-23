@@ -1,0 +1,157 @@
+{
+  "version": "1.0.3",
+  "checkedAt": "2026-10-23T13:42:33.628Z",
+  "artifactsVerified": true,
+  "changes": [
+    "Setup and Portable check this repository stable public GitHub Releases, after 45 seconds and every six hours. Automatic downloads wait until the overlay is idle and are capped at 2 MiB/s.",
+    "Before staging/installing, verify exact x64 asset name, pinned HTTPS hosts, size and SHA256 from the GitHub asset digest. Refuse prereleases, drafts, downgrades, mismatched hashes and untrusted redirects.",
+    "Install only after an explicit Restart and install action. The independent hidden Windows helper pins/waits for the main process, then runs Setup or replaces the original Portable path. Portable keeps its backup until a verified new startup and restarts the old EXE if staging changed. Timed-out helper launch is cancelled.",
+    "The automatic preference, check/download/install controls and status are shared by settings, tray and overlay. Offline advice continues normally; game data is never part of update GET requests. Unpacked development builds are not replaced.",
+    "Local Start-Overlay prefers the Portable EXE, allowing later self-updates to preserve its launch path. Versions before 1.0.3 require one manual update."
+  ],
+  "checks": {
+    "version": "1.0.3",
+    "checkedAt": "2026-10-23T13:40:19.187Z",
+    "checks": [
+      "routing",
+      "picture-retry",
+      "profile-import",
+      "window-position",
+      "app-updates",
+      "update-install",
+      "rust-wasm",
+      "strategy28",
+      "terminal-gifts",
+      "calculation",
+      "rust-workers",
+      "instruments",
+      "forecast",
+      "forecast-menu",
+      "solver-cache",
+      "chain-cache",
+      "worker-budget",
+      "readiness",
+      "capture",
+      "worker-recovery",
+      "worker-lifecycle",
+      "bundled-site"
+    ],
+    "gameCapture": false,
+    "gameInput": false
+  },
+  "packaged": {
+    "version": "1.0.3",
+    "checkedAt": "2026-10-23T13:42:12.892Z",
+    "checks": [
+      "suite",
+      "overlay",
+      "lifecycle",
+      "instruments",
+      "updates",
+      "portable"
+    ],
+    "gameCapture": false,
+    "gameInput": false
+  },
+  "suite": {
+    "version": "1.0.3",
+    "checkedAt": "2026-10-23T13:40:41.279Z",
+    "actualNativeCapture": true,
+    "nativeAdvice": true,
+    "manualNativeCapture": true,
+    "modeSwitching": true,
+    "zeroInactiveWorkers": true,
+    "sharedCaptureStop": true,
+    "automaticCpuBudget": true,
+    "recordingExcluded": true,
+    "gameCapture": false,
+    "gameInput": false
+  },
+  "launch": {
+    "version": "1.0.3",
+    "checkedAt": "2026-10-23T13:41:51.535Z",
+    "installerPayloadMatches": true,
+    "secondInstanceOpensSettings": true,
+    "boardRemainsHidden": true,
+    "singlePrimaryInstance": true,
+    "gameCapture": false,
+    "gameInput": false
+  },
+  "portable": {
+    "version": "1.0.3",
+    "executable": "Torchlight-Overlay-Portable-1.0.3-x64.exe",
+    "sha256": "02513d932eaba1c3fa1b7f453c761c4a90947cdf0462368029f753a8180b7de7",
+    "checkedAt": "2026-10-23T13:42:12.318Z",
+    "bootMs": 5353,
+    "text": "TARTARUS 12345",
+    "ocrMs": 809,
+    "agreed": false,
+    "rustSampleParity": true,
+    "rustRollouts": 8,
+    "externalHttpBlocked": true,
+    "originalInstallUnavailable": true,
+    "occupiedPortIndependent": true,
+    "gameInput": false
+  },
+  "updates": {
+    "version": "1.0.3",
+    "checkedAt": "2026-10-23T13:41:45.754Z",
+    "settingsAndOverlay": true,
+    "manualCheck": true,
+    "corruptDownloadRejected": true,
+    "verifiedDownloadReady": true,
+    "automaticPreferenceSaved": true,
+    "profilePreserved": true,
+    "testOnlyLoopback": true,
+    "realInstallerExecuted": false,
+    "gameCapture": false,
+    "gameInput": false
+  },
+  "installer": {
+    "version": "1.0.3",
+    "checkedAt": "2026-10-23T13:39:23.833Z",
+    "results": [
+      {
+        "mode": "portable",
+        "corrupt": false,
+        "verified": true
+      },
+      {
+        "mode": "portable",
+        "corrupt": true,
+        "verified": true
+      },
+      {
+        "mode": "setup",
+        "corrupt": false,
+        "verified": true
+      },
+      {
+        "mode": "portable",
+        "parentExited": true,
+        "verified": true
+      }
+    ],
+    "realInstallerExecuted": false,
+    "realGameInput": false
+  },
+  "readerAndCalculationBinariesUnchanged": true,
+  "artifacts": [
+    {
+      "file": "Torchlight-Overlay-Portable-1.0.3-x64.exe",
+      "bytes": 128939410,
+      "sha256": "02513d932eaba1c3fa1b7f453c761c4a90947cdf0462368029f753a8180b7de7"
+    },
+    {
+      "file": "Torchlight-Overlay-Setup-1.0.3-x64.exe",
+      "bytes": 129104648,
+      "sha256": "7a6307b342dd0b25dabe706d098e3155ce15319882602393a3f7775908946076"
+    }
+  ],
+  "limitations": [
+    "Update metadata and binaries are trusted through this GitHub repository over HTTPS and SHA256, not a separate Authenticode signing certificate.",
+    "Setup flags are verified with a harmless Windows probe and the real installer payload is extracted/compared/launched; tests do not install over the user application or modify registry installation state.",
+    "Portable replacement, backup cleanup, changed-staging recovery, Unicode/special paths and helper survival after host exit are tested on owned probe executables. Packaged update networking/UI uses only a loopback fake release; the fake update is not executed.",
+    "Checks/downloads are automatic; installation requires the user action and does not interrupt a run."
+  ]
+}

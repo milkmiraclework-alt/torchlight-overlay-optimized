@@ -90,6 +90,7 @@
       : a && a.riot !== null && a.riot !== undefined ? `${a.riot} ${a.riot === 1 ? 'day' : 'days'} until Riot${a.step ? ` · ${a.step}` : ''}${a.contract ? ` · ${a.contract}` : ''}` : '';
 
     const out = [];
+    if (sh.update?.phase === 'ready') out.push(line('info', `Update ${sh.update.version} is downloaded.`, button('Restart and install', 'update-install')));
     if (sh.appUpdate) out.push(line('info', `App update ${sh.appUpdate} is ready.`, button('Restart', 'restart')));
     if (sh.upstreamUpdate) out.push(line('info', 'New author fixes are available for this local overlay.', button('Details', 'upstream-update')));
     if (sh.siteUpdate) out.push(line('info', 'The site was updated.', button('Reload', 'reload')));

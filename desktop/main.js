@@ -20,6 +20,8 @@ const STANDALONE = app.isPackaged && fs.existsSync(path.join(BUNDLED_ROOT, 'bund
 const OPTIMIZED = true;
 const FAST = true;
 let suite = null;
+let updates = null;
+let updateTestOrigin = null;
 app.on('web-contents-created', (_, contents) => contents.setAudioMuted(true));
 const localDependency = (name) => {
   return require(name);
@@ -77,6 +79,7 @@ const settings = Object.assign({
   hideFromCaptures: true, // kept out of screenshots, recordings and the shared window
   hideBehind: false, // hidden while another window is in front of the game
   collapsed: false, // the overlay folded to a thin bar ("–" on it)
+  autoUpdates: true,
   record: !OPTIMIZED, // optional diagnostics; optimized play does not record every board
   recordLimitMB: 1024, // debug build (--dev): the record's room on disk, pictures included
   recordRuns: 5, // normal build: the runs the record keeps
@@ -765,6 +768,7 @@ function pushShell(patch) {
     agreed,
     siteUpdate,
     appUpdate,
+    update: updates?.info() || null,
     upstreamUpdate,
     hotkeys: HOTKEYS,
     local: /^(localhost|127\.0\.0\.1)$/.test(SITE_URL.hostname),
@@ -811,6 +815,37 @@ ipcMain.handle('suite:info', e => (TEST || DEV) && fromPage(e, 'analyzer') ? {
   windows: { settings: !!wins.follow?.isVisible(), board: !!wins.analyzer?.isVisible() }
 } : null);
 ipcMain.on('suite:read', e => { if (fromPage(e, 'follow')) command('capture'); });
+ipcMain.handle('updates:get', e => fromPage(e, 'follow') ? updates?.info() || null : null);
+ipcMain.on('updates:command', (e, value) => {
+  if (!fromPage(e, 'follow') || !value || !['check', 'download', 'install', 'enabled'].includes(value.action)) return;
+  if (value.action === 'enabled' && typeof value.enabled === 'boolean') {
+    settings.autoUpdates = value.enabled; saveSettings(); publishUpdate();
+    if (value.enabled && !TEST) void updates?.check();
+  } else command('update-' + value.action);
+});
+
+let lastUpdatePhase = '';
+function publishUpdate() {
+  const info = updates?.info() || null;
+  send('analyzer', 'app:update', info);
+  if (wins.follow && !wins.follow.isDestroyed()) wins.follow.webContents.send('app:update', info);
+  pushShell();
+  const key = info && `${info.phase}:${info.version}`;
+  if (key !== lastUpdatePhase) { lastUpdatePhase = key; rebuildMenu(); }
+}
+let installingUpdate = false;
+async function installUpdate() {
+  if (TEST || installingUpdate || !updates) return;
+  installingUpdate = true;
+  try {
+    const helper = require('./lib/update-install.js');
+    const prepared = await helper.prepare(await updates.prepared(), { directory: path.join(app.getPath('userData'), 'updates'), portable: process.env.PORTABLE_EXECUTABLE_FILE });
+    await helper.launch(prepared);
+    // Exit only once the helper holds our process handle. Normal shutdown
+    // closes capture, workers and the managed native child before replacement.
+    app.quit();
+  } catch (error) { installingUpdate = false; updates.fail(error); note('update install failed:', error.message); show('follow'); }
+}
 ipcMain.on('consent:set', (e, value) => {
   if (!fromPage(e, 'follow')) return;
   const at = value && typeof value.at === 'string' ? value.at.slice(0, 40) : new Date().toISOString();
@@ -972,6 +1007,9 @@ function command(cmd) {
   note('command:', cmd);
   recordEvent({ type: 'command', cmd: String(cmd) });
   switch (cmd) {
+    case 'update-check': if (!TEST || updateTestOrigin) void updates?.check(); return;
+    case 'update-download': if (!TEST || updateTestOrigin) void updates?.download(); return;
+    case 'update-install': void installUpdate(); return;
     case 'board': return lastAdvice?.toolsConfirm ? showInstruments() : toggle('analyzer');
     case 'tools': return showInstruments();
     case 'follow': return show('follow');
@@ -1068,6 +1106,7 @@ function rebuildMenu() {
     {label:'Read screen now',accelerator:HOTKEYS.capture,click:()=>command('capture')},
     {label:'Correct Tartarus board',click:()=>show('analyzer')},
     {label:'Check Tartarus instruments',accelerator:HOTKEYS.instruments,click:()=>showInstruments()},
+    {label:updates?.info().phase === 'ready' ? 'Install update '+updates.info().version : 'Check for updates',click:()=>command(updates?.info().phase === 'ready' ? 'update-install' : 'update-check')},
     {type:'separator'},
     {label:'Choose game log',click:()=>pickLog()},
     {label:'Open diagnostic log',click:()=>shell.openPath(LOG_FILE)},
@@ -1118,7 +1157,7 @@ function registerHotkeys() {
   app.on('before-quit', () => {
     quitting = true;
   });
-  app.on('will-quit', () => { globalShortcut.unregisterAll(); suite?.close(); });
+  app.on('will-quit', () => { globalShortcut.unregisterAll(); updates?.close(); suite?.close(); });
 
   // Tests stop the app with "quit" on its input, as the tray's Quit does,
   // so the pages' storage is written out.
@@ -1168,6 +1207,21 @@ function registerHotkeys() {
     makeOverlay();
     if (!FAST) makeSiteWindow('follow', { width: 1000, height: 860, title: 'Auto Screenshot Mode · Tartarus Overlay' });
     makeAnalyzer();
+    const updateDirectory = path.join(app.getPath('userData'), 'updates');
+    const updateInstaller = require('./lib/update-install.js');
+    const updateModule = require('./lib/app-updates.js');
+    if (TEST && arg('updates-test-origin')) {
+      const origin = new URL(arg('updates-test-origin'));
+      if (origin.protocol !== 'http:' || origin.hostname !== '127.0.0.1' || origin.href !== origin.origin + '/') throw new Error('Update tests require a loopback origin.');
+      updateTestOrigin = origin.origin;
+    }
+    updates = updateModule.create({
+      current: app.getVersion(), kind: updateTestOrigin ? 'portable' : STANDALONE ? updateInstaller.kind(app.getPath('exe'), process.env.PORTABLE_EXECUTABLE_FILE) : 'unpacked',
+      directory: updateDirectory, enabled: () => settings.autoUpdates !== false,
+      idle: () => !suite || suite.mode === 'idle', onChange: () => publishUpdate(),
+      ...(updateTestOrigin ? { request: (url, signal) => updateModule.response(updateTestOrigin + (url === updateModule.API ? '/release' : '/asset'), signal, updateTestOrigin) } : {}),
+    });
+    if (!TEST) { void updateInstaller.cleanup(updateDirectory, app.getVersion(), process.env.PORTABLE_EXECUTABLE_FILE).catch(error => note('update cleanup:', error.message)); updates.start(); }
     // Integration tests capture their own stand-in, never a real game.
     if (TEST && arg('test-window')) {
       const area = screen.getPrimaryDisplay().bounds;

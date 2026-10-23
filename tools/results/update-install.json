@@ -1,0 +1,28 @@
+{
+  "version": "1.0.3",
+  "checkedAt": "2026-10-23T13:39:23.833Z",
+  "results": [
+    {
+      "mode": "portable",
+      "corrupt": false,
+      "verified": true
+    },
+    {
+      "mode": "portable",
+      "corrupt": true,
+      "verified": true
+    },
+    {
+      "mode": "setup",
+      "corrupt": false,
+      "verified": true
+    },
+    {
+      "mode": "portable",
+      "parentExited": true,
+      "verified": true
+    }
+  ],
+  "realInstallerExecuted": false,
+  "realGameInput": false
+}

@@ -39,6 +39,18 @@
 
 Скачайте **Portable EXE** или **Setup EXE** из [Releases](https://github.com/milkmiraclework-alt/torchlight-overlay-optimized/releases/latest). Node.js, Rust и прежние оверлеи для запуска не нужны.
 
+С **1.0.3** оба EXE проверяют новые стабильные версии в нашем GitHub Releases:
+через 45 секунд после запуска, затем раз в 6 часов. Загрузка начинается, когда
+оверлей не занят мини-игрой, и ограничена примерно 2 МБ/с. В настройках есть
+Check now, Download update и переключатель автоматической проверки/загрузки.
+После загрузки нажмите Restart and install в настройках, трее или оверлее.
+Программа сама посреди забега не перезапускается. Setup обновляет установленную
+копию; Portable заменяет свой исходный файл, сохраняя путь и ярлыки. Проверяются
+размер и SHA256 GitHub-артефакта; профиль, кэш и подтверждения не заменяются.
+Без Интернета советы продолжают работать. Обращения к GitHub нужны только для
+обновлений; снимки и игровые данные туда не отправляются. Версии до 1.0.3 нужно
+один раз обновить вручную. Распакованные сборки разработчика не заменяются.
+
 Закройте прежние оверлеи через их трей и запустите новую программу. В настройках включите захват. В игре включите Esc → Account Related → Enable Log, затем выйдите из аккаунта и войдите снова. Для Tartarus укажите, включён ли Speed-up в игре; для Vorax — уровень Intern Shelley.
 
 | Клавиши | Действие |
@@ -71,7 +83,7 @@
 .\Start-Overlay.cmd
 ```
 
-Результат: `desktop/dist/builds/1.0.2/`. Изменения Vorax требуют Rust и Windows build tools: `powershell -File tools/build-vorax-backend.ps1`. Изменения ядра Tartarus: `powershell -File tools/build-rust-solver.ps1`. Скрипты проверяют соответствие бинарников исходникам.
+Результат: `desktop/dist/builds/1.0.3/`. Изменения Vorax требуют Rust и Windows build tools: `powershell -File tools/build-vorax-backend.ps1`. Изменения ядра Tartarus: `powershell -File tools/build-rust-solver.ps1`. Скрипты проверяют соответствие бинарников исходникам.
 
 ```powershell
 node tools/unified-runtime-check.js

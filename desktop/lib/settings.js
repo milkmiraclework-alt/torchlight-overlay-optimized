@@ -13,3 +13,14 @@ $('shelley').onchange=()=>D.setFastSettings({shelley:Number($('shelley').value)}
 $('threads').onchange=()=>D.setFastSettings({threads:Math.min(128,Math.max(0,Math.trunc(Number($('threads').value)||0)))});
 $('read').onclick=()=>D.readNow();$('log').onclick=()=>D.pickLog();
 D.fastSettings().then(render);D.onFastSettings(render);
+function renderUpdate(s){if(!s)return;
+ const labels={idle:'Ready to check.',checking:'Checking for updates…',current:'You have the latest version.',available:'Update '+s.version+' is available.',downloading:'Downloading '+s.version+': '+s.percent+'%',ready:'Update '+s.version+' is downloaded. Restart when ready.',error:'Update failed: '+s.error,unsupported:'Use the Portable EXE or Setup to enable updates; unpacked development builds are not replaced.'};
+ $('update-status').textContent='Version '+s.current+' · '+(labels[s.phase]||s.phase);
+ $('auto-updates').checked=s.enabled;$('auto-updates').disabled=!s.supported;
+ $('update-check').disabled=!s.supported||['checking','downloading'].includes(s.phase);
+ $('update-download').hidden=!s.version||!['available','error'].includes(s.phase);
+ $('update-install').hidden=s.phase!=='ready';
+}
+$('auto-updates').onchange=()=>D.updateCommand('enabled',$('auto-updates').checked);
+for(const action of ['check','download','install'])$('update-'+action).onclick=()=>D.updateCommand(action);
+D.updates().then(renderUpdate);D.onUpdate(renderUpdate);
