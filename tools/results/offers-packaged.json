@@ -1,7 +1,7 @@
 {
-  "version": "1.0.8",
-  "runtimeVersion": "1.0.8",
-  "checkedAt": "2026-10-23T19:53:56.181Z",
+  "version": "1.0.9",
+  "runtimeVersion": "1.0.9",
+  "checkedAt": "2026-10-23T20:57:29.371Z",
   "packaged": true,
   "results": {
     "offers": [
@@ -29,9 +29,9 @@
             "conf": 1
           }
         ],
-        "ms": 695,
-        "artMs": 44,
-        "namesMs": 610
+        "ms": 723,
+        "artMs": 50,
+        "namesMs": 618
       },
       {
         "name": "0009-instruments.webp",
@@ -57,9 +57,9 @@
             "conf": 1
           }
         ],
-        "ms": 393,
+        "ms": 422,
         "artMs": 51,
-        "namesMs": 337
+        "namesMs": 366
       },
       {
         "name": "0002-instruments.webp",
@@ -85,9 +85,9 @@
             "conf": 1
           }
         ],
-        "ms": 391,
-        "artMs": 16,
-        "namesMs": 371
+        "ms": 451,
+        "artMs": 18,
+        "namesMs": 430
       },
       {
         "name": "0008-instruments.webp",
@@ -113,9 +113,9 @@
             "conf": 1
           }
         ],
-        "ms": 296,
-        "artMs": 8,
-        "namesMs": 285
+        "ms": 365,
+        "artMs": 10,
+        "namesMs": 352
       },
       {
         "name": "0002-instruments.webp",
@@ -141,9 +141,9 @@
             "conf": 1
           }
         ],
-        "ms": 378,
-        "artMs": 10,
-        "namesMs": 364
+        "ms": 441,
+        "artMs": 14,
+        "namesMs": 424
       },
       {
         "name": "0018-instruments.webp",
@@ -169,9 +169,9 @@
             "conf": 1
           }
         ],
-        "ms": 524,
-        "artMs": 9,
-        "namesMs": 509
+        "ms": 672,
+        "artMs": 12,
+        "namesMs": 657
       },
       {
         "name": "0019-instruments.webp",
@@ -197,9 +197,9 @@
             "conf": 1
           }
         ],
-        "ms": 344,
-        "artMs": 11,
-        "namesMs": 329
+        "ms": 467,
+        "artMs": 20,
+        "namesMs": 441
       },
       {
         "name": "0002-instruments.webp",
@@ -225,9 +225,9 @@
             "conf": 1
           }
         ],
-        "ms": 426,
-        "artMs": 9,
-        "namesMs": 410
+        "ms": 645,
+        "artMs": 12,
+        "namesMs": 628
       },
       {
         "name": "0010-instruments.webp",
@@ -253,9 +253,9 @@
             "conf": 1
           }
         ],
-        "ms": 391,
-        "artMs": 8,
-        "namesMs": 378
+        "ms": 513,
+        "artMs": 14,
+        "namesMs": 494
       },
       {
         "name": "0005-instruments.webp",
@@ -281,9 +281,9 @@
             "conf": 1
           }
         ],
-        "ms": 368,
-        "artMs": 10,
-        "namesMs": 355
+        "ms": 509,
+        "artMs": 18,
+        "namesMs": 485
       }
     ],
     "canvasBlobCalls": 0,

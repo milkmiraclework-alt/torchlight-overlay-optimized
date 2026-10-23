@@ -1,0 +1,596 @@
+{
+  "version": "1.0.9",
+  "baseline": "1.0.8",
+  "checkedAt": "2026-10-23T20:53:18.038Z",
+  "cpu": "AMD Ryzen 5 3600 6-Core Processor              ",
+  "calculation": {
+    "checkedAt": "2026-10-23T20:52:20.210Z",
+    "baselineSha256": "22682b5013d8aeb649a8a751a0e9c7d72e1d484e74a2b5bf6ea0c43088092702",
+    "candidateSha256": "07a5253aa0e8e0bbd7b5e55058c8ae89da14cc9dbea9c33b62a932154b9eceb2",
+    "exactParityPositions": 43,
+    "checks": [
+      {
+        "name": "offer-01",
+        "options": 4,
+        "rounds": 48
+      },
+      {
+        "name": "offer-02",
+        "options": 3,
+        "rounds": 48
+      },
+      {
+        "name": "offer-03",
+        "options": 4,
+        "rounds": 48
+      },
+      {
+        "name": "offer-04",
+        "options": 3,
+        "rounds": 48
+      },
+      {
+        "name": "offer-05",
+        "options": 4,
+        "rounds": 48
+      },
+      {
+        "name": "offer-06",
+        "options": 4,
+        "rounds": 48
+      },
+      {
+        "name": "offer-07",
+        "options": 3,
+        "rounds": 48
+      },
+      {
+        "name": "offer-08",
+        "options": 4,
+        "rounds": 48
+      },
+      {
+        "name": "offer-09",
+        "options": 3,
+        "rounds": 48
+      },
+      {
+        "name": "offer-10",
+        "options": 4,
+        "rounds": 48
+      },
+      {
+        "name": "board-01",
+        "options": 1,
+        "rounds": 0
+      },
+      {
+        "name": "board-02",
+        "options": 3,
+        "rounds": 48
+      },
+      {
+        "name": "board-03",
+        "options": 5,
+        "rounds": 48
+      },
+      {
+        "name": "board-04",
+        "options": 3,
+        "rounds": 48
+      },
+      {
+        "name": "board-05",
+        "options": 3,
+        "rounds": 48
+      },
+      {
+        "name": "board-06",
+        "options": 3,
+        "rounds": 48
+      },
+      {
+        "name": "board-07",
+        "options": 3,
+        "rounds": 48
+      },
+      {
+        "name": "board-08",
+        "options": 3,
+        "rounds": 48
+      },
+      {
+        "name": "start-null-hook",
+        "options": 3,
+        "rounds": 48
+      },
+      {
+        "name": "start-null-trap",
+        "options": 3,
+        "rounds": 48
+      },
+      {
+        "name": "start-null-scapegoat",
+        "options": 3,
+        "rounds": 48
+      },
+      {
+        "name": "start-null-maiden",
+        "options": 3,
+        "rounds": 48
+      },
+      {
+        "name": "start-null-rope",
+        "options": 3,
+        "rounds": 48
+      },
+      {
+        "name": "start-cagefight-hook",
+        "options": 3,
+        "rounds": 48
+      },
+      {
+        "name": "start-cagefight-trap",
+        "options": 3,
+        "rounds": 48
+      },
+      {
+        "name": "start-cagefight-scapegoat",
+        "options": 3,
+        "rounds": 48
+      },
+      {
+        "name": "start-cagefight-maiden",
+        "options": 3,
+        "rounds": 48
+      },
+      {
+        "name": "start-cagefight-rope",
+        "options": 3,
+        "rounds": 48
+      },
+      {
+        "name": "start-ironlaw-hook",
+        "options": 3,
+        "rounds": 48
+      },
+      {
+        "name": "start-ironlaw-trap",
+        "options": 3,
+        "rounds": 48
+      },
+      {
+        "name": "start-ironlaw-scapegoat",
+        "options": 3,
+        "rounds": 48
+      },
+      {
+        "name": "start-ironlaw-maiden",
+        "options": 3,
+        "rounds": 48
+      },
+      {
+        "name": "start-ironlaw-rope",
+        "options": 3,
+        "rounds": 48
+      },
+      {
+        "name": "start-tyranny-hook",
+        "options": 3,
+        "rounds": 48
+      },
+      {
+        "name": "start-tyranny-trap",
+        "options": 3,
+        "rounds": 48
+      },
+      {
+        "name": "start-tyranny-scapegoat",
+        "options": 3,
+        "rounds": 48
+      },
+      {
+        "name": "start-tyranny-maiden",
+        "options": 3,
+        "rounds": 48
+      },
+      {
+        "name": "start-tyranny-rope",
+        "options": 3,
+        "rounds": 48
+      },
+      {
+        "name": "start-opulence-hook",
+        "options": 3,
+        "rounds": 48
+      },
+      {
+        "name": "start-opulence-trap",
+        "options": 3,
+        "rounds": 48
+      },
+      {
+        "name": "start-opulence-scapegoat",
+        "options": 3,
+        "rounds": 48
+      },
+      {
+        "name": "start-opulence-maiden",
+        "options": 3,
+        "rounds": 48
+      },
+      {
+        "name": "start-opulence-rope",
+        "options": 3,
+        "rounds": 48
+      }
+    ],
+    "timings": [
+      {
+        "name": "offer-03",
+        "rollouts": 1600,
+        "options": 4,
+        "beforeMs": 1794.5211,
+        "afterMs": 1271.7015000000001,
+        "speedup": 1.4111181751377975,
+        "times": {
+          "old": [
+            1742.5720000000001,
+            1794.5211,
+            1836.8369000000002
+          ],
+          "next": [
+            1271.7015000000001,
+            1266.3955000000005,
+            1417.9040999999997
+          ]
+        }
+      },
+      {
+        "name": "offer-05",
+        "rollouts": 1600,
+        "options": 4,
+        "beforeMs": 1838.0044000000016,
+        "afterMs": 1482.0184000000008,
+        "speedup": 1.2402034954491796,
+        "times": {
+          "old": [
+            1859.0545999999995,
+            1773.0204000000012,
+            1838.0044000000016
+          ],
+          "next": [
+            1332.9724000000024,
+            1482.0184000000008,
+            1603.5576999999976
+          ]
+        }
+      },
+      {
+        "name": "offer-07",
+        "rollouts": 1600,
+        "options": 3,
+        "beforeMs": 1248.3154000000031,
+        "afterMs": 1054.7042000000001,
+        "speedup": 1.1835691940925266,
+        "times": {
+          "old": [
+            1460.6270000000004,
+            1248.3154000000031,
+            1228.917800000003
+          ],
+          "next": [
+            1108.6619000000028,
+            1054.7042000000001,
+            968.6631000000016
+          ]
+        }
+      },
+      {
+        "name": "board-03",
+        "rollouts": 1600,
+        "options": 5,
+        "beforeMs": 3857.5547000000006,
+        "afterMs": 2458.624499999998,
+        "speedup": 1.568988961104066,
+        "times": {
+          "old": [
+            3857.5547000000006,
+            3816.158899999995,
+            4296.7033999999985
+          ],
+          "next": [
+            2407.514000000003,
+            2458.624499999998,
+            2489.353900000002
+          ]
+        }
+      },
+      {
+        "name": "board-04",
+        "rollouts": 1600,
+        "options": 3,
+        "beforeMs": 1432.0926000000036,
+        "afterMs": 1105.5515000000014,
+        "speedup": 1.2953648925445822,
+        "times": {
+          "old": [
+            1277.6116000000038,
+            1432.0926000000036,
+            1445.9279000000024
+          ],
+          "next": [
+            1024.8522999999986,
+            1113.8608999999997,
+            1105.5515000000014
+          ]
+        }
+      },
+      {
+        "name": "board-06",
+        "rollouts": 1600,
+        "options": 3,
+        "beforeMs": 1284.8521000000037,
+        "afterMs": 947.6434000000008,
+        "speedup": 1.3558392323525945,
+        "times": {
+          "old": [
+            1284.8521000000037,
+            1225.7926000000007,
+            1297.4432000000015
+          ],
+          "next": [
+            943.8024000000005,
+            947.6434000000008,
+            955.7471000000005
+          ]
+        }
+      },
+      {
+        "name": "board-07",
+        "rollouts": 1600,
+        "options": 3,
+        "beforeMs": 2033.2936000000045,
+        "afterMs": 1594.0046000000002,
+        "speedup": 1.275588288766547,
+        "times": {
+          "old": [
+            1945.0419000000038,
+            2172.755700000009,
+            2033.2936000000045
+          ],
+          "next": [
+            1536.0305999999982,
+            1594.0046000000002,
+            1883.32729999999
+          ]
+        }
+      },
+      {
+        "name": "board-08",
+        "rollouts": 1600,
+        "options": 3,
+        "beforeMs": 831.8904000000039,
+        "afterMs": 751.4675000000134,
+        "speedup": 1.107021128658244,
+        "times": {
+          "old": [
+            900.7565000000031,
+            831.8904000000039,
+            744.7948000000033
+          ],
+          "next": [
+            779.6676999999909,
+            751.4675000000134,
+            571.9771000000037
+          ]
+        }
+      }
+    ],
+    "totalMedianMs": {
+      "before": 14320.524300000021,
+      "after": 10665.715600000014,
+      "speedup": 1.342668868838018,
+      "timeReduction": 0.255214727019457
+    },
+    "memoryBytes": {
+      "baseline": 4653056,
+      "candidate": 32047104
+    },
+    "productionBudgetsUnchanged": true,
+    "reference": "published 1.0.8 WASM",
+    "environment": {
+      "node": "v22.16.0",
+      "platform": "win32"
+    },
+    "gameCapture": false,
+    "gameInput": false
+  },
+  "reader": {
+    "rows": [
+      {
+        "name": "0004-board.webp",
+        "mode": "full",
+        "beforeMs": 738.0889999999999,
+        "afterMs": 642.5604999999996,
+        "speedup": 1.1486684911381893,
+        "times": {
+          "old": [
+            755.8659000000002,
+            738.0889999999999,
+            669.2759999999998
+          ],
+          "next": [
+            880.1624000000002,
+            635.6064000000006,
+            642.5604999999996
+          ]
+        },
+        "exact": true
+      },
+      {
+        "name": "0004-board.webp",
+        "mode": "located",
+        "beforeMs": 297.1402999999991,
+        "afterMs": 240.79749999999967,
+        "speedup": 1.2339841568122574,
+        "times": {
+          "old": [
+            288.96399999999994,
+            297.1402999999991,
+            337.112000000001
+          ],
+          "next": [
+            222.40189999999984,
+            240.79749999999967,
+            320.72650000000067
+          ]
+        },
+        "exact": true
+      },
+      {
+        "name": "0016-board.webp",
+        "mode": "full",
+        "beforeMs": 919.1679999999997,
+        "afterMs": 884.1090000000004,
+        "speedup": 1.039654612723091,
+        "times": {
+          "old": [
+            1022.3325999999997,
+            830.9178999999986,
+            919.1679999999997
+          ],
+          "next": [
+            945.8227999999999,
+            861.0289999999986,
+            884.1090000000004
+          ]
+        },
+        "exact": true
+      },
+      {
+        "name": "0016-board.webp",
+        "mode": "located",
+        "beforeMs": 620.1458999999995,
+        "afterMs": 409.90360000000146,
+        "speedup": 1.5129066931834638,
+        "times": {
+          "old": [
+            494.53189999999813,
+            675.3328000000001,
+            620.1458999999995
+          ],
+          "next": [
+            409.90360000000146,
+            431.16820000000007,
+            382.9824000000008
+          ]
+        },
+        "exact": true
+      }
+    ],
+    "baseline": "1.0.8",
+    "gameCapture": false,
+    "gameInput": false
+  },
+  "initialReaderAttempt": {
+    "note": "Initial native component capacity caused redundant preprocessing; capacity growth now retains prepared pixels and only repeats flood fill.",
+    "data": {
+      "rows": [
+        {
+          "name": "0004-board.webp",
+          "mode": "full",
+          "beforeMs": 659.8321999999998,
+          "afterMs": 711.5737999999997,
+          "speedup": 0.9272856870222037,
+          "times": {
+            "old": [
+              657.9119000000001,
+              812.0392000000002,
+              659.8321999999998
+            ],
+            "next": [
+              799.0493999999999,
+              711.5737999999997,
+              701.3182999999999
+            ]
+          },
+          "exact": true
+        },
+        {
+          "name": "0004-board.webp",
+          "mode": "located",
+          "beforeMs": 244.83139999999912,
+          "afterMs": 273.6386999999995,
+          "speedup": 0.8947250516831119,
+          "times": {
+            "old": [
+              258.72860000000037,
+              244.83139999999912,
+              244.22800000000007
+            ],
+            "next": [
+              308.22869999999966,
+              258.8739999999998,
+              273.6386999999995
+            ]
+          },
+          "exact": true
+        },
+        {
+          "name": "0016-board.webp",
+          "mode": "full",
+          "beforeMs": 778.326500000001,
+          "afterMs": 798.1638000000003,
+          "speedup": 0.9751463296130453,
+          "times": {
+            "old": [
+              679.3255000000008,
+              813.6836999999996,
+              778.326500000001
+            ],
+            "next": [
+              1239.982899999999,
+              798.1638000000003,
+              702.669899999999
+            ]
+          },
+          "exact": true
+        },
+        {
+          "name": "0016-board.webp",
+          "mode": "located",
+          "beforeMs": 359.59430000000066,
+          "afterMs": 411.79179999999906,
+          "speedup": 0.8732429834688342,
+          "times": {
+            "old": [
+              359.59430000000066,
+              326.96489999999903,
+              394.1474999999991
+            ],
+            "next": [
+              367.3708999999981,
+              411.79179999999906,
+              421.1203999999998
+            ]
+          },
+          "exact": true
+        }
+      ],
+      "baseline": "1.0.8",
+      "gameCapture": false,
+      "gameInput": false
+    }
+  },
+  "budgetsUnchanged": true,
+  "policyUnchanged": true,
+  "thresholdsUnchanged": true,
+  "limits": [
+    "Measurements on eight solver states and two saved 2560x1440 frames. Actual game, waiting/capture and tool-name OCR latency are not timed.",
+    "The calculation cache is larger and bounded at 65,536 entries per worker. Measured peak solver WASM memory grew from about 4.4 MiB to 30.6 MiB per instance in this benchmark.",
+    "All workers are terminated on capture stop or mode exit. These timing gains do not establish parity with another overlay or guarantee instant responses."
+  ],
+  "gameCapture": false,
+  "gameInput": false
+}

@@ -14,6 +14,45 @@ const clean = (r) => { const copy = structuredClone(r); delete copy.ms; return c
 const median = (list) => list.sort((a, b) => a - b)[list.length >> 1];
 (async () => {
   const kernel = A.create((await WebAssembly.instantiate(fs.readFileSync(path.join(__dirname, '../js/scan-kernels.wasm')))).instance);
+  const reference = { module: { exports: {} }, Uint8Array, Uint8ClampedArray, Float32Array };
+  vm.runInNewContext(fs.readFileSync(require.resolve('../js/scan.js'), 'utf8')
+    .replace('api.setKernels = setKernels;', 'api.maskBlobs = maskBlobs; api.textMask = textMask; api.setKernels = setKernels;'), reference);
+  const masks = reference.module.exports;
+  const checkMask = (input, w, h) => {
+    const a = input.slice(), b = input.slice();
+    const expected = masks.maskBlobs(a, w, h, 3.25, -7.5);
+    const actual = kernel.maskBlobs(b, w, h, 3.25, -7.5);
+    assert.equal(JSON.stringify(actual), JSON.stringify(expected), `components ${w}x${h}`);
+    assert.deepEqual(b, a, 'Component mask mutation differs');
+  };
+  for (let bits = 0; bits < 512; bits++) checkMask(Uint8Array.from({ length: 9 }, (_, i) => bits >>> i & 1), 3, 3);
+  for (const [w,h] of [[1,97],[97,1],[73,51],[128,128]]) for (let mode=0;mode<5;mode++) {
+    checkMask(Uint8Array.from({length:w*h}, (_,i) => mode===0?0:mode===1?1:mode===2?((i%w+(i/w|0))%2):mode===3?(i*73%11<3?1:0):[0,1,2,255][i%4]),w,h);
+  }
+  console.log('PASS: exact components, traversal order, mask mutations, all 3x3 masks, solid/sparse/noisy inputs and output growth.');
+  for (const [w,h] of [[73,51],[160,160]]) for (const r of [1,3,9]) for (const saturation of [0.2,0.5,1.01]) {
+    const data=Uint8ClampedArray.from({length:w*h*4},(_,i)=>((i>>>2)%w+((i>>>2)/w|0))%2?255:0);
+    const img={width:w,height:h,data},lum=S.grayOf(img);
+    S.setKernels(null);const around=S.blur(lum,w,h,r),mask=masks.textMask(img,0,0,w,h,lum,around,saturation);
+    const expected=masks.maskBlobs(mask,w,h,0,0),actual=kernel.textComponents({rgba:data,w,h,x0:0,y0:0},r,saturation);
+    assert.equal(JSON.stringify(actual),JSON.stringify(expected),'Native text-mask/component growth drift');
+    const opts={minH:1,maxH:40,r,s:saturation},box=[-2.3,1.2,w+7,h-3.1];
+    const lines=S.textLines(img,...box,opts);S.setKernels(kernel);
+    assert.deepEqual(S.textLines(img,...box,opts),lines,'Complete cropped text-line drift');
+  }
+  const textImage={width:73,height:51,data:Uint8ClampedArray.from({length:73*51*4},(_,i)=>i*73%256)};
+  S.setKernels(null);const textExpected=S.textLines(textImage,0,0,72,50);
+  S.setKernels({textComponents(){throw new RangeError('Injected text-kernel failure');}});
+  assert.deepEqual(S.textLines(textImage,0,0,72,50),textExpected,'Prepared RGBA fallback changed reading');
+  S.setKernels(kernel);S.textLines(textImage,0,0,72,50);textImage.data.fill(255);
+  const reread=S.textLines(textImage,0,0,72,50);S.setKernels(null);
+  assert.deepEqual(reread,S.textLines(textImage,0,0,72,50),'Reused image object kept stale text pixels');
+  console.log('PASS: native text masks/lines, radius and saturation sweeps, crop clipping, growth, changed-image rereads and failure fallback.');
+  const full4k={width:3840,height:2160,data:new Uint8ClampedArray(3840*2160*4).fill(73)};
+  S.setKernels(kernel);
+  assert.deepEqual(S.textLines(full4k,0,0,3839,2159),[]);
+  assert.ok(S.kernelsReady(),'Full 4K text preparation exceeded the native memory bound');
+  console.log('PASS: full 4K text preparation stays inside the existing 128 MiB kernel bound.');
   for (const [w, h] of [[1, 1], [2, 3], [73, 51], [640, 360]]) {
     const img = { width: w, height: h, data: Uint8ClampedArray.from({ length: w * h * 4 }, (_, i) => i * 73 % 256) };
     S.setKernels(null); const gray = S.grayOf(img), sharp = S.blur(gray, w, h, 1);

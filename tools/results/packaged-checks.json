@@ -1,6 +1,6 @@
 {
-  "version": "1.0.8",
-  "checkedAt": "2026-10-23T19:54:43.678Z",
+  "version": "1.0.9",
+  "checkedAt": "2026-10-23T20:59:22.105Z",
   "checks": [
     "suite",
     "overlay",

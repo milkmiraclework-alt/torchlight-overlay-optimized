@@ -5,6 +5,9 @@ use std::hash::{BuildHasherDefault, Hasher};
 use std::sync::OnceLock;
 use Id::*;
 
+// Bounded per worker; all entries are released with the calculation job.
+const CHAIN_CACHE_LIMIT: usize = 65_536;
+
 #[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Policy {
@@ -170,6 +173,9 @@ impl Cache {
     }
 }
 pub struct Context<'a> {
+    tool_mask: u64,
+    chain_mask: u16,
+    swap_values: [std::cell::Cell<Option<f64>>; 6],
     pub st: &'a State,
     pub p: &'a Policy,
     pub v: [f64; 6],
@@ -209,6 +215,10 @@ pub fn composition(s: &State, exclude: Option<usize>) -> ([i32; 24], usize) {
 }
 impl<'a> Context<'a> {
     pub fn new(st: &'a State, p: &'a Policy, cache: &'a mut Cache) -> Self {
+        let tool_mask = st
+            .tools
+            .iter()
+            .fold(0u64, |mask, id| mask | (1u64 << *id as usize));
         let tables = cache.tables(st, p);
         let v = tables.v;
         let r = if st.vault.len() >= 10 {
@@ -265,7 +275,22 @@ impl<'a> Context<'a> {
         } else {
             0
         };
+        let mut chain_mask = 0u16;
+        for (i, id) in [Saw, Whip, Muzzle, Skewer, Crown, Maul, Collar, Revenge]
+            .into_iter()
+            .enumerate()
+        {
+            if st.has(id) && (id != Revenge || sealed > 0) {
+                chain_mask |= 1 << i;
+            }
+        }
+        chain_mask |= (st.fight() as u16) << 8;
+        chain_mask |= (st.params.chain_stop as u16) << 9;
+        chain_mask |= ((st.has(Guillotine) && !p.legacy_wolf_chains) as u16) << 10;
         Self {
+            tool_mask,
+            chain_mask,
+            swap_values: std::array::from_fn(|_| std::cell::Cell::new(None)),
             st,
             p,
             v,
@@ -310,7 +335,7 @@ impl<'a> Context<'a> {
     }
     #[inline]
     fn has(&self, id: Id) -> bool {
-        self.st.has(id)
+        self.tool_mask & (1u64 << id as usize) != 0
     }
     fn lower_wolf(&self) -> bool {
         self.has(Guillotine) && !self.p.legacy_wolf_chains
@@ -346,6 +371,14 @@ impl<'a> Context<'a> {
         if t >= 5 {
             return self.r;
         }
+        // Average rises and individual chains use separate key namespaces.
+        // Both depend on the same composition, rules and Rainbow value.
+        let key = self.chain_key(t, keep.unwrap_or(4), comp, crowd, true);
+        if let Some(&value) = self.cache.chains.get(&key) {
+            self.cache.hits += 1;
+            return value;
+        }
+        self.cache.misses += 1;
         let mut sum = 0.;
         let count = if keep.is_some() { 1 } else { 4 };
         for index in 0..count {
@@ -364,15 +397,15 @@ impl<'a> Context<'a> {
                 sum += self.feed(t, b, comp, crowd)
             }
         }
-        sum / count as f64
-    }
-    fn feed(&mut self, t: i32, b: usize, comp: &mut [i32; 24], crowd: usize) -> f64 {
-        if !self.fight && !(self.has(Maul) && b == 0) && !(self.lower_wolf() && b == 2) {
-            let (fs, n) = self.foods(t, b, false);
-            if !fs[..n].iter().any(|&f| comp[t as usize * 4 + f] > 0) {
-                return self.v[t as usize];
-            }
+        let value = sum / count as f64;
+        if self.cache.chains.len() >= CHAIN_CACHE_LIMIT {
+            self.cache.chains.clear();
+            self.cache.clears += 1;
         }
+        self.cache.chains.insert(key, value);
+        value
+    }
+    fn chain_key(&self, t: i32, b: usize, comp: &[i32; 24], crowd: usize, rise: bool) -> ChainKey {
         let mut packed = [0; 20];
         for i in if self.fight || self.lower_wolf() {
             0
@@ -382,27 +415,24 @@ impl<'a> Context<'a> {
         {
             packed[i] = comp[i] as u8
         }
-        let mut mask = 0;
-        for (i, id) in [Saw, Whip, Muzzle, Skewer, Crown, Maul, Collar, Revenge]
-            .into_iter()
-            .enumerate()
-        {
-            if self.has(id) && (id != Revenge || self.sealed > 0) {
-                mask |= 1 << i
-            }
-        }
-        mask |= (self.fight as u16) << 8;
-        mask |= (self.st.params.chain_stop as u16) << 9;
-        mask |= (self.lower_wolf() as u16) << 10;
-        let key = ChainKey {
-            mask,
+        ChainKey {
+            mask: self.chain_mask | ((rise as u16) << 11),
             tier: t as u8,
             beast: b as u8,
             crowd: if self.has(Muzzle) { crowd as u8 } else { 0 },
             threshold: self.double_from,
             comp: packed,
             rainbow: self.r.to_bits(),
-        };
+        }
+    }
+    fn feed(&mut self, t: i32, b: usize, comp: &mut [i32; 24], crowd: usize) -> f64 {
+        if !self.fight && !(self.has(Maul) && b == 0) && !(self.lower_wolf() && b == 2) {
+            let (fs, n) = self.foods(t, b, false);
+            if !fs[..n].iter().any(|&f| comp[t as usize * 4 + f] > 0) {
+                return self.v[t as usize];
+            }
+        }
+        let key = self.chain_key(t, b, comp, crowd, false);
         if let Some(&hit) = self.cache.chains.get(&key) {
             self.cache.hits += 1;
             return hit;
@@ -431,7 +461,7 @@ impl<'a> Context<'a> {
         {
             out = self.v[t as usize]
         }
-        if self.cache.chains.len() >= 8192 {
+        if self.cache.chains.len() >= CHAIN_CACHE_LIMIT {
             self.cache.chains.clear();
             self.cache.clears += 1
         }
@@ -599,6 +629,9 @@ impl<'a> Context<'a> {
             })
     }
     fn swap_value(&self, tier: i32) -> f64 {
+        if let Some(value) = self.swap_values[tier as usize].get() {
+            return value;
+        }
         let dist = self.swap_dist(tier);
         let mut v = dist.iter().enumerate().fold(0., |a, (t, &p)| {
             a + p * if t >= 5 { self.r } else { self.v[t] }
@@ -613,7 +646,9 @@ impl<'a> Context<'a> {
                 * self.open_value
         }
         v -= self.scapegoat.unwrap_or(0.);
-        v + self.maiden_bonus(tier)
+        let value = v + self.maiden_bonus(tier);
+        self.swap_values[tier as usize].set(Some(value));
+        value
     }
     fn stair_delta(&self, comp: &[i32; 24], t: i32, b: usize, sign: i32) -> f64 {
         if self.p.w_stair == 0. || t >= 5 {

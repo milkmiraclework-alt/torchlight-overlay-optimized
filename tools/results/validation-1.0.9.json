@@ -1,0 +1,116 @@
+{
+  "version": "1.0.9",
+  "checkedAt": "2026-10-23T20:59:47.458Z",
+  "artifactsVerified": true,
+  "policyUnchanged": true,
+  "budgetsUnchanged": true,
+  "thresholdsUnchanged": true,
+  "changes": [
+    "Memoize rises with separate exact chain-key namespace; cache fixed per-context replacement scores; precompute tool/rule masks.",
+    "Bound calculation cache at 65,536 entries per worker; no RNG draw or arithmetic-order changes.",
+    "Native connected components plus fused text grayscale/contrast/mask/component pipeline; retained JS fallback and fresh per-read crops."
+  ],
+  "validation": {
+    "rules": {
+      "checkedAt": "2026-10-23T20:54:12.677Z",
+      "runs": 264,
+      "moves": 18454,
+      "alternativeActions": 136,
+      "monteCarloPositions": 43,
+      "analyzerCardStates": 24,
+      "elapsedMs": 10678,
+      "reference": "js",
+      "binary": "js/solver-core.wasm",
+      "gameInput": false
+    },
+    "sourceChecks": [
+      "routing",
+      "days",
+      "pick-box",
+      "picture-retry",
+      "profile-import",
+      "window-position",
+      "instrument-reader",
+      "app-updates",
+      "update-install",
+      "rust-wasm",
+      "pixel-kernels",
+      "strategy28",
+      "terminal-gifts",
+      "calculation",
+      "rust-workers",
+      "instruments",
+      "forecast",
+      "forecast-menu",
+      "solver-cache",
+      "chain-cache",
+      "worker-budget",
+      "readiness",
+      "capture",
+      "worker-recovery",
+      "worker-lifecycle",
+      "bundled-site"
+    ],
+    "packagedChecks": [
+      "suite",
+      "overlay",
+      "lifecycle",
+      "instruments",
+      "updates",
+      "portable"
+    ],
+    "rgbColors": 16777216,
+    "exhaustive3x3Masks": 512,
+    "full4kTextWithin128MiB": true,
+    "rawSampleBeforeAfterPositions": 43,
+    "productionBudgetPositions": 8,
+    "readPixelsExactlyMatch": true,
+    "changedImageRereadAndMemoryFallback": true,
+    "realOfferFrames": 10,
+    "realOfferNames": 30,
+    "freshNooseAcquisition": true,
+    "realPanelFrames": 8,
+    "syntheticPanelControls": 2,
+    "allPanelLabelsCorrect": true,
+    "offlinePortable": {
+      "version": "1.0.9",
+      "executable": "Torchlight-Overlay-Portable-1.0.9-x64.exe",
+      "sha256": "8c114d509d62627373931b323fbff4417cda9c37e47a43166aaa458b5b54e3ff",
+      "checkedAt": "2026-10-23T20:57:09.573Z",
+      "bootMs": 5035,
+      "text": "TARTARUS 12345",
+      "ocrMs": 698,
+      "agreed": false,
+      "rustSampleParity": true,
+      "rustRollouts": 8,
+      "externalHttpBlocked": true,
+      "originalInstallUnavailable": true,
+      "occupiedPortIndependent": true,
+      "gameInput": false
+    }
+  },
+  "artifacts": [
+    {
+      "file": "Torchlight-Overlay-Portable-1.0.9-x64.exe",
+      "bytes": 128946251,
+      "sha256": "8c114d509d62627373931b323fbff4417cda9c37e47a43166aaa458b5b54e3ff"
+    },
+    {
+      "file": "Torchlight-Overlay-Setup-1.0.9-x64.exe",
+      "bytes": 129111477,
+      "sha256": "3c21fb60fddc9cb77ecd19e747ffb43a042454320dffd26e58d78578de3fc80e"
+    }
+  ],
+  "memory": {
+    "baseline": 4653056,
+    "candidate": 32047104
+  },
+  "limitations": [
+    "Measurements on eight solver states and two saved 2560x1440 frames. Actual game, waiting/capture and tool-name OCR latency are not timed.",
+    "The calculation cache is larger and bounded at 65,536 entries per worker. Measured peak solver WASM memory grew from about 4.4 MiB to 30.6 MiB per instance in this benchmark.",
+    "All workers are terminated on capture stop or mode exit. These timing gains do not establish parity with another overlay or guarantee instant responses."
+  ],
+  "realInstallerExecuted": false,
+  "realGameCapture": false,
+  "realGameInput": false
+}

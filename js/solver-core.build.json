@@ -1,5 +1,5 @@
 {
-  "wasmSha256": "22682b5013d8aeb649a8a751a0e9c7d72e1d484e74a2b5bf6ea0c43088092702",
+  "wasmSha256": "07a5253aa0e8e0bbd7b5e55058c8ae89da14cc9dbea9c33b62a932154b9eceb2",
   "sources": {
     "js/engine.js": "9cc589e46fa1f00fd6627c1ee356b09bebc99629534f1222f822dea702bb675f",
     "js/solver.js": "90c37a7f52fdf4234d86b9f3dbc14237d9eb002a396d4271509e06963a67b94f",
@@ -13,6 +13,6 @@
     "native/tartarus/src/lib.rs": "22ae39369cead5518f96861dcf8ee34c00cc9c29847d600da07af6d5d91b53da",
     "native/tartarus/src/main.rs": "17a68181589ad9ce217aa3da5ed32f6fc7a27d00c09d0aef7d0d0107488f2ffb",
     "native/tartarus/src/model.rs": "3412b7dedb325ef2564caa7aae8bd30063e1c92bb7312adbdc33746cf6ce1d7a",
-    "native/tartarus/src/policy.rs": "38b20433c2f3713aeef37b0e84570317e617e153021fd162debede899c2fc92c"
+    "native/tartarus/src/policy.rs": "1918b289abb645a2c1ae2199c131be965872ea9dcd778c40222397a943a72534"
   }
 }

@@ -8,11 +8,63 @@ use core::arch::wasm32::*;
 pub extern "C" fn revision() -> u32 { 1 }
 
 #[no_mangle]
+pub unsafe extern "C" fn unvisit_text_mask(mask: *mut u8, n: usize) {
+    for i in 0..n { if *mask.add(i) == 2 { *mask.add(i) = 1; } }
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn mask_blobs(mask: *mut u8, stack: *mut u32, out: *mut f64, cap: usize, w: usize, h: usize) -> usize {
+    let mut count = 0;
+    for i in 0..w * h {
+        if *mask.add(i) != 1 { continue; }
+        *mask.add(i) = 2;
+        *stack = i as u32;
+        let mut len = 1;
+        let (mut n, mut sx, mut sy) = (0u64, 0u64, 0u64);
+        let (mut x0, mut y0, mut x1, mut y1) = (w, h, 0, 0);
+        while len > 0 {
+            len -= 1;
+            let j = *stack.add(len) as usize;
+            let (x, y) = (j % w, j / w);
+            n += 1; sx += x as u64; sy += y as u64;
+            x0 = x0.min(x); y0 = y0.min(y); x1 = x1.max(x); y1 = y1.max(y);
+            for k in [if x > 0 { Some(j-1) } else { None },
+                if x+1 < w { Some(j+1) } else { None },
+                if y > 0 { Some(j-w) } else { None },
+                if y+1 < h { Some(j+w) } else { None }].into_iter().flatten() {
+                if *mask.add(k) == 1 { *mask.add(k) = 2; *stack.add(len) = k as u32; len += 1; }
+            }
+        }
+        if count < cap {
+            let p = out.add(count * 7);
+            for (k, value) in [n as f64, sx as f64, sy as f64, x0 as f64, y0 as f64, x1 as f64, y1 as f64].into_iter().enumerate() { *p.add(k) = value; }
+        }
+        count += 1;
+    }
+    count
+}
+
+#[no_mangle]
 pub unsafe extern "C" fn rgba_gray(input: *const u8, out: *mut f32, n: usize) {
     for i in 0..n {
         let p = input.add(i * 4);
         *out.add(i) = (0.299 * *p as f64 + 0.587 * *p.add(1) as f64
             + 0.114 * *p.add(2) as f64) as f32;
+    }
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn text_mask(rgba: *const u8, lum: *const f32, around: *const f32, mask: *mut u8, n: usize, saturation: f64) {
+    for i in 0..n {
+        *mask.add(i) = 0;
+        let l = *lum.add(i) as f64;
+        let a = *around.add(i) as f64;
+        if l < 45. || l - a < 16.0f64.max(0.3 * a) { continue; }
+        let p = rgba.add(i * 4);
+        let (r, g, b) = (*p, *p.add(1), *p.add(2));
+        let max = r.max(g).max(b);
+        let sat = if max == 0 { 0. } else { (max - r.min(g).min(b)) as f64 / max as f64 };
+        if sat < saturation { *mask.add(i) = 1; }
     }
 }
 

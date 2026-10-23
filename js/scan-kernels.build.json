@@ -1,8 +1,8 @@
 {
-  "wasmSha256": "aeb6cf4bd56542ae59980412bd0e11113f09b8fe53e5dc95783c3dd9c0c248cb",
+  "wasmSha256": "22b1fe68e87f5cf73c24cf48022fb722a1c11fbaba1f2d8fe638acc59a0441cf",
   "sources": {
-    "tools/scan-kernels.rs": "3fded536968c905e641d321666eece0cc5ec2ba9eeebd3e7f211d8df72f3b0b2",
+    "tools/scan-kernels.rs": "1e0ed1e879df741d494b7d7398c63df264e2678ddc9b439f2ee848ed8830e5f9",
     "tools/build-scan-kernels.ps1": "635cb6a901276da555d2803dcdf4d78db1e9df3a311fd04205c3f795cf65ea3c",
-    "js/scan-accelerator.js": "7827a706bc3f784b237a36eefbd307932757b56a8172453348d89a82ed6ecacc"
+    "js/scan-accelerator.js": "98c572e2cfd32b726aed9c3ce6f52f49516c0a2c10364b27ec939a0d6203324f"
   }
 }

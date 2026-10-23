@@ -173,6 +173,11 @@
 
   // Keep component traversal identical for generic masks and text masks.
   function maskBlobs(mask, w, h, x0, y0) {
+    if (kernels?.maskBlobs && mask instanceof Uint8Array && Number.isInteger(w) && Number.isInteger(h)
+        && w > 0 && h > 0 && mask.length === w*h && Number.isFinite(x0) && Number.isFinite(y0)) {
+      try { return kernels.maskBlobs(mask, w, h, x0, y0); }
+      catch { kernels = null; }
+    }
     const out = [];
     const stack = [];
     for (let i = 0; i < w * h; i++) {
@@ -879,6 +884,12 @@
     const w = x1 - x0 + 1;
     const h = y1 - y0 + 1;
     if (w < 4 || h < 4) return null;
+    if (kernels?.textComponents && img.data.length === img.width*img.height*4
+        && (img.data instanceof Uint8Array || img.data instanceof Uint8ClampedArray)) {
+      const rgba = new Uint8Array(w*h*4);
+      for (let y=0;y<h;y++) { const start=((y0+y)*img.width+x0)*4; rgba.set(img.data.subarray(start,start+w*4),y*w*4); }
+      return { x0, y0, w, h, rgba };
+    }
     const lum = new Float32Array(w * h);
     const data = img.data;
     for (let y = 0; y < h; y++) {
@@ -896,12 +907,20 @@
   function preparedTextLines(img, prepared, opts) {
     if (!prepared) return [];
     const o = Object.assign({ minH: 6, maxH: 60, s: 0.34 }, opts || {});
-    const { x0, y0, w, h, lum } = prepared;
-    const around = blur(lum, w, h, o.r || Math.max(3, Math.round(o.maxH / 3)));
-    // Build the text mask directly: the generic blob predicate otherwise
-    // repeats coordinate conversions and a callback for every pixel.
-    const mask = textMask(img, x0, y0, w, h, lum, around, o.s);
-    const found = maskBlobs(mask, w, h, x0, y0).filter((b) => b.h >= o.minH * 0.45 && b.h <= o.maxH && b.w <= o.maxH * 1.2 && b.n >= 4);
+    const { x0, y0, w, h } = prepared;
+    const r = o.r || Math.max(3, Math.round(o.maxH / 3));
+    let groups;
+    if (prepared.rgba && kernels?.textComponents && Number.isInteger(r) && r > 0 && r <= Math.max(w,h)) {
+      try { groups = kernels.textComponents(prepared, r, o.s); }
+      catch { kernels = null; }
+    }
+    if (!groups) {
+      const lum = prepared.lum || grayOf({ width:w, height:h, data:prepared.rgba });
+      const around = blur(lum, w, h, r);
+      const mask = textMask(img, x0, y0, w, h, lum, around, o.s);
+      groups = maskBlobs(mask, w, h, x0, y0);
+    }
+    const found = groups.filter((b) => b.h >= o.minH * 0.45 && b.h <= o.maxH && b.w <= o.maxH * 1.2 && b.n >= 4);
     // Lines: glyphs whose vertical middles line up.
     found.sort((a, b) => (a.y0 + a.y1) / 2 - (b.y0 + b.y1) / 2);
     const lines = [];
