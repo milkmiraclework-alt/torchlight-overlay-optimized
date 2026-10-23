@@ -1,0 +1,10 @@
+{
+  "version": "1.0.1",
+  "checkedAt": "2026-10-23T10:48:44.301Z",
+  "installerPayloadMatches": true,
+  "secondInstanceOpensSettings": true,
+  "boardRemainsHidden": true,
+  "singlePrimaryInstance": true,
+  "gameCapture": false,
+  "gameInput": false
+}

@@ -44,14 +44,21 @@ const STEAM_APP = '1974050'; // Torchlight: Infinite on Steam
 const HOTKEYS = { overlay: 'Control+Alt+O', analyzer: 'Control+Alt+A', capture: 'Control+Alt+P' };
 const ICON = path.join(__dirname, 'build', 'icon.png');
 
+if (TEST && arg('app-data')) app.setPath('appData', path.resolve(arg('app-data')));
 if (arg('user-data')) app.setPath('userData', path.resolve(arg('user-data')));
-else if (OPTIMIZED) app.setPath('userData', path.join(app.getPath('appData'), 'Tartarus Overlay'));
+else app.setPath('userData', path.join(app.getPath('appData'), 'Torchlight Overlay'));
 // The app's windows sit behind a full-screen game, hidden or not. Chromium
 // treats a covered window as not drawn, and a window shown again could show
 // an old, narrow picture of its page: every window draws as if in front.
 app.commandLine.appendSwitch('disable-features', 'CalculateNativeWinOcclusion');
 app.commandLine.appendSwitch('disable-backgrounding-occluded-windows');
 app.setAppUserModelId(OPTIMIZED ? 'io.github.milkmiraclework-alt.torchlight-overlay-optimized' : 'io.github.blahdot3h.tartarus-overlay');
+// Acquire the unified profile before importing/writing anything. Installer
+// relaunches must not write defaults over a running instance's settings.
+if (!app.requestSingleInstanceLock()) { app.quit(); return; }
+const profileImport = arg('user-data') ? null : require('./lib/profile-import').importProfile({
+  legacy: path.join(app.getPath('appData'), 'Tartarus Overlay'), target: app.getPath('userData')
+});
 
 // ---------- Settings ----------
 
@@ -133,6 +140,7 @@ function note(...parts) {
   }
 }
 process.on('uncaughtException', (e) => note('error', String(e && e.stack || e)));
+if (profileImport) note('legacy profile import:', profileImport);
 
 // ---------- The site's pages ----------
 
@@ -586,7 +594,7 @@ function toggle(name) {
 
 function makeAnalyzer() {
   const b = settings.analyzer && onScreen(settings.analyzer) ? settings.analyzer : null;
-  const win = makeSiteWindow('analyzer', Object.assign({ width: 1280, height: 900, title: 'Board analyzer · Tartarus Overlay' }, b || {}));
+  const win = makeSiteWindow('analyzer', Object.assign({ width: 1280, height: 900, title: 'Tartarus board correction · Torchlight Overlay' }, b || {}));
   const keep = () => {
     if (win.isMaximized() || win.isMinimized()) return;
     settings.analyzer = win.getBounds();
@@ -777,7 +785,10 @@ ipcMain.on('fast:set-settings', (e, patch) => {
   if (restart) suite?.reconfigure(); else suite?.sync();
   publishFastConfig(); rebuildMenu();
 });
-ipcMain.handle('suite:info', e => (TEST || DEV) && fromPage(e, 'analyzer') ? suite?.info() : null);
+ipcMain.handle('suite:info', e => (TEST || DEV) && fromPage(e, 'analyzer') ? {
+  ...suite?.info(), profile: app.getPath('userData'),
+  windows: { settings: !!wins.follow?.isVisible(), board: !!wins.analyzer?.isVisible() }
+} : null);
 ipcMain.on('suite:read', e => { if (fromPage(e, 'follow')) command('capture'); });
 ipcMain.on('consent:set', (e, value) => {
   if (!fromPage(e, 'follow')) return;
@@ -1070,10 +1081,13 @@ function registerHotkeys() {
 
 // ---------- Start ----------
 
-if (!app.requestSingleInstanceLock()) {
-  app.quit();
-} else {
-  app.on('second-instance', () => show('analyzer'));
+{
+  let settingsRequested = false;
+  app.on('second-instance', () => {
+    note('additional launch: opening common settings');
+    settingsRequested = true;
+    if (wins.analyzer && !wins.analyzer.isDestroyed()) { show('follow'); settingsRequested = false; }
+  });
   app.on('window-all-closed', () => {
     // The app lives in the tray.
   });
@@ -1140,7 +1154,7 @@ if (!app.requestSingleInstanceLock()) {
     }
     makeTray();
     registerHotkeys();
-    if (!TEST && !settings.consent) show('follow');
+    if ((!TEST && !settings.consent) || settingsRequested) { show('follow'); settingsRequested = false; }
     lookForGame();
     setInterval(updateOverlay, 250);
     if (!TEST && !game.running) {
