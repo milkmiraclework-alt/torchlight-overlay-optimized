@@ -1509,8 +1509,21 @@
     for (const r of textRadii(img)) lines.push(...preparedTextLines(img, text, { minH: 8, maxH: Math.max(70, img.height * 0.1), r, s: 1.01 }));
     // The day number is the biggest text over the board.
     const tallest = Math.max(1, ...lines.flatMap((l) => l.glyphs.filter((g) => g.w >= 0.25 * g.h).map((g) => g.h)));
+    const fragments = lines.flatMap((l) => l.glyphs);
     for (const line of lines) {
-      const glyphs = line.glyphs.filter((g) => g.w >= 0.25 * g.h && g.h >= img.height * 0.016);
+      // Keep the small letters in "day(s) until Riot" as context. Applying
+      // the number's minimum height here removed those letters at 1080p,
+      // rejected the actual number and let a taller letter (e.g. y) win.
+      const glyphs = line.glyphs.map((g) => {
+        // A translucent strip can split the tops off both digits. The text
+        // detector puts those tiny caps on a separate line; recover only
+        // close caps directly above this glyph, before comparing digits.
+        const caps = fragments.filter((p) => p.y1 < g.y0 && g.y0 - p.y1 <= 0.22 * g.h && p.h <= 0.35 * g.h
+          && Math.min(p.x1, g.x1) - Math.max(p.x0, g.x0) + 1 > 0.5 * p.w);
+        if (!caps.length) return g;
+        const y0 = Math.min(g.y0, ...caps.map((p) => p.y0));
+        return { ...g, y0, h: g.y1 - y0 + 1 };
+      }).filter((g) => g.w >= 0.25 * g.h && g.h >= img.height * 0.006);
       // Two glyphs of the same height, side by side: one number.
       const pair = (a, b) => !!a && !!b && Math.abs(b.h - a.h) < 0.2 * a.h && b.x0 - a.x1 < 0.7 * a.h && b.w < b.h * 1.1 && a.w < a.h * 1.1;
       for (let i = 0; i < glyphs.length; i++) {
@@ -1518,7 +1531,7 @@
         // follows: the number, then "day(s) until Riot". The second digit of
         // a pair never starts a number of its own.
         const a = glyphs[i];
-        if (a.h < 8 || a.h > img.height * 0.09 || a.w > a.h * 1.1 || pair(glyphs[i - 1], a)) continue;
+        if (a.h < Math.max(8, img.height * 0.016) || a.h > img.height * 0.09 || a.w > a.h * 1.1 || pair(glyphs[i - 1], a)) continue;
         const word = [a];
         const b = glyphs[i + 1];
         if (pair(a, b)) word.push(b);
@@ -1897,24 +1910,29 @@
     const x1 = Math.min(img.width - 1, Math.round(c + 85 * s));
     const y0 = Math.max(0, Math.round(top + 270 * s));
     const y1 = Math.min(img.height - 1, Math.round(top + 480 * s));
-    const xs = [];
-    const ys = [];
+    if (x1 < x0 || y1 < y0) return null;
+    const xs = new Uint32Array(x1 - x0 + 1);
+    const ys = new Uint32Array(y1 - y0 + 1);
+    let count = 0;
     for (let y = y0; y <= y1; y++) {
       for (let x = x0; x <= x1; x++) {
         const [h, sat, v] = hsvAt(img, x, y);
         // Bright metal, or a glow that isn't the torches' warm orange.
         if (v > 0.32 || (sat > 0.45 && v > 0.18 && !(h >= 15 && h <= 50))) {
-          xs.push(x);
-          ys.push(y);
+          xs[x - x0]++; ys[y - y0]++; count++;
         }
       }
     }
-    if (xs.length < 400 * s * s) return null;
-    xs.sort((a, b) => a - b);
-    ys.sort((a, b) => a - b);
+    if (count < 400 * s * s) return null;
     // A few stray sparkles around the art don't stretch the box.
-    const q = (a, f) => a[Math.round(f * (a.length - 1))];
-    return [q(xs, 0.01), q(ys, 0.01), q(xs, 0.99), q(ys, 0.99)];
+    // Exact order statistics from bounded coordinate counts. No need to
+    // allocate/sort two entries for every bright pixel at every UI scale.
+    const q = (bins, f, origin) => {
+      const rank = Math.round(f * (count - 1));
+      let seen = 0;
+      for (let i = 0; i < bins.length; i++) { seen += bins[i]; if (seen > rank) return origin + i; }
+    };
+    return [q(xs, 0.01, x0), q(ys, 0.01, y0), q(xs, 0.99, x0), q(ys, 0.99, y0)];
   }
 
   // Whether the Re-roll button shows, left of Confirm: its label, "Re-roll"
@@ -1972,22 +1990,23 @@
       }
       return sum;
     };
-    let u = u0;
+    let u = u0, boxes = boxesAt(u0);
     // The biggest size that fits, not the best centered: a far smaller
     // window can fit around a part of the art (report 336: 0.64 fitted
     // better than the right 0.98, reading the Dog Tag and the Collar as a
     // Whip and a Casket).
-    if (offCenter(boxesAt(u0), u0) === Infinity) {
+    if (offCenter(boxes, u0) === Infinity) {
       for (let i = 1; i <= 25; i++) {
         const ui = u0 * (1 - 0.02 * i);
-        if (offCenter(boxesAt(ui), ui) < Infinity) {
-          u = ui;
+        const candidate = boxesAt(ui);
+        if (offCenter(candidate, ui) < Infinity) {
+          u = ui; boxes = candidate;
           break;
         }
       }
     }
     const cards = [-1, 0, 1].map((k) => {
-      const box = pickArtBox(img, k, u);
+      const box = boxes[k + 1];
       if (!box) return null;
       const feat = artFeature(img, ...box);
       const best = new Map();
@@ -2004,7 +2023,8 @@
     const ms = Date.now() - t0;
     if (cards.some((c) => !c)) return { ok: false, reason: 'The three instrument cards weren’t found in this picture.', cards, ms };
     if (cards.every((c) => c.conf < 0.2)) return { ok: false, reason: 'This doesn’t look like the instrument pick.', cards, ms };
-    return { ok: true, cards, ui: u, reroll: pickRerollShown(img, u), ms };
+    const reroll = pickRerollShown(img, u);
+    return { ok: true, cards, ui: u, reroll, ms: Date.now() - t0 };
   }
 
   // The reader's references with the panel icons from js/pick-data.js added:

@@ -1,8 +1,10 @@
 {
-  "version": "1.0.4",
-  "checkedAt": "2026-10-23T14:04:38.354Z",
+  "version": "1.0.5",
+  "checkedAt": "2026-10-23T14:26:26.792Z",
   "checks": [
     "routing",
+    "days",
+    "pick-box",
     "picture-retry",
     "profile-import",
     "window-position",

@@ -143,7 +143,7 @@
         return;
       }
     }
-    const read = await (m.bitmap && A.readFrameDirect ? A.readFrameDirect(bitmap) : A.readFrame(bitmap));
+    const read = await (m.bitmap && A.readFrameDirect ? A.readFrameDirect(bitmap, m.dayClock) : A.readFrame(bitmap));
     if (mine !== newest) return;
     // A picture with no board in it: maybe the Warden's Treasure, read by
     // its printed text. A board's picture can catch it too (report 55).

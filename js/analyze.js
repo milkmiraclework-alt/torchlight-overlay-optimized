@@ -231,7 +231,7 @@
   // analyzed. Events the player can't name get a kind the solver re-rolls.
   function buildState(m) {
     const problems = [];
-    if (m.dayProbe) problems.push(`The day changed unexpectedly to ${m.dayProbe.day}. Read the board again to verify the day before calculating.`);
+    if (m.dayProbe) problems.push(m.dayProbe.reason || `The day changed unexpectedly to ${m.dayProbe.day}. Read the board again to verify the day before calculating.`);
     if (m.toolsUncertain || m.toolsOffer?.unread || m.step !== 'choice' && m.toolsOffer) {
       problems.push('Check your instruments before calculating: select the ones you actually hold, then press These are right.');
     }
@@ -1377,6 +1377,7 @@
     for (const b of $('az-tools').querySelectorAll('[data-tool]')) b.setAttribute('aria-pressed', String(model.tools.includes(b.dataset.tool)));
     $('az-tools-confirm').hidden = !model.toolsToConfirm;
     $('az-tools-confirm-text').textContent = model.toolsToConfirm || '';
+    $('az-tools-close').textContent = model.toolsToConfirm ? 'Confirm instruments' : 'Done';
     if (model.toolsToConfirm && model.toolsToConfirm !== toolsAsked) openTools();
     toolsAsked = model.toolsToConfirm || '';
     // The run's instruments first, in the order they were gained, then the
@@ -1384,14 +1385,17 @@
     const toolBox = $('az-tools');
     const held = model.tools.filter((id) => T.TOOLS[id]);
     const order = held.concat(T.TOOL_IDS.filter((id) => !held.includes(id)));
-    if (toolBox.dataset.order !== order.join(',')) {
+    // Selecting the first item under Others leaves the item order identical,
+    // but moves the separator. Include the held count in the layout key.
+    const layoutKey = held.length + ':' + order.join(',');
+    if (toolBox.dataset.order !== layoutKey) {
       for (const id of order) {
         const el = toolBox.querySelector(`[data-tool="${id}"]`);
         if (el) toolBox.appendChild(el);
         if (id === held[held.length - 1]) toolBox.appendChild($('az-tools-rest'));
       }
       $('az-tools-rest').hidden = !held.length;
-      toolBox.dataset.order = order.join(',');
+      toolBox.dataset.order = layoutKey;
       toolBox.scrollTop = 0;
     }
     $('az-rewards').checked = !!model.rewards;
@@ -2228,7 +2232,7 @@
         return;
       }
       reader.result = result;
-      reader.reading = result.ok ? scanToModel(result, model) : null;
+      reader.reading = result.ok ? scanToModel(result, model, o.dayClock) : null;
       // The run's objective and its count, from the board's corner.
       if (result.ok && result.objective && !reader.reading?.model.dayProbe) {
         // Loading OCR can involve a network fetch. Only join an already
@@ -2717,12 +2721,13 @@
         if (error || !result) return resolve({ ok: false, pick: true, reason: error || 'no result', ms });
         if (!result.ok) return resolve({ ok: false, pick: true, reason: result.reason, ms });
         const cards = result.cards.map((c) => ({ sim: c.sim, name: T.toolName(c.sim), conf: c.conf, alts: c.alts, by: 'art' }));
+        const namesAt = performance.now();
         // Each card's printed name, read where it can be, outranks its art.
         readCardNames(canvas, result.ui).then((names) => {
           names.forEach((n, i) => {
             if (n && cards[i]) Object.assign(cards[i], { sim: n.id, name: T.toolName(n.id), conf: 1, by: 'name' });
           });
-          resolve({ ok: true, pick: true, cards, names: cards.map((c) => c.name), unsure: cards.filter((c) => c.conf < 0.5).length, reroll: !!result.reroll, byName: cards.filter((c) => c.by === 'name').length, ocrFailed: names.failed || '', ms: Math.round(performance.now() - t0) });
+          resolve({ ok: true, pick: true, cards, names: cards.map((c) => c.name), unsure: cards.filter((c) => c.conf < 0.5).length, reroll: !!result.reroll, byName: cards.filter((c) => c.by === 'name').length, ocrFailed: names.failed || '', ms: Math.round(performance.now() - t0), artMs: result.ms, namesMs: Math.round(performance.now() - namesAt), workerWaitMs: Math.max(0, ms - (result.ms || 0)) });
         });
       };
       reader.pickId += 1;
@@ -3116,13 +3121,24 @@
     changed();
   }
 
-  function scanToModel(r, base) {
-    if (r.chain) return chainToModel(r, base);
+  function scanToModel(r, base, dayClock) {
+    const clock = dayClock && Number.isInteger(dayClock.day) && [20, 30].includes(dayClock.maxDays) && dayClock.day >= 1 && dayClock.day <= dayClock.maxDays ? dayClock : null;
+    if (r.chain) {
+      const read = chainToModel(r, clock ? { ...base, day: clock.day, maxDays: clock.maxDays, dayProbe: null, boardSeen: true } : base);
+      if (clock) read.notes.push(`Day ${clock.day} of ${clock.maxDays} verified by the game log.`);
+      return read;
+    }
     const m = JSON.parse(JSON.stringify(base));
     const checks = new Set();
     const notes = [];
     // Days until the riot set how much of the run is left.
-    if (r.days) {
+    if (clock) {
+      m.day = clock.day; m.maxDays = clock.maxDays; m.dayProbe = null;
+      notes.push(`Day ${clock.day} of ${clock.maxDays} verified by the game log${r.days && r.days.days !== clock.maxDays - clock.day ? `; the picture's countdown (${r.days.days}) was ignored` : ''}.`);
+    } else if (!r.days || !Number.isInteger(r.days.days) || r.days.days < 0 || r.days.days >= 30) {
+      m.dayProbe = { day: null, maxDays: base.maxDays, reason: 'The days until Riot could not be read reliably. Read the board again before calculating.' };
+      notes.push(m.dayProbe.reason);
+    } else {
       const left = r.days.days;
       if (left < m.maxDays) m.day = Math.max(1, m.maxDays - left);
       else if (left < 30) {
@@ -3131,13 +3147,9 @@
         m.maxDays = 30;
         m.day = 30 - left;
         notes.push(`The riot is ${T.plural(left, 'day')} away, more than this run had, so it's now a 30-day run (Iron Law). Check the day.`);
-      } else {
-        // No run is that long: a misread countdown. It mustn't stretch the
-        // run for good (one read as 38 made every later day "of 39").
-        notes.push(`The days until the riot read as ${left}, more than any run has: check the day.`);
       }
-    } else notes.push('The days until the riot weren’t read: check the day.');
-    if (r.days && Number.isInteger(r.days.days) && r.days.days >= 0 && r.days.days < 30) {
+    }
+    if (!clock && r.days && Number.isInteger(r.days.days) && r.days.days >= 0 && r.days.days < 30) {
       const anchored = base.boardSeen || base.toolsConfirmed || base.day > 1;
       const suspicious = anchored && (m.maxDays !== base.maxDays || m.day < base.day || m.day > base.day + 1);
       const repeated = base.dayProbe && base.dayProbe.day === m.day && base.dayProbe.maxDays === m.maxDays;
@@ -3738,7 +3750,10 @@
       changed();
     });
     $('az-tools-open').addEventListener('click', () => openTools());
-    $('az-tools-close').addEventListener('click', () => closeTools());
+    $('az-tools-close').addEventListener('click', () => {
+      if (model.toolsToConfirm) $('az-tools-ok').click();
+      else closeTools();
+    });
     $('az-tools-dialog').addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         e.preventDefault();
@@ -3976,7 +3991,7 @@
       invalidate,
       setReadStatus: (active, last) => { desktopReading = active; if (last) desktopLastRead = last; desktopChanged(); },
       readFrame: (bitmap) => new Promise((resolve) => readBitmap(bitmap, { quiet: true, folded: true, onRead: resolve })),
-      readFrameDirect: (bitmap) => new Promise((resolve) => readBitmap(bitmap, { quiet: true, folded: true, direct: true, onRead: resolve })),
+      readFrameDirect: (bitmap, dayClock) => new Promise((resolve) => readBitmap(bitmap, { quiet: true, folded: true, direct: true, dayClock: dayClock ? { ...dayClock } : null, onRead: resolve })),
       image: () => reader.image,
       captureImage: () => reader.lastCapture,
       prepare: () => { const worker = readerWorker(); if (FAST_DESKTOP) { prepareSolverWorkers(); prepareReadyWorker(); } return worker; },
@@ -3988,7 +4003,7 @@
       usePick: (read, fresh, reuse) => usePick(read, fresh, reuse),
       expectInstrumentOffer,
       beginRun,
-      readingIssue: () => model.dayProbe ? { retryable: true, dayReading: true, reason: `The day read as ${model.dayProbe.day} after ${model.day}; verifying the countdown.` } : null,
+      readingIssue: () => model.dayProbe ? { retryable: true, dayReading: true, reason: model.dayProbe.reason || `The day read as ${model.dayProbe.day} after ${model.day}; verifying the countdown.` } : null,
       openTools,
       readTreasure: (bitmap) => readTreasure(bitmap),
       readObjective: (bitmap) => readObjective(bitmap),

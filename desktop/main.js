@@ -984,6 +984,7 @@ ipcMain.on('site:advice', (e, data) => {
   if (r && (!was.lastRead || r.at !== was.lastRead.at)) {
     const what = r.pick ? `instrument offer: ${(r.names || []).join(', ')}` : r.objective ? `objective: ${r.name}` : r.treasure ? "Warden's Treasure" : `day ${r.day}`;
     note(`read: ${r.ok ? what + (r.unsure ? `, ${r.unsure} to check` : '') : `failed (${r.reason})`}`);
+    if (r.pick && r.ok) note(`instrument timing: total=${r.ms ?? '?'}ms art=${r.artMs ?? '?'}ms names=${r.namesMs ?? '?'}ms worker-wait=${r.workerWaitMs ?? '?'}ms`);
   }
   const sum = (a) => (a.problems && a.problems.length ? `board problem: ${a.problems[0]}` : a.working ? 'working' : a.stale ? 'board changed' : a.move ? `advice: ${a.move}` : a.nothing ? 'nothing to decide' : '');
   if (sum(data) !== sum(was) && sum(data) && sum(data) !== 'working') note(sum(data));

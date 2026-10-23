@@ -34,7 +34,7 @@ async function connect(url) {
   };
   const call = (method, params = {}) => new Promise((resolve) => {
     const request = ++id;
-    const timeout = method === 'Runtime.evaluate' && process.argv.includes('--frames') ? 120000 : 45000;
+    const timeout = method === 'Runtime.evaluate' && (process.argv.includes('--frames') || process.argv.includes('--day-panels')) ? 120000 : 45000;
     const timer = setTimeout(() => { pending.delete(request); resolve({ error: { message: `${method} timed out` } }); }, timeout);
     pending.set(request, (message) => { clearTimeout(timer); resolve(message); });
     ws.send(JSON.stringify({ id: request, method, params }));
@@ -429,6 +429,17 @@ async function checkBrowserSearchPool(frames, previousBase, compareProbe = false
       }
       const after = await evaluate(`(${checkInstruments.toString()})(true)`);
       console.log(`PASS: direct instrument button reopens a visible, clickable modal twice; physical confirmation across 3 progress updates; 10 conflicting/missing/growing-slot frames across reload; pending/ambiguous picks block advice and unique/manual choices recover: ${JSON.stringify({ before, after })}`);
+      return;
+    }
+    if (process.argv.includes('--day-panels')) {
+      const check = require('./day-panels-check.js');
+      const sourceAt = process.argv.indexOf('--reader-source');
+      if (sourceAt >= 0) await evaluate(fs.readFileSync(path.resolve(process.argv[sourceAt + 1]), 'utf8') + '\ntrue');
+      const labels = check.readSamples(process.argv[process.argv.indexOf('--day-panels') + 1]);
+      const results = await evaluate(`(${check.browserDays.toString()})(${JSON.stringify(labels)},${process.argv.includes('--days-ocr-only')})`);
+      fs.mkdirSync(path.join(ROOT, 'tools/results'), { recursive: true });
+      fs.writeFileSync(path.join(ROOT, 'tools/results/day-panels.json'), JSON.stringify({ version: require('../desktop/package.json').version, checkedAt: new Date().toISOString(), readerSourceOverride: sourceAt >= 0, results, gameCapture: false, gameInput: false }, null, 2) + '\n');
+      console.log('PASS: labelled saved countdowns and packaged day context: ' + JSON.stringify(results));
       return;
     }
     if (process.argv.includes('--instrument-panels')) {

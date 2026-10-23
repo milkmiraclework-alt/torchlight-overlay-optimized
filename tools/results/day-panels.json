@@ -1,0 +1,115 @@
+{
+  "version": "1.0.5",
+  "checkedAt": "2026-10-23T14:26:43.659Z",
+  "readerSourceOverride": false,
+  "results": {
+    "pixels": [
+      {
+        "name": "0004-board.webp",
+        "sha256": "81db9ffe3a28183adf78a6c4ff614dbb87858ac21954756c83ff48d55142fc4c",
+        "width": 1920,
+        "height": 1080,
+        "expectedLeft": 19,
+        "actual": {
+          "days": 19,
+          "conf": 0.8468549111504107
+        },
+        "ms": 1813
+      },
+      {
+        "name": "0004-board.webp",
+        "sha256": "81db9ffe3a28183adf78a6c4ff614dbb87858ac21954756c83ff48d55142fc4c",
+        "width": 2560,
+        "height": 1440,
+        "expectedLeft": 19,
+        "actual": {
+          "days": 19,
+          "conf": 0.8104097755905247
+        },
+        "ms": 1875
+      },
+      {
+        "name": "0004-board.webp",
+        "sha256": "81db9ffe3a28183adf78a6c4ff614dbb87858ac21954756c83ff48d55142fc4c",
+        "width": 3840,
+        "height": 2160,
+        "expectedLeft": 19,
+        "actual": {
+          "days": 19,
+          "conf": 0.810810754111444
+        },
+        "ms": 1508
+      },
+      {
+        "name": "0016-board.webp",
+        "sha256": "13474d91391a65fdd3fdd9036efb9adf0724b67d03b8cbd9875dd381673106be",
+        "width": 1920,
+        "height": 1080,
+        "expectedLeft": 14,
+        "actual": {
+          "days": 14,
+          "conf": 0.7597231008918021
+        },
+        "ms": 881
+      },
+      {
+        "name": "0016-board.webp",
+        "sha256": "13474d91391a65fdd3fdd9036efb9adf0724b67d03b8cbd9875dd381673106be",
+        "width": 2560,
+        "height": 1440,
+        "expectedLeft": 14,
+        "actual": {
+          "days": 14,
+          "conf": 0.7383386087380349
+        },
+        "ms": 1584
+      },
+      {
+        "name": "0016-board.webp",
+        "sha256": "13474d91391a65fdd3fdd9036efb9adf0724b67d03b8cbd9875dd381673106be",
+        "width": 3840,
+        "height": 2160,
+        "expectedLeft": 14,
+        "actual": {
+          "days": 14,
+          "conf": 0.7280510927746077
+        },
+        "ms": 1564
+      }
+    ],
+    "logContext": [
+      {
+        "day": 10,
+        "maxDays": 20,
+        "injectedCountdown": 2,
+        "actualDay": 10
+      },
+      {
+        "day": 11,
+        "maxDays": 20,
+        "injectedCountdown": 2,
+        "actualDay": 11
+      },
+      {
+        "day": 1,
+        "maxDays": 30,
+        "injectedCountdown": 19,
+        "actualDay": 1
+      },
+      {
+        "day": 30,
+        "maxDays": 30,
+        "injectedCountdown": 38,
+        "actualDay": 30
+      },
+      {
+        "day": 20,
+        "maxDays": 20,
+        "injectedCountdown": "missing",
+        "actualDay": 20
+      }
+    ]
+  },
+  "gameCapture": false,
+  "gameInput": false
+}

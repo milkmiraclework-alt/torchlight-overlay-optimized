@@ -91,6 +91,17 @@ module.exports = async function checkInstruments(resume = false, throughOverlay 
       document.querySelector('#az-tools [data-tool="claws"]').click(); document.getElementById('az-tools-ok').click();
       A.beginRun('new-run-fixture');
       check(saved().model.toolsConfirmed.tools === 'claws', 'A duplicate start event erased the new run again');
+      A.openTools();
+      const divider = document.getElementById('az-tools-rest'), firstOther = divider.nextElementSibling;
+      check(firstOther?.dataset.tool, 'Fixture has no first item under Others');
+      firstOther.click();
+      check(divider.previousElementSibling === firstOther && firstOther.getAttribute('aria-pressed') === 'true', 'Selecting the first Other left it below the divider');
+      firstOther.click();
+      check(divider.nextElementSibling === firstOther && firstOther.getAttribute('aria-pressed') === 'false', 'Removing the last held item left it above the divider');
+      firstOther.click();
+      check(document.getElementById('az-tools-close').textContent === 'Confirm instruments', 'Header silently closes unconfirmed edits');
+      document.getElementById('az-tools-close').click();
+      check(!document.getElementById('az-tools-dialog').open && saved().model.toolsConfirmed.tools === [firstOther.dataset.tool, 'claws'].sort().join(','), 'Header did not save/confirm the actual selected set');
     }
     return { resume, frames: 5, tools: data.model.tools, confirmation: data.model.toolsConfirmed, cacheHit: cached, selectionGuards: resume, dayRegression: resume };
   } finally { panel = null; window.Worker = OriginalWorker; }

@@ -32,6 +32,8 @@
   let giftOpen = false;
   const startedAt = Date.now();
   const startSignals = new Set();
+  let dayClock = null, dayClockAt = 0;
+  function clearDayClock() { dayClock = null; dayClockAt = 0; }
   // One Rainbow logs two sounds and one vault-cell light. Count the burst
   // by unique cells, or half the sounds if cell lines are unavailable.
   const burst = { last: 0, base: 0, sounds: 0, cells: new Set() };
@@ -87,6 +89,7 @@
   async function sync() {
     if (!C.agreed()) { suspend('disabled'); C.stopLog(); logFor = ''; tell(); return; }
     if (game.log && (C.state.log === 'off' || game.log.path !== logFor)) {
+      clearDayClock();
       C.useHandle(handle);
       logFor = game.log.path;
     }
@@ -104,6 +107,7 @@
     const enabled = !!consent && !consent.withdrawn && consent.version === C.CONSENT_VERSION;
     if (!enabled) suspend('disabled', true);
     else if (settings.activeMode && settings.activeMode !== 'tartarus') suspend('other-mode', true);
+    if (!enabled || (settings.activeMode && settings.activeMode !== 'tartarus')) clearDayClock();
     const previous = JSON.parse(localStorage.getItem('tartarus-sim:auto:v1') || '{}');
     localStorage.setItem('tartarus-sim:auto:v1', JSON.stringify({ ...previous, enabled, consent: enabled ? C.CONSENT_VERSION : 0, consentAt: consent && consent.at }));
     C.setPace(settings.speed ? 0.45 : 1);
@@ -115,6 +119,7 @@
     if (/Btn_S16GamePlay_Start\b/.test(line)) {
       const at = stampMs(event.at);
       if (at && at >= startedAt - 2000 && at <= Date.now() + 2000 && !startSignals.has(event.at)) {
+        clearDayClock();
         startSignals.add(event.at);
         while (startSignals.size > 16) startSignals.delete(startSignals.values().next().value);
         id++; latestRead = null; Auto.cancel(); A.beginRun?.('start:' + event.at);
@@ -123,8 +128,19 @@
       Object.assign(burst, { last: 0, base: 0, sounds: 0, cells: new Set() });
       if (A.giftsDone) A.giftsDone();
     }
-    if (/S16BoardMain (?:Hide|Destory|Destroy)\b|S16GamePlayEntry (?:Run|Destory|Destroy)\b|S16GamePlayCheckOut Run|UI_S16_Riot_Interface|Btn_S16GamePlay_CheckOut_(?:AbandonChallenge|StartChallenge)|LogLoad: LoadMap:/.test(line)) suspend('left-board');
+    if (/S16BoardMain (?:Hide|Destory|Destroy)\b|S16GamePlayEntry (?:Run|Destory|Destroy)\b|S16GamePlayCheckOut Run|UI_S16_Riot_Interface|Btn_S16GamePlay_CheckOut_(?:AbandonChallenge|StartChallenge)|LogLoad: LoadMap:/.test(line)) { clearDayClock(); suspend('left-board'); }
     else if (/S16BoardMain Run|Btn_S16GamePlay_Start|S16BoardTaskPop Run|S16BoardRelicPop Run/.test(line)) activate();
+    // This is the game's current day, not its countdown. Keep it with the
+    // captured frame, so later log lines cannot change a read in progress.
+    if (/S16BoardNewDayPop Run\b/.test(line)) clearDayClock();
+    const clock = /\[S16LastDay\] check cur=(\d+) max=(\d+)\b/.exec(line);
+    if (clock) {
+      const at = stampMs(event.at), day = Number(clock[1]), maxDays = Number(clock[2]);
+      if (at && at >= startedAt - 2000 && at >= dayClockAt && at >= Date.now() - 10000 && at <= Date.now() + 2000 && [20, 30].includes(maxDays) && day >= 0 && day <= maxDays) {
+        dayClockAt = at;
+        dayClock = day ? { day, maxDays, at } : null;
+      }
+    }
     if (/Btn_S16Board_ActionCell/.test(line)) lastAction = stampMs(event.at);
     if (/Eating_red_screen/.test(line)) lastEat = stampMs(event.at);
     if (/ColoredPop_Confirm/.test(line)) {
@@ -187,7 +203,8 @@
     const fresh = hits.some((h) => /check cur=0\b/.test(h.text || ''));
     A.setReadStatus({ at: Date.now(), kind: event.kind });
     try {
-      await Auto.receive({ id: mine, kind: event.kind, bitmap: event.frame, fresh, after, treasureView, gifts: { ...gifts }, retryOffer: event.kind === 'instruments' }, (patch) => {
+      const clock = dayClock && Date.now() - dayClock.at <= 120000 ? { ...dayClock } : null;
+      await Auto.receive({ id: mine, kind: event.kind, bitmap: event.frame, dayClock: clock, fresh, after, treasureView, gifts: { ...gifts }, retryOffer: event.kind === 'instruments' }, (patch) => {
         if (mine !== id || !patch.read) return;
         const read = { ...patch.read, at: Date.now() };
         latestRead = { id: mine, readMs: performance.now() - started, trigger: event.kind === 'manual' ? started : triggeredAt || started, readAt: performance.now(), image: event.kind !== 'treasure' };
@@ -205,6 +222,7 @@
   });
   D.onGame((next) => {
     const moved = game.running && next.running && game.window && next.window && game.window !== next.window;
+    if (!next.running || moved) clearDayClock();
     game = next;
     if (moved && C.state.window === 'on') C.stopWindow();
     sync();
