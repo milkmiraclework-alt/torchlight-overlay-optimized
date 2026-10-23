@@ -1,0 +1,14 @@
+{
+  "version": "1.0.0",
+  "checkedAt": "2026-10-23T10:15:14.681Z",
+  "actualNativeCapture": true,
+  "nativeAdvice": true,
+  "manualNativeCapture": true,
+  "modeSwitching": true,
+  "zeroInactiveWorkers": true,
+  "sharedCaptureStop": true,
+  "automaticCpuBudget": true,
+  "recordingExcluded": true,
+  "gameCapture": false,
+  "gameInput": false
+}

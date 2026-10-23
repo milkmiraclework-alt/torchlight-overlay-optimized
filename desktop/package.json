@@ -1,0 +1,80 @@
+{
+  "name": "torchlight-overlay-optimized",
+  "productName": "Torchlight Overlay",
+  "version": "1.0.0",
+  "description": "Read-only Tartarus and Vorax overlays for Torchlight: Infinite",
+  "author": "CoffeeBns",
+  "license": "UNLICENSED",
+  "private": true,
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "local": "electron . --fast --site=http://localhost:8090/",
+    "dist": "node ../tools/stage-overlay.js && electron-builder --win --x64 --publish never",
+    "dist:dir": "node ../tools/stage-overlay.js && electron-builder --win --x64 --dir --publish never"
+  },
+  "dependencies": {
+    "koffi": "2.16.3"
+  },
+  "devDependencies": {
+    "@tesseract.js-data/eng": "1.0.0",
+    "electron": "44.5.1",
+    "electron-builder": "26.16.1",
+    "tesseract.js": "5.1.1"
+  },
+  "build": {
+    "appId": "io.github.milkmiraclework-alt.torchlight-overlay-optimized",
+    "productName": "Torchlight Overlay",
+    "files": [
+      "main.js",
+      "preload.js",
+      "lib/**",
+      "build/icon.png",
+      "!node_modules/koffi/build/koffi/{darwin_arm64,darwin_x64,freebsd_arm64,freebsd_ia32,freebsd_x64,linux_arm64,linux_armhf,linux_ia32,linux_loong64,linux_riscv64d,linux_x64,musl_arm64,musl_x64,openbsd_ia32,openbsd_x64,win32_arm64,win32_ia32}/**",
+      "!node_modules/koffi/{src,vendor,doc}/**"
+    ],
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ],
+      "icon": "build/icon.png"
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "artifactName": "Torchlight-Overlay-Setup-${version}-${arch}.${ext}",
+      "shortcutName": "Torchlight Overlay",
+      "uninstallDisplayName": "Torchlight Overlay"
+    },
+    "executableName": "Torchlight Overlay",
+    "extraResources": [
+      {
+        "from": "dist/bundled-site",
+        "to": "site",
+        "filter": [
+          "**/*"
+        ]
+      },
+      {
+        "from": "native",
+        "to": "native",
+        "filter": [
+          "vorax-backend.exe",
+          "vorax-build.json",
+          "VORAX-LICENSE.txt"
+        ]
+      }
+    ],
+    "asarUnpack": [
+      "node_modules/koffi/**/*.node",
+      "node_modules/koffi/**/*.dll"
+    ],
+    "portable": {
+      "artifactName": "Torchlight-Overlay-Portable-${version}-${arch}.${ext}"
+    }
+  }
+}

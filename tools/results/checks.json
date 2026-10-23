@@ -1,0 +1,26 @@
+{
+  "version": "1.0.0",
+  "checkedAt": "2026-10-23T10:14:53.640Z",
+  "checks": [
+    "routing",
+    "picture-retry",
+    "rust-wasm",
+    "strategy28",
+    "terminal-gifts",
+    "calculation",
+    "rust-workers",
+    "instruments",
+    "forecast",
+    "forecast-menu",
+    "solver-cache",
+    "chain-cache",
+    "worker-budget",
+    "readiness",
+    "capture",
+    "worker-recovery",
+    "worker-lifecycle",
+    "bundled-site"
+  ],
+  "gameCapture": false,
+  "gameInput": false
+}

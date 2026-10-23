@@ -1,0 +1,17 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width">
+<title>Torchlight Overlay settings</title>
+<style>
+body{background:#11191d;color:#e8eee9;font:16px system-ui;margin:24px;line-height:1.5}button,select,input[type=number]{padding:8px 12px;border:1px solid #43564f;border-radius:6px;background:#263a32;color:#e8eee9}button{cursor:pointer;margin:6px 6px 6px 0}label{display:block;margin:14px 0}small{color:#a9b8b1}input[type=number]{width:70px}h2{margin-top:0}
+</style>
+<h2>Torchlight Overlay</h2>
+<p id="status">Loading…</p>
+<label>Mode <select id="mode"><option value="auto">Automatic</option><option value="tartarus">Tartarus</option><option value="vorax">Vorax</option></select></label>
+<button id="enable">Enable game capture</button><button id="disable">Stop capture</button>
+<p><small>Reads the game window and log. You make every move. Screenshots are not recorded or uploaded.</small></p>
+<label><input id="speed" type="checkbox"> Speed-up is on in Tartarus</label>
+<label>Vorax: Intern Shelley level <select id="shelley"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></label>
+<label>Vorax simulation threads <input id="threads" type="number" min="0" max="128" value="0"> <small>0 = automatic</small></label>
+<button id="read">Read screen now</button><button id="log">Choose UE_game.log</button>
+<p id="follow-enable-log"><small>In the game: Esc → Account Related → Enable Log, then log out and back in. Use borderless or windowed mode.</small></p>
+<p><small>Ctrl+Alt+P / X: read · Ctrl+Alt+O / V: show/hide · Ctrl+Alt+Q: quit</small></p>
+<script src="settings.js"></script></html>

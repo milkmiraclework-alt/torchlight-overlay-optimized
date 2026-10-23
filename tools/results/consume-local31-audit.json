@@ -1,0 +1,24 @@
+{
+  "checkedAt": "2026-10-23T10:10:52.687Z",
+  "baseline": "Frozen local.30 WASM",
+  "current": "local.31 WASM, same core used by unified 1.0.0",
+  "rolloutsPerAction": 400,
+  "positions": 56,
+  "before": {
+    "swap": 24,
+    "devour": 18,
+    "end": 11,
+    "hunt": 3
+  },
+  "after": {
+    "swap": 24,
+    "devour": 18,
+    "end": 11,
+    "hunt": 3
+  },
+  "changed": 0,
+  "differences": [],
+  "limitations": "Independent synthetic observed manage positions, identical states and shared rollout seeds, production recommendation threshold. Not the distribution of user boards and not a global guarantee of strategy quality. No changes to the ordinary Consume score were made by local.31.",
+  "gameCapture": false,
+  "gameInput": false
+}

@@ -1,0 +1,13 @@
+{
+  "version": "1.0.0",
+  "checkedAt": "2026-10-23T10:16:32.417Z",
+  "checks": [
+    "suite",
+    "overlay",
+    "lifecycle",
+    "instruments",
+    "portable"
+  ],
+  "gameCapture": false,
+  "gameInput": false
+}

@@ -1,0 +1,8 @@
+desktop/node_modules/
+desktop/dist/
+vorax/target/
+native/tartarus/target/
+local/
+sandbox/
+*.log
+.DS_Store

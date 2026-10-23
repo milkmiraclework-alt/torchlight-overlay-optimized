@@ -1,0 +1,33 @@
+name: Build Windows application
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: desktop/package-lock.json
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Verify and build the native Vorax backend
+        shell: powershell
+        run: ./tools/build-vorax-backend.ps1
+      - name: Build the Portable EXE and installer
+        shell: powershell
+        run: ./tools/build-standalone.ps1
+      - name: Check routing, bounded retries and Rust calculations
+        run: node tools/check.js
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Torchlight-Overlay-Windows-x64
+          path: |
+            desktop/dist/builds/*/Torchlight-Overlay-*-x64.exe
+            desktop/dist/builds/*/SHA256SUMS.txt
+            desktop/dist/builds/*/standalone-build.json
+          if-no-files-found: error

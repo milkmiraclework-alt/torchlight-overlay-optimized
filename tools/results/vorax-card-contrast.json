@@ -1,0 +1,18 @@
+{
+  "checkedAt": "2026-10-23T09:52:36.779Z",
+  "oldVersion": "0.1.4-smart.2",
+  "oldCardUnknown": true,
+  "currentVersion": "1.0.0 unified / smart.3 reader",
+  "recognizedCards": [
+    "Hollow Spinal Solution",
+    "Twin Hormone - Pest",
+    "Fast-Acting Heart Tonic"
+  ],
+  "unknownCards": 0,
+  "readMs": 307,
+  "oldReadMs": 940,
+  "inputSha256": "7ea2d6ec3b2ee9c22da590350030925300f7d6a1b645faf88f2ee928ce2236ac",
+  "limitations": "One user-provided PNG, 2524x1412, not the 2560x1440 live capture. Card recognition comparison only; board icon classifications on the cropped PNG are not a live accuracy audit. The image is not published.",
+  "gameCapture": false,
+  "gameInput": false
+}

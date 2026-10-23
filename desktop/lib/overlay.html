@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:">
+<title>Torchlight Overlay</title>
+<style>
+  /* The site's colors (css/style.css), for a card over the game. */
+  :root {
+    --stone: #0f1216;
+    --slab: #171b21;
+    --slab-hi: #1f242c;
+    --iron: #353c47;
+    --iron-hi: #545e6d;
+    --chalk: #e3e6eb;
+    --ash: #959dab;
+    --bone: #eadfc5;
+    --blood: #e0675f;
+    --moss: #86c497;
+    --teal: #5fc4b8;
+    --check: #f1cd48;
+    --font-display: "Big Shoulders Stencil Display", "Arial Narrow", Impact, sans-serif;
+    --font-body: "Barlow Semi Condensed", "Segoe UI", system-ui, sans-serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+    --radius: 6px;
+    color-scheme: dark;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html,
+  body {
+    margin: 0;
+    background: transparent;
+    overflow: hidden;
+    user-select: none;
+  }
+
+  body {
+    color: var(--chalk);
+    font: 14px/1.35 var(--font-body);
+  }
+
+  .card {
+    margin: 0;
+    border: 1px solid color-mix(in srgb, var(--teal) 40%, var(--iron));
+    border-radius: var(--radius);
+    background: color-mix(in srgb, var(--stone) 92%, transparent);
+    overflow: hidden;
+  }
+
+  .head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 6px 5px 10px;
+    border-bottom: 1px solid var(--iron);
+    background: color-mix(in srgb, var(--slab) 90%, transparent);
+    -webkit-app-region: drag;
+    cursor: move;
+  }
+
+  .brand {
+    color: var(--teal);
+    font: 800 15px/1 var(--font-display);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .day {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    color: var(--ash);
+    font: 500 11.5px/1.2 var(--font-mono);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .head button {
+    -webkit-app-region: no-drag;
+    display: grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    border: 0;
+    border-radius: 4px;
+    background: transparent;
+    color: var(--ash);
+    font: 600 14px/1 var(--font-body);
+    cursor: pointer;
+  }
+
+  .head button:hover {
+    background: var(--slab-hi);
+    color: var(--bone);
+  }
+
+  .head button[aria-pressed="true"] {
+    color: var(--check);
+  }
+
+  .body {
+    padding: 8px 10px 9px;
+  }
+
+  .eyebrow {
+    margin: 0 0 2px;
+    color: var(--teal);
+    font: 500 10.5px/1.2 var(--font-mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .move {
+    margin: 0 0 4px;
+    color: var(--bone);
+    font: 700 21px/1.15 var(--font-body);
+    text-wrap: balance;
+  }
+
+  .why {
+    margin: 0 0 4px;
+    color: var(--chalk);
+    font-size: 13.5px;
+  }
+
+  .meta {
+    margin: 0;
+    color: var(--ash);
+    font: 400 11.5px/1.4 var(--font-mono);
+  }
+
+  .alt {
+    margin: 4px 0 0;
+    color: var(--ash);
+    font-size: 12.5px;
+  }
+
+  .line {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 6px;
+    padding: 6px 8px;
+    border-radius: 4px;
+    font-size: 13px;
+  }
+
+  .line p {
+    flex: 1;
+    margin: 0;
+  }
+
+  .line.is-warn {
+    border: 1px solid color-mix(in srgb, var(--check) 50%, transparent);
+    background: color-mix(in srgb, var(--check) 10%, transparent);
+    color: var(--check);
+  }
+
+  .line.is-bad {
+    border: 1px solid color-mix(in srgb, var(--blood) 55%, transparent);
+    background: color-mix(in srgb, var(--blood) 12%, transparent);
+    color: #f3a49e;
+  }
+
+  .line.is-info {
+    border: 1px solid var(--iron);
+    background: var(--slab);
+    color: var(--chalk);
+  }
+
+  .spin {
+    flex: none;
+    width: 12px;
+    height: 12px;
+    border: 2px solid var(--iron-hi);
+    border-top-color: var(--teal);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .is-stale .move,
+  .is-stale .why {
+    opacity: 0.55;
+  }
+
+  .foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px 8px;
+    border-top: 1px solid var(--iron);
+  }
+
+  button.btn {
+    padding: 3px 9px;
+    border: 1px solid var(--iron-hi);
+    border-radius: 4px;
+    background: var(--slab-hi);
+    color: var(--chalk);
+    font: 600 12.5px/1.3 var(--font-body);
+    cursor: pointer;
+  }
+
+  button.btn:hover {
+    border-color: var(--teal);
+    color: var(--bone);
+  }
+
+  button.btn.is-primary {
+    border-color: var(--teal);
+    background: color-mix(in srgb, var(--teal) 22%, var(--slab));
+  }
+
+  .line button.btn {
+    flex: none;
+  }
+
+  .dots {
+    display: flex;
+    gap: 8px;
+    margin-left: auto;
+    color: var(--ash);
+    font: 400 11px/1 var(--font-mono);
+  }
+
+  .dot::before {
+    content: "";
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    margin-right: 4px;
+    border-radius: 50%;
+    background: var(--check);
+    vertical-align: 0;
+  }
+
+  .dot.is-on::before {
+    background: var(--moss);
+  }
+
+  .dot.is-off::before {
+    background: var(--blood);
+  }
+
+  .menu {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    width: 100%;
+  }
+
+  [hidden] {
+    display: none !important;
+  }
+
+  /* Folded: one thin line with the advice. */
+  .is-collapsed .body,
+  .is-collapsed .foot {
+    display: none;
+  }
+
+  .is-collapsed .head {
+    gap: 6px;
+    padding: 1px 2px 1px 7px;
+    border-bottom: 0;
+  }
+
+  .is-collapsed .brand {
+    font-size: 12px;
+  }
+
+  .is-collapsed .day {
+    color: var(--bone);
+    font: 600 12.5px/16px var(--font-body);
+  }
+
+  .is-collapsed .head button {
+    width: 16px;
+    height: 16px;
+    font-size: 12px;
+  }
+</style>
+</head>
+<body>
+<div class="card" id="card">
+  <div class="head">
+    <span class="brand">Tartarus</span>
+    <span class="day" id="day"></span>
+    <button type="button" id="fold" title="Fold it to a thin bar">&#8211;</button>
+  </div>
+  <div class="body" id="body"></div>
+  <div class="foot" id="foot">
+    <button type="button" class="btn" data-cmd="board" title="Show or hide the board analyzer (Ctrl+Alt+A)">Board</button>
+    <button type="button" class="btn" data-cmd="capture" title="Take a picture of the game now and read it (Ctrl+Alt+P)">Picture</button>
+    <span class="dots"><span class="dot" id="dot-log">Log</span><span class="dot" id="dot-win">Window</span></span>
+  </div>
+</div>
+<script src="overlay.js"></script>
+</body>
+</html>

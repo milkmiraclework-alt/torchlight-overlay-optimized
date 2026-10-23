@@ -1,0 +1,39 @@
+{
+  "checkedAt": "2026-10-23T10:14:31.306Z",
+  "version": "1.0.0",
+  "singleGiftChoices": {
+    "before": {
+      "horn": 568,
+      "ring": 432
+    },
+    "corrected": {
+      "horn": 1000
+    }
+  },
+  "queuedGiftChoices": {
+    "before": {
+      "ring": 4000
+    },
+    "corrected": {
+      "wine": 4000
+    }
+  },
+  "queuedGiftFinalRainbows": {
+    "before": {
+      "n": 4000,
+      "mean": 0
+    },
+    "corrected": {
+      "n": 4000,
+      "mean": 0.23925
+    }
+  },
+  "exactSingleGiftExpectation": {
+    "horn": 0.25,
+    "otherGifts": 0
+  },
+  "jsRustDecisions": 2424,
+  "guardFamilies": 7,
+  "limitations": "Constructed terminal positions; these frequencies are not the frequency of bad live advice. Full root Monte Carlo already selected Horn in the single-gift fixture.",
+  "gameInput": false
+}
