@@ -41,7 +41,7 @@ const DEV = flag('dev') || TEST;
 // normal build keeps the last few.
 const BIG_RECORD = flag('dev');
 const STEAM_APP = '1974050'; // Torchlight: Infinite on Steam
-const HOTKEYS = { overlay: 'Control+Alt+O', analyzer: 'Control+Alt+A', capture: 'Control+Alt+P' };
+const HOTKEYS = { overlay: 'Control+Alt+O', analyzer: 'Control+Alt+A', instruments: 'Control+Alt+I', capture: 'Control+Alt+P' };
 const ICON = path.join(__dirname, 'build', 'icon.png');
 
 if (TEST && arg('app-data')) app.setPath('appData', path.resolve(arg('app-data')));
@@ -462,6 +462,7 @@ const recordEvent = () => {};
 // ---------- Windows ----------
 
 const wins = { follow: null, analyzer: null, overlay: null, review: null };
+let analyzerAdapterReady = false, pendingAnalyzerCommand = null;
 let testStandIn = null;
 let quitting = false;
 let tray = null;
@@ -490,6 +491,7 @@ function makeSiteWindow(name, opts) {
   win.removeMenu();
   wins[name] = win;
   const wc = win.webContents;
+  if (name === 'analyzer') wc.on('did-start-loading', () => { analyzerAdapterReady = false; });
   if (FAST) {
     win.on('show', () => wc.send('desktop:visible', true));
     win.on('hide', () => wc.send('desktop:visible', false));
@@ -500,7 +502,11 @@ function makeSiteWindow(name, opts) {
     if (FAST && name === 'follow') return;
     const code = fs.readFileSync(path.join(__dirname, 'lib', ADAPTERS[name]), 'utf8');
     note(`${name} page loaded:`, wc.getURL());
-    wc.executeJavaScript(code, true).catch((e) => note(`${name} adapter error:`, String((e && e.message) || e)));
+    wc.executeJavaScript(code, true).then(() => {
+      if (name !== 'analyzer') return;
+      analyzerAdapterReady = true;
+      if (pendingAnalyzerCommand) { send('analyzer', 'command', pendingAnalyzerCommand); pendingAnalyzerCommand = null; }
+    }).catch((e) => note(`${name} adapter error:`, String((e && e.message) || e)));
     if (FAST && name === 'analyzer') wc.executeJavaScript(fs.readFileSync(path.join(__dirname, 'lib', 'fast-runtime.js'), 'utf8'), true).catch((e) => note('runtime error:', String(e.stack || e)));
   });
   // The page's own errors (and with --dev, its warnings), for the debug log.
@@ -590,6 +596,21 @@ function toggle(name) {
   if (!win) return;
   if (win.isVisible() && win.isFocused()) win.hide();
   else show(name);
+}
+
+function showInstruments() {
+  const win = wins.analyzer;
+  if (!win || win.isDestroyed()) return;
+  if (!OFFSCREEN) {
+    const rect = game.hwnd && win32 ? win32.rect(game.hwnd) : null;
+    const display = rect ? screen.getDisplayMatching(rect) : screen.getDisplayNearestPoint(screen.getCursorScreenPoint());
+    if (win.isMinimized()) win.restore();
+    if (win.isMaximized()) win.unmaximize();
+    win.setBounds(require('./lib/window-position.js').centered(win.getBounds(), display.workArea));
+  }
+  show('analyzer');
+  if (analyzerAdapterReady) send('analyzer', 'command', 'tools');
+  else pendingAnalyzerCommand = 'tools';
 }
 
 function makeAnalyzer() {
@@ -951,7 +972,8 @@ function command(cmd) {
   note('command:', cmd);
   recordEvent({ type: 'command', cmd: String(cmd) });
   switch (cmd) {
-    case 'board': return toggle('analyzer');
+    case 'board': return lastAdvice?.toolsConfirm ? showInstruments() : toggle('analyzer');
+    case 'tools': return showInstruments();
     case 'follow': return show('follow');
     case 'capture':
       // Auto Screenshot Mode is off: its page, to turn it on (report 380).
@@ -1045,6 +1067,7 @@ function rebuildMenu() {
     {label:'Show overlay',type:'checkbox',checked:settings.overlayOn,click:i=>setOverlayOn(i.checked)},
     {label:'Read screen now',accelerator:HOTKEYS.capture,click:()=>command('capture')},
     {label:'Correct Tartarus board',click:()=>show('analyzer')},
+    {label:'Check Tartarus instruments',accelerator:HOTKEYS.instruments,click:()=>showInstruments()},
     {type:'separator'},
     {label:'Choose game log',click:()=>pickLog()},
     {label:'Open diagnostic log',click:()=>shell.openPath(LOG_FILE)},
@@ -1067,7 +1090,8 @@ function registerHotkeys() {
   for (const [key,fn] of [['Control+Alt+X',()=>command('capture')],['Control+Alt+V',()=>setOverlayOn(!settings.overlayOn)],['Control+Alt+Q',()=>app.quit()]]) globalShortcut.register(key,fn);
   const actions = {
     overlay: () => setOverlayOn(!settings.overlayOn),
-    analyzer: () => toggle('analyzer'),
+    analyzer: () => command('board'),
+    instruments: () => showInstruments(),
     capture: () => command('capture'),
   };
   for (const [name, key] of Object.entries(HOTKEYS)) {

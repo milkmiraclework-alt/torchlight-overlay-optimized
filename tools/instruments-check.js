@@ -2,7 +2,7 @@
 /* Instrument confirmation, incomplete panel reads and exact solver inputs. */
 'use strict';
 const assert = require('node:assert/strict'), fs = require('node:fs'), vm = require('node:vm');
-const T = require('../js/engine.js'), S = require('../js/solver.js'), K = require('../js/solver-cache.js');
+const T = require('../js/engine.js'), S = require('../js/solver.js'), K = require('../js/solver-cache.js'), Scan = require('../js/scan.js');
 const window = { Tartarus: T, TartarusSolver: S, TartarusSolverCache: K };
 let source = fs.readFileSync(require.resolve('../js/analyze.js'), 'utf8').replace(/\r\n/g, '\n');
 const init = '  buildBoard();\n  bind();\n  render();';
@@ -43,16 +43,58 @@ base = A.blankModel(); base.tools = ['coin']; base.step = 'choice'; base.choice 
 base.toolsOffer = { options: base.choice.options.slice(), advised: 'shackles' };
 next = scan(base, [icon('coin')]); next.step = 'manage';
 assert.ok(next.toolsOffer && next.toolsToConfirm, 'The offer disappeared with an incomplete first panel');
+assert.ok(A.buildState(next).problems.some((p) => p.includes('instruments')), 'Unresolved instruments reached the calculator');
 next = scan(next, [icon('coin'), icon('shackles')]);
 assert.equal(next.tools.join(), 'coin,shackles'); assert.equal(next.toolsOffer, null);
 assert.equal(A.buildState(next).st.tools.includes('shackles'), true);
+assert.equal(A.buildState(next).problems.filter((p) => p.includes('instruments')).length, 0, 'A reliable later reading remained blocked');
 base.toolsOffer.advised = null;
 next = scan(base, [icon('coin'), icon('collar', 0.25)]);
 assert.equal(next.tools.join(), 'coin', 'A weak icon was treated as the chosen instrument');
 assert.ok(next.toolsToConfirm && next.toolsOffer);
 base.toolsOffer.advised = 'shackles';
 next = scan(base, [icon('coin'), icon('collar', 0.25)]);
-assert.equal(next.tools.join(), 'coin,shackles'); assert.match(next.toolsToConfirm, /assumed/);
-A.confirmTools(next);
+assert.equal(next.tools.join(), 'coin', 'The recommended item was substituted for the actual choice');
+assert.ok(next.toolsToConfirm && next.toolsOffer);
+assert.equal(A.confirmTools(next), false, 'An unread selection could be acknowledged without choosing an instrument');
+assert.equal(next.toolsConfirmed, null);
+for (let i = 0; i < 5; i++) {
+  next = scan(A.normalize(JSON.parse(JSON.stringify(next))), [icon('coin')]);
+  assert.ok(next.toolsOffer && next.toolsUncertain && next.toolsToConfirm, 'A repeated incomplete frame forgot the unresolved choice');
+}
+next = scan(next, [icon('coin'), icon('collar')]);
+assert.equal(next.tools.join(), 'coin,collar', 'The actual choice did not override the recommendation');
+assert.equal(next.toolsOffer, null); assert.equal(next.toolsUncertain, false);
+assert.equal(A.confirmTools(next), true);
 assert.equal(scan(next, [icon('coin'), icon('skewer')]).toolsToConfirm, '');
-console.log('PASS: an incomplete panel retains the offer until the extra instrument appears; low confidence cannot silently select another item; an advised fallback explicitly asks for confirmation.');
+const tie = { ...icon('collar'), alts: [{ sim: 'collar', score: 0.99 }, { sim: 'shackles', score: 0.98 }] };
+assert.equal(scan(base, [icon('coin'), tie]).tools.join(), 'coin', 'A high-confidence near tie was accepted');
+assert.ok(scan(base, [icon('coin'), icon('collar'), icon('shackles')]).toolsOffer, 'Two different offered candidates became one definite selection');
+const unreadOffer = { ...base, toolsOffer: { options: [], unread: true } };
+const afterMissedOffer = scan(unreadOffer, [icon('coin'), icon('collar')]);
+assert.equal(afterMissedOffer.tools.join(), 'coin', 'An unread new offer reused candidates from the previous offer');
+assert.ok(afterMissedOffer.toolsOffer.unread && A.buildState(afterMissedOffer).problems.some((p) => p.includes('instruments')));
+const legacy = A.normalize({ ...base, step: 'manage', tools: ['coin', 'shackles'], toolsOffer: null,
+  toolsToConfirm: 'The selected instrument was not recognized. The analyzer assumed shackles, as advised.' });
+assert.equal(legacy.tools.join(), 'coin'); assert.ok(legacy.toolsOffer && legacy.toolsUncertain);
+const first = scan(A.blankModel(), [tie]);
+assert.equal(first.tools.length, 0); assert.ok(first.toolsUncertain);
+assert.ok(scan(first, []).toolsUncertain, 'A later missing panel silently cleared an unknown initial set');
+assert.ok(scan(first, []).toolsToConfirm, 'An unresolved initial set lost its correction prompt');
+for (const found of [false, true]) {
+  const missing = A.blankModel();
+  A.runTools([], A.blankModel(), missing, [], { found, tools: [] });
+  assert.ok(missing.toolsUncertain && missing.toolsToConfirm, 'A missing first panel was silently interpreted as no instruments');
+  assert.equal(A.confirmTools(missing), true, 'An explicitly checked empty set could not be confirmed');
+}
+console.log('PASS: unread picks never assume the recommendation; later actual picks recover; near ties/multiple candidates wait; unresolved choices survive reload and cannot be blindly confirmed; legacy guesses reopen.');
+
+const feature = { grid: Array.from({ length: 192 }, (_, i) => 1 + i % 17), hist: Array.from({ length: 32 }, (_, i) => (1 + i) / 528) };
+const reference = (id, w = 20) => ({ id, w, feat: feature });
+assert.equal(Scan.matchToolFeature(feature, 5, { tools: [reference('large', 100)] }).id, null);
+assert.equal(Scan.matchToolFeature(feature, 20, { tools: [] }).conf, 0);
+const tied = Scan.matchToolFeature(feature, 20, { tools: [reference('collar'), reference('shackles')] });
+assert.ok(tied.conf < 0.9, 'Identical art for different instruments was reported as certain');
+const aliases = Scan.matchToolFeature(feature, 20, { tools: [reference('a'), reference('b')], toolNames: { a: { sim: 'collar' }, b: { sim: 'collar' } } });
+assert.equal(aliases.alts.length, 1); assert.ok(aliases.conf >= 0.9, 'Two references for one tool created false ambiguity');
+console.log('PASS: small icons without usable references do not throw; visual ties lower confidence; duplicate references share one semantic candidate.');

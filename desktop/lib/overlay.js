@@ -101,7 +101,7 @@
     if (failed) out.push(line('bad', `Couldn’t read the last picture: ${a.lastRead.reason || 'no board in it'}.`, button('Try again', 'capture')));
     else if (!a?.reading && f && f.lastFrame && !f.lastFrame.ok && Date.now() - f.lastFrame.at < 60000) out.push(line('warn', `No picture taken: ${f.lastFrame.why || 'the game window isn’t shared'}`));
 
-    if (a && a.toolsConfirm) out.push(line('warn', a.toolsConfirm, button('These are right', 'tools-ok'), button('Board', 'board')));
+    if (a && a.toolsConfirm) out.push(line('warn', a.toolsConfirm, button('Instruments', 'tools'), button('These are right', 'tools-ok')));
     // The Warden's Treasure covers the board: the gift waits for a look at it.
     if (a && a.treasureWait) out.push(line('warn', 'The Warden’s Treasure is open. Press View Prison Status in the game, wait a second on the board, then go back to the Treasure: the gift advice uses that board.', button('Advise anyway', 'treasure-now')));
     if (a && a.reading) {

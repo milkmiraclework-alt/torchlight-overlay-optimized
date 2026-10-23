@@ -149,6 +149,7 @@
       // (toolsLocked), they stay for the run and aren't asked about again.
       toolsToConfirm: '',
       toolsConfirmed: null,
+      toolsUncertain: false,
       toolsPanelSlots: 0,
       toolsOffer: null,
       shortDays: [],
@@ -209,6 +210,17 @@
     // Progress on an objective counted to a number (tiles, consumes, ...).
     out.walkTiles = clamp(toInt(out.walkTiles, 0), 0, T.OBJECTIVES[out.objective].need || 0);
     out.chain = 'single';
+    // Older builds could substitute the recommended item for an unread pick.
+    // Reopen that unconfirmed choice instead of keeping the guess indefinitely.
+    if (!out.toolsConfirmed && /analyzer assumed/.test(out.toolsToConfirm || '')) {
+      const options = out.choice.kind === 'tool' ? out.choice.options.filter((id) => T.TOOLS[id]) : [];
+      if (options.length) {
+        out.tools = out.tools.filter((id) => !options.includes(id));
+        out.toolsOffer = { options };
+      }
+      out.toolsUncertain = true;
+      out.toolsToConfirm = 'The previous instrument selection was assumed, not read. Set the instruments you actually hold, then press These are right.';
+    }
     return out;
   }
 
@@ -216,6 +228,9 @@
   // analyzed. Events the player can't name get a kind the solver re-rolls.
   function buildState(m) {
     const problems = [];
+    if (m.toolsUncertain || m.toolsOffer?.unread || m.step !== 'choice' && m.toolsOffer) {
+      problems.push('Check your instruments before calculating: select the ones you actually hold, then press These are right.');
+    }
     const params = { rewards: !!m.rewards, drillDays: clamp(toInt(m.maxDays, 20), 5, 60) };
     const st = T.newGame({ params, seed: 'ANALYZER' });
     st.rng = (Math.random() * 4294967296) >>> 0;
@@ -401,6 +416,7 @@
     m.tools = st.tools.slice();
     if (prev && st.day >= prev.day && toolSet(m.tools) === toolSet(prev.tools)) {
       m.toolsConfirmed = prev.toolsConfirmed || null;
+      m.toolsUncertain = !!prev.toolsUncertain;
       m.toolsPanelSlots = prev.toolsPanelSlots || 0;
       m.toolsOffer = prev.toolsOffer || null;
     }
@@ -526,7 +542,7 @@
   // change a Monte Carlo result for the same actual instruments and rules.
   const resultKey = (m, target) => {
     const input = { ...normalize(m), toolsToConfirm: '' };
-    delete input.toolsConfirmed; delete input.toolsPanelSlots; delete input.toolsOffer;
+    delete input.toolsConfirmed; delete input.toolsPanelSlots; delete input.toolsOffer; delete input.toolsUncertain;
     return window.TartarusSolverCache.key(input, target);
   };
   const makeShares = (target) => solver.workers.map((_, k, all) => ({ target: Math.floor(target / all.length) + (k < target % all.length ? 1 : 0), rounds: 0, done: false, rows: null }));
@@ -711,7 +727,11 @@
     }
     const { st, problems } = buildState(model);
     showProblems(problems);
-    if (problems.length) return false;
+    if (problems.length) {
+      invalidate(); solver.st = null; solver.result = null;
+      render();
+      return false;
+    }
     if (SHARE && (fresh || (model.runStart && model.step === 'choice'))) {
       shareHeld();
       SHARE.reset('manual');
@@ -1449,11 +1469,12 @@
   let toolsAsked = '';
   function openTools() {
     const d = $('az-tools-dialog');
-    if (d.open) return;
-    $('az-tools-dialog-body').append($('az-tools-confirm'), $('az-tools'));
-    $('az-tools-search').value = '';
-    filterTools('');
-    d.show();
+    if (!d.open) {
+      $('az-tools-dialog-body').append($('az-tools-confirm'), $('az-tools'));
+      $('az-tools-search').value = '';
+      filterTools('');
+      d.showModal();
+    }
     placeTools();
     $('az-tools-search').focus({ preventScroll: true });
   }
@@ -2742,6 +2763,8 @@
       selected = model.warden;
     }
     if (start) gifts.waiting = 0;
+    if (model.toolsOffer?.unread) model.toolsUncertain = !!model.toolsOffer.heldUncertain;
+    model.toolsToConfirm = model.toolsUncertain ? 'Check the instruments you actually hold, then press These are right.' : '';
     model.step = 'choice';
     model.choice = { kind: 'tool', options: read.cards.map((c) => c.sim), rerolls: read.reroll ? 1 : 0 };
     model.toolsConfirmed = null;
@@ -2966,7 +2989,7 @@
     // Only the meals the game framed can be eaten now (report 385: the
     // board before held a meal the game didn't offer, and it was advised).
     m.mealOnly = r.chain.targets.slice();
-    const tools = runTools(r.tools?.tools || [], base, m, notes);
+    const tools = runTools(r.tools?.tools || [], base, m, notes, r.tools);
     m.tools = tools.map((t) => t.sim);
     return { model: m, checks, notes, chromatic: (m.vault || []).length, tools, unsim: [], chain: r.chain.targets };
   }
@@ -2974,46 +2997,60 @@
   // A run's instruments, from what's known of the run and what a screenshot
   // shows. Instruments are only ever added, from an offer, so once the run
   // is known (instruments held, or an offer seen), only an offer the
-  // analyzer saw can add one: the instrument read on it, or failing that,
-  // the one the analyzer advised. Icons alone never add one, as two can look
+  // analyzer saw can add one: a uniquely recognised instrument from it.
+  // The recommended instrument is never assumed to have been taken.
+  // Icons alone never add one, as two can look
   // alike (a tooltip can cover them, too). Without anything known of the
   // run, only icons the reader is sure of count. A screenshot from an
   // earlier day than the board before starts afresh.
   const toolSet = (tools) => [...new Set((tools || []).filter((id) => T.TOOLS[id]))].sort().join(',');
   function confirmTools(m) {
+    if (m.toolsOffer && !m.toolsOffer.options.some((id) => m.tools.includes(id))) {
+      m.toolsToConfirm = 'The selected instrument is still unknown. Choose the one you actually took under Torture Instrument, then press These are right.';
+      m.toolsUncertain = true;
+      return false;
+    }
     m.toolsConfirmed = { tools: toolSet(m.tools), slots: Math.max(m.tools.length, m.toolsPanelSlots || 0) };
+    m.toolsUncertain = false;
     m.toolsToConfirm = '';
     m.toolsOffer = null;
+    return true;
   }
-  function runTools(read, base, m, notes) {
+  function certainTool(t) {
+    if (!t || !T.TOOLS[t.sim] || !Number.isFinite(t.conf) || t.conf < TOOL_SURE) return false;
+    // Old/cached reader results may report high confidence even for a tie.
+    const own = (t.alts || []).filter((a) => (a.sim || a.id) === t.sim && Number.isFinite(a.score));
+    const other = (t.alts || []).filter((a) => (a.sim || a.id) !== t.sim && Number.isFinite(a.score));
+    return !own.length || !other.length || Math.max(...own.map((a) => a.score)) - Math.max(...other.map((a) => a.score)) >= 0.04 - 1e-9;
+  }
+  function runTools(read, base, m, notes, panel) {
     const sameRun = !(m.day < base.day);
     const known = sameRun ? (base.tools || []).filter((id) => T.TOOLS[id]) : [];
     const pending = sameRun && base.toolsOffer;
-    const offer = sameRun && base.step === 'choice' && base.choice && base.choice.kind === 'tool' ? base.choice.options.filter((id) => T.TOOLS[id]) : (pending?.options || []).filter((id) => T.TOOLS[id]);
+    const offer = pending?.unread ? [] : sameRun && base.step === 'choice' && base.choice && base.choice.kind === 'tool' ? base.choice.options.filter((id) => T.TOOLS[id]) : (pending?.options || []).filter((id) => T.TOOLS[id]);
     const out = known.map((id) => ({ id, sim: id, name: T.toolName(id), conf: 1, kept: true }));
     const has = (id) => out.some((t) => t.sim === id);
     const slots = read.length;
     m.toolsPanelSlots = slots;
     m.toolsConfirmed = sameRun ? base.toolsConfirmed || null : null;
+    m.toolsUncertain = sameRun && !!base.toolsUncertain;
     m.toolsOffer = null;
     // Once the run's instruments are known, they're locked: icons never
     // change them. When the panel disagrees (more icons than known, or an
     // icon that's clearly another instrument), the player is asked to
     // confirm them (m.toolsToConfirm).
     m.toolsToConfirm = '';
-    if (sameRun && (known.length || offer.length || base.runStart || m.toolsConfirmed)) {
-      const rec = offer.length && base === model && fresh() ? recommendation() : null;
-      const advised = rec?.action.type === 'choose' && offer.includes(rec.action.id) ? rec.action.id : offer.includes(pending?.advised) ? pending.advised : null;
-      if (offer.length && !offer.some(has)) m.toolsOffer = { options: offer.slice(), advised };
+    if (sameRun && (known.length || offer.length || pending || base.runStart || m.toolsConfirmed)) {
+      if (pending?.unread && !offer.length) m.toolsOffer = { ...pending };
+      if (offer.length && !offer.some(has)) m.toolsOffer = { options: offer.slice() };
       if (offer.length && slots > known.length && !offer.some(has)) {
-        const seen = read.filter((t) => offer.includes(t.sim) && t.conf >= TOOL_SURE).sort((a, b) => b.conf - a.conf)[0];
-        // The advice given on that offer: the board before is the offer, so
-        // the analyzer's current recommendation is for it.
-        const take = seen ? seen.sim : advised;
-        if (take) {
+        const choices = [...new Set(read.filter((t) => offer.includes(t.sim) && certainTool(t)).map((t) => t.sim))];
+        // Seeing multiple plausible offered items is not a unique selection.
+        if (choices.length === 1) {
+          const take = choices[0];
           out.push({ id: take, sim: take, name: T.toolName(take), conf: 1, kept: true });
           m.toolsOffer = null;
-          if (!seen) m.toolsToConfirm = `The selected instrument wasn't recognized. The analyzer assumed ${T.toolName(take)}, as advised. Check the instruments you actually took, then press These are right.`;
+          if (base.toolsOffer) m.toolsUncertain = false;
         } else notes.push(`Your instruments show one more than before, from the offer of ${offer.map((id) => T.toolName(id)).join(', ')}: set which you took under Torture Instrument.`);
       }
       const confirmed = m.toolsConfirmed;
@@ -3023,19 +3060,37 @@
       // Only a changed held set (including a pick from an observed offer)
       // invalidates it. New offers/runs and explicit edits clear it too.
       if (confirmed && confirmed.tools !== toolSet(out.map((t) => t.sim))) m.toolsConfirmed = null;
-      const off = read.filter((t) => t.sim && t.conf >= TOOL_SURE && !has(t.sim));
+      const off = read.filter((t) => certainTool(t) && !has(t.sim));
       if (!m.toolsConfirmed) {
-        if (slots > out.length) m.toolsToConfirm = `Your panel shows ${T.plural(slots, 'instrument')}, and the analyzer has ${out.length}: ${out.map((t) => t.name).join(', ') || 'none'}. Set the ones you hold, then press These are right.`;
+        if (m.toolsOffer) m.toolsToConfirm = 'The instrument selected from the last offer has not been identified. Choose the one you actually took under Torture Instrument, then press These are right.';
+        else if (slots > out.length) m.toolsToConfirm = `Your panel shows ${T.plural(slots, 'instrument')}, and the analyzer has ${out.length}: ${out.map((t) => t.name).join(', ') || 'none'}. Set the ones you hold, then press These are right.`;
         else if (off.length) m.toolsToConfirm = `An icon on your panel looks like ${off.map((t) => T.toolName(t.sim)).join(' and ')}, which isn’t one the analyzer has for this run (${out.map((t) => t.name).join(', ')}). Check your instruments, then press These are right.`;
-        else if (m.toolsOffer) m.toolsToConfirm = `The instrument selected from the last offer hasn't been read yet. The analyzer currently uses ${out.map((t) => t.name).join(', ') || 'no instruments'}. Set the ones you hold, then press These are right.`;
+        else if (m.toolsUncertain) m.toolsToConfirm = base.toolsToConfirm || 'Check the instruments you actually hold, then press These are right.';
+        if (m.toolsToConfirm) m.toolsUncertain = true;
       }
       return out;
     }
     // Nothing known of the run yet: only icons the reader is sure of, and
     // the player is asked to confirm.
-    for (const t of read) if (t.sim && !has(t.sim) && t.conf >= TOOL_SURE) out.push(t);
-    if (read.length) m.toolsToConfirm = `The analyzer doesn’t know this run’s instruments yet. It read ${out.length ? out.map((t) => T.toolName(t.sim)).join(', ') : 'none for sure'} from your panel of ${read.length}. Set the ones you hold, then press These are right.`;
+    for (const t of read) if (!has(t.sim) && certainTool(t)) out.push(t);
+    if (read.length) {
+      m.toolsToConfirm = `The analyzer doesn’t know this run’s instruments yet. It read ${out.length ? out.map((t) => T.toolName(t.sim)).join(', ') : 'none for sure'} from your panel of ${read.length}. Set the ones you hold, then press These are right.`;
+      m.toolsUncertain = true;
+    } else if (panel && typeof panel.found === 'boolean') {
+      m.toolsUncertain = true;
+      m.toolsToConfirm = 'The instrument panel could not be read and this run has no known instruments yet. Read it again or set the instruments you actually hold, then press These are right.';
+    } else if (m.toolsUncertain) m.toolsToConfirm = base.toolsToConfirm || 'Check the instruments you actually hold, then press These are right.';
     return out;
+  }
+
+  function expectInstrumentOffer() {
+    // A log event proves there is a new selection, even when every picture
+    // of its cards fails. Do not keep a previously confirmed set silently.
+    const heldUncertain = model.toolsOffer?.unread ? model.toolsOffer.heldUncertain : !!model.toolsUncertain;
+    model.toolsOffer = { options: [], unread: true, heldUncertain };
+    model.toolsConfirmed = null;
+    model.toolsToConfirm = 'A new instrument offer could not be read yet. Read its cards again, or set the instruments you actually hold under Torture Instrument.';
+    changed();
   }
 
   function scanToModel(r, base) {
@@ -3211,7 +3266,7 @@
     const read = r.tools && r.tools.tools ? r.tools.tools : [];
     const unsim = read.filter((t) => !t.sim);
     if (unsim.length) notes.push(`Not in the simulator yet, so left out: ${unsim.map((t) => t.name).join(', ')}.`);
-    const tools = runTools(read, base, m, notes, r.tools && r.tools.sims);
+    const tools = runTools(read, base, m, notes, r.tools);
     m.tools = tools.map((t) => t.sim);
     // A door short two mornings of the run, with none of the instruments
     // that take one known: the Forged Key, Barbed Whip or Burning Stake.
@@ -3498,7 +3553,7 @@
     // Reconcile its panel against the latest user-confirmed instruments.
     if (reader.result && reader.result.ok) {
       const notes = [];
-      rd.tools = runTools(reader.result.tools?.tools || [], model, rd.model, notes);
+      rd.tools = runTools(reader.result.tools?.tools || [], model, rd.model, notes, reader.result.tools);
       rd.model.tools = rd.tools.map((t) => t.sim);
       for (const note of notes) if (!rd.notes.includes(note)) rd.notes.push(note);
     }
@@ -3661,14 +3716,16 @@
       const id = b.dataset.tool;
       model.tools = model.tools.includes(id) ? model.tools.filter((t) => t !== id) : [...model.tools, id];
       model.toolsConfirmed = null;
+      model.toolsOffer = null; // An explicit correction overrides the read offer.
+      model.toolsUncertain = true;
+      model.toolsToConfirm = `Check your instruments: ${model.tools.map((id) => T.toolName(id)).join(', ') || 'none'}. Then press These are right.`;
       model.choice = Object.assign({}, model.choice, { options: model.choice.options.filter((t) => !model.tools.includes(t)) });
       changed();
     });
     // The player confirms the run's instruments as set: they're locked in,
     // and the advice is checked again with them.
     $('az-tools-ok').addEventListener('click', () => {
-      closeTools();
-      confirmTools(model);
+      if (confirmTools(model)) closeTools();
       changed();
       ask(true, false, true);
     });
@@ -3885,6 +3942,8 @@
       prepareOCR: () => ocrWorker(),
       readPick: (bitmap) => readPick(bitmap),
       usePick: (read, fresh, reuse) => usePick(read, fresh, reuse),
+      expectInstrumentOffer,
+      openTools,
       readTreasure: (bitmap) => readTreasure(bitmap),
       readObjective: (bitmap) => readObjective(bitmap),
       // The game's language (from the log: auto), and a screen the reader
@@ -3915,7 +3974,7 @@
     if (FAST_DESKTOP) {
       const visibility = (visible) => {
         desktopWindowVisible = !!visible;
-        if (visible) { showProblems(desktopProblems); render(); renderScan(); }
+        if (visible) { showProblems(desktopProblems); render(); renderScan(); if (model.toolsToConfirm) openTools(); }
         desktopChanged();
       };
       window.TartarusDesktop.onVisible(visibility);

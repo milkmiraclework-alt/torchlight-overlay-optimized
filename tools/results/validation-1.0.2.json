@@ -1,0 +1,140 @@
+{
+  "version": "1.0.2",
+  "checkedAt": "2026-10-23T13:12:21.791Z",
+  "artifactsVerified": true,
+  "changes": [
+    "A direct Instruments button, Ctrl+Alt+I and tray action reopen a modal picker on the game monitor. Pending confirmation also opens through Board/Ctrl+Alt+A. Early commands wait for the adapter.",
+    "Unread instrument selections never assume the recommended item. Near-tied semantic matches and multiple offered candidates are not accepted as a unique selection. Missing size-matched references return unknown instead of throwing.",
+    "Unresolved initial/mismatching panels and unread offer events block advice until corrected. A later unique pick or explicit correction recovers; unconfirmed legacy guesses are reopened. Confirmed sets survive noisy reads and reload.",
+    "No extra OCR passes or capture waits added; calculation rules, strategies, budgets and Rust binaries are unchanged."
+  ],
+  "checks": {
+    "version": "1.0.2",
+    "checkedAt": "2026-10-23T13:09:27.864Z",
+    "checks": [
+      "routing",
+      "picture-retry",
+      "profile-import",
+      "window-position",
+      "rust-wasm",
+      "strategy28",
+      "terminal-gifts",
+      "calculation",
+      "rust-workers",
+      "instruments",
+      "forecast",
+      "forecast-menu",
+      "solver-cache",
+      "chain-cache",
+      "worker-budget",
+      "readiness",
+      "capture",
+      "worker-recovery",
+      "worker-lifecycle",
+      "bundled-site"
+    ],
+    "gameCapture": false,
+    "gameInput": false
+  },
+  "suite": {
+    "version": "1.0.2",
+    "checkedAt": "2026-10-23T13:10:02.648Z",
+    "actualNativeCapture": true,
+    "nativeAdvice": true,
+    "manualNativeCapture": true,
+    "modeSwitching": true,
+    "zeroInactiveWorkers": true,
+    "sharedCaptureStop": true,
+    "automaticCpuBudget": true,
+    "recordingExcluded": true,
+    "gameCapture": false,
+    "gameInput": false
+  },
+  "launch": {
+    "version": "1.0.2",
+    "checkedAt": "2026-10-23T13:11:14.069Z",
+    "installerPayloadMatches": true,
+    "secondInstanceOpensSettings": true,
+    "boardRemainsHidden": true,
+    "singlePrimaryInstance": true,
+    "gameCapture": false,
+    "gameInput": false
+  },
+  "portable": {
+    "version": "1.0.2",
+    "executable": "Torchlight-Overlay-Portable-1.0.2-x64.exe",
+    "sha256": "3c6492c6bfd52c7f667ae1aa2a7c99ca3feb28a7e681ba6b9de4550e82f6c988",
+    "checkedAt": "2026-10-23T13:11:14.879Z",
+    "bootMs": 11610,
+    "text": "TARTARUS 12345",
+    "ocrMs": 1316,
+    "agreed": false,
+    "rustSampleParity": true,
+    "rustRollouts": 8,
+    "externalHttpBlocked": true,
+    "originalInstallUnavailable": true,
+    "occupiedPortIndependent": true,
+    "gameInput": false
+  },
+  "panels": {
+    "version": "1.0.2",
+    "checkedAt": "2026-10-23T13:12:10.450Z",
+    "results": [
+      {
+        "name": "0004-board.webp",
+        "expected": [
+          "coin"
+        ],
+        "actual": [
+          {
+            "sim": "coin",
+            "conf": 1,
+            "margin": 0.07923017035681057
+          }
+        ],
+        "ms": 1601
+      }
+    ],
+    "gameCapture": false,
+    "gameInput": false
+  },
+  "packaged": {
+    "version": "1.0.2",
+    "checkedAt": "2026-10-23T13:12:21.789Z",
+    "checks": [
+      "suite",
+      "overlay",
+      "lifecycle",
+      "instruments",
+      "portable"
+    ],
+    "gameCapture": false,
+    "gameInput": false
+  },
+  "instrumentIntegration": {
+    "physicalButtonReopensTwice": true,
+    "modalVisibleAndClickable": true,
+    "confirmationDuringProgress": true,
+    "confirmationSurvivesReload": true,
+    "unreadAndAmbiguousPicksBlockAdvice": true,
+    "uniqueAndManualChoiceRecover": true
+  },
+  "mathBinariesUnchanged": true,
+  "artifacts": [
+    {
+      "file": "Torchlight-Overlay-Portable-1.0.2-x64.exe",
+      "bytes": 128931969,
+      "sha256": "3c6492c6bfd52c7f667ae1aa2a7c99ca3feb28a7e681ba6b9de4550e82f6c988"
+    },
+    {
+      "file": "Torchlight-Overlay-Setup-1.0.2-x64.exe",
+      "bytes": 129097198,
+      "sha256": "6601bd6eadaa2941ea175c79875212124579b4fdc1f7c43b4bc3e13257a82f9f"
+    }
+  ],
+  "limitations": [
+    "Saved-panel image check covers the available labelled Coin frame, not every instrument, scale or lighting condition.",
+    "Near-match thresholds reduce blind acceptance; they cannot guarantee correct recognition for every image. An unresolved set requires checking the actual instruments.",
+    "Native display selection is guarded by geometry checks for both monitors and small work areas; UI integration runs in an isolated offscreen window. No interaction with the user game or installed application."
+  ]
+}

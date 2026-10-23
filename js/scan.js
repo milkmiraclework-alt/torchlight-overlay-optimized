@@ -1565,6 +1565,22 @@
 
   // Torture instruments: the icons under the "Torture Instrument" label,
   // left of the board, each matched to the instrument it shows.
+  function matchToolFeature(feat, width, ref) {
+    // Several reference pictures can describe the same instrument. Their
+    // mutual similarity must not hide the next genuinely different item.
+    const ranked = ref.tools.filter((t) => !t.w || width >= 0.6 * t.w)
+      .map((t) => ({ id: t.id, sim: ref.toolNames?.[t.id]?.sim || t.id, score: similarity(feat, t.feat) }))
+      .filter((t) => Number.isFinite(t.score)).sort((a, b) => b.score - a.score);
+    const unique = [], seen = new Set();
+    for (const r of ranked) if (!seen.has(r.sim)) { seen.add(r.sim); unique.push(r); }
+    const best = unique[0], second = unique[1];
+    // Small icons can legitimately have no usable size-matched reference.
+    if (!best) return { id: null, score: 0, margin: 0, conf: 0, alts: [] };
+    const margin = best.score - (second ? second.score : 0);
+    const conf = Math.max(0.1, Math.min(1, (best.score - 0.6) * 2.5 + margin * 5, margin / 0.04));
+    return { id: best.id, score: best.score, margin, conf,
+      alts: unique.slice(0, 6).map((r) => ({ id: r.id, score: Math.round(r.score * 1000) / 1000 })) };
+  }
   function readTools(img, loc, ref) {
     const found = findToolIcons(img, loc);
     found.tools = found.icons.map((icon) => {
@@ -1572,18 +1588,7 @@
       // A panel icon learned from a big, sharp picture (w: its width there)
       // isn't matched against one under 60% of that size: blurred small, a
       // hammer passed for a dark upright box (shrunk 1000 px reports).
-      const ranked = ref.tools.filter((t) => !t.w || icon.box[2] - icon.box[0] >= 0.6 * t.w).map((t) => ({ id: t.id, score: similarity(feat, t.feat) })).sort((a, b) => b.score - a.score);
-      const best = ranked[0];
-      const second = ranked.find((r) => r.id !== best.id);
-      const margin = best.score - (second ? second.score : 0);
-      // alts: the closest instruments, best first, one score each: right after
-      // a pick, the analyzer can take the best of those that were offered.
-      const alts = [];
-      for (const r of ranked) {
-        if (!alts.some((x) => x.id === r.id)) alts.push({ id: r.id, score: Math.round(r.score * 1000) / 1000 });
-        if (alts.length === 6) break;
-      }
-      return { id: best.id, score: best.score, margin, box: icon.box, conf: Math.max(0.1, Math.min(1, (best.score - 0.6) * 2.5 + margin * 5)), alts };
+      return { ...matchToolFeature(feat, icon.box[2] - icon.box[0], ref), box: icon.box };
     });
     return found;
   }
@@ -2279,6 +2284,7 @@
 
   const api = { scan, scanLocated, readBoardCells, readTools, readChromatic, prepareBoardSearch, coarseBoardSearch, refineBoardSearch, scanPick, pickArtBox, pickRerollShown, locateBoard, readCell, findWarden, findToolIcons, readDoors, readDays, doorCards, dayNumber, prefixVector, textLines, glyphVector, faceVector, artFeature, similarity, hsv, blobs, at, gridOf, scaleAt, grayOf, blur, RING, H0, ARROW, FACE, GLYPH, locateByLabels, readChainScreen, readDecision, readObjectiveTitle, withPanelIcons };
   api.scoreBoardAt = scoreBoardAt;
+  api.matchToolFeature = matchToolFeature;
   api.setKernels = setKernels;
   api.kernelsReady = () => !!kernels;
   api.badgeBox = badgeBox; api.readBadge = readBadge;

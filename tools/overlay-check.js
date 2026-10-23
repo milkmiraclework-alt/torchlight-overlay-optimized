@@ -408,13 +408,36 @@ async function checkBrowserSearchPool(frames, previousBase, compareProbe = false
       assert.equal(await evaluate('document.getElementById("az-tools-dialog").open'), false, 'Overlay confirmation did not close the instrument dialog');
       await evaluate('window.__instrumentConfirmation.resolve();true');
       const before = await beforePending;
+      for (let attempt = 0; attempt < 2; attempt++) {
+        await evaluate('document.getElementById("az-tools-close").click();true');
+        assert.equal(await evaluate('document.getElementById("az-tools-dialog").open'), false);
+        const toolsPoint = await overlayPage.evaluate(`(()=>{const b=document.querySelector('#foot [data-cmd="tools"]'),r=b.getBoundingClientRect();return {x:r.x+r.width/2,y:r.y+r.height/2};})()`);
+        await overlayPage.call('Input.dispatchMouseEvent', { type: 'mousePressed', ...toolsPoint, button: 'left', clickCount: 1 });
+        await overlayPage.call('Input.dispatchMouseEvent', { type: 'mouseReleased', ...toolsPoint, button: 'left', clickCount: 1 });
+        let opened;
+        for (let i = 0; i < 200; i++) {
+          opened = await evaluate(`(()=>{const d=document.getElementById('az-tools-dialog'),s=document.getElementById('az-tools-search'),r=d.getBoundingClientRect(),p=s.getBoundingClientRect();return {open:d.open,modal:d.matches(':modal'),onscreen:r.x>=0&&r.y>=0&&r.right<=innerWidth+1&&r.bottom<=innerHeight+1,clickable:document.elementFromPoint(p.x+p.width/2,p.y+p.height/2)===s};})()`);
+          if (opened.open && opened.modal && opened.onscreen && opened.clickable) break;
+          await pause(10);
+        }
+        assert.deepEqual(opened, { open: true, modal: true, onscreen: true, clickable: true }, 'Instruments failed to reopen visibly: ' + JSON.stringify(opened));
+      }
       await page.call('Page.reload', { ignoreCache: true });
       for (let i = 0; i < 200; i++) {
         try { if (await evaluate('!!window.__tartarusFastRuntime')) break; } catch {}
         await pause(25);
       }
       const after = await evaluate(`(${checkInstruments.toString()})(true)`);
-      console.log(`PASS: physical overlay click across 3 progress updates, unchanged solver cache and 10 conflicting/missing/growing-slot frames across reload: ${JSON.stringify({ before, after })}`);
+      console.log(`PASS: direct instrument button reopens a visible, clickable modal twice; physical confirmation across 3 progress updates; 10 conflicting/missing/growing-slot frames across reload; pending/ambiguous picks block advice and unique/manual choices recover: ${JSON.stringify({ before, after })}`);
+      return;
+    }
+    if (process.argv.includes('--instrument-panels')) {
+      const check = require('./instrument-panels-check.js');
+      const labels = check.readSamples(process.argv[process.argv.indexOf('--instrument-panels') + 1]);
+      const results = await evaluate(`(${check.browserPanels.toString()})(${JSON.stringify(labels)})`);
+      fs.mkdirSync(path.join(ROOT, 'tools/results'), { recursive: true });
+      fs.writeFileSync(path.join(ROOT, 'tools/results/instrument-panels.json'), JSON.stringify({ version: require('../desktop/package.json').version, checkedAt: new Date().toISOString(), results, gameCapture: false, gameInput: false }, null, 2) + '\n');
+      console.log('PASS: labelled saved instrument panels, actual packaged reader: ' + JSON.stringify(results));
       return;
     }
     if (process.argv.includes('--panel-manifest')) {

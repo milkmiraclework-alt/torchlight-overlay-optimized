@@ -12,6 +12,7 @@
   if(cmd==='fix'){if(!click('az-fix'))document.getElementById('az-game')?.scrollIntoView({block:'center'});}
   else if(cmd==='recheck'){if(!click('az-recheck'))click('az-go');}
   else if(cmd==='tools-ok')click('az-tools-ok');
+  else if(cmd==='tools')A.openTools();
   else if(cmd==='treasure-now')click('az-treasure-now');
   else if(cmd==='run-over'){click('az-clear');click('az-clear');}
   soon();

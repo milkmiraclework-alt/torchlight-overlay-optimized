@@ -2,6 +2,7 @@
 const cp=require('node:child_process'),fs=require('node:fs'),path=require('node:path');
 const root=path.resolve(__dirname,'..'),jobs=[
  ['routing',['tools/unified-runtime-check.js']],['picture-retry',['tools/picture-retry-check.js']],['profile-import',['tools/profile-import-check.js']],
+ ['window-position',['tools/window-position-check.js']],
  ['rust-wasm',['tools/rust-solver-check.js','--wasm']],['strategy28',['tools/strategy-28-check.js']],
  ['terminal-gifts',['tools/strategy-31-check.js']],['calculation',['tools/calculation-check.js']],
  ['rust-workers',['tools/rust-worker-check.js']],['instruments',['tools/instruments-check.js']],

@@ -1,9 +1,11 @@
 {
-  "version": "1.0.0",
-  "checkedAt": "2026-10-23T10:14:53.640Z",
+  "version": "1.0.2",
+  "checkedAt": "2026-10-23T13:09:27.864Z",
   "checks": [
     "routing",
     "picture-retry",
+    "profile-import",
+    "window-position",
     "rust-wasm",
     "strategy28",
     "terminal-gifts",

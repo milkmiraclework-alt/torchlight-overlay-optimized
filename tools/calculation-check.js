@@ -38,7 +38,7 @@ A.invalidate({ preserve: true, forecast: 'pause' });
 assert.equal(A.solver.id, id);
 assert.ok(messages.some(x => x.pause));
 // A duplicate read changes UI panel metadata but none of the simulation inputs.
-A.reader.result = { ok: true, tools: { tools: [{ sim: 'skewer', conf: 1 }] } };
+A.reader.result = { ok: true, tools: { tools: [{ sim: 'crown', conf: 1 }] } };
 A.reader.reading = { model: JSON.parse(JSON.stringify(m)), tools: [], notes: [], checks: new Set() };
 A.useScan(); assert.ok(A.solver.st, 'Duplicate picture discarded the active state');
 assert.ok(A.ask(true, false, true));
@@ -47,6 +47,7 @@ assert.equal(messages.filter(x => x.state).length, 1, 'Duplicate read started a 
 assert.equal(JSON.stringify(job.rows), before, 'Duplicate read changed existing samples');
 assert.ok(messages.some(x => x.id === id && x.promote));
 // A confirmation racing a prepared reading must survive applying that reading.
+A.reader.result = { ok: true, tools: { tools: [{ sim: 'skewer', conf: 1 }] } };
 A.confirmTools(A.getModel());
 A.reader.reading = { model: JSON.parse(JSON.stringify(m)), tools: [], notes: [], checks: new Set() };
 A.useScan(); assert.equal(A.getModel().toolsConfirmed.tools, 'crown');

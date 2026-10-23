@@ -153,6 +153,7 @@
       id++; latestRead = null; Auto.cancel();
       triggeredAt = performance.now();
       A.invalidate({ forecast: ['board', 'skip'].includes(event.kind) ? 'keep' : 'stop', preserve: ['board', 'skip'].includes(event.kind) });
+      if (event.kind === 'instruments') A.expectInstrumentOffer?.();
       A.setReadStatus({ at: Date.now(), kind: event.kind, phase: 'settling' });
       if (['instruments', 'objective'].includes(event.kind)) A.prepareOCR();
     }
