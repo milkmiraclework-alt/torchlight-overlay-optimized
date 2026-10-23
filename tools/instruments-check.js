@@ -33,7 +33,8 @@ for (let slots = 0; slots <= 12; slots++) {
   assert.equal(noisy.toolsToConfirm, '', 'Noisy slot segmentation cancelled manual confirmation');
   assert.equal(A.buildState(noisy).st.tools.join(), 'crown', 'Noisy slots changed simulation instruments');
 }
-assert.equal(scan(next, [icon('skewer')], { day: 1 }).toolsConfirmed, null, 'A new run reused confirmation');
+assert.equal(scan(next, [icon('skewer')], { day: 1 }).toolsConfirmed.tools, 'crown', 'A backwards countdown erased confirmed instruments');
+assert.equal(scan(next, [icon('skewer')], { day: 1, runToken: 'new-run' }).toolsConfirmed, null, 'An explicit new run reused confirmation');
 const changed = { ...next, tools: ['claws'] };
 assert.ok(scan(changed, [icon('skewer')]).toolsToConfirm, 'Changing instruments kept an unrelated confirmation');
 assert.equal(A.resultKey(next, 1600), A.resultKey({ ...next, toolsConfirmed: null, toolsPanelSlots: 6, toolsToConfirm: 'different notice', toolsOffer: { options: ['maiden'] } }, 1600));
@@ -98,3 +99,32 @@ assert.ok(tied.conf < 0.9, 'Identical art for different instruments was reported
 const aliases = Scan.matchToolFeature(feature, 20, { tools: [reference('a'), reference('b')], toolNames: { a: { sim: 'collar' }, b: { sim: 'collar' } } });
 assert.equal(aliases.alts.length, 1); assert.ok(aliases.conf >= 0.9, 'Two references for one tool created false ambiguity');
 console.log('PASS: small icons without usable references do not throw; visual ties lower confidence; duplicate references share one semantic candidate.');
+
+const held = A.blankModel(); held.day = 10; held.warden = 1; held.dest = [2]; held.tools = ['coin', 'blacklist']; held.boardSeen = true;
+held.cells = held.cells.map((c, n) => n ? { kind: 'inmate', beast: 'wolf', tier: 0 } : c);
+A.confirmTools(held);
+function board(day) {
+  return { ok: true, cells: held.cells.map((c, n) => ({ n, kind: n ? 'inmate' : 'office', beast: c.beast, tier: c.tier || 0, conf: 1, jaws: null })),
+    warden: { cell: 1, conf: 1 }, doors: { cells: [2], conf: 1 }, days: { days: 20 - day }, tools: { tools: [icon('coin')] }, chromatic: { count: 0 } };
+}
+const weakPicture = board(18); weakPicture.cells[1].beast = 'lion'; weakPicture.cells[1].tier = 4; weakPicture.chromatic.count = 9;
+const jumped = A.scanToModel(weakPicture, held).model;
+assert.equal(jumped.day, 10); assert.equal(jumped.dayProbe.day, 18);
+assert.equal(jumped.cells[1].beast, held.cells[1].beast); assert.equal(jumped.cells[1].tier, held.cells[1].tier);
+assert.equal(jumped.vault.length, held.vault.length, 'A suspect-day picture poisoned the prior board/vault');
+assert.ok(A.buildState(jumped).problems.some(p => p.includes('day')));
+assert.equal(jumped.tools.join(), 'coin,blacklist'); assert.equal(jumped.toolsConfirmed.tools, 'blacklist,coin');
+const corrected = A.scanToModel(board(11), JSON.parse(JSON.stringify(jumped))).model;
+assert.equal(corrected.day, 11); assert.equal(corrected.dayProbe, null); assert.equal(corrected.tools.join(), 'coin,blacklist');
+assert.equal(corrected.toolsConfirmed.tools, 'blacklist,coin'); assert.equal(corrected.toolsToConfirm, '');
+const repeated = A.scanToModel(board(18), jumped).model;
+assert.equal(repeated.day, 18); assert.equal(repeated.dayProbe, null, 'Two consistent independent readings could not confirm a real jump');
+const legacyBadDay = { ...held, day: 18 };
+const back = A.scanToModel(board(11), legacyBadDay).model;
+assert.equal(back.day, 18); assert.ok(back.dayProbe);
+const backConfirmed = A.scanToModel(board(11), back).model;
+assert.equal(backConfirmed.day, 11); assert.equal(backConfirmed.toolsConfirmed.tools, 'blacklist,coin');
+assert.equal(A.resultKey(held, 1600), A.resultKey({ ...held, dayProbe: { day: 18, maxDays: 20 }, boardSeen: false, runToken: 'another-token' }, 1600), 'Read-verification metadata fragmented exact Monte Carlo inputs');
+const engineBack = A.buildState(backConfirmed).st;
+assert.equal(A.modelFrom(engineBack, legacyBadDay).toolsConfirmed.tools, 'blacklist,coin', 'Rebuilding a corrected day forgot confirmation');
+console.log('PASS: the actual 10→18→11 incident preserves the confirmed Blacklist; suspect days block advice, repeated readings recover forwards/backwards, epoch resets remain explicit and verification metadata cannot change cache keys.');

@@ -29,12 +29,13 @@ assert.notEqual(F.visibleKey(st), F.visibleKey({ ...st, position: 3 }));
 console.log('PASS: deterministic and random next-state branches, frequency ordering, limits, source isolation and invalid moves.');
 
 async function checkRuntime() {
-  const events = {}, invalidations = [], transitions = [], pictures = [];
+  const events = {}, invalidations = [], transitions = [], pictures = [], starts = [];
   let configure, command, onGame, tick, now = 1000, connects = 0, suspended = 0, prepared = 0, reads = 0;
   const C = { DEFAULT_RULES: '', CONSENT_VERSION: 4, state: { log: 'off', window: 'off' }, setRules() {}, setWatch() {}, setPace() {},
     on: (kind, fn) => { events[kind] = fn; }, agreed: () => true, stopLog() {}, stopWindow() { this.state.window = 'off'; }, setReadinessProbe() {},
     useHandle() { this.state.log = 'on'; }, async connectWindow() { connects++; this.state.window = 'on'; }, captureNow: () => { reads++; } };
   const A = { invalidate: (options) => invalidations.push(options), setReadStatus() {}, prepare() { prepared++; }, prepareOCR() {}, onDesktopChange() {},
+    beginRun: (token) => starts.push(token),
     suspend() { suspended++; invalidations.push(undefined); }, setForecastEnabled: (enabled) => transitions.push(enabled) };
   const D = { fast: true, follow() {}, trigger() {}, record() {},
     fastSettings: async () => ({ consent: { version: 4 } }), game: async () => ({ running: true, window: 11, log: { path: 'test.log' } }),
@@ -101,6 +102,12 @@ async function checkRuntime() {
   assert.equal(connects, closedConnects); assert.equal(C.state.window, 'off');
   onGame({ running: true }); tick(); await pause(0);
   assert.equal(connects, closedConnects, 'Restarting the game started capture outside the mode');
+  events.seen({ line: 'Btn_S16GamePlay_Start', at: '1969.12.31-23.59.50:000' });
+  assert.equal(starts.length, 0, 'Historical startup log reset a restored run');
+  now = 31000;
+  events.seen({ line: 'Btn_S16GamePlay_Start', at: '1970.01.01-00.00.31:000' });
+  events.seen({ line: 'Btn_S16GamePlay_Start', at: '1970.01.01-00.00.31:000' });
+  assert.deepEqual(starts, ['start:1970.01.01-00.00.31:000'], 'A live start was missed or a duplicate reset the run twice');
   configure({ consent: { withdrawn: true } });
   assert.equal(invalidations.at(-1), undefined, 'Disabling capture did not request full cancellation');
   console.log('PASS: idle/menu/combat/map/game-close suspend capture and work, polling stays asleep, real moves/manual capture wake it, stale frames close; board forecasts retain/pause correctly.');

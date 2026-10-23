@@ -58,6 +58,13 @@ A.getModel().dest = [1, 3]; A.ask(true, false, true);
 assert.equal(messages.filter(x => x.state).length, 2, 'Actual changed options did not replace the job');
 A.ask(true); assert.equal(messages.filter(x => x.state).length, 3, 'Manual Recheck reused a partial job');
 console.log('PASS: duplicate frames and racing instrument confirmations retain job ID, shares and every existing sample; real changes and manual Recheck start fresh.');
+const correctedTools = A.getModel();
+correctedTools.tools = ['crown', 'blacklist']; A.confirmTools(correctedTools);
+A.reader.reading = { model: { ...JSON.parse(JSON.stringify(m)), tools: ['crown'], dayProbe: { day: 18, maxDays: 20 } }, tools: [], notes: [], checks: new Set() };
+A.useScan();
+assert.equal(A.getModel().tools.join(), 'crown,blacklist');
+assert.equal(A.getModel().toolsConfirmed.tools, 'blacklist,crown', 'A suspect-day picture undid a newer manual Book correction');
+A.getModel().dayProbe = null;
 
 async function checkObjectiveOrder(cancelled) {
   let finish, asks = 0, applied = false, closed = 0, readReported = false;

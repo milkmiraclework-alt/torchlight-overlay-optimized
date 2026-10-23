@@ -1,13 +1,13 @@
 'use strict';
 const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm'),path=require('node:path');
 const source=fs.readFileSync(path.join(__dirname,'../desktop/lib/fast-runtime.js'),'utf8');
-async function harness(failures,{firstMissing=false,missingCaptures=0,kind='instruments',deferConnect=false}={}){
+async function harness(failures,{firstMissing=false,missingCaptures=0,kind='instruments',deferConnect=false,dayReading=false}={}){
  let now=0,nextTimer=1,ocrPrepared=0;const timers=new Map(),handlers={},commands={},reads=[],status=[],captures=[],connections=[],settings={consent:{version:4},activeMode:'tartarus'};
  const time=(fn,ms)=>{const id=nextTimer++;timers.set(id,{fn,at:now+ms});return id;};
  const A={probeFrame:()=>false,prepare(){},prepareOCR(){ocrPrepared++;},setForecastEnabled(){},suspend(){},setReadStatus:(...args)=>status.push(args),invalidate(){},onDesktopChange(){},desktopSnapshot:()=>({}),captureImage:()=>null};
  const C={DEFAULT_RULES:'',CONSENT_VERSION:4,state:{window:deferConnect?'off':'on',log:'on'},on:(name,fn)=>handlers[name]=fn,setReadinessProbe(){},setRules(){},setWatch(){},setPace(){},agreed:()=>true,useHandle(){},stopWindow(){C.state.window='off';},stopLog(){},connectWindow:()=>deferConnect?new Promise(r=>connections.push(r)):Promise.resolve(),captureNow:async(kind,retry)=>{captures.push({kind,retry});await handlers.frame({kind,hits:retry.hits,retryAttempt:retry.attempt,frame:captures.length<=missingCaptures?null:{close(){}}});}};
  const D={fast:true,record(){},follow(){},onLogChanged(){},logStat:async()=>({}),logRead:async()=>new ArrayBuffer(0),riot(){},run(){},trigger(){},setFastSettings(){},onCommand:fn=>commands.command=fn,onGame:fn=>commands.game=fn,onFastSettings:fn=>commands.settings=fn,fastSettings:async()=>settings,game:async()=>({running:true,window:123})};
- const Auto={cancel(){},receive:async(m,reply)=>{reads.push(m);reply({read:reads.length<=failures?{ok:false,pick:true,reason:'Offer is still animating'}:{ok:true,pick:true,names:['Saw']}});}};
+ const Auto={cancel(){},receive:async(m,reply)=>{reads.push(m);reply({read:reads.length<=failures?{ok:false,pick:true,dayReading,reason:'Offer is still animating'}:{ok:true,pick:true,names:['Saw']}});}};
  const window={TartarusDesktop:D,TartarusCapture:C,TartarusAnalyzer:A,TartarusAuto:Auto,addEventListener(){}};
  vm.runInNewContext(source,{window,localStorage:{getItem:()=>null,setItem(){}},performance:{now:()=>now},setTimeout:time,clearTimeout:id=>timers.delete(id),setInterval(){},Date,JSON,DOMException,OffscreenCanvas:function(){}});
  const flush=async()=>{for(let i=0;i<8;i++)await Promise.resolve();};await flush();
@@ -42,5 +42,13 @@ async function harness(failures,{firstMissing=false,missingCaptures=0,kind='inst
  vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../js/auto.js'),'utf8'),{window:w,document:{hasFocus:()=>false,addEventListener(){},getElementById:()=>null},BroadcastChannel:function(){},setInterval(){},setTimeout,clearTimeout,Date,Math});
  for(let i=0;i<3;i++)await w.TartarusAuto.receive({kind:'instruments',retryOffer:true,bitmap:{close(){closed++;}}},r=>replies.push(r));
  assert.equal(full,0);assert.equal(closed,3);assert.equal(replies[0].read.retryable,true);
+ const suspicious=await harness(1,{kind:'manual',dayReading:true});await suspicious.advance(250);
+ assert.equal(suspicious.captures.length,1);assert.equal(suspicious.reads.length,2);assert.equal(suspicious.status.at(-1)[1].ok,true);
+ let loaded=false,blocked=0;const dayReplies=[];
+ const dayA={readFrameDirect:async()=>({ok:true,controls:true}),useReading(){loaded=true;},readingIssue:()=>({dayReading:true,retryable:true,reason:'Day jumped'}),askCached(){assert.ok(loaded);blocked++;return false;}};
+ const dayWindow={TartarusCapture:C,TartarusAnalyzer:dayA,TartarusDesktop:{fast:true},addEventListener(){}};
+ vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../js/auto.js'),'utf8'),{window:dayWindow,document:{hasFocus:()=>false,getElementById:()=>null},BroadcastChannel:function(){},setInterval(){},Date,Math});
+ await dayWindow.TartarusAuto.receive({kind:'board',bitmap:{close(){}}},r=>dayReplies.push(r));
+ assert.equal(blocked,1);assert.ok(dayReplies.some(r=>r.read&&!r.read.ok&&r.read.dayReading&&r.read.retryable));assert.ok(!dayReplies.some(r=>r.asked));
  console.log('PASS: bounded cold/missing-frame and picture retries, early objective OCR, original offer metadata, final failure, new-event/exit/mode cancellation, stale-share fences, no wrong-screen full-board search and bitmap cleanup.');
 })().catch(e=>{console.error(e);process.exitCode=1;});

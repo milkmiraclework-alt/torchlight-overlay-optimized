@@ -28,9 +28,9 @@ module.exports = async function checkInstruments(resume = false, throughOverlay 
       localStorage.setItem('tartarus-sim:save:v2', T.serialize(state));
       document.getElementById('az-load-run').click();
     }
-    async function observe(ids, blocked = false) {
+    async function observe(ids, blocked = false, day = state.day) {
       panel = { ok: true, cells: state.cells.map((c) => ({ n: c.n, kind: c.n === 0 ? 'office' : 'inmate', beast: c.inmate?.beast, tier: c.inmate?.tier, conf: 1 })),
-        warden: { cell: 1, conf: 1 }, days: { days: 1 }, doors: { cells: [2], conf: 1 }, chromatic: { count: 0 },
+        warden: { cell: 1, conf: 1 }, days: { days: state.maxDays - day }, doors: { cells: [2], conf: 1 }, chromatic: { count: 0 },
         tools: { tools: ids.map((item) => typeof item === 'string' ? { sim: item, id: item, name: T.toolName(item), conf: 1 } : item) } };
       const canvas = new OffscreenCanvas(2, 2); canvas.getContext('2d').fillRect(0, 0, 2, 2);
       const bitmap = await createImageBitmap(canvas);
@@ -39,7 +39,7 @@ module.exports = async function checkInstruments(resume = false, throughOverlay 
       A.useReading(); A.askCached();
       if (blocked) {
         const snapshot = A.desktopSnapshot();
-        check(!snapshot.move && !snapshot.working && !snapshot.has && snapshot.problems.some((p) => p.includes('instruments')), 'Unknown instruments produced advice: ' + JSON.stringify(snapshot));
+        check(!snapshot.move && !snapshot.working && !snapshot.has && snapshot.problems.length, 'Unknown inputs produced advice: ' + JSON.stringify(snapshot));
       } else await settled();
       return A.desktopSnapshot();
     }
@@ -78,7 +78,20 @@ module.exports = async function checkInstruments(resume = false, throughOverlay 
       document.getElementById('az-tools-ok').click();
       await settled();
       check(saved().model.toolsConfirmed.tools === 'claws,collar,crown' && !saved().model.toolsOffer, 'Explicit correction did not unblock the calculation');
+      state.day = 10; state.tools = ['coin', 'blacklist'];
+      localStorage.setItem('tartarus-sim:save:v2', T.serialize(state));
+      document.getElementById('az-load-run').click();
+      await observe(['coin', 'blacklist']); document.getElementById('az-tools-ok').click(); await settled();
+      await observe(['coin'], true, 18);
+      check(A.day() === 10 && saved().model.dayProbe.day === 18 && saved().model.toolsConfirmed.tools === 'blacklist,coin', 'The bad day changed advice or removed the Book');
+      await observe(['coin'], false, 11);
+      check(A.day() === 11 && !saved().model.dayProbe && saved().model.tools.join() === 'coin,blacklist' && saved().model.toolsConfirmed.tools === 'blacklist,coin', 'Correcting the day erased the confirmed Book');
+      A.beginRun('new-run-fixture');
+      check(saved().model.tools.length === 0 && !saved().model.toolsConfirmed && A.day() === 1, 'A real new-run boundary did not reset old instruments');
+      document.querySelector('#az-tools [data-tool="claws"]').click(); document.getElementById('az-tools-ok').click();
+      A.beginRun('new-run-fixture');
+      check(saved().model.toolsConfirmed.tools === 'claws', 'A duplicate start event erased the new run again');
     }
-    return { resume, frames: 5, tools: data.model.tools, confirmation: data.model.toolsConfirmed, cacheHit: cached, selectionGuards: resume };
+    return { resume, frames: 5, tools: data.model.tools, confirmation: data.model.toolsConfirmed, cacheHit: cached, selectionGuards: resume, dayRegression: resume };
   } finally { panel = null; window.Worker = OriginalWorker; }
 };

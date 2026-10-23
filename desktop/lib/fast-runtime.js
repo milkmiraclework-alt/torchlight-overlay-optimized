@@ -14,7 +14,7 @@
   let retryTimer = 0, retryRevision = 0;
   function cancelRetry() { if (retryTimer) clearTimeout(retryTimer); retryTimer = 0; retryRevision++; }
   function retryPicture(event, mine, revision, attempt, read) {
-    if (attempt >= 2 || read?.skipped || !(['instruments', 'board', 'objective'].includes(event.kind) || (!read && event.kind === 'manual'))) return false;
+    if (attempt >= 2 || read?.skipped || !(['instruments', 'board', 'objective'].includes(event.kind) || ((!read || read.dayReading) && event.kind === 'manual'))) return false;
     A.setReadStatus({ at: Date.now(), kind: event.kind, phase: 'settling' }, read);
     if (retryTimer) clearTimeout(retryTimer);
     retryTimer = setTimeout(async () => {
@@ -30,6 +30,8 @@
 
   const gifts = { rainbows: 0, taken: 0 };
   let giftOpen = false;
+  const startedAt = Date.now();
+  const startSignals = new Set();
   // One Rainbow logs two sounds and one vault-cell light. Count the burst
   // by unique cells, or half the sounds if cell lines are unavailable.
   const burst = { last: 0, base: 0, sounds: 0, cells: new Set() };
@@ -111,6 +113,12 @@
   C.on('seen', (event) => {
     const line = event.line;
     if (/Btn_S16GamePlay_Start\b/.test(line)) {
+      const at = stampMs(event.at);
+      if (at && at >= startedAt - 2000 && at <= Date.now() + 2000 && !startSignals.has(event.at)) {
+        startSignals.add(event.at);
+        while (startSignals.size > 16) startSignals.delete(startSignals.values().next().value);
+        id++; latestRead = null; Auto.cancel(); A.beginRun?.('start:' + event.at);
+      }
       gifts.rainbows = 0; gifts.taken = 0; giftOpen = false;
       Object.assign(burst, { last: 0, base: 0, sounds: 0, cells: new Set() });
       if (A.giftsDone) A.giftsDone();

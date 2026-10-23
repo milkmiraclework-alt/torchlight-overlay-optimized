@@ -166,6 +166,12 @@
     // before starting the full check, rather than restart that check later.
     if (reuse && A.completeReading && await A.completeReading() === false) return;
     if (mine !== newest) return;
+    const issue = A.readingIssue?.();
+    if (issue) {
+      if (A.askCached) A.askCached();
+      answer({ read: { ...read, ...issue, ok: false } });
+      return;
+    }
     answer({ read });
     if (A.langBoard) A.langBoard(m.bitmap && A.image ? A.image() : bitmap);
     lastBoardAt = Date.now();

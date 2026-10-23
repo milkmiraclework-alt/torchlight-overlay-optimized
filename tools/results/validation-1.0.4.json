@@ -1,0 +1,165 @@
+{
+  "version": "1.0.4",
+  "checkedAt": "2026-10-23T14:05:27.471Z",
+  "artifactsVerified": true,
+  "changes": [
+    "Fix loss of confirmed Tartarus instruments after a misread day. The observed 10 -> 18 -> 11 sequence incorrectly treated the lower day as a new run and dropped Executioner's Blacklist. A countdown regression no longer resets the run or confirmed instruments.",
+    "Unexpected day/length jumps are held pending a second consistent picture, with the existing bounded fresh-picture retries. Until verified, the last accepted board, tools, marks, vault and objective are preserved and no advice is issued for the suspect day. Normal same-day/next-day reads gain no fixed delay.",
+    "Fresh real Start events and initial offers reset a run explicitly. Duplicate/historical log starts do not erase a restored run. Manual instrument corrections made while a suspect picture is pending remain authoritative. Verification/epoch metadata does not change exact Monte Carlo cache keys.",
+    "Reproduced the reported 10 -> 18 -> 11 sequence in unit tests and the packaged overlay; verified forward/backward recovery, manual confirmation races, new-run reset/deduplication, bounded retry routing, full calculation budgets and rolling forecasts. Automatic updater from 1.0.3 remains unchanged; native solver and pixel-reader binaries are unchanged."
+  ],
+  "incident": {
+    "observedDays": [
+      10,
+      18,
+      11
+    ],
+    "instrument": "blacklist",
+    "cause": "A misread countdown was treated as a new run; confirmed tools were discarded."
+  },
+  "checks": {
+    "version": "1.0.4",
+    "checkedAt": "2026-10-23T14:04:38.354Z",
+    "checks": [
+      "routing",
+      "picture-retry",
+      "profile-import",
+      "window-position",
+      "app-updates",
+      "update-install",
+      "rust-wasm",
+      "strategy28",
+      "terminal-gifts",
+      "calculation",
+      "rust-workers",
+      "instruments",
+      "forecast",
+      "forecast-menu",
+      "solver-cache",
+      "chain-cache",
+      "worker-budget",
+      "readiness",
+      "capture",
+      "worker-recovery",
+      "worker-lifecycle",
+      "bundled-site"
+    ],
+    "gameCapture": false,
+    "gameInput": false
+  },
+  "packaged": {
+    "version": "1.0.4",
+    "checkedAt": "2026-10-23T14:05:03.120Z",
+    "checks": [
+      "suite",
+      "overlay",
+      "lifecycle",
+      "instruments",
+      "updates",
+      "portable"
+    ],
+    "gameCapture": false,
+    "gameInput": false
+  },
+  "suite": {
+    "version": "1.0.4",
+    "checkedAt": "2026-10-23T14:03:17.433Z",
+    "actualNativeCapture": true,
+    "nativeAdvice": true,
+    "manualNativeCapture": true,
+    "modeSwitching": true,
+    "zeroInactiveWorkers": true,
+    "sharedCaptureStop": true,
+    "automaticCpuBudget": true,
+    "recordingExcluded": true,
+    "gameCapture": false,
+    "gameInput": false
+  },
+  "launch": {
+    "version": "1.0.4",
+    "checkedAt": "2026-10-23T14:05:15.721Z",
+    "installerPayloadMatches": true,
+    "secondInstanceOpensSettings": true,
+    "boardRemainsHidden": true,
+    "singlePrimaryInstance": true,
+    "gameCapture": false,
+    "gameInput": false
+  },
+  "portable": {
+    "version": "1.0.4",
+    "executable": "Torchlight-Overlay-Portable-1.0.4-x64.exe",
+    "sha256": "632b0c0f5e36aced446b2dcf605972173566f9e1801787ace039df6e2452dd66",
+    "checkedAt": "2026-10-23T14:05:02.326Z",
+    "bootMs": 8525,
+    "text": "TARTARUS 12345",
+    "ocrMs": 979,
+    "agreed": false,
+    "rustSampleParity": true,
+    "rustRollouts": 8,
+    "externalHttpBlocked": true,
+    "originalInstallUnavailable": true,
+    "occupiedPortIndependent": true,
+    "gameInput": false
+  },
+  "updates": {
+    "version": "1.0.4",
+    "checkedAt": "2026-10-23T14:04:32.337Z",
+    "settingsAndOverlay": true,
+    "manualCheck": true,
+    "corruptDownloadRejected": true,
+    "verifiedDownloadReady": true,
+    "automaticPreferenceSaved": true,
+    "profilePreserved": true,
+    "testOnlyLoopback": true,
+    "realInstallerExecuted": false,
+    "gameCapture": false,
+    "gameInput": false
+  },
+  "installer": {
+    "version": "1.0.4",
+    "checkedAt": "2026-10-23T14:02:59.792Z",
+    "results": [
+      {
+        "mode": "portable",
+        "corrupt": false,
+        "verified": true
+      },
+      {
+        "mode": "portable",
+        "corrupt": true,
+        "verified": true
+      },
+      {
+        "mode": "setup",
+        "corrupt": false,
+        "verified": true
+      },
+      {
+        "mode": "portable",
+        "parentExited": true,
+        "verified": true
+      }
+    ],
+    "realInstallerExecuted": false,
+    "realGameInput": false
+  },
+  "pixelReaderAndCalculationBinariesUnchanged": true,
+  "artifacts": [
+    {
+      "file": "Torchlight-Overlay-Portable-1.0.4-x64.exe",
+      "bytes": 128940194,
+      "sha256": "632b0c0f5e36aced446b2dcf605972173566f9e1801787ace039df6e2452dd66"
+    },
+    {
+      "file": "Torchlight-Overlay-Setup-1.0.4-x64.exe",
+      "bytes": 129105433,
+      "sha256": "19d0da1286d50938cb6613d898c729d6cbbb8cd35b0a2be646e5bb9245fbd5ad"
+    }
+  ],
+  "limitations": [
+    "Update metadata and binaries are trusted through this GitHub repository over HTTPS and SHA256, not a separate Authenticode signing certificate.",
+    "Setup flags are verified with a harmless Windows probe and the real installer payload is extracted/compared/launched; tests do not install over the user application or modify registry installation state.",
+    "Portable replacement, backup cleanup, changed-staging recovery, Unicode/special paths and helper survival after host exit are tested on owned probe executables. Packaged update networking/UI uses only a loopback fake release; the fake update is not executed.",
+    "Checks/downloads are automatic; installation requires the user action and does not interrupt a run."
+  ]
+}

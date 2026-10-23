@@ -131,6 +131,9 @@
       chain: 'single',
       rewards: true,
       day: 1,
+      boardSeen: false,
+      dayProbe: null,
+      runToken: null,
       maxDays: T.DEFAULT_PARAMS.drillDays,
       step: 'patrol',
       warden: T.OFFICE,
@@ -228,6 +231,7 @@
   // analyzed. Events the player can't name get a kind the solver re-rolls.
   function buildState(m) {
     const problems = [];
+    if (m.dayProbe) problems.push(`The day changed unexpectedly to ${m.dayProbe.day}. Read the board again to verify the day before calculating.`);
     if (m.toolsUncertain || m.toolsOffer?.unread || m.step !== 'choice' && m.toolsOffer) {
       problems.push('Check your instruments before calculating: select the ones you actually hold, then press These are right.');
     }
@@ -414,7 +418,9 @@
     m.walkTiles = st.objective ? st.objective.progress : 0;
     m.milestone = !!st.milestone;
     m.tools = st.tools.slice();
-    if (prev && st.day >= prev.day && toolSet(m.tools) === toolSet(prev.tools)) {
+    m.runToken = prev?.runToken || null;
+    m.boardSeen = !!prev?.boardSeen;
+    if (prev && toolSet(m.tools) === toolSet(prev.tools)) {
       m.toolsConfirmed = prev.toolsConfirmed || null;
       m.toolsUncertain = !!prev.toolsUncertain;
       m.toolsPanelSlots = prev.toolsPanelSlots || 0;
@@ -543,6 +549,7 @@
   const resultKey = (m, target) => {
     const input = { ...normalize(m), toolsToConfirm: '' };
     delete input.toolsConfirmed; delete input.toolsPanelSlots; delete input.toolsOffer; delete input.toolsUncertain;
+    delete input.dayProbe; delete input.boardSeen; delete input.runToken;
     return window.TartarusSolverCache.key(input, target);
   };
   const makeShares = (target) => solver.workers.map((_, k, all) => ({ target: Math.floor(target / all.length) + (k < target % all.length ? 1 : 0), rounds: 0, done: false, rows: null }));
@@ -2223,7 +2230,7 @@
       reader.result = result;
       reader.reading = result.ok ? scanToModel(result, model) : null;
       // The run's objective and its count, from the board's corner.
-      if (result.ok && result.objective) {
+      if (result.ok && result.objective && !reader.reading?.model.dayProbe) {
         // Loading OCR can involve a network fetch. Only join an already
         // warm worker; cold startup retains the asynchronous fallback.
         const join = FAST_DESKTOP && o.quiet && ocrReady;
@@ -2753,7 +2760,7 @@
       const startEvent = runStartEvent || (again ? model.startEvent : 'none');
       const card = T.START_EVENTS && T.START_EVENTS[startEvent];
       const maxDays = again ? model.maxDays : (card && card.days) || T.DEFAULT_PARAMS.drillDays;
-      const keep = { mode: model.mode, rewards: model.rewards, maxDays, runStart: true, objective: runObjective || (again ? model.objective : 'other'), walkTiles: again ? model.walkTiles : 0, startEvent };
+      const keep = { mode: model.mode, rewards: model.rewards, maxDays, runToken: model.runToken, runStart: true, objective: runObjective || (again ? model.objective : 'other'), walkTiles: again ? model.walkTiles : 0, startEvent };
       runObjective = null;
       runStartEvent = null;
       model = normalize(Object.assign(blankModel(), keep));
@@ -3024,7 +3031,9 @@
     return !own.length || !other.length || Math.max(...own.map((a) => a.score)) - Math.max(...other.map((a) => a.score)) >= 0.04 - 1e-9;
   }
   function runTools(read, base, m, notes, panel) {
-    const sameRun = !(m.day < base.day);
+    // A countdown misread is not evidence of a new run. Only the explicit
+    // run boundary/initial offer can reset the held set and confirmation.
+    const sameRun = (m.runToken || null) === (base.runToken || null);
     const known = sameRun ? (base.tools || []).filter((id) => T.TOOLS[id]) : [];
     const pending = sameRun && base.toolsOffer;
     const offer = pending?.unread ? [] : sameRun && base.step === 'choice' && base.choice && base.choice.kind === 'tool' ? base.choice.options.filter((id) => T.TOOLS[id]) : (pending?.options || []).filter((id) => T.TOOLS[id]);
@@ -3093,6 +3102,20 @@
     changed();
   }
 
+  function beginRun(token) {
+    if (!token || model.runToken === token) return;
+    invalidate(); reader.id++;
+    reader.reading = null; reader.result = null;
+    reader.cornerPending?.cancel?.(); corner.ticket++;
+    leaveShot();
+    const previous = model;
+    model = Object.assign(blankModel(), { mode: previous.mode, rewards: previous.rewards, runToken: token });
+    runObjective = null; runStartEvent = null;
+    gifts.log = null; gifts.waiting = 0; gifts.board = null;
+    solver.st = null; solver.result = null; flags = new Set();
+    changed();
+  }
+
   function scanToModel(r, base) {
     if (r.chain) return chainToModel(r, base);
     const m = JSON.parse(JSON.stringify(base));
@@ -3114,6 +3137,24 @@
         notes.push(`The days until the riot read as ${left}, more than any run has: check the day.`);
       }
     } else notes.push('The days until the riot weren’t read: check the day.');
+    if (r.days && Number.isInteger(r.days.days) && r.days.days >= 0 && r.days.days < 30) {
+      const anchored = base.boardSeen || base.toolsConfirmed || base.day > 1;
+      const suspicious = anchored && (m.maxDays !== base.maxDays || m.day < base.day || m.day > base.day + 1);
+      const repeated = base.dayProbe && base.dayProbe.day === m.day && base.dayProbe.maxDays === m.maxDays;
+      if (suspicious && !repeated) {
+        m.dayProbe = { day: m.day, maxDays: m.maxDays };
+        notes.push(`The day read as ${m.day} after ${base.day}; it needs a second picture before advice.`);
+        m.day = base.day; m.maxDays = base.maxDays;
+      } else m.dayProbe = null;
+    }
+    m.boardSeen = true;
+    if (m.dayProbe) {
+      // Keep the entire last accepted board, including marks/objective/tools.
+      // Only the candidate day is pending; a weak frame must not poison the
+      // history used to interpret the next, correct picture.
+      return { model: m, checks, notes, chromatic: m.vault.length,
+        tools: m.tools.map((id) => ({ id, sim: id, name: T.toolName(id), conf: 1, kept: true })), unsim: [] };
+    }
     r.cells.forEach((c, n) => {
       if (n === T.OFFICE) return;
       if (c.kind === 'locked') {
@@ -3275,7 +3316,6 @@
     // (f5, from the collected boards). Mornings with the office within
     // reach don't count: its card can be missed.
     const takers = ['forged', 'whip', 'stake'];
-    if (m.day < base.day) m.shortDays = [];
     const officeNear = [1, 2, 3, 4, 5, 6].some((k) => (m.warden + k) % T.CELL_COUNT === T.OFFICE);
     const doorsDue = T.DEFAULT_PARAMS.destinations - m.tools.filter((id) => takers.includes(id)).length;
     if (m.step === 'patrol' && !officeNear && m.dest.length && m.dest.length < doorsDue) m.shortDays = [...new Set([...(m.shortDays || []), m.day])];
@@ -3553,7 +3593,9 @@
     // Reconcile its panel against the latest user-confirmed instruments.
     if (reader.result && reader.result.ok) {
       const notes = [];
-      rd.tools = runTools(reader.result.tools?.tools || [], model, rd.model, notes, reader.result.tools);
+      // A suspect frame contributes no icons, but a manual correction made
+      // while it was being read must still win over its older model snapshot.
+      rd.tools = runTools(rd.model.dayProbe ? [] : reader.result.tools?.tools || [], model, rd.model, notes, rd.model.dayProbe ? undefined : reader.result.tools);
       rd.model.tools = rd.tools.map((t) => t.sim);
       for (const note of notes) if (!rd.notes.includes(note)) rd.notes.push(note);
     }
@@ -3629,11 +3671,13 @@
     $('az-riot').addEventListener('change', (e) => {
       const max = clamp(toInt(model.maxDays, 20), 5, 60);
       model.day = clamp(max - toInt(e.target.value, max - model.day), 1, max);
+      model.dayProbe = null; model.boardSeen = true;
       changed();
     });
     $('az-days').addEventListener('change', (e) => {
       model.maxDays = clamp(toInt(e.target.value, 20), 5, 60);
       model.day = Math.min(model.day, model.maxDays);
+      model.dayProbe = null; model.boardSeen = true;
       changed();
     });
     segment('az-step', (v) => {
@@ -3943,6 +3987,8 @@
       readPick: (bitmap) => readPick(bitmap),
       usePick: (read, fresh, reuse) => usePick(read, fresh, reuse),
       expectInstrumentOffer,
+      beginRun,
+      readingIssue: () => model.dayProbe ? { retryable: true, dayReading: true, reason: `The day read as ${model.dayProbe.day} after ${model.day}; verifying the countdown.` } : null,
       openTools,
       readTreasure: (bitmap) => readTreasure(bitmap),
       readObjective: (bitmap) => readObjective(bitmap),
