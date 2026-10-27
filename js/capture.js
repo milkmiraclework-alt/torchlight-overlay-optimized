@@ -60,7 +60,8 @@
   let pace = 1; // settle times are scaled by this: the game's Speed-up runs its animations faster
   let tail = null; // { post(message), stop() }
   let track = null;
-  let nativeWindow = false, nativeFailed = false, nativeSession = null;
+  let nativeWindow = false, nativeFailed = false, nativeSession = null, newestNativeFrame = null;
+  let pendingWindow = null;
   let windowGeneration = 0;
   let imageCapture = null;
   let surface = ''; // what's shared: 'window', or 'monitor' only with the app's crop
@@ -593,6 +594,16 @@
   // game is on, which the app picks.
   async function connectWindow(opts) {
     mustAgree();
+    if (!pendingWindow) {
+      const pending = openWindow(opts);
+      pendingWindow = pending;
+      pending.finally(() => { if (pendingWindow === pending) pendingWindow = null; }).catch(() => {});
+    }
+    return pendingWindow;
+  }
+
+  async function openWindow(opts) {
+    mustAgree();
     const generation = ++windowGeneration;
     const desktop = window.TartarusDesktop;
     if (desktop?.nativeReader && !nativeFailed) {
@@ -672,6 +683,7 @@
 
   function stopWindow(keepPending = false) {
     windowGeneration++;
+    if (!keepPending) pendingWindow = null;
     if (nativeWindow) window.TartarusDesktop?.nativeReader('stop').catch(() => {});
     nativeWindow = false;
     if (!keepPending) dropBurst();
@@ -703,20 +715,21 @@
           if (frame.closed) return;
           frame.closed = true;
           desktop.nativeReader('release', { token: frame.token, session: frame.session }).catch(() => {});
-          if (frame.unreadable && generation === windowGeneration) {
+          if (frame.unreadable && generation === windowGeneration && frame === newestNativeFrame) {
             nativeFailed = true; nativeWindow = false;
-            desktop.nativeReader('stop').catch(() => {});
+            desktop.nativeReader('stop', { reason: `unreadable-${frame.captureFailure || 'board'}` }).catch(() => {});
             setState({ window: 'off', note: 'Using compatible window capture.' });
           }
         };
         if (generation !== windowGeneration || !agreed()) { frame.close(); return null; }
+        newestNativeFrame = frame;
         return frame;
       } catch {
         if (generation !== windowGeneration || !agreed()) return null;
         // Some GPU/driver combinations expose only black pixels to GDI.
         // Close this path once and keep the proven window-video fallback.
         nativeFailed = true; nativeWindow = false;
-        await window.TartarusDesktop.nativeReader('stop').catch(() => {});
+        await window.TartarusDesktop.nativeReader('stop', { reason: 'native-capture-failed' }).catch(() => {});
         setState({ window: 'off', note: 'Using compatible window capture.' });
         await connectWindow();
         return grab();

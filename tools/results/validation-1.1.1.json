@@ -1,0 +1,93 @@
+{
+  "version": "1.1.1",
+  "checkedAt": "2026-10-27T10:55:36.021Z",
+  "problem": "The native instrument/objective path retried non-black unrecognisable pixels without activating compatible capture. The board path already did switch.",
+  "correction": [
+    "Unrecognised native screen readings mark their source for capture fallback",
+    "Pixel/OCR failures return retryable readings and close owned bitmaps",
+    "Concurrent capture requests share one pending connection",
+    "Cancelled reads retain capture; stale failed frames cannot stop a newer capture",
+    "Fallback reason is recorded without saving screenshots"
+  ],
+  "sourceChecks": [
+    "native-capture",
+    "native-screen",
+    "native-reader",
+    "routing",
+    "days",
+    "pick-box",
+    "picture-retry",
+    "profile-import",
+    "window-position",
+    "instrument-reader",
+    "app-updates",
+    "update-install",
+    "rust-wasm",
+    "pixel-kernels",
+    "strategy28",
+    "terminal-gifts",
+    "calculation",
+    "rust-workers",
+    "instruments",
+    "forecast",
+    "forecast-menu",
+    "solver-cache",
+    "chain-cache",
+    "worker-budget",
+    "readiness",
+    "capture",
+    "worker-recovery",
+    "worker-lifecycle",
+    "bundled-site"
+  ],
+  "packagedChecks": [
+    "suite",
+    "overlay",
+    "lifecycle",
+    "instruments",
+    "updates",
+    "portable",
+    "native-reader"
+  ],
+  "firstMoveRegression": {
+    "version": "1.1.1",
+    "reads": [
+      {
+        "native": true,
+        "ok": false,
+        "unreadable": true
+      },
+      {
+        "native": false,
+        "ok": true,
+        "unreadable": false,
+        "cards": [
+          "saw",
+          "rope",
+          "muzzle"
+        ]
+      }
+    ],
+    "nativeStopped": true,
+    "automatic": true,
+    "gameCapture": false,
+    "gameInput": false
+  },
+  "solverUnchanged": true,
+  "voraxUnchanged": true,
+  "nativeLibraryUnchanged": true,
+  "artifacts": [
+    {
+      "file": "Torchlight-Overlay-Portable-1.1.1-x64.exe",
+      "bytes": 129265456,
+      "sha256": "f771d6563f60bc5a511e4b8087cfde24ebeba44748a810b4a88fc6b75ed50995"
+    },
+    {
+      "file": "Torchlight-Overlay-Setup-1.1.1-x64.exe",
+      "bytes": 129430687,
+      "sha256": "72faa74ef6262da3faff1b97013201a142f8ae176a09f32ffcf5959bcae2ef7f"
+    }
+  ],
+  "gameCapture": false,
+  "gameInput": false
+}

@@ -1,0 +1,24 @@
+{
+  "version": "1.1.1",
+  "reads": [
+    {
+      "native": true,
+      "ok": false,
+      "unreadable": true
+    },
+    {
+      "native": false,
+      "ok": true,
+      "unreadable": false,
+      "cards": [
+        "saw",
+        "rope",
+        "muzzle"
+      ]
+    }
+  ],
+  "nativeStopped": true,
+  "automatic": true,
+  "gameCapture": false,
+  "gameInput": false
+}

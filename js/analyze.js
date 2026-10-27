@@ -2217,6 +2217,25 @@
     return createImageBitmap(new ImageData(new Uint8ClampedArray(pixels.buffer), pixels.width, pixels.height));
   }
 
+  async function readNativeScreen(source, read, kind) {
+    let bitmap;
+    try {
+      bitmap = await nativeBitmap(source);
+      const result = await read(bitmap);
+      if (!result?.ok && !result?.skipped) {
+        source.unreadable = true;
+        source.captureFailure = kind;
+      }
+      return result;
+    } catch (error) {
+      source.unreadable = true;
+      source.captureFailure = kind;
+      return { ok: false, [kind === 'instruments' ? 'pick' : kind]: true, reason: String(error.message || error), retryable: true };
+    } finally {
+      if (bitmap) bitmap.close();
+    }
+  }
+
   function runScan(imageData, opts, bitmap) {
     const o = opts || {};
     if (reader.cornerPending) reader.cornerPending.cancel();
@@ -2310,6 +2329,7 @@
         if (id !== reader.id) { done(null, 'a newer picture came in'); return; }
         reader.tracking = data.tracking;
         o.native.unreadable = !data.result?.ok;
+        if (o.native.unreadable) o.native.captureFailure = 'board';
         if (data.corner) {
           const c = document.createElement('canvas'); c.width = data.corner.width; c.height = data.corner.height;
           c.getContext('2d').putImageData(new ImageData(new Uint8ClampedArray(data.corner.buffer), c.width, c.height), 0, 0);
@@ -2428,7 +2448,7 @@
   // whose instrument offer comes next.
   let runObjective = null;
   function readObjective(source) {
-    if (source?.native) return nativeBitmap(source).then(bitmap => readObjective(bitmap).finally(() => bitmap.close()));
+    if (source?.native) return readNativeScreen(source, readObjective, 'objective');
     const scale = Math.min(1, 2600 / source.width);
     const w = Math.round(source.width * scale);
     const h = Math.round(source.height * scale);
@@ -2717,7 +2737,7 @@
   // names. Follow my game knows this screen from the game's log; this is
   // for pasted pictures and Take a picture now.
   async function readTreasure(source) {
-    if (source?.native) { const bitmap = await nativeBitmap(source); try { return await readTreasure(bitmap); } finally { bitmap.close(); } }
+    if (source?.native) return readNativeScreen(source, readTreasure, 'treasure');
     const worker = await ocrWorker();
     if (!worker) return { ok: false, treasure: true, reason: `the text reader couldn’t load (${ocrError || 'it didn’t load'})` };
     const scale = Math.min(1, 1600 / source.width);
@@ -2776,7 +2796,7 @@
     if (cancel) cancel();
   }
   function readPick(source) {
-    if (source?.native) return nativeBitmap(source).then(bitmap => readPick(bitmap).finally(() => bitmap.close()));
+    if (source?.native) return readNativeScreen(source, readPick, 'instruments');
     cancelPickRead();
     const scale = Math.min(1, 2600 / source.width);
     const w = Math.round(source.width * scale);

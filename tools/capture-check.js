@@ -9,9 +9,9 @@ const window = { addEventListener() {}, TartarusDesktop: { fast: true } };
 let clock = 0, fakeTimers = false;
 const timers = [];
 const storage = { getItem: () => JSON.stringify({ enabled: true, consent: 4 }) };
-let displayResolve;
+let displayResolve, displayRequests = 0;
 vm.runInNewContext(fs.readFileSync(require.resolve('../js/capture.js'), 'utf8'), {
-  window, localStorage: storage, navigator: { mediaDevices: { getDisplayMedia: () => new Promise((resolve) => { displayResolve = resolve; }) } }, console, TextDecoder, DOMException,
+  window, localStorage: storage, navigator: { mediaDevices: { getDisplayMedia: () => new Promise((resolve) => { displayRequests++; displayResolve = resolve; }) } }, console, TextDecoder, DOMException,
   ImageCapture: class { constructor(track) { this.track = track; } },
   setInterval: () => 1, clearInterval() {},
   setTimeout(fn, delay) { if (!fakeTimers) return setTimeout(fn, delay); const timer = { fake: true, fn, delay }; timers.push(timer); return timer; },
@@ -126,8 +126,9 @@ async function until(test) { for (let i = 0; i < 100 && !test(); i++) await paus
   window.TartarusDesktop.nativeReader=async(cmd,args)=>{
     nativeCalls.push({cmd,args});if(cmd==='grab')throw Error('Black direct capture');return true;
   };
-  const oldResolve=displayResolve,fallback=C.captureNow('board');await until(()=>displayResolve!==oldResolve);
-  const compatible=stream();compatible.track.readyState='live';displayResolve(compatible);await fallback;
+  const oldResolve=displayResolve,oldRequests=displayRequests,fallback=C.captureNow('board');await until(()=>displayResolve!==oldResolve);
+  const concurrent=C.connectWindow();await Promise.resolve();assert.equal(displayRequests,oldRequests+1,'Fallback and background sync opened competing streams');
+  const compatible=stream();compatible.track.readyState='live';displayResolve(compatible);await fallback;assert.equal(await concurrent,true);
   assert.equal(C.state.window,'on');assert.equal(nativeCalls.filter(c=>c.cmd==='grab').length,3);
   C.stopWindow();C.stopLog();assert(compatible.track.stopped);
   console.log('PASS: native frames bypass browser capture, release once with their session, cancellation retains no pixels and black GDI capture falls back to the compatible stream.');

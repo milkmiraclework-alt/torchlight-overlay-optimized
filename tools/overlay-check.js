@@ -21,6 +21,11 @@ const log = path.join(profile, 'UE_game.log');
 fs.writeFileSync(log, '');
 const standIn = path.join(profile, 'game.html');
 fs.writeFileSync(standIn, '<!doctype html><title>TartarusOverlayCheckOnly</title><body style="background:#17372b;color:white"><h1>Overlay capture test</h1><canvas width="640" height="360"></canvas><script>const c=document.querySelector("canvas").getContext("2d");c.fillStyle="#9db760";c.fillRect(0,0,640,360);</script>');
+const fallbackPictureAt=process.argv.indexOf('--fallback-picture');
+if(fallbackPictureAt>=0){
+  const bytes=fs.readFileSync(path.resolve(process.argv[fallbackPictureAt+1]));
+  fs.writeFileSync(standIn,'<!doctype html><title>TartarusOverlayCheckOnly</title><style>html,body{margin:0;width:100%;height:100%;background:black}img{width:100%;height:100%;object-fit:contain}</style><img src="data:image/webp;base64,'+bytes.toString('base64')+'">');
+}
 
 async function connect(url) {
   const ws = new WebSocket(url);
@@ -294,6 +299,7 @@ async function checkBrowserSearchPool(frames, previousBase, compareProbe = false
   const launchArgs = [...(standalone ? [`--site-port=${sitePort}`, '--offline-check'] : [path.join(__dirname, 'local-overlay.js')]), '--test', '--offscreen', `--user-data=${profile}`, '--game-title=TartarusOverlayCheckOnly', `--log=${log}`, `--test-window=${standIn}`, '--remote-debugging-port=0'];
   const nativeFixtureAt=process.argv.indexOf('--native-fixture');
   if(nativeFixtureAt>=0)launchArgs.push('--native-fixture='+path.resolve(process.argv[nativeFixtureAt+1]));
+  if(fallbackPictureAt>=0)launchArgs.push('--test-window-frameless');
   const launch = () => {
     const child = spawn(standalone || process.execPath, launchArgs, { cwd: standalone ? path.dirname(standalone) : ROOT, env, windowsHide: true, stdio: ['pipe', 'pipe', 'pipe'] });
     child.stdout.on('data', (s) => { output += s; });
@@ -479,6 +485,22 @@ async function checkBrowserSearchPool(frames, previousBase, compareProbe = false
     if (process.argv.includes('--forecast-only')) {
       const checkForecast = require('./forecast-overlay-check.js');
       console.log(`PASS: isolated forecast integration: ${JSON.stringify(await evaluate(`(${checkForecast.toString()})()`))}`);
+      return;
+    }
+    if (process.argv.includes('--native-fallback-only')) {
+      assert(nativeFixtureAt>=0&&fallbackPictureAt>=0);
+      await evaluate('window.fallbackReads=[];const old=TartarusAnalyzer.readPick;TartarusAnalyzer.readPick=async frame=>{const r=await old(frame);fallbackReads.push({native:!!frame.native,ok:r.ok,unreadable:!!frame.unreadable,cards:r.cards?.map(c=>c.sim)});return r;};TartarusDesktop.setConsent({version:4,at:new Date().toISOString()});TartarusDesktop.setFastSettings({mode:"tartarus"});true');
+      for(let i=0;i<200&&!await evaluate('TartarusCapture.state.log==="on"');i++)await pause(25);
+      fs.appendFileSync(log,'[2026.10.27-12.00.00:000] TLLua: S16BoardRelicPop Run\n');
+      for(let i=0;i<300&&!await evaluate('fallbackReads.some(r=>!r.native&&r.ok)');i++)await pause(50);
+      const result=await evaluate('(async()=>({reads:fallbackReads,status:TartarusCapture.state,nativeReader:(await TartarusDesktop.suiteInfo()).nativeReader}))()');
+      assert(result.reads.some(r=>r.native&&!r.ok&&r.unreadable),JSON.stringify(result));
+      const good=result.reads.find(r=>!r.native&&r.ok);assert(good,JSON.stringify(result));
+      const expectedAt=process.argv.indexOf('--expected-tools');if(expectedAt>=0)assert.deepEqual(good.cards,process.argv[expectedAt+1].split(','));
+      assert.equal(result.nativeReader.running,false,'Incompatible native capture was retained');
+      assert.equal(result.reads.filter(r=>r.native).length,1,'The bad GDI image was retried');
+      fs.writeFileSync(path.join(ROOT,'tools/results/native-fallback-e2e.json'),JSON.stringify({version:require('../desktop/package.json').version,reads:result.reads,nativeStopped:true,automatic:true,gameCapture:false,gameInput:false},null,2)+'\n');
+      console.log('PASS: first-move non-black native capture fails, closes and automatically retries through actual compatible Windows capture; all three offered tools recovered: '+JSON.stringify(result.reads));
       return;
     }
     if (process.argv.includes('--native-offer-only')) {

@@ -805,7 +805,10 @@ ipcMain.handle('fast:settings', (e) => fromPage(e, 'follow') ? fastConfig() : nu
 ipcMain.handle('desktop:visible', (e) => fromPage(e, 'analyzer') && wins.analyzer.isVisible());
 ipcMain.handle('native:reader', async (e, cmd, args = {}) => {
   if (!fromPage(e, 'analyzer') || !nativeReader) throw Error('Native reader unavailable');
-  if (cmd === 'stop') { nativeReader.stop(); return true; }
+  if (cmd === 'stop') {
+    if (['native-capture-failed', 'unreadable-instruments', 'unreadable-objective', 'unreadable-board', 'unreadable-treasure'].includes(args.reason)) note('capture fallback:', args.reason);
+    nativeReader.stop(); return true;
+  }
   if (!['connect', 'grab', 'release', 'read', 'probe', 'pixels'].includes(cmd) || !nativeAllowed()) throw Error('Capture is disabled');
   // The renderer cannot choose an HWND or read arbitrary files/windows.
   const safe = cmd === 'connect' ? { hwnd: Number(game.hwnd) } : {
@@ -1248,7 +1251,8 @@ function registerHotkeys() {
     if (TEST && arg('test-window')) {
       const area = screen.getPrimaryDisplay().bounds;
       // Windows excludes fully off-screen windows from capture enumeration.
-      testStandIn = new BrowserWindow({ title: 'TartarusOverlayCheckOnly', width: 1280, height: 800, show: false, x: area.x + area.width - 1, y: area.y + area.height - 1, webPreferences: { sandbox: true, backgroundThrottling: false } });
+      const exactFixture = flag('test-window-frameless');
+      testStandIn = new BrowserWindow({ title: 'TartarusOverlayCheckOnly', width: 1280, height: exactFixture ? 720 : 800, frame: !exactFixture, show: false, x: area.x + area.width - 1, y: area.y + area.height - 1, webPreferences: { sandbox: true, backgroundThrottling: false } });
       await testStandIn.loadFile(path.resolve(arg('test-window')));
       testStandIn.showInactive();
     }
