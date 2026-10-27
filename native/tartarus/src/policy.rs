@@ -11,6 +11,8 @@ const CHAIN_CACHE_LIMIT: usize = 65_536;
 #[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Policy {
+    #[serde(default)]
+    pub assessment: bool,
     pub tier_base: f64,
     pub rainbow_mult: f64,
     pub w_open: f64,
@@ -1510,7 +1512,14 @@ pub fn tool_gains(st: &State, options: &[Id]) -> Option<Vec<f64>> {
     }
     Some(gains)
 }
-fn reroll_odds(st: &State, options: &[Id]) -> Option<(f64, f64)> {
+fn gains_for(st: &State, options: &[Id], assessment: bool) -> Option<Vec<f64>> {
+    if assessment {
+        crate::assessment::tool_gains(st, options)
+    } else {
+        tool_gains(st, options)
+    }
+}
+fn reroll_odds(st: &State, options: &[Id], assessment: bool) -> Option<(f64, f64)> {
     let mut pool: Vec<_> = Id::TOOLS
         .into_iter()
         .filter(|id| !st.tools.contains(id) && !options.contains(id))
@@ -1527,7 +1536,7 @@ fn reroll_odds(st: &State, options: &[Id]) -> Option<(f64, f64)> {
             all.push(id)
         }
     }
-    let gains = tool_gains(st, &all)?;
+    let gains = gains_for(st, &all, assessment)?;
     if pool.len() < 3 {
         return None;
     }
@@ -1576,13 +1585,13 @@ pub fn decide(st: &State, p: &Policy, rng: &mut u32, cache: &mut Cache) -> Optio
         }
         if e::can_reroll(st)
             && p.tool_sets
-            && reroll_odds(st, &choice.options)
+            && reroll_odds(st, &choice.options, p.assessment)
                 .is_some_and(|(now, next)| next > now + p.reroll_margin)
         {
             return Some(Action::Reroll);
         }
         if p.tool_sets {
-            if let Some(g) = tool_gains(st, &choice.options) {
+            if let Some(g) = gains_for(st, &choice.options, p.assessment) {
                 let mut best = 0;
                 for i in 1..g.len() {
                     if g[i] > g[best] {

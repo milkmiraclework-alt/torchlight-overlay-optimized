@@ -537,8 +537,8 @@
 
   const solver = { workers: null, failed: false, id: 0, starts: 0, resumed: 0, st: null, key: '', cacheKey: '', cached: false, instant: null, result: null, shares: null, meta: null, goal: '', forecastAlias: null, forecastHit: false, forecastResumed: false };
   // Bump for rule/strategy imports, retain across compatible UI-only fixes.
-  const SOLVER_CACHE_REVISION = '?v=20261027mcLeader120';
-  const solverCache = FAST_DESKTOP && window.TartarusSolverCache ? window.TartarusSolverCache.create({ version: `mc-v3:rules=308b947:${SOLVER_CACHE_REVISION}:move=${MOVE_PLAYOUTS}:choice=${CHOICE_PLAYOUTS}` }) : null;
+  const SOLVER_CACHE_REVISION = '?v=20261027assessment121';
+  const solverCache = FAST_DESKTOP && window.TartarusSolverCache ? window.TartarusSolverCache.create({ version: `mc-v4:giboork-0216:depth=4:rules=308b947:${SOLVER_CACHE_REVISION}:move=${MOVE_PLAYOUTS}:choice=${CHOICE_PLAYOUTS}` }) : null;
   const forecast = { sequence: 0, generation: 0, timer: 0, active: null, plan: null, queue: [], seen: new Set(), ready: new Set(), paused: false,
     families: new Map(),
     stats: { generated: 0, completed: 0, hits: 0, resumed: 0, cancelled: 0, reused: 0, familyHits: 0, familyResumed: 0 } };
@@ -666,7 +666,7 @@
     task.seed = (forecast.sequence * 7919 + 1) >>> 0;
     forecast.active = task;
     solver.workers.forEach((worker, k) => worker.postMessage({ id: task.id, state: task.state, rollouts: task.shares[k].target,
-      stream: k, raw: true, background: true, seed: task.seed }));
+      stream: k, raw: true, background: true, seed: task.seed, assessment: true }));
   }
   function receiveForecast(k, m) {
     const task = forecast.active;
@@ -893,7 +893,7 @@
       clearTimeout(mergeTimer); mergeTimer = 0;
       solver.shares = null; solver.meta = null;
       if (solver.workers) for (const worker of solver.workers) worker.postMessage({ id, cancel: true });
-      solver.result = S.solve(state, { rollouts, seed: (id * 7919 + 1) >>> 0 }).step(1);
+      solver.result = S.solve(state, { rollouts, seed: (id * 7919 + 1) >>> 0, assessment: true }).step(1);
       cacheCompleted();
       return;
     }
@@ -902,10 +902,10 @@
       // Each worker's share of the rounds: together they make `rollouts`.
       solver.meta = null;
       solver.shares = makeShares(rollouts);
-      solver.workers.forEach((w, k) => w.postMessage({ id, state, rollouts: solver.shares[k].target, stream: k, raw: true }));
+      solver.workers.forEach((w, k) => w.postMessage({ id, state, rollouts: solver.shares[k].target, stream: k, raw: true, assessment: true }));
       return;
     }
-    const job = S.solve(state, { rollouts, seed: (id * 7919 + 1) >>> 0 });
+    const job = S.solve(state, { rollouts, seed: (id * 7919 + 1) >>> 0, assessment: true });
     const tick = () => {
       if (id !== solver.id) return;
       solver.result = job.step(12);
@@ -927,6 +927,7 @@
       const row = share.rows[i];
       for (const v of r.vals) row.vals.push(v);
       row.pass = r.pass; row.points = r.points; row.best = r.best;
+      if (r.rainbow) row.rainbow = r.rainbow;
     });
     share.rounds = m.rounds; share.done = m.done;
   }
@@ -952,6 +953,7 @@
         if (!r) continue;
         for (const v of r.vals) row.vals.push(v);
         row.best += r.best;
+        if (r.rainbow) { if (!row.rainbow) row.rainbow={sum:0,square:0}; row.rainbow.sum+=r.rainbow.sum; row.rainbow.square+=r.rainbow.square; }
       }
       return row;
     });
@@ -1025,12 +1027,12 @@
   }
 
   function fmtOption(goal, o, st) {
-    return `${o.mean.toFixed(2)}${o.n > 1 ? ` ±${(1.96 * o.se).toFixed(2)}` : ''}`;
+    return `${(o.rainbows ?? o.mean).toFixed(2)}${o.n > 1 ? ` ±${(1.96 * (o.rainbowSe ?? o.se)).toFixed(2)}` : ''}`;
   }
 
   function expectText(goal, o, st) {
     if (!o) return '';
-    return `Expected: ${o.mean.toFixed(2)} Rainbows in the vault by the end of day ${st.maxDays}.`;
+    return `Expected: ${(o.rainbows ?? o.mean).toFixed(2)} Rainbows in the vault by the end of day ${st.maxDays}.`;
   }
 
   // ---------- Playing a move here ----------
@@ -1669,7 +1671,7 @@
       ? ''
       : close
         ? 'The top moves are within the margin of error: either is fine.'
-        : 'Each option is played out from your board with everything you can’t see re-rolled, and the trained strategy making every later choice. Scores are Rainbows in the vault by the end of the run.';
+        : 'Each option is simulated for four days, then the continuation model estimates the remaining run. The displayed number is expected vaulted Rainbow; selection also uses the reference score bonuses.';
   }
 
   // What the player does after following the advice in their game.

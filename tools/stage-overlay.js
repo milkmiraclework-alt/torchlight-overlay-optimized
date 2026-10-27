@@ -41,7 +41,7 @@ put('analyze.html', html);
 file(path.join(ROOT, 'css/style.css'), 'css/style.css');
 // Only the overlay/correction dependencies; no web simulator, training UI,
 // guide data, telemetry/report uploader or web update polling.
-const scripts = ['engine.js', 'board.js', 'tool-combos.js', 'solver.js', 'capture.js', 'solver-cache.js',
+const scripts = ['engine.js', 'board.js', 'tool-combos.js', 'assessment-data.js', 'assessment.js', 'solver.js', 'capture.js', 'solver-cache.js',
   'solver-forecast.js', 'tips.js', 'analyze.js', 'auto.js', 'frame-readiness.js', 'ready-worker.js',
   'scan-data.js', 'pick-data.js', 'scan.js', 'scan-worker.js', 'scan-search-worker.js', 'scan-tracker.js',
   'scan-accelerator.js', 'scan-kernels.wasm', 'solver-worker.js', 'rust-solver.js', 'solver-core.wasm'];

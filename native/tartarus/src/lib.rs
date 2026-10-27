@@ -1,4 +1,5 @@
 pub mod api;
+pub mod assessment;
 pub mod engine;
 pub mod job;
 pub mod model;

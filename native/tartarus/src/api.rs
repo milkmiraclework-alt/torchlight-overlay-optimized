@@ -50,6 +50,12 @@ impl Core {
     pub fn handle(&mut self, v: Value) -> Result<Value, String> {
         let op = v["op"].as_str().unwrap_or("solve");
         match op {
+            "assessment" => {
+                let s = state(&v["state"])?;
+                Ok(
+                    json!({"features":crate::assessment::features(&s).as_slice(),"rainbows":crate::assessment::rainbows(&s),"score":crate::assessment::score(&s,v["initialVault"].as_u64().unwrap_or(s.vault.len() as u64) as usize)}),
+                )
+            }
             "init" | "solve" => {
                 let s = state(&v["state"])?;
                 let target = v["rollouts"].as_u64().unwrap_or(400) as usize;
@@ -58,7 +64,14 @@ impl Core {
                 }
                 let seed = v["seed"].as_u64().unwrap_or(1) as u32;
                 let stream = v["stream"].as_u64().unwrap_or(0) as u32;
-                let mut job = Job::new(s, target, seed, stream, v.get("params"));
+                let mut job = Job::new(
+                    s,
+                    target,
+                    seed,
+                    stream,
+                    v.get("params"),
+                    v["assessment"].as_bool().unwrap_or(false),
+                );
                 if op == "solve" {
                     while !job.done() {
                         job.one_round()?
@@ -82,7 +95,7 @@ impl Core {
                 {
                     job.one_round()?
                 }
-                let rows:Vec<_>=job.rows.iter().map(|row|json!({"vals":row.vals[from..].iter().map(|x|if x.is_nan(){Value::Null}else{json!(x)}).collect::<Vec<_>>(),"best":row.best,"pass":0,"points":0})).collect();
+                let rows:Vec<_>=job.rows.iter().map(|row|{let mut out=json!({"vals":row.vals[from..].iter().map(|x|if x.is_nan(){Value::Null}else{json!(x)}).collect::<Vec<_>>(),"best":row.best,"pass":0,"points":0});if let Some(t)=&row.rainbow {out["rainbow"]=json!(t);}out}).collect();
                 Ok(json!({"rounds":job.round,"done":job.done(),"goal":"rainbows","rows":rows}))
             }
             "select" => {
@@ -140,9 +153,24 @@ impl Core {
             }
             "decide" => {
                 let s = state(&v["state"])?;
-                let p = policy::policy(&s, v.get("params"));
+                let assessment = v["assessment"].as_bool().unwrap_or(false);
+                let p = if assessment {
+                    crate::assessment::policy(&s, v.get("params"))
+                } else {
+                    policy::policy(&s, v.get("params"))
+                };
                 let mut rng = v["seed"].as_u64().unwrap_or(1) as u32;
-                let action = policy::decide(&s, &p, &mut rng, &mut Cache::default());
+                let action = if assessment {
+                    crate::assessment::decide(
+                        &s,
+                        &p,
+                        &mut rng,
+                        &mut Cache::default(),
+                        v["adaptive"].as_bool().unwrap_or(false),
+                    )
+                } else {
+                    policy::decide(&s, &p, &mut rng, &mut Cache::default())
+                };
                 Ok(json!({"action":action,"rng":rng}))
             }
             "scores" => {

@@ -6,11 +6,18 @@ use crate::{
 use serde::Serialize;
 
 #[derive(Serialize)]
+pub struct RainbowTotals {
+    pub sum: f64,
+    pub square: f64,
+}
+#[derive(Serialize)]
 pub struct Row {
     pub action: Action,
     pub vals: Vec<f64>,
     pub best: i32,
     pub policy: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub rainbow: Option<RainbowTotals>,
 }
 pub struct Job {
     pub base: State,
@@ -20,6 +27,7 @@ pub struct Job {
     pub target: usize,
     rng: u32,
     pub cache: Cache,
+    pub assessment: bool,
 }
 impl Job {
     pub fn new(
@@ -28,8 +36,13 @@ impl Job {
         seed: u32,
         stream: u32,
         params: Option<&serde_json::Value>,
+        assessment: bool,
     ) -> Self {
-        let p = policy::policy(&st, params);
+        let p = if assessment {
+            crate::assessment::policy(&st, params)
+        } else {
+            policy::policy(&st, params)
+        };
         let mut policy_rng = seed ^ 0x5bd1e995;
         let pick = policy::decide(&st, &p, &mut policy_rng, &mut Cache::default());
         let rows = engine::candidates(&st)
@@ -38,6 +51,10 @@ impl Job {
                 policy: pick.as_ref() == Some(&a),
                 action: a,
                 vals: Vec::with_capacity(target),
+                rainbow: assessment.then_some(RainbowTotals {
+                    sum: 0.,
+                    square: 0.,
+                }),
                 best: 0,
             })
             .collect();
@@ -53,6 +70,7 @@ impl Job {
                 seed
             },
             cache: Cache::default(),
+            assessment,
         }
     }
     pub fn done(&self) -> bool {
@@ -68,10 +86,30 @@ impl Job {
                 continue;
             }
             let mut rng = seed ^ 0x9e3779b9;
-            if !policy::playout(&mut trial, &self.p, &mut rng, &mut self.cache) {
+            let ok = if self.assessment {
+                crate::assessment::playout(
+                    &mut trial,
+                    &self.p,
+                    &mut rng,
+                    &mut self.cache,
+                    self.base.day + 3,
+                )
+            } else {
+                policy::playout(&mut trial, &self.p, &mut rng, &mut self.cache)
+            };
+            if !ok {
                 return Err("Playout stopped before its terminal state".into());
             }
-            row.vals.push(trial.vault.len() as f64);
+            if self.assessment {
+                let expected = crate::assessment::rainbows(&trial);
+                let totals = row.rainbow.as_mut().unwrap();
+                totals.sum += expected;
+                totals.square += expected * expected;
+                row.vals
+                    .push(crate::assessment::score(&trial, self.base.vault.len()));
+            } else {
+                row.vals.push(trial.vault.len() as f64);
+            }
             row.best += trial
                 .cells
                 .iter()

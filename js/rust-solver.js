@@ -55,6 +55,7 @@
         for (let i = 0; i < rows.length; i++) {
           const next = progress.rows[i];
           rows[i].vals.push(...next.vals.map((v) => v === null ? NaN : v)); rows[i].best = next.best;
+          if (next.rainbow) rows[i].rainbow = next.rainbow;
         }
         return progressOnly ? { done: progress.done, rounds: progress.rounds, goal: progress.goal }
           : S.summarize(rows, progress.rounds, options.rollouts, progress.goal);

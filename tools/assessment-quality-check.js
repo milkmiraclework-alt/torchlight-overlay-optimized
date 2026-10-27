@@ -1,14 +1,17 @@
 /* Reproducible old/new Tartarus assessment comparison on synthetic worlds.
  * The native core is our own read-only simulator; no game window/input is used.
  * Frozen baseline: git show v1.1.1:js/analyze.js (save as UTF-8).
- * This does not run or reproduce Giboork's closed continuation formula. */
+ * --after-assessment compares the ported continuation evaluator against a
+ * frozen analyzer. The actual outcome is still the integer Rainbow vault. */
 'use strict';
 const fs=require('node:fs'),vm=require('node:vm'),path=require('node:path'),cp=require('node:child_process'),readline=require('node:readline'),assert=require('node:assert/strict');
-if(process.argv.includes('--help')){console.log('node tools/assessment-quality-check.js --baseline-analyzer FILE --core EXE [--games 16] [--jobs 4] [--out DIR]');process.exit(0);}
+if(process.argv.includes('--help')){console.log('node tools/assessment-quality-check.js --baseline-analyzer FILE --core EXE [--before-version 1.1.1|1.2.0] [--after-assessment] [--games 16] [--jobs 4] [--out DIR]');process.exit(0);}
 const arg=(name,fallback)=>{const at=process.argv.indexOf('--'+name);return at<0?fallback:process.argv[at+1];};
 const baseline=arg('baseline-analyzer'),coreBinary=arg('core');
+const beforeVersion=arg('before-version','1.1.1'),afterAssessment=process.argv.includes('--after-assessment');
 assert(baseline&&fs.existsSync(baseline),'Pass the frozen UTF-8 v1.1.1 analyzer source');assert(coreBinary&&fs.existsSync(coreBinary),'Pass a native tartarus-core executable built from current sources');
-assert(fs.readFileSync(baseline,'utf8').includes('const PLAYOUT_BUDGET = 9600'),'This comparison expects the v1.1.1 budget/policy');
+assert(['1.1.1','1.2.0'].includes(beforeVersion));
+assert(fs.readFileSync(baseline,'utf8').includes(beforeVersion==='1.1.1'?'const PLAYOUT_BUDGET = 9600':'const MOVE_PLAYOUTS = 2000'),'The frozen baseline does not match the selected version');
 const output=path.resolve(arg('out','sandbox/assessment-quality')),jobs=Number(arg('jobs',4));assert(Number.isInteger(jobs)&&jobs>0&&jobs<=32);
 const root=path.resolve(__dirname,'..'),T=require(root+'/js/engine'),S=require(root+'/js/solver');
 function analyzer(file){const window={Tartarus:T,TartarusSolver:S},source=fs.readFileSync(file,'utf8').replace(/\r\n/g,'\n'),init='  buildBoard();\n  bind();\n  render();';assert(source.includes(init));vm.runInNewContext(source.replace(init,'  window.audit={modelFrom,buildState,rankRecommendation,rolloutTarget};'),{window,document:{currentScript:null},navigator:{hardwareConcurrency:4},localStorage:{getItem:()=>null}});return window.audit;}
@@ -21,8 +24,9 @@ class Core{
 function observed(st){const m=next.modelFrom(st);if(st.phase==='office'&&!st.pending.length)m.step='office';if(st.pending[0]?.start&&st.day===1&&!st.tools.length){m.runStart=true;m.cells=m.cells.map((_,n)=>n?{kind:'sealed',event:null}:{kind:'office'});}return next.buildState(m);}
 function summary(st,raw,target){const legal=S.candidates(st),rows=raw.rows.map(r=>({...legal.find(c=>S.sameAction(c.action,r.action)),...r,vals:r.vals.map(x=>x===null?NaN:x)}));return {result:S.summarize(rows,raw.rounds,target,raw.goal),pick:S.instant(st)};}
 const action=(A,st,raw,target)=>{const {result,pick}=summary(st,raw,target),r=A.rankRecommendation(st,pick,result);assert(r&&S.candidates(st).some(c=>S.sameAction(c.action,r.action)));return r;};
-function legacyTarget(st){return Math.max(400,Math.min(1600,Math.round(9600/Math.max(1,S.candidates(st).length))));}
+function legacyTarget(st){return beforeVersion==='1.2.0'?old.rolloutTarget(st):Math.max(400,Math.min(1600,Math.round(9600/Math.max(1,S.candidates(st).length))));}
 async function both(core,st,seed){
+ if(afterAssessment){const a=legacyTarget(st),b=next.rolloutTarget(st),rawBefore=await core.ask({op:'solve',state:st,seed,rollouts:a}),rawAfter=await core.ask({op:'solve',state:st,seed,rollouts:b,assessment:true}),before=action(old,st,rawBefore,a);return {before,selectionOnly:before,after:action(next,st,rawAfter,b),oldTarget:a,newTarget:b};}
  const a=legacyTarget(st),b=next.rolloutTarget(st);await core.ask({op:'init',state:st,seed,rollouts:b});
  const prefix=await core.ask({op:'step',rounds:a});
  const tail=await core.ask({op:'step',rounds:b-a});
@@ -53,7 +57,7 @@ let cursor=0,failed=false;
      if(who.length===2&&JSON.stringify(active.before)===JSON.stringify(active.after)){
       const r=await both(core,active.after,seedMC);chosen.before=r.before;chosen.after=r.after;shared++;
       if(!S.sameAction(r.before.action,r.selectionOnly.action))selectionChanges++;
-     }else for(const w of who){const A=w==='before'?old:next,target=w==='before'?legacyTarget(active[w]):next.rolloutTarget(active[w]);const raw=await core.ask({op:'solve',state:active[w],seed:seedMC,rollouts:target});chosen[w]=action(A,active[w],raw,target);}
+     }else for(const w of who){const A=w==='before'?old:next,target=w==='before'?legacyTarget(active[w]):next.rolloutTarget(active[w]);const raw=await core.ask({op:'solve',state:active[w],seed:seedMC,rollouts:target,assessment:afterAssessment&&w==='after'});chosen[w]=action(A,active[w],raw,target);}
      for(const w of who){const st=world[w],a=chosen[w].action;events[w].push({day:st.day,phase:st.phase,action:a});assert(S.apply(st,a).ok,'Illegal action '+JSON.stringify(a));st.log=[];}
      if(turn===599)throw Error('Game exceeded action cap');
     }
@@ -65,10 +69,10 @@ let cursor=0,failed=false;
   for(const r of outcomes)if(r.status==='rejected')throw r.reason;
   const rows=fs.readdirSync(dir).filter(f=>f.endsWith('.json')).map(f=>JSON.parse(fs.readFileSync(path.join(dir,f))));
   const complete=rows.filter(r=>!r.before.blocked&&!r.after.blocked),mean=who=>complete.reduce((s,r)=>s+r[who].rainbow,0)/complete.length,d=complete.map(r=>r.after.rainbow-r.before.rainbow),m=d.reduce((s,x)=>s+x,0)/d.length,se=d.length>1?Math.sqrt(d.reduce((s,x)=>s+(x-m)**2,0)/(d.length-1)/d.length):null;
-  const report={version:require(root+'/desktop/package.json').version,beforeVersion:'1.1.1',checkedAt:new Date().toISOString(),planned:count,completed:complete.length,blocked:rows.filter(r=>r.before.blocked||r.after.blocked).map(r=>({seed:r.seed,before:r.before.blocked,after:r.after.blocked})),beforeMean:mean('before'),afterMean:mean('after'),difference:m,normal95:se===null?null:[m-1.96*se,m+1.96*se],beforeFull:complete.filter(r=>r.before.rainbow===10).length,afterFull:complete.filter(r=>r.after.rainbow===10).length,
+  const report={version:require(root+'/desktop/package.json').version,beforeVersion,checkedAt:new Date().toISOString(),planned:count,completed:complete.length,blocked:rows.filter(r=>r.before.blocked||r.after.blocked).map(r=>({seed:r.seed,before:r.before.blocked,after:r.after.blocked})),beforeMean:mean('before'),afterMean:mean('after'),difference:m,normal95:se===null?null:[m-1.96*se,m+1.96*se],beforeFull:complete.filter(r=>r.before.rainbow===10).length,afterFull:complete.filter(r=>r.after.rainbow===10).length,
    goal:'Actual vaulted Rainbow capped at 10',setup:`${count} independent synthetic 20-day seeds, rewards on, one reroll per instrument offer; both advisers play every action independently using the same unchanged game rules. Hidden future information is withheld. Single native MC stream per adviser; matching controller/quota semantics, not identical browser worker RNG streams.`,
-   before:'Production heuristic veto and clamp(round(9600/options),400,1600)',after:'Completed simulation leader; 2000 per ordinary action and 8000 per instrument/gift choice. Same rollout continuation policy.',
-   limitations:'Small paired experiment, not a guarantee of improved Rainbow or actual user profit; this compares our old/new assessment, not the closed Giboork implementation.',gameCapture:false,gameInput:false};
+   before:beforeVersion==='1.1.1'?'Production heuristic veto and clamp(round(9600/options),400,1600)':'Completed full-run Monte Carlo leader, 2000/8000 per action',after:afterAssessment?'Four-day continuation plus pinned Giboork value model, reference score bonuses and gift continuation policy; 2000/8000 per action. Local game rules retained.':'Completed simulation leader; 2000 per ordinary action and 8000 per instrument/gift choice. Same rollout continuation policy.',
+   limitations:'Small paired experiment, not a guarantee of improved Rainbow or actual user profit; this compares our old/new applications. Native evaluation parity is checked separately; this is not a full run of the closed Giboork app.',gameCapture:false,gameInput:false};
   fs.writeFileSync(path.join(output,'quality.json'),JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify(report));
  }finally{await Promise.all(cores.map(c=>c.close()));}
 })().catch(e=>{console.error(e);process.exitCode=1;});

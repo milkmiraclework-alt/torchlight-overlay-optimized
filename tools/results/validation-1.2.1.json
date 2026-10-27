@@ -1,0 +1,100 @@
+{
+  "version": "1.2.1",
+  "checkedAt": "2026-10-27T12:53:39.078Z",
+  "sourceChecks": [
+    "native-capture",
+    "native-screen",
+    "assessment",
+    "assessment-model",
+    "native-reader",
+    "routing",
+    "days",
+    "pick-box",
+    "picture-retry",
+    "profile-import",
+    "window-position",
+    "instrument-reader",
+    "app-updates",
+    "update-install",
+    "rust-wasm",
+    "pixel-kernels",
+    "strategy28",
+    "terminal-gifts",
+    "calculation",
+    "rust-workers",
+    "instruments",
+    "forecast",
+    "forecast-menu",
+    "solver-cache",
+    "chain-cache",
+    "worker-budget",
+    "readiness",
+    "capture",
+    "worker-recovery",
+    "worker-lifecycle",
+    "bundled-site"
+  ],
+  "packagedChecks": [
+    "suite",
+    "overlay",
+    "lifecycle",
+    "instruments",
+    "updates",
+    "portable",
+    "native-reader"
+  ],
+  "assessment": {
+    "reference": "Giboork/tli-overlay-plus v0.2.16",
+    "sha256": "4f914019d158f220c6458846999198d87b42437bc8869737065d2d2e982c6be6",
+    "features": 229,
+    "checkedNativeStates": 89,
+    "maxObservedNumericError": 0,
+    "evaluationFormulaParity": true,
+    "fullApplicationParity": false,
+    "simulationDays": 4,
+    "moveSamplesPerOption": 2000,
+    "choiceSamplesPerOption": 8000,
+    "referenceBonuses": {
+      "newRainbow": 0.3,
+      "unmarkedRed": 0.25
+    },
+    "displayedRainbowSeparate": true,
+    "localRulesAndMoveGuardsRetained": true,
+    "cacheNamespace": "mc-v4:giboork-0216:depth=4",
+    "rustAndJavaScriptMonteCarloParity": true
+  },
+  "quality": {
+    "pairs": 8,
+    "before": 7.375,
+    "after": 7.25,
+    "normal95": [
+      -2.1002531483331444,
+      1.8502531483331446
+    ],
+    "legalActionsChecked": 1099
+  },
+  "speed": {
+    "states": 11,
+    "repeats": 3,
+    "medianPairedRatio": 2.2719155520823153,
+    "scope": "Single native core process, warmed fixed synthetic states, paired execution order. Includes JSON transport. Capture, game animations, Electron/UI and forecasts excluded; this is not whole-application latency."
+  },
+  "prerelease": true,
+  "automaticStableUpdate": false,
+  "voraxUnchanged": true,
+  "gameRulesUnchanged": true,
+  "artifacts": [
+    {
+      "file": "Torchlight-Overlay-Portable-1.2.1-x64.exe",
+      "bytes": 129281709,
+      "sha256": "1b1d6f7c4f0654b62ab3dac4d1930b980f3c0f746308b1c43d1022325758769d"
+    },
+    {
+      "file": "Torchlight-Overlay-Setup-1.2.1-x64.exe",
+      "bytes": 129446949,
+      "sha256": "c2d581593e54fe8d4f21d80562f3900bc8dbc9905549e3aecdd70691613ad113"
+    }
+  ],
+  "gameCapture": false,
+  "gameInput": false
+}

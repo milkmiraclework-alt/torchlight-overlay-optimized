@@ -1,0 +1,32 @@
+{
+  "version": "1.2.1",
+  "beforeVersion": "1.2.0",
+  "checkedAt": "2026-10-27T12:47:56.366Z",
+  "planned": 8,
+  "completed": 8,
+  "blocked": [],
+  "beforeMean": 7.375,
+  "afterMean": 7.25,
+  "difference": -0.125,
+  "normal95": [
+    -2.1002531483331444,
+    1.8502531483331446
+  ],
+  "beforeFull": 1,
+  "afterFull": 2,
+  "goal": "Actual vaulted Rainbow capped at 10",
+  "setup": "8 independent synthetic 20-day seeds, rewards on, one reroll per instrument offer; both advisers play every action independently using the same unchanged game rules. Hidden future information is withheld. Single native MC stream per adviser; matching controller/quota semantics, not identical browser worker RNG streams.",
+  "before": "Completed full-run Monte Carlo leader, 2000/8000 per action",
+  "after": "Four-day continuation plus pinned Giboork value model, reference score bonuses and gift continuation policy; 2000/8000 per action. Local game rules retained.",
+  "limitations": "Small paired experiment, not a guarantee of improved Rainbow or actual user profit; this compares our old/new applications. Native evaluation parity is checked separately; this is not a full run of the closed Giboork app.",
+  "gameCapture": false,
+  "gameInput": false,
+  "runner": "tools/assessment-quality-check.js",
+  "runnerSha256": "d9a1bfb85b219911601120b05dbbfba1421e0bd8a554a13c26dd8f85ef38a29e",
+  "engineSha256": "486587394fcc83ee3c9ee0de4bdb1324791ee71bdeb939743edfda53e8689741",
+  "solverWasmSha256": "18b30510fba9d65c3edd85d6b0d77ea234f5cf27fc88165cc21d1a0cbbb54c16",
+  "baselineAnalyzerSha256": "8b549ada2043d15f8e7e13615eea708c2ecc431758aab5ab68476742944fd114",
+  "candidateAnalyzerSha256": "fa3bd7b207deb9f07cfaf0e4f1be8c724622bb26c867867a0273befd204a4fd3",
+  "legalActionsChecked": 1099,
+  "releaseDecision": "Manual prerelease; quality improvement is not established. Stable v1.1.1 remains the automatic update."
+}

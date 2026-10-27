@@ -4,11 +4,11 @@ const T=require('../js/engine'),S=require('../js/solver'),source=fs.readFileSync
 const init='  buildBoard();\n  bind();\n  render();';assert(source.includes(init));
 let cacheVersion;
 const window={Tartarus:T,TartarusSolver:S,TartarusDesktop:{fast:true},TartarusSolverCache:{create(options){cacheVersion=options.version;return {};}}};
-vm.runInNewContext(source.replace(init,'  window.assessment={rankRecommendation,rolloutTarget,makeShares,prepareSolverWorkers};'),{window,document:{currentScript:null},navigator:{hardwareConcurrency:12},localStorage:{getItem:()=>null},Worker:class{postMessage(){}terminate(){}}});
+vm.runInNewContext(source.replace(init,'  window.assessment={rankRecommendation,rolloutTarget,makeShares,prepareSolverWorkers,acceptShare,mergedRows,fmtOption,expectText};'),{window,document:{currentScript:null},navigator:{hardwareConcurrency:12},localStorage:{getItem:()=>null},Worker:class{postMessage(){}terminate(){}}});
 const A=window.assessment,st=T.newGame({seed:'ASSESSMENT-112'});
 for(const phase of ['patrol','manage','chain','office','event']){st.phase=phase;st.pending=[];assert.equal(A.rolloutTarget(st),2000);}
 for(const kind of ['tool','gift'])for(const rerolls of [0,1,3]){st.pending=[{kind,options:['rope','muzzle'],rerolls}];assert.equal(A.rolloutTarget(st),8000);}
-assert(cacheVersion.includes('mc-v3:')&&cacheVersion.includes('move=2000:choice=8000'));
+assert(cacheVersion.includes('mc-v4:giboork-0216:depth=4:')&&cacheVersion.includes('move=2000:choice=8000'));
 A.prepareSolverWorkers();
 for(const target of [2000,8000])assert.equal(A.makeShares(target).reduce((sum,p)=>sum+p.target,0),target);
 const end={type:'end'},swap={type:'swap'},pick={action:end,label:'Heuristic',why:'Heuristic rationale'};
@@ -25,4 +25,10 @@ for(const gap of [.001,.02,.5])for(const gapSe of [0,.1,1]){
  assert.equal(A.rankRecommendation(st,pick,{...result,options:[leader]}).action,swap,'Single legal move used a different heuristic action');
 }
 assert.equal(A.rankRecommendation(null,pick,null),null);
+const share={};
+A.acceptShare(share,{rounds:1,done:false,rows:[{vals:[5],best:4,rainbow:{sum:3,square:9}}]});
+A.acceptShare(share,{rounds:2,done:true,rows:[{vals:[7],best:8,rainbow:{sum:8,square:34}}]});
+const merged=A.mergedRows({meta:[{action:end,label:'end'}],shares:[share,{rows:[{vals:[4],best:4,rainbow:{sum:3,square:9}}]}]});
+const result=S.summarize(merged,3,3,'rainbows').options[0];assert.equal(result.mean,16/3);assert.equal(result.rainbows,11/3);
+assert(A.fmtOption('rainbows',result,st).startsWith('3.67'));assert(A.expectText('rainbows',result,st).includes('3.67 Rainbows'));
 console.log('PASS: completed Monte Carlo leader wins without heuristic veto; close choices disclose uncertainty, incomplete/capped checks do not lead, forced moves remain legal, 2000/8000 per-option quotas and separate cache namespace.');

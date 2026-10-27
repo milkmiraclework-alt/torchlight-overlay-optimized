@@ -14,6 +14,7 @@
   'use strict';
 
   const T = root.Tartarus || (typeof require === 'function' ? require('./engine.js') : null);
+  const A = root.TartarusAssessment || (typeof require === 'function' ? require('./assessment.js') : null);
   const { BEASTS, RAINBOW } = T;
   const RAT = BEASTS.indexOf('rat');
   const LION = BEASTS.indexOf('lion');
@@ -1059,7 +1060,8 @@
   // per run: the measured set with it against the same set without it. With
   // more held than the data covers, the average over the held instruments'
   // measured subsets. Null when there's no data for these instruments.
-  function toolGains(st, options) {
+  function toolGains(st, options, assessment = false) {
+    if (assessment) return A.toolGains(st, options);
     const data = COMBOS && COMBOS.single;
     if (!data || !options.every((id) => data.ids.includes(id))) return null;
     if (!data.largest) data.largest = Math.max(...Object.keys(data.v).map((k) => k.length));
@@ -1095,10 +1097,10 @@
   // show, from the instruments neither held nor on offer, each drawn by its
   // odds: the instruments named for a beast are rare, T.toolWeight). Null
   // without measured sets.
-  function rerollOdds(st, options) {
+  function rerollOdds(st, options, assessment = false) {
     const others = T.TOOL_IDS.filter((id) => !st.tools.includes(id) && !options.includes(id));
     const pool = others.length >= 3 ? others : T.TOOL_IDS.filter((id) => !st.tools.includes(id));
-    const gains = toolGains(st, [...new Set([...options, ...pool])]);
+    const gains = toolGains(st, [...new Set([...options, ...pool])], assessment);
     if (!gains || pool.length < 3) return null;
     // Every ordered draw of 3 cards, without putting one back.
     const w = pool.map((id) => (T.toolWeight ? T.toolWeight(st, id) : 1));
@@ -1126,14 +1128,14 @@
 
   function wantsReroll(st, P, options) {
     if (!T.canReroll || !T.canReroll(st) || P.toolSets === false) return false;
-    const odds = rerollOdds(st, options);
+    const odds = rerollOdds(st, options, P.assessment);
     return !!odds && odds.next > odds.now + P.rerollMargin;
   }
 
   // The instrument to take: the one that adds the most to what's held, or
   // the trained ranking's best when there's no measured data.
   function pickTool(st, P, options) {
-    const gains = P.toolSets !== false && toolGains(st, options);
+    const gains = P.toolSets !== false && toolGains(st, options, P.assessment);
     if (gains) return options.reduce((best, id) => (gains[id] > gains[best] ? id : best));
     return P.toolRank.find((id) => options.includes(id)) || options[0];
   }
@@ -1427,6 +1429,7 @@
       kind: row.kind,
       mean,
       se,
+      ...(row.rainbow ? { rainbows: n ? row.rainbow.sum / n : 0, rainbowSe: n > 1 ? Math.sqrt(Math.max(0,row.rainbow.square/n-(row.rainbow.sum/n)**2)/n) : 0 } : {}),
       gapSe: row === top.row ? 0 : pairedSe(top.row.vals, row.vals),
       n,
       best: n ? row.best / n : 0,
@@ -1446,11 +1449,12 @@
   function solve(st, opts) {
     const o = Object.assign({ rollouts: 400, seed: 1, stream: 0, params: null }, opts || {});
     const base = clone(st);
+    if (o.assessment) o.params = { ...A.params(base), ...(o.params || {}) };
     const list = candidates(base);
     const random = rng32(o.stream ? (o.seed ^ Math.imul(o.stream, 0x9e3779b1)) >>> 0 : o.seed);
     const pick = list.length ? decide(clone(base), o.params, rng32(o.seed ^ 0x5bd1e995)) : null;
     const goal = 'rainbows';
-    const rows = list.map((c) => ({ label: c.label, action: c.action, kind: c.kind || null, extra: c.extra, vals: [], pass: 0, points: 0, best: 0, policy: sameAction(c.action, pick) }));
+    const rows = list.map((c) => ({ label: c.label, action: c.action, kind: c.kind || null, extra: c.extra, vals: [], pass: 0, points: 0, best: 0, policy: sameAction(c.action, pick), ...(o.assessment ? { rainbow: { sum:0, square:0 } } : {}) }));
     let round = 0;
     const chainCache = { tables: new Map(), size: 0, hits: 0, misses: 0, clears: 0 };
     const result = () => summarize(rows, round, o.rollouts, goal);
@@ -1472,9 +1476,11 @@
               continue;
             }
             const roll = rng32(seed ^ 0x9e3779b9);
-            runPlayout(trial, o.params, roll, null, policy);
+            if (o.assessment) A.playout(trial, o.params, roll, base.day+3, policy);
+            else runPlayout(trial, o.params, roll, null, policy);
             {
-              row.vals.push(trial.vault.length);
+              if (o.assessment) { const expected=A.rainbows(trial); row.rainbow.sum+=expected; row.rainbow.square+=expected*expected; row.vals.push(A.score(trial,base.vault.length)); }
+              else row.vals.push(trial.vault.length);
               // Second measure: the best rarity reached.
               row.best += Math.max(0, ...trial.cells.filter((c) => !c.sealed && c.inmate).map((c) => c.inmate.tier), trial.vault.length ? RAINBOW : 0);
             }

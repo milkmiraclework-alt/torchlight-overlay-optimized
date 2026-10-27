@@ -10,7 +10,7 @@
  * merge their rows (TartarusSolver.summarize). */
 'use strict';
 
-importScripts(`engine.js${self.location.search}`, `tool-combos.js${self.location.search}`, `solver.js${self.location.search}`, `solver-forecast.js${self.location.search}`, `rust-solver.js${self.location.search}`);
+importScripts(`engine.js${self.location.search}`, `tool-combos.js${self.location.search}`, `assessment-data.js${self.location.search}`, `assessment.js${self.location.search}`, `solver.js${self.location.search}`, `solver-forecast.js${self.location.search}`, `rust-solver.js${self.location.search}`);
 // Workers are created on board entry. Compile Rust while capture/recognition
 // is settling, rather than adding its cold load to the first calculation.
 self.TartarusRust.load().catch(() => {});
@@ -25,7 +25,7 @@ function tick(task) {
     self.postMessage({
       id: task.id, stream: task.stream, rounds: result.rounds, done: result.done, goal: result.goal, backend: task.job.backend || 'javascript',
       meta: task.sent === 0 ? task.job.rows.map((r) => ({ label: r.label, action: r.action, kind: r.kind, extra: r.extra, policy: r.policy })) : null,
-      rows: task.job.rows.map((r) => ({ vals: r.vals.slice(task.sent), pass: r.pass, points: r.points, best: r.best })),
+      rows: task.job.rows.map((r) => ({ vals: r.vals.slice(task.sent), pass: r.pass, points: r.points, best: r.best, ...(r.rainbow ? { rainbow:r.rainbow } : {}) })),
     });
     task.sent = result.rounds;
   } else self.postMessage({ id: task.id, result });
@@ -66,8 +66,8 @@ async function handleMessage({ data }) {
   if (current) { clearTimeout(current.timer); current.job?.cancel?.(); }
   current = null;
   if (data.cancel) return;
-  const { id, state, rollouts, params, extra, stream, raw, background, seed } = data;
-  const options = { rollouts, params, extra, stream: stream || 0, seed: seed === undefined ? (id * 7919 + 1) >>> 0 : seed };
+  const { id, state, rollouts, params, extra, stream, raw, background, seed, assessment } = data;
+  const options = { rollouts, params, extra, assessment, stream: stream || 0, seed: seed === undefined ? (id * 7919 + 1) >>> 0 : seed };
   const task = { id, stream, raw, background: !!background, paused: false, done: false, sent: 0, timer: 0, job: null };
   current = task;
   let core = null;

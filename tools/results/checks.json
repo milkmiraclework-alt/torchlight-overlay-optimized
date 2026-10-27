@@ -1,10 +1,11 @@
 {
-  "version": "1.2.0",
-  "checkedAt": "2026-10-27T11:45:58.810Z",
+  "version": "1.2.1",
+  "checkedAt": "2026-10-27T12:40:59.393Z",
   "checks": [
     "native-capture",
     "native-screen",
     "assessment",
+    "assessment-model",
     "native-reader",
     "routing",
     "days",

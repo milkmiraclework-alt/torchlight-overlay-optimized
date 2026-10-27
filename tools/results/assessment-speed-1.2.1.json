@@ -1,0 +1,257 @@
+{
+  "version": "1.2.1",
+  "checkedAt": "2026-10-27T12:49:12.767Z",
+  "cpu": "AMD Ryzen 5 3600 6-Core Processor              ",
+  "arch": "x64",
+  "repeats": 3,
+  "cases": [
+    {
+      "name": "run0-step0",
+      "day": 1,
+      "phase": "patrol",
+      "moves": 3,
+      "perAction": 2000,
+      "beforeMs": 1911.1124,
+      "afterMs": 228.307,
+      "samples": {
+        "before": [
+          1911.1124,
+          1926.4439,
+          1898.3263
+        ],
+        "after": [
+          228.307,
+          239.3262,
+          213.528
+        ]
+      },
+      "ratio": 8.370800720083047
+    },
+    {
+      "name": "run0-step44",
+      "day": 13,
+      "phase": "patrol",
+      "moves": 3,
+      "perAction": 2000,
+      "beforeMs": 743.0694,
+      "afterMs": 410.0633,
+      "samples": {
+        "before": [
+          743.6803,
+          743.0694,
+          738.2444
+        ],
+        "after": [
+          404.1811,
+          410.0633,
+          439.1147
+        ]
+      },
+      "ratio": 1.812084622057131
+    },
+    {
+      "name": "run1-step11",
+      "day": 4,
+      "phase": "patrol",
+      "moves": 3,
+      "perAction": 2000,
+      "beforeMs": 1705.9561,
+      "afterMs": 429.7062,
+      "samples": {
+        "before": [
+          1705.9561,
+          1748.339,
+          1642.407
+        ],
+        "after": [
+          430.0603,
+          429.7062,
+          397.4691
+        ]
+      },
+      "ratio": 3.970052328777197
+    },
+    {
+      "name": "run1-step55",
+      "day": 15,
+      "phase": "patrol",
+      "moves": 3,
+      "perAction": 2000,
+      "beforeMs": 485.7499,
+      "afterMs": 414.0034,
+      "samples": {
+        "before": [
+          485.7499,
+          467.2526,
+          511.6504
+        ],
+        "after": [
+          418.0511,
+          405.9545,
+          414.0034
+        ]
+      },
+      "ratio": 1.1732993014067035
+    },
+    {
+      "name": "run3-step11",
+      "day": 5,
+      "phase": "patrol",
+      "moves": 3,
+      "perAction": 2000,
+      "beforeMs": 3239.2865,
+      "afterMs": 801.597,
+      "samples": {
+        "before": [
+          3074.2002,
+          3239.2865,
+          3244.7882
+        ],
+        "after": [
+          846.4936,
+          800.66,
+          801.597
+        ]
+      },
+      "ratio": 4.041041196511464
+    },
+    {
+      "name": "run4-step0",
+      "day": 1,
+      "phase": "patrol",
+      "moves": 3,
+      "perAction": 2000,
+      "beforeMs": 1878.9258,
+      "afterMs": 266.3155,
+      "samples": {
+        "before": [
+          1878.9258,
+          1849.9279,
+          1888.592
+        ],
+        "after": [
+          266.3155,
+          268.8774,
+          250.8999
+        ]
+      },
+      "ratio": 7.055262649000904
+    },
+    {
+      "name": "run5-step66",
+      "day": 19,
+      "phase": "manage",
+      "moves": 2,
+      "perAction": 2000,
+      "beforeMs": 35.2535,
+      "afterMs": 41.524,
+      "samples": {
+        "before": [
+          34.1467,
+          35.2535,
+          36.6269
+        ],
+        "after": [
+          41.524,
+          42.6347,
+          39.2523
+        ]
+      },
+      "ratio": 0.8489909449956652
+    },
+    {
+      "name": "run7-step66",
+      "day": 20,
+      "phase": "manage",
+      "moves": 2,
+      "perAction": 2000,
+      "beforeMs": 3.5697,
+      "afterMs": 4.2751,
+      "samples": {
+        "before": [
+          3.0802,
+          3.5697,
+          3.6528
+        ],
+        "after": [
+          3.0958,
+          4.2751,
+          5.4055
+        ]
+      },
+      "ratio": 0.8349980117424154
+    },
+    {
+      "name": "gift-3-28",
+      "day": 7,
+      "phase": "manage",
+      "moves": 4,
+      "perAction": 8000,
+      "beforeMs": 4282.8351,
+      "afterMs": 888.2268,
+      "samples": {
+        "before": [
+          4282.8351,
+          4292.7372,
+          3808.8733
+        ],
+        "after": [
+          888.2268,
+          905.7646,
+          749.6296
+        ]
+      },
+      "ratio": 4.8217809910712
+    },
+    {
+      "name": "gift-4-37",
+      "day": 11,
+      "phase": "manage",
+      "moves": 4,
+      "perAction": 8000,
+      "beforeMs": 2583.6285,
+      "afterMs": 1137.2027,
+      "samples": {
+        "before": [
+          2583.6285,
+          2581.6908,
+          2754.1573
+        ],
+        "after": [
+          1041.2675,
+          1142.0752,
+          1137.2027
+        ]
+      },
+      "ratio": 2.2719155520823153
+    },
+    {
+      "name": "gift-4-65",
+      "day": 20,
+      "phase": "manage",
+      "moves": 4,
+      "perAction": 8000,
+      "beforeMs": 77.6546,
+      "afterMs": 71.6409,
+      "samples": {
+        "before": [
+          67.1404,
+          83.2246,
+          77.6546
+        ],
+        "after": [
+          69.1552,
+          72.0943,
+          71.6409
+        ]
+      },
+      "ratio": 1.0839422731986896
+    }
+  ],
+  "medianRatio": 2.2719155520823153,
+  "before": "Full terminal Monte Carlo, same 2000/8000 per-action quotas",
+  "after": "Four-day continuation and Giboork value model, same 2000/8000 per-action quotas",
+  "scope": "Single native core process, warmed fixed synthetic states, paired execution order. Includes JSON transport. Capture, game animations, Electron/UI and forecasts excluded; this is not whole-application latency.",
+  "gameCapture": false,
+  "gameInput": false
+}

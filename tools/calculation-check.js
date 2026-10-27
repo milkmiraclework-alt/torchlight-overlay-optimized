@@ -5,7 +5,7 @@
 const assert = require('node:assert/strict'), fs = require('node:fs'), vm = require('node:vm');
 const T = require('../js/engine.js'), S = require('../js/solver.js'), K = require('../js/solver-cache.js');
 const taskWindow = { Tartarus: T, TartarusSolver: S, TartarusSolverCache: { ...K, create(options) {
-  assert.equal(options.version, 'mc-v3:rules=308b947:?v=20261027mcLeader120:move=2000:choice=8000', 'Wrong cache revision for the imported rules/strategy');
+  assert.equal(options.version, 'mc-v4:giboork-0216:depth=4:rules=308b947:?v=20261027assessment121:move=2000:choice=8000', 'Wrong cache revision for the imported rules/strategy');
   return K.create(options);
 } }, TartarusDesktop: { fast: true } };
 const writes = new Map(), messages = [];
