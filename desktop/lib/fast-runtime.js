@@ -230,7 +230,10 @@
   D.onFastSettings(configure);
   Promise.all([D.fastSettings(), D.game()]).then(([next, state]) => { game = state || {}; configure(next); });
   setInterval(() => {
-    if (active && Date.now() - activityAt >= IDLE_MS) suspend('idle');
+    // A full 8000-playout foreground choice can outlast the idle timer on
+    // slower CPUs. Let that finite job finish; prefetch alone keeps no mode
+    // alive, and explicit exit/disable/mode-switch still stops immediately.
+    if (active && Date.now() - activityAt >= IDLE_MS && !A.desktopSnapshot().working) suspend('idle');
     else if (active && game.running && C.state.window !== 'on') sync();
   }, 1000);
   window.addEventListener('pagehide', () => { suspend('closed'); C.stopLog(); });

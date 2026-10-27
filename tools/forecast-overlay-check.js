@@ -115,7 +115,7 @@ module.exports = async function checkForecast() {
     check(resumed.forecastResumed && !resumed.cacheHit, 'An unfinished matching forecast was discarded: ' + JSON.stringify(resumed));
     check(trace.foreground === before, 'Promotion started a new Monte Carlo calculation');
     await until(() => !!A.desktopSnapshot().move);
-    check(Number(A.desktopSnapshot().status.replace(/\D/g, '')) === 1600, 'Promotion reduced the calculation budget: ' + JSON.stringify(A.desktopSnapshot()));
+    check(Number(A.desktopSnapshot().status.replace(/\D/g, '')) === 2000, 'Promotion reduced the calculation budget: ' + JSON.stringify(A.desktopSnapshot()));
     const resumedRows = trace.raw.filter((m) => m.id === jobId || typeof m.id === 'number');
     const byStream = new Map();
     for (const m of resumedRows) {
@@ -123,7 +123,7 @@ module.exports = async function checkForecast() {
       check(m.rows.every((r) => r.vals.length === m.rounds - last), 'The analyzer lost/doubled streamed samples on promotion');
       byStream.set(m.stream, m.rounds);
     }
-    check([...byStream.values()].reduce((a, b) => a + b, 0) === 1600, 'The promoted streams did not retain the full budget');
+    check([...byStream.values()].reduce((a, b) => a + b, 0) === 2000, 'The promoted streams did not retain the full budget');
     trace.hold = false;
     root(6);
     await until(() => trace.jobs.size > 0);
@@ -189,7 +189,7 @@ module.exports = async function checkForecast() {
       'An unfinished patrol table was not reduced to the real door menu');
     check(trace.foreground === ordinaryBefore, 'Patrol promotion started a replacement calculation');
     await until(() => !!A.desktopSnapshot().move);
-    check(Number(A.desktopSnapshot().status.replace(/\D/g, '')) === 1600, 'Patrol promotion reduced the budget');
+    check(Number(A.desktopSnapshot().status.replace(/\D/g, '')) === 2000, 'Patrol promotion reduced the budget');
     trace.hold = true;
     root(8);
     await until(() => trace.jobs.size && A.forecastInfo().rounds > 0);
@@ -212,6 +212,6 @@ module.exports = async function checkForecast() {
     await until(() => !window.TartarusCapture.agreed());
     check(!A.forecastInfo().running && !A.forecastInfo().planning, 'Disabling capture left speculative work running');
     check(trace.raw.length > 0 && trace.raw.every((m) => m.backend === 'rust'), 'Forecast integration silently used JavaScript instead of Rust');
-    return { readyMs: Math.round(ready.elapsed), secondReadyMs: Math.round(deep.elapsed), coldMs: Math.round(coldMs), readyMove: expected, resumedRounds: 1600, rollingHorizon: true, sharedMenus: 2, suspendedWorkers: living.size, info: A.forecastInfo() };
+    return { readyMs: Math.round(ready.elapsed), secondReadyMs: Math.round(deep.elapsed), coldMs: Math.round(coldMs), readyMove: expected, resumedRounds: 2000, rollingHorizon: true, sharedMenus: 2, suspendedWorkers: living.size, info: A.forecastInfo() };
   } finally { trace.reading = null; window.Worker = OriginalWorker; }
 };

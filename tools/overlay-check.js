@@ -774,7 +774,7 @@ async function checkBrowserSearchPool(frames, previousBase, compareProbe = false
     let snapshot;
     for (let i = 0; i < 600; i++) { snapshot = await evaluate('TartarusAnalyzer.desktopSnapshot()'); if (snapshot.move) break; await pause(50); }
     assert.ok(snapshot.move, JSON.stringify(snapshot));
-    assert.equal(Number(snapshot.status.replace(/\D/g,'')),1600,'rollout budget changed');
+    assert.equal(Number(snapshot.status.replace(/\D/g,'')),2000,'ordinary moves must retain all 2000 playouts');
     assert.equal(await evaluate('TartarusAnalyzer.desktopSnapshot().background'), true);
     assert.notEqual(await evaluate('document.getElementById("az-res-move").textContent'), snapshot.move, 'hidden backend still renders advice');
     await evaluate('TartarusAnalyzer.invalidate();true');
@@ -848,7 +848,7 @@ async function checkBrowserSearchPool(frames, previousBase, compareProbe = false
     assert.equal(recheck.working,true);
     for(let i=0;i<600&&await evaluate('TartarusAnalyzer.desktopSnapshot().working');i++)await pause(25);
     const refreshed = await evaluate('TartarusAnalyzer.desktopSnapshot()');
-    assert.equal(Number(refreshed.status.replace(/\D/g,'')),1600);
+    assert.equal(Number(refreshed.status.replace(/\D/g,'')),2000);
     console.log('PASS: manual Recheck bypasses the history cache and completes the original rollout budget.');
     let cacheInfo;
     for(let i=0;i<150;i++){
@@ -944,6 +944,7 @@ async function checkBrowserSearchPool(frames, previousBase, compareProbe = false
     };
     await offer(['crown','maiden','keys'],1001);
     const offerA=await waitAdvice();assert.ok(offerA.move);
+    assert.equal(Number(offerA.status.replace(/\D/g,'')),8000,'Instrument choice lost its 8000 per-option playouts');
     await offer(['crown','maiden','revenge'],1002);await waitAdvice();
     const offerCached=await offer(['crown','maiden','keys'],1003);
     assert.equal(offerCached.cacheHit,true,'Native instrument offers bypassed the history cache');
@@ -951,6 +952,7 @@ async function checkBrowserSearchPool(frames, previousBase, compareProbe = false
     assert.deepEqual(offerCached.options,offerA.options);
     await nextPage.evaluate('TartarusAuto.receive({id:1004,kind:"treasure",after:"view"},()=>{})');
     const gift=await waitAdvice();assert.ok(gift.move);
+    assert.equal(Number(gift.status.replace(/\D/g,'')),8000,'Gift choice lost its 8000 per-option playouts');
     const giftCached=await nextPage.evaluate('TartarusAnalyzer.invalidate();TartarusAuto.receive({id:1005,kind:"treasure"},()=>{}).then(()=>TartarusAnalyzer.desktopSnapshot())');
     assert.equal(giftCached.cacheHit,true,'Native treasure advice bypassed the history cache');
     assert.equal(giftCached.working,false);

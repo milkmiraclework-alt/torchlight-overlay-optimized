@@ -73,9 +73,9 @@
     // Without storage, screenshots stay hidden.
   }
   const SAVE_KEY = 'tartarus-sim:save:v2';
-  const PLAYOUT_BUDGET = 9600; // playouts per check, shared across the options
-  const LIVE_MIN = 150; // playouts per option before the live check can lead
-  const SWITCH_MIN = 0.05; // Rainbows a live pick must gain over the strategy's to replace it
+  const MOVE_PLAYOUTS = 2000; // per legal action, independent of the option/CPU count
+  const CHOICE_PLAYOUTS = 8000; // instrument/gift choices and their rerolls
+  const NEAR_TIE_MIN = 0.05; // UI uncertainty marker; never overrides the simulation leader
   // Full-budget results only; next-state preparation hides that wait when
   // the actual screen matches an already completed or partially prepared job.
   const STEPS = ['patrol', 'manage', 'office', 'chain', 'event', 'ratway', 'choice'];
@@ -537,13 +537,13 @@
 
   const solver = { workers: null, failed: false, id: 0, starts: 0, resumed: 0, st: null, key: '', cacheKey: '', cached: false, instant: null, result: null, shares: null, meta: null, goal: '', forecastAlias: null, forecastHit: false, forecastResumed: false };
   // Bump for rule/strategy imports, retain across compatible UI-only fixes.
-  const SOLVER_CACHE_REVISION = '?v=20261023rust31';
-  const solverCache = FAST_DESKTOP && window.TartarusSolverCache ? window.TartarusSolverCache.create({ version: `mc-v2:rules=308b947:${SOLVER_CACHE_REVISION}:budget=${PLAYOUT_BUDGET}` }) : null;
+  const SOLVER_CACHE_REVISION = '?v=20261027mcLeader120';
+  const solverCache = FAST_DESKTOP && window.TartarusSolverCache ? window.TartarusSolverCache.create({ version: `mc-v3:rules=308b947:${SOLVER_CACHE_REVISION}:move=${MOVE_PLAYOUTS}:choice=${CHOICE_PLAYOUTS}` }) : null;
   const forecast = { sequence: 0, generation: 0, timer: 0, active: null, plan: null, queue: [], seen: new Set(), ready: new Set(), paused: false,
     families: new Map(),
     stats: { generated: 0, completed: 0, hits: 0, resumed: 0, cancelled: 0, reused: 0, familyHits: 0, familyResumed: 0 } };
   let forecastEnabled = !FAST_DESKTOP;
-  const rolloutTarget = (st) => clamp(Math.round(PLAYOUT_BUDGET / Math.max(1, S.candidates(st).length)), 400, 1600);
+  const rolloutTarget = (st) => ['tool', 'gift'].includes(st.pending?.[0]?.kind) ? CHOICE_PLAYOUTS : MOVE_PLAYOUTS;
   // Recognition/confirmation state is saved with the board, but cannot
   // change a Monte Carlo result for the same actual instruments and rules.
   const resultKey = (m, target) => {
@@ -769,7 +769,7 @@
     applied = null;
     const key = modelKey();
     const options = S.candidates(st).length;
-    const rollouts = clamp(Math.round(PLAYOUT_BUDGET / Math.max(1, options)), 400, 1600);
+    const rollouts = rolloutTarget(st);
     const cacheKey = solverCache ? resultKey(model, rollouts) : '';
     // A second picture/confirmation can change recognition metadata while
     // the actual Monte Carlo inputs stay identical. Resume the same job
@@ -1008,25 +1008,20 @@
     return Object.assign({}, rec, { label: 'Cancel the consume, then end the day', why: `Your game shows a meal pick, where a meal or Cancel are the choices. ${rec.why || ''}`.trim() });
   }
 
-  // The strategy's instant pick, unless the live check finds a clearly better
-  // move (by more than its paired margin), so the advice doesn't flicker.
+  // Completed playouts choose the move. The heuristic still drives future
+  // actions inside each simulation, but cannot veto a better sampled mean.
   function rankRecommendation(st = solver.st, pick = solver.instant, r = solver.result) {
     if (!st) return null;
     const ranked = r ? r.options : [];
-    // A check cut short by the time cap (early) leads only with LIVE_MIN
-    // playouts each; with fewer, the strategy's own pick stands (f5's review).
-    const live = r && ranked.length > 1 && ((r.done && !r.early) || r.rounds >= LIVE_MIN) ? ranked[0] : null;
+    if (ranked.length === 1) return { action: ranked[0].action, label: ranked[0].label, why: 'It’s the only move here.', live: true, rounds: r.rounds, option: ranked[0] };
+    const live = r && ranked.length > 1 && r.done && !r.early ? ranked[0] : null;
     const mine = pick && ranked.find((o) => S.sameAction(o.action, pick.action));
-    if (!live) return pick ? Object.assign({ live: false }, pick, { option: mine || null }) : ranked.length === 1 ? { action: ranked[0].action, label: ranked[0].label, why: 'It’s the only move here.', live: true, option: ranked[0] } : null;
-    // A better move must also win by a margin worth playing for: shared dice
-    // make the paired margin narrow, and a near tie flipped the advice from
-    // one screen to the next (report 337: End 2.85 against the strategy's
-    // consume at 2.82).
-    if (mine && (mine === live || live.mean - mine.mean <= Math.max(1.96 * mine.gapSe, SWITCH_MIN))) {
-      const why = mine === live ? pick.why : `${pick.why} The live check rates it about equal to the best.`;
-      return Object.assign({ live: true, rounds: r.rounds }, pick, { label: mine.label, why, option: mine });
-    }
-    return { action: live.action, label: live.label, why: `The playouts found a better move than the strategy’s pick${pick ? ` (${pick.label})` : ''}.`, live: true, rounds: r.rounds, option: live };
+    if (!live) return pick ? Object.assign({ live: false }, pick, { option: mine || null }) : null;
+    const second = ranked[1];
+    const close = !!second && live.mean - second.mean <= Math.max(1.96 * second.gapSe, NEAR_TIE_MIN);
+    const why = mine === live && pick ? pick.why : 'This option has the highest expected Rainbow count in the completed playouts.';
+    return { action: live.action, label: live.label, why: close ? `${why} The alternatives are close; the difference is uncertain.` : why,
+      live: true, rounds: r.rounds, option: live, close };
   }
 
   function fmtOption(goal, o, st) {
@@ -1669,7 +1664,7 @@
     );
     const top = options[0];
     const second = options[1];
-    const close = top && second && top.mean - second.mean < Math.max(1.96 * second.gapSe, SWITCH_MIN);
+    const close = top && second && top.mean - second.mean < Math.max(1.96 * second.gapSe, NEAR_TIE_MIN);
     $('az-res-note').textContent = working || shown.length < 2
       ? ''
       : close

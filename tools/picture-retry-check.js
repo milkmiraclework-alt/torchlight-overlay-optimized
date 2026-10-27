@@ -1,23 +1,27 @@
 'use strict';
 const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm'),path=require('node:path');
 const source=fs.readFileSync(path.join(__dirname,'../desktop/lib/fast-runtime.js'),'utf8');
-async function harness(failures,{firstMissing=false,missingCaptures=0,kind='instruments',deferConnect=false,dayReading=false,instrumentReading=false}={}){
- let now=0,nextTimer=1,ocrPrepared=0;const timers=new Map(),handlers={},commands={},reads=[],status=[],captures=[],connections=[],settings={consent:{version:4},activeMode:'tartarus'};
+async function harness(failures,{firstMissing=false,missingCaptures=0,kind='instruments',deferConnect=false,dayReading=false,instrumentReading=false,fakeClock=false}={}){
+ let now=0,nextTimer=1,ocrPrepared=0,busy=false;const timers=new Map(),intervals=[],handlers={},commands={},reads=[],status=[],captures=[],connections=[],settings={consent:{version:4},activeMode:'tartarus'};
  const time=(fn,ms)=>{const id=nextTimer++;timers.set(id,{fn,at:now+ms});return id;};
- const A={probeFrame:()=>false,prepare(){},prepareOCR(){ocrPrepared++;},setForecastEnabled(){},suspend(){},setReadStatus:(...args)=>status.push(args),invalidate(){},onDesktopChange(){},desktopSnapshot:()=>({}),captureImage:()=>null};
+ const A={probeFrame:()=>false,prepare(){},prepareOCR(){ocrPrepared++;},setForecastEnabled(){},suspend(){},setReadStatus:(...args)=>status.push(args),invalidate(){},onDesktopChange(){},desktopSnapshot:()=>({working:busy}),captureImage:()=>null};
  const C={DEFAULT_RULES:'',CONSENT_VERSION:4,state:{window:deferConnect?'off':'on',log:'on'},on:(name,fn)=>handlers[name]=fn,setReadinessProbe(){},setRules(){},setWatch(){},setPace(){},agreed:()=>true,useHandle(){},stopWindow(){C.state.window='off';},stopLog(){},connectWindow:()=>deferConnect?new Promise(r=>connections.push(r)):Promise.resolve(),captureNow:async(kind,retry)=>{captures.push({kind,retry});await handlers.frame({kind,hits:retry.hits,retryAttempt:retry.attempt,frame:captures.length<=missingCaptures?null:{close(){}}});}};
  const D={fast:true,record(){},follow(){},onLogChanged(){},logStat:async()=>({}),logRead:async()=>new ArrayBuffer(0),riot(){},run(){},trigger(){},setFastSettings(){},onCommand:fn=>commands.command=fn,onGame:fn=>commands.game=fn,onFastSettings:fn=>commands.settings=fn,fastSettings:async()=>settings,game:async()=>({running:true,window:123})};
  const Auto={cancel(){},receive:async(m,reply)=>{reads.push(m);reply({read:reads.length<=failures?{ok:false,pick:true,dayReading,instrumentReading,reason:'Offer is still animating'}:{ok:true,pick:true,names:['Saw']}});}};
  const window={TartarusDesktop:D,TartarusCapture:C,TartarusAnalyzer:A,TartarusAuto:Auto,addEventListener(){}};
- vm.runInNewContext(source,{window,localStorage:{getItem:()=>null,setItem(){}},performance:{now:()=>now},setTimeout:time,clearTimeout:id=>timers.delete(id),setInterval(){},Date,JSON,DOMException,OffscreenCanvas:function(){}});
+ class WallDate extends Date{static now(){return now;}}
+ vm.runInNewContext(source,{window,localStorage:{getItem:()=>null,setItem(){}},performance:{now:()=>now},setTimeout:time,clearTimeout:id=>timers.delete(id),setInterval(fn){intervals.push(fn);},Date:fakeClock?WallDate:Date,JSON,DOMException,OffscreenCanvas:function(){}});
  const flush=async()=>{for(let i=0;i<8;i++)await Promise.resolve();};await flush();
  await handlers.hit({kind});
  const hits=[{kind,text:'check cur=0',at:'2026.10.23-09.00.00:000'}];
  await handlers.frame({kind,hits,frame:firstMissing?null:{close(){}}});
  async function advance(ms){now+=ms;for(let guard=0;guard<8;guard++){const due=[...timers].filter(([,v])=>v.at<=now);if(!due.length)break;for(const [id,t]of due){timers.delete(id);await t.fn();await flush();}}}
- return {reads,status,captures,handlers,commands,advance,settings,connections,flush,ocrPrepared};
+ return {reads,status,captures,handlers,commands,advance,settings,connections,flush,ocrPrepared,state:C.state,setBusy(value){busy=value;},pollIdle(){for(const fn of intervals)fn();}};
 }
 (async()=>{
+ const longJob=await harness(0,{fakeClock:true});longJob.setBusy(true);await longJob.advance(35000);longJob.pollIdle();assert.equal(longJob.state.window,'on','Idle watchdog interrupted a foreground full-budget calculation');
+ longJob.setBusy(false);longJob.pollIdle();assert.equal(longJob.state.window,'off','Finished foreground work kept idle capture/prefetch alive');
+ const switchedBusy=await harness(0,{fakeClock:true});switchedBusy.setBusy(true);switchedBusy.commands.settings({...switchedBusy.settings,activeMode:'vorax'});assert.equal(switchedBusy.state.window,'off','A busy foreground job prevented mode exit');
  const recovered=await harness(2);await recovered.advance(250);await recovered.advance(250);
  assert.equal(recovered.reads.length,3);assert.equal(recovered.captures.length,2);
  assert.ok(recovered.reads.every(m=>m.fresh),'Start-of-run metadata lost');

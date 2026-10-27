@@ -19,7 +19,7 @@ for (const [logical, expected] of cases) {
   assert.equal(pool.length, expected, 'Wrong pool for ' + logical);
   assert.equal(A.prepareSolverWorkers(), pool, 'Preparing twice replaced the active pool');
   assert.equal(workers.length, expected, 'Preparing twice created duplicate workers');
-  for (const target of [400, 1600]) {
+  for (const target of [400, 1600, 2000, 8000]) {
     const shares = A.makeShares(target);
     assert.equal(shares.reduce((sum, share) => sum + share.target, 0), target, 'Changing CPUs changed total rollouts');
     assert.ok(shares.every(share => share.target > 0));

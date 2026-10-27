@@ -1,0 +1,257 @@
+{
+  "version": "1.2.0",
+  "checkedAt": "2026-10-27T11:47:45.370Z",
+  "sourceChecks": [
+    "native-capture",
+    "native-screen",
+    "assessment",
+    "native-reader",
+    "routing",
+    "days",
+    "pick-box",
+    "picture-retry",
+    "profile-import",
+    "window-position",
+    "instrument-reader",
+    "app-updates",
+    "update-install",
+    "rust-wasm",
+    "pixel-kernels",
+    "strategy28",
+    "terminal-gifts",
+    "calculation",
+    "rust-workers",
+    "instruments",
+    "forecast",
+    "forecast-menu",
+    "solver-cache",
+    "chain-cache",
+    "worker-budget",
+    "readiness",
+    "capture",
+    "worker-recovery",
+    "worker-lifecycle",
+    "bundled-site"
+  ],
+  "packagedChecks": [
+    "suite",
+    "overlay",
+    "lifecycle",
+    "instruments",
+    "updates",
+    "portable",
+    "native-reader"
+  ],
+  "assessment": {
+    "completedSimulationLeader": true,
+    "heuristicVeto": false,
+    "objective": "Expected actual vaulted Rainbow, capped at 10",
+    "continuationUnchanged": true,
+    "movePlayoutsPerOption": 2000,
+    "toolGiftPlayoutsPerOption": 8000,
+    "cpuIndependentBudget": true,
+    "incompleteChecksCannotLead": true,
+    "forcedMoveImmediate": true,
+    "closeChoicesMarked": true,
+    "separateCacheNamespace": true
+  },
+  "reference": {
+    "reference": "Giboork Tartarus Advisor rust-v0.1.31",
+    "exeSha256": "6710069103a08a78e89f29cb9a407cd70f6bdd547fb994926a27338e01638df6",
+    "checkedCases": 17,
+    "chosenMaximum": 17,
+    "cases": [
+      {
+        "name": "board-02",
+        "day": 1,
+        "kind": "ordinary",
+        "perOption": 2000,
+        "selected": "Go to cell 07 (a locked door)",
+        "policy": true
+      },
+      {
+        "name": "board-03",
+        "day": 6,
+        "kind": "ordinary",
+        "perOption": 2000,
+        "selected": "Consume the Magic Rat in 04",
+        "policy": true
+      },
+      {
+        "name": "board-04",
+        "day": 1,
+        "kind": "ordinary",
+        "perOption": 2000,
+        "selected": "Go to cell 03 (a locked door)",
+        "policy": false
+      },
+      {
+        "name": "board-05",
+        "day": 1,
+        "kind": "ordinary",
+        "perOption": 2000,
+        "selected": "Go to cell 03 (a locked door)",
+        "policy": false
+      },
+      {
+        "name": "board-06",
+        "day": 1,
+        "kind": "ordinary",
+        "perOption": 2000,
+        "selected": "Go to cell 02 (a locked door)",
+        "policy": false
+      },
+      {
+        "name": "board-07",
+        "day": 1,
+        "kind": "ordinary",
+        "perOption": 2000,
+        "selected": "Replace the Normal Wolf in 11",
+        "policy": true
+      },
+      {
+        "name": "board-08",
+        "day": 11,
+        "kind": "ordinary",
+        "perOption": 2000,
+        "selected": "Go to cell 07 (a locked door with an event)",
+        "policy": true
+      },
+      {
+        "name": "offer-01",
+        "day": 1,
+        "kind": "instrument",
+        "perOption": 8000,
+        "selected": "Re-roll the offer",
+        "policy": true
+      },
+      {
+        "name": "offer-02",
+        "day": 1,
+        "kind": "instrument",
+        "perOption": 8000,
+        "selected": "Take Sorting Hook",
+        "policy": true
+      },
+      {
+        "name": "offer-03",
+        "day": 1,
+        "kind": "instrument",
+        "perOption": 8000,
+        "selected": "Re-roll the offer",
+        "policy": true
+      },
+      {
+        "name": "offer-04",
+        "day": 1,
+        "kind": "instrument",
+        "perOption": 8000,
+        "selected": "Take Avenger's Casket",
+        "policy": true
+      },
+      {
+        "name": "offer-05",
+        "day": 1,
+        "kind": "instrument",
+        "perOption": 8000,
+        "selected": "Take Hangman's Noose",
+        "policy": false
+      },
+      {
+        "name": "offer-06",
+        "day": 1,
+        "kind": "instrument",
+        "perOption": 8000,
+        "selected": "Re-roll the offer",
+        "policy": true
+      },
+      {
+        "name": "offer-07",
+        "day": 1,
+        "kind": "instrument",
+        "perOption": 8000,
+        "selected": "Take Short-Chained Shackles",
+        "policy": false
+      },
+      {
+        "name": "offer-08",
+        "day": 1,
+        "kind": "instrument",
+        "perOption": 8000,
+        "selected": "Re-roll the offer",
+        "policy": true
+      },
+      {
+        "name": "offer-09",
+        "day": 1,
+        "kind": "instrument",
+        "perOption": 8000,
+        "selected": "Take Hangman's Noose",
+        "policy": true
+      },
+      {
+        "name": "offer-10",
+        "day": 1,
+        "kind": "instrument",
+        "perOption": 8000,
+        "selected": "Re-roll the offer",
+        "policy": true
+      }
+    ],
+    "limitations": "Observed output contract, not access to the closed internal score/continuation formula. Current successor README documents complete per-action playouts, 2000 by default.",
+    "giftBudget": {
+      "basePlayouts": 2000,
+      "options": 4,
+      "totalPlayouts": 32000,
+      "perOption": 8000
+    },
+    "readme": "https://github.com/Giboork/tli-overlay-plus#how-it-works",
+    "exactClosedFormulaReplicated": false
+  },
+  "forecasting": {
+    "liveAndForecastBudgetsMatch": true,
+    "wholeSamplesRetainedOnPromotion": true,
+    "full8000InstrumentAndGiftCacheVerified": true
+  },
+  "lifecycle": {
+    "foregroundCalculationSurvivesIdleWatchdog": true,
+    "completedAndBackgroundOnlyWorkStillSuspends": true,
+    "explicitModeExitStillStopsImmediately": true
+  },
+  "quality": {
+    "pairs": 16,
+    "beforeMean": 7.875,
+    "afterMean": 7,
+    "difference": -0.875,
+    "normal95": [
+      -2.224354784085095,
+      0.474354784085095
+    ],
+    "replay": {
+      "games": 32,
+      "actions": 2220,
+      "legal": true,
+      "resultsMatch": true,
+      "gameCapture": false,
+      "gameInput": false
+    }
+  },
+  "prerelease": true,
+  "automaticStableUpdate": false,
+  "voraxUnchanged": true,
+  "gameRulesUnchanged": true,
+  "artifacts": [
+    {
+      "file": "Torchlight-Overlay-Portable-1.2.0-x64.exe",
+      "bytes": 129265568,
+      "sha256": "bd5cc7cc1440ea05880f89e717daa799dd773e3d2eada352a7c15a30386c994f"
+    },
+    {
+      "file": "Torchlight-Overlay-Setup-1.2.0-x64.exe",
+      "bytes": 129430810,
+      "sha256": "77ec5f441411efc21929f8f8a2bac22c3ece722966c22941642c2d6cb32e8ef8"
+    }
+  ],
+  "gameCapture": false,
+  "gameInput": false
+}

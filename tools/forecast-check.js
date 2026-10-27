@@ -35,7 +35,7 @@ async function checkRuntime() {
     on: (kind, fn) => { events[kind] = fn; }, agreed: () => true, stopLog() {}, stopWindow() { this.state.window = 'off'; }, setReadinessProbe() {},
     useHandle() { this.state.log = 'on'; }, async connectWindow() { connects++; this.state.window = 'on'; }, captureNow: () => { reads++; } };
   const A = { invalidate: (options) => invalidations.push(options), setReadStatus() {}, prepare() { prepared++; }, prepareOCR() {}, onDesktopChange() {},
-    beginRun: (token) => starts.push(token),
+    beginRun: (token) => starts.push(token), desktopSnapshot: () => ({ working: false }),
     suspend() { suspended++; invalidations.push(undefined); }, setForecastEnabled: (enabled) => transitions.push(enabled) };
   const D = { fast: true, follow() {}, trigger() {}, record() {},
     fastSettings: async () => ({ consent: { version: 4 } }), game: async () => ({ running: true, window: 11, log: { path: 'test.log' } }),
