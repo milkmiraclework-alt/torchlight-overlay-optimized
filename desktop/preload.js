@@ -17,6 +17,8 @@ contextBridge.exposeInMainWorld('TartarusDesktop', {
   fast: process.argv.includes('--tartarus-fast'),
   nativeReader: (cmd, args) => ipcRenderer.invoke('native:reader', cmd, args),
   suiteInfo: () => ipcRenderer.invoke('suite:info'),
+  arcana: (cmd,value) => ipcRenderer.invoke('arcana:command',cmd,value),
+  onArcana: (fn) => listen('arcana:state',fn),
   readNow: () => ipcRenderer.send('suite:read'),
   updates: () => ipcRenderer.invoke('updates:get'),
   updateCommand: (action, enabled) => ipcRenderer.send('updates:command', { action, enabled }),

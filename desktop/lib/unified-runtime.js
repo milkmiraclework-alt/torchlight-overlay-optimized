@@ -1,6 +1,6 @@
 'use strict';
 const {spawn}=require('node:child_process'),os=require('node:os'),{classify,LogTail}=require('./mode-router');
-function create({executable,config,game,notify,note,userData,test=false,spawnWorker=spawn}){
+function create({executable,config,game,notify,note,userData,test=false,spawnWorker=spawn,arcana=null}){
  let detected='idle',mode='idle',child=null,ready=false,pending=null,timer=0,retry=0,epoch=0,closed=false,lastStatus=null,failedAt=0,settleStarted=0,settleKind='board',lastShown=null;
  const children=new Set();
  const enabled=()=>{const s=config();return s.consent?.version===4&&!s.consent.withdrawn&&game().running;};
@@ -11,6 +11,7 @@ function create({executable,config,game,notify,note,userData,test=false,spawnWor
   if(closed)return;
   const selected=config().mode||'auto';const next=selected==='auto'?detected:selected;
   if(next!==mode){mode=next;note('mode:',mode);if(mode!=='vorax')stop();notify();}
+  arcana?.sync(enabled()&&mode==='arcana');
   if(!enabled()||mode!=='vorax'){if(child)stop();return;}
   if(!child&&Date.now()-failedAt>3000){
    const env={...process.env,TORCHLIGHT_GAME_HWND:String(game().window),TORCHLIGHT_USER_DATA:userData,RAYON_NUM_THREADS:String(threads()),VORAX_ADVISOR:'smart',VORAX_SMART_PROFILE:'balanced',VORAX_CAPTURE_VISIBLE:config().hideFromCaptures===false?'1':'0'};
@@ -57,6 +58,7 @@ function create({executable,config,game,notify,note,userData,test=false,spawnWor
  const tail=new LogTail((lines,{initial})=>{
   for(const line of lines){const next=classify(line);if(next){detected=next;}}
   sync();
+  arcana?.feed(lines,{initial});
   if(mode!=='vorax')return;
   if(initial){if(detected==='vorax')schedule('screen');return;}
   for(const line of lines){
@@ -75,11 +77,12 @@ function create({executable,config,game,notify,note,userData,test=false,spawnWor
     const trigger=timer&&settleKind==='screen'?'screen':'board';
     clearTimeout(timer);timer=0;epoch++;retry=0;read(trigger,true);
    }
+   if(mode==='arcana')arcana?.read();
    return mode;
   },
   reconfigure(){if(child)stop();sync();if(mode==='vorax')schedule('board',0);},
-  info:()=>({mode,detected,enabled:enabled(),voraxPid:child?.pid||0,ready,threads:threads(),children:children.size,lastStatus}),
-  close(){closed=true;clearInterval(backup);stop();for(const c of children)c.kill();}
+  info:()=>({mode,detected,enabled:enabled(),voraxPid:child?.pid||0,ready,threads:threads(),children:children.size,lastStatus,arcana:arcana?.info()||null}),
+  close(){closed=true;clearInterval(backup);stop();for(const c of children)c.kill();arcana?.close();}
  };
 }
 module.exports={create};

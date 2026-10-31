@@ -12,6 +12,7 @@ contextBridge.exposeInMainWorld('Overlay', {
   onGame: (fn) => listen('game', fn),
   onFollow: (fn) => listen('follow', fn),
   onAdvice: (fn) => listen('advice', fn),
+  onArcana: (fn) => listen('arcana:state', fn),
   // board, follow, capture, fix, recheck, report, report-new, hide, lock,
   // pick-log, reload, restart
   command: (name) => ipcRenderer.send('overlay:command', String(name)),

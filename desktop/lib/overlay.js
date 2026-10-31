@@ -7,7 +7,7 @@
 
   const O = window.Overlay;
   const $ = (id) => document.getElementById(id);
-  const state = { shell: {}, game: {}, follow: null, advice: null, menu: false };
+  const state = { shell: {}, game: {}, follow: null, advice: null, arcana:null, menu: false };
 
   // A small element maker: h('p', { class: 'x' }, 'text', child).
   function h(tag, attrs, ...kids) {
@@ -80,6 +80,28 @@
   }
 
   function render() {
+    const isArcana=state.shell.mode==='arcana';
+    document.querySelector('.brand').textContent=isArcana?'Arcana':'Tartarus';
+    document.querySelector('[data-cmd="tools"]').hidden=isArcana;
+    if(isArcana){
+      const a=state.arcana,body=$('body');
+      document.body.classList.toggle('is-collapsed',!!state.shell.collapsed);
+      $('fold').textContent=state.shell.collapsed?'+':'–';
+      $('day').textContent=a?.summary||'Tarot Path';
+      const out=[];
+      if(!state.game.running)out.push(line('info','Waiting for Torchlight: Infinite…'));
+      else if(state.shell.agreed===false)out.push(line('warn','Enable game capture in Settings.',button('Settings','follow')));
+      else if(a?.phase==='advice'){
+        out.push(h('div',null,h('p',{class:'eyebrow'},'Recommended'),h('p',{class:'move'},a.move),h('p',{class:'why'},a.why||''),h('p',{class:'meta'},a.expected||'')));
+        if(a.notice)out.push(line('warn',a.notice));
+      }else if(a?.phase==='thinking'||a?.phase==='reading')out.push(line('busy',a.phase==='thinking'?'Comparing the remaining paths…':'Reading the Arcana picture…'));
+      else if(a?.phase==='error'||a?.phase==='check')out.push(line('warn',a.reason||'Check the Arcana reading.',button('Check board','arcana',true),button('Picture','capture')));
+      else out.push(line('info','Waiting for the Tarot Path board.',button('Picture','capture'),button('Check board','arcana')));
+      body.replaceChildren(...out);
+      $('dot-log').className='dot '+(state.game.log?'is-on':'is-off');
+      $('dot-win').className='dot '+(a?.phase==='advice'?'is-on':'');
+      return;
+    }
     const f = state.follow;
     const a = f && f.active === false ? null : state.advice;
     const sh = state.shell;
@@ -191,6 +213,7 @@
     state.advice = a;
     render();
   });
+  O.onArcana((a)=>{state.arcana=a;render();});
   setInterval(render, 5000); // "s ago", and old notes going away
   render();
 })();

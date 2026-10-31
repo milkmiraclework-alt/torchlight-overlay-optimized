@@ -1,6 +1,9 @@
 'use strict';
 const cp=require('node:child_process'),fs=require('node:fs'),path=require('node:path');
 const root=path.resolve(__dirname,'..'),jobs=[
+ ['arcana',['tools/arcana-check.js']],
+ ['arcana-terminal',['tools/arcana-terminal-check.js']],
+ ['arcana-runtime',['tools/arcana-runtime-check.js']],
  ['native-capture',['tools/native-capture-check.js']],
  ['native-screen',['tools/native-screen-check.js']],
  ['assessment',['tools/assessment-check.js']],
@@ -18,6 +21,8 @@ const root=path.resolve(__dirname,'..'),jobs=[
  ['capture',['tools/capture-check.js']],['worker-recovery',['tools/ready-worker-recovery-check.js']],
  ['worker-lifecycle',['tools/worker-lifecycle-check.js']],['bundled-site',['tools/bundled-site-check.js']],
 ];
+const frameAt=process.argv.indexOf('--arcana-frame');if(frameAt>=0)jobs.push(['arcana-vision',['tools/arcana-vision-check.js','--frame',path.resolve(process.argv[frameAt+1])]]);
+const textureAt=process.argv.indexOf('--arcana-textures');if(textureAt>=0)jobs.push(['arcana-popup',['tools/arcana-popup-check.js','--textures',path.resolve(process.argv[textureAt+1])]]);
 fs.mkdirSync(path.join(root,'sandbox/checks'),{recursive:true});
 for(const [name,args]of jobs){const r=cp.spawnSync(process.execPath,args,{cwd:root,encoding:'utf8',windowsHide:true});fs.writeFileSync(path.join(root,'sandbox/checks',name+'.log'),(r.stdout||'')+(r.stderr||''));console.log(name,r.status);if(r.status!==0){console.error(r.stdout,r.stderr);process.exit(1);}}
 fs.mkdirSync(path.join(root,'tools/results'),{recursive:true});fs.writeFileSync(path.join(root,'tools/results/checks.json'),JSON.stringify({version:require('../desktop/package.json').version,checkedAt:new Date().toISOString(),checks:jobs.map(([name])=>name),gameCapture:false,gameInput:false},null,2)+'\n');

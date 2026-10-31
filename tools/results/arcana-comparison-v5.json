@@ -1,0 +1,2973 @@
+{
+  "version": "1.3.2",
+  "checkedAt": "2026-10-29T16:45:39.878Z",
+  "declaredAt": "2026-10-29T16:14:33.999Z",
+  "method": "Balanced controlled comparison: 64 question-free boards and 64 boards with a synthetic 10% question frequency. Equal initial hands, visibility and per-step random seeds. Both policies play the unmodified reference simulator. Reference uses public Normal/Smart/Save upgrades settings; our unknown question outcomes use an independent equal-weight local-game effect prior.",
+  "sources": {
+    "solver.js": "97988eb322448dbabf2c565a8e422642401b37ab356b91987e0a46606e5cafda",
+    "engine.js": "678a2f58e8eb18995c31f3f1e0e27711b74bafbc077c274333c242456a8c1b9f",
+    "game-data.json": "a3be07f5dd7381c842f1d13510a6a2f001bda3f38fbeb012b70f0358fa6989a6"
+  },
+  "referenceVersion": "1.1.15",
+  "referenceSha256": "95af5a620d1c07071fe6e80d2dcb7cf0d59a2040da555030e4402f8574a95055",
+  "boards": 128,
+  "samples": 128,
+  "verificationSamples": 256,
+  "ours": {
+    "points": 68.4609375,
+    "rainbows": 2.015625,
+    "chests": 5.625,
+    "steps": 39.0234375,
+    "calculationMs": 21254.910224218736,
+    "deathRate": 0,
+    "cutoffs": 0
+  },
+  "reference": {
+    "points": 70.453125,
+    "rainbows": 2.1484375,
+    "chests": 5.6875,
+    "steps": 39.203125,
+    "calculationMs": 10857.833784374985,
+    "deathRate": 0.0078125,
+    "cutoffs": 0
+  },
+  "pairedPointDifference": {
+    "mean": -1.9921875,
+    "approx95CI": [
+      -7.071661791593123,
+      3.0872867915931232
+    ]
+  },
+  "pairedRainbowDifference": {
+    "mean": -0.1328125,
+    "approx95CI": [
+      -0.37623624029927605,
+      0.11061124029927602
+    ]
+  },
+  "qualityGate": {
+    "objective": "Final rarity points",
+    "maximumLossFraction": 0.05,
+    "meanAtLeastReference": true,
+    "stratumMeansWithinFivePercent": true,
+    "zeroCutoffs": true,
+    "confidence": "Approximate two-sided 95% paired interval",
+    "maximumLossPoints": 3.5226562500000003,
+    "stratumMeansWithinMargin": false,
+    "passed": false,
+    "scope": "This balanced synthetic generator only; not server-layout or live application parity."
+  },
+  "strata": [
+    {
+      "name": "No question tiles",
+      "boards": 64,
+      "offset": 65536,
+      "questionRate": 0,
+      "ours": {
+        "points": 61.59375,
+        "rainbows": 1.78125,
+        "chests": 5.375,
+        "steps": 36.609375,
+        "calculationMs": 18924.42509843751,
+        "deathRate": 0,
+        "cutoffs": 0
+      },
+      "reference": {
+        "points": 60.578125,
+        "rainbows": 1.75,
+        "chests": 5.4375,
+        "steps": 36.53125,
+        "calculationMs": 10484.683499999996,
+        "deathRate": 0,
+        "cutoffs": 0
+      },
+      "pairedPointDifference": {
+        "mean": 1.015625,
+        "approx95CI": [
+          -4.65409761731486,
+          6.68534761731486
+        ]
+      },
+      "individualQualityGate": {
+        "declaredBeforeRun": true,
+        "objective": "Final rarity points",
+        "meanAtLeastReference": true,
+        "maximumNonInferiorityMarginFraction": 0.05,
+        "confidence": "Approximate two-sided 95% paired interval",
+        "zeroCutoffs": true,
+        "maximumLossPoints": 3.0289062500000004,
+        "passed": false,
+        "scope": "Only this controlled generator and reference settings; not live-game or server-layout parity."
+      }
+    },
+    {
+      "name": "10% question tiles",
+      "boards": 64,
+      "offset": 32768,
+      "questionRate": 0.1,
+      "ours": {
+        "points": 75.328125,
+        "rainbows": 2.25,
+        "chests": 5.875,
+        "steps": 41.4375,
+        "calculationMs": 23585.395349999995,
+        "deathRate": 0,
+        "cutoffs": 0
+      },
+      "reference": {
+        "points": 80.328125,
+        "rainbows": 2.546875,
+        "chests": 5.9375,
+        "steps": 41.875,
+        "calculationMs": 11230.984068749984,
+        "deathRate": 0.015625,
+        "cutoffs": 0
+      },
+      "pairedPointDifference": {
+        "mean": -5,
+        "approx95CI": [
+          -13.412742649629125,
+          3.4127426496291253
+        ]
+      },
+      "individualQualityGate": {
+        "declaredBeforeRun": true,
+        "objective": "Final rarity points",
+        "meanAtLeastReference": true,
+        "maximumNonInferiorityMarginFraction": 0.05,
+        "confidence": "Approximate two-sided 95% paired interval",
+        "zeroCutoffs": true,
+        "maximumLossPoints": 4.01640625,
+        "passed": false,
+        "scope": "Only this controlled generator and reference settings; not live-game or server-layout parity."
+      }
+    }
+  ],
+  "limitations": [
+    "Artificial tile mixtures and question frequency; real server layouts and frequencies are not known.",
+    "Question effects are independently modelled from local game data; their server probabilities are not calibrated.",
+    "Special server layouts and live reader/application quality are not compared.",
+    "Finite Monte Carlo and approximate confidence intervals; no guarantee of a better move or real profit.",
+    "Concurrent process shards: use the separate performance report for isolated latency."
+  ],
+  "gameCapture": false,
+  "gameInput": false,
+  "pairs": [
+    {
+      "seed": 1848792112,
+      "ours": {
+        "points": 103,
+        "rainbows": 3,
+        "chests": 7,
+        "died": false,
+        "steps": 39,
+        "calculationMs": 16420.008900000004,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 52,
+        "rainbows": 1,
+        "chests": 6,
+        "died": false,
+        "steps": 33,
+        "calculationMs": 7641.548899999998,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1848800031,
+      "ours": {
+        "points": 20,
+        "rainbows": 0,
+        "chests": 3,
+        "died": false,
+        "steps": 32,
+        "calculationMs": 10803.426100000015,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 20,
+        "rainbows": 0,
+        "chests": 3,
+        "died": false,
+        "steps": 32,
+        "calculationMs": 6059.271299999949,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1848807950,
+      "ours": {
+        "points": 80,
+        "rainbows": 3,
+        "chests": 6,
+        "died": false,
+        "steps": 39,
+        "calculationMs": 30593.249199999955,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 106,
+        "rainbows": 4,
+        "chests": 6,
+        "died": false,
+        "steps": 42,
+        "calculationMs": 16747.70579999998,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1848815869,
+      "ours": {
+        "points": 74,
+        "rainbows": 2,
+        "chests": 7,
+        "died": false,
+        "steps": 35,
+        "calculationMs": 20135.871600000028,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 101,
+        "rainbows": 3,
+        "chests": 7,
+        "died": false,
+        "steps": 49,
+        "calculationMs": 11554.285299999974,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1848823788,
+      "ours": {
+        "points": 27,
+        "rainbows": 0,
+        "chests": 6,
+        "died": false,
+        "steps": 45,
+        "calculationMs": 22620.440900000016,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 48,
+        "rainbows": 1,
+        "chests": 6,
+        "died": false,
+        "steps": 50,
+        "calculationMs": 16916.390799999906,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1848831707,
+      "ours": {
+        "points": 50,
+        "rainbows": 1,
+        "chests": 5,
+        "died": false,
+        "steps": 35,
+        "calculationMs": 16619.105100000015,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 77,
+        "rainbows": 2,
+        "chests": 7,
+        "died": false,
+        "steps": 38,
+        "calculationMs": 7949.784300000087,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1848839626,
+      "ours": {
+        "points": 70,
+        "rainbows": 2,
+        "chests": 5,
+        "died": false,
+        "steps": 37,
+        "calculationMs": 20464.822600000014,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 45,
+        "rainbows": 1,
+        "chests": 5,
+        "died": false,
+        "steps": 32,
+        "calculationMs": 8216.715199999977,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1848847545,
+      "ours": {
+        "points": 37,
+        "rainbows": 1,
+        "chests": 5,
+        "died": false,
+        "steps": 33,
+        "calculationMs": 10926.173899999994,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 29,
+        "rainbows": 1,
+        "chests": 3,
+        "died": false,
+        "steps": 24,
+        "calculationMs": 11653.766800000012,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1848855464,
+      "ours": {
+        "points": 25,
+        "rainbows": 0,
+        "chests": 6,
+        "died": false,
+        "steps": 30,
+        "calculationMs": 22389.3321,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 51,
+        "rainbows": 2,
+        "chests": 3,
+        "died": false,
+        "steps": 17,
+        "calculationMs": 13472.76669999992,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1848863383,
+      "ours": {
+        "points": 102,
+        "rainbows": 4,
+        "chests": 6,
+        "died": false,
+        "steps": 40,
+        "calculationMs": 32615.25060000032,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 65,
+        "rainbows": 2,
+        "chests": 4,
+        "died": false,
+        "steps": 39,
+        "calculationMs": 12295.64740000019,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1848871302,
+      "ours": {
+        "points": 71,
+        "rainbows": 2,
+        "chests": 6,
+        "died": false,
+        "steps": 46,
+        "calculationMs": 33760.91470000014,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 56,
+        "rainbows": 1,
+        "chests": 5,
+        "died": false,
+        "steps": 39,
+        "calculationMs": 10582.71219999995,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1848879221,
+      "ours": {
+        "points": 38,
+        "rainbows": 1,
+        "chests": 4,
+        "died": false,
+        "steps": 24,
+        "calculationMs": 5908.379399999918,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 37,
+        "rainbows": 1,
+        "chests": 5,
+        "died": false,
+        "steps": 30,
+        "calculationMs": 10471.61959999986,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1848887140,
+      "ours": {
+        "points": 35,
+        "rainbows": 1,
+        "chests": 2,
+        "died": false,
+        "steps": 28,
+        "calculationMs": 11579.079499999818,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 75,
+        "rainbows": 3,
+        "chests": 3,
+        "died": false,
+        "steps": 43,
+        "calculationMs": 10188.35129999998,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1848895059,
+      "ours": {
+        "points": 63,
+        "rainbows": 2,
+        "chests": 5,
+        "died": false,
+        "steps": 40,
+        "calculationMs": 18958.08129999996,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 61,
+        "rainbows": 2,
+        "chests": 7,
+        "died": false,
+        "steps": 35,
+        "calculationMs": 6708.417699999933,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1848902978,
+      "ours": {
+        "points": 42,
+        "rainbows": 1,
+        "chests": 7,
+        "died": false,
+        "steps": 36,
+        "calculationMs": 14782.146900000342,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 38,
+        "rainbows": 1,
+        "chests": 6,
+        "died": false,
+        "steps": 32,
+        "calculationMs": 6740.629799999762,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1848910897,
+      "ours": {
+        "points": 60,
+        "rainbows": 2,
+        "chests": 6,
+        "died": false,
+        "steps": 37,
+        "calculationMs": 15247.630499999796,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 30,
+        "rainbows": 0,
+        "chests": 6,
+        "died": false,
+        "steps": 35,
+        "calculationMs": 4858.246500000241,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1848918816,
+      "ours": {
+        "points": 40,
+        "rainbows": 1,
+        "chests": 5,
+        "died": false,
+        "steps": 33,
+        "calculationMs": 16723.404599999998,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 38,
+        "rainbows": 1,
+        "chests": 3,
+        "died": false,
+        "steps": 32,
+        "calculationMs": 6595.496100000008,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1848926735,
+      "ours": {
+        "points": 110,
+        "rainbows": 4,
+        "chests": 5,
+        "died": false,
+        "steps": 37,
+        "calculationMs": 14523.445600000032,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 85,
+        "rainbows": 3,
+        "chests": 4,
+        "died": false,
+        "steps": 38,
+        "calculationMs": 5850.926300000006,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1848934654,
+      "ours": {
+        "points": 58,
+        "rainbows": 2,
+        "chests": 4,
+        "died": false,
+        "steps": 32,
+        "calculationMs": 15617.477700000003,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 66,
+        "rainbows": 2,
+        "chests": 5,
+        "died": false,
+        "steps": 42,
+        "calculationMs": 10075.479300000065,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1848942573,
+      "ours": {
+        "points": 37,
+        "rainbows": 0,
+        "chests": 7,
+        "died": false,
+        "steps": 35,
+        "calculationMs": 19570.867400000003,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 7,
+        "rainbows": 0,
+        "chests": 3,
+        "died": false,
+        "steps": 22,
+        "calculationMs": 8158.526299999983,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1848950492,
+      "ours": {
+        "points": 100,
+        "rainbows": 3,
+        "chests": 6,
+        "died": false,
+        "steps": 55,
+        "calculationMs": 34155.333799999964,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 74,
+        "rainbows": 2,
+        "chests": 6,
+        "died": false,
+        "steps": 44,
+        "calculationMs": 15439.81540000005,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1848958411,
+      "ours": {
+        "points": 51,
+        "rainbows": 0,
+        "chests": 7,
+        "died": false,
+        "steps": 39,
+        "calculationMs": 22540.857700000022,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 49,
+        "rainbows": 0,
+        "chests": 7,
+        "died": false,
+        "steps": 36,
+        "calculationMs": 9734.445100000012,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1848966330,
+      "ours": {
+        "points": 109,
+        "rainbows": 4,
+        "chests": 7,
+        "died": false,
+        "steps": 43,
+        "calculationMs": 25825.741600000067,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 106,
+        "rainbows": 4,
+        "chests": 6,
+        "died": false,
+        "steps": 32,
+        "calculationMs": 9504.83879999994,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1848974249,
+      "ours": {
+        "points": 45,
+        "rainbows": 1,
+        "chests": 6,
+        "died": false,
+        "steps": 30,
+        "calculationMs": 18269.849300000118,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 97,
+        "rainbows": 3,
+        "chests": 7,
+        "died": false,
+        "steps": 39,
+        "calculationMs": 16364.907299999992,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1848982168,
+      "ours": {
+        "points": 60,
+        "rainbows": 2,
+        "chests": 6,
+        "died": false,
+        "steps": 27,
+        "calculationMs": 21421.95129999981,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 65,
+        "rainbows": 2,
+        "chests": 7,
+        "died": false,
+        "steps": 36,
+        "calculationMs": 6575.109400000132,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1848990087,
+      "ours": {
+        "points": 63,
+        "rainbows": 2,
+        "chests": 4,
+        "died": false,
+        "steps": 44,
+        "calculationMs": 19620.235399999772,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 81,
+        "rainbows": 3,
+        "chests": 5,
+        "died": false,
+        "steps": 40,
+        "calculationMs": 11111.534800000198,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1848998006,
+      "ours": {
+        "points": 65,
+        "rainbows": 1,
+        "chests": 5,
+        "died": false,
+        "steps": 40,
+        "calculationMs": 19162.384099999792,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 55,
+        "rainbows": 1,
+        "chests": 4,
+        "died": false,
+        "steps": 40,
+        "calculationMs": 10248.164000000048,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1849005925,
+      "ours": {
+        "points": 66,
+        "rainbows": 2,
+        "chests": 5,
+        "died": false,
+        "steps": 37,
+        "calculationMs": 17759.48450000002,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 63,
+        "rainbows": 2,
+        "chests": 5,
+        "died": false,
+        "steps": 39,
+        "calculationMs": 12691.947900000028,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1849013844,
+      "ours": {
+        "points": 35,
+        "rainbows": 0,
+        "chests": 7,
+        "died": false,
+        "steps": 34,
+        "calculationMs": 21246.013400000287,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 43,
+        "rainbows": 1,
+        "chests": 7,
+        "died": false,
+        "steps": 30,
+        "calculationMs": 6393.572299999942,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1849021763,
+      "ours": {
+        "points": 75,
+        "rainbows": 3,
+        "chests": 3,
+        "died": false,
+        "steps": 42,
+        "calculationMs": 22905.542199999967,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 75,
+        "rainbows": 3,
+        "chests": 3,
+        "died": false,
+        "steps": 45,
+        "calculationMs": 8804.466400000092,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1849029682,
+      "ours": {
+        "points": 72,
+        "rainbows": 2,
+        "chests": 7,
+        "died": false,
+        "steps": 44,
+        "calculationMs": 14808.135900000227,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 78,
+        "rainbows": 3,
+        "chests": 6,
+        "died": false,
+        "steps": 37,
+        "calculationMs": 8619.10289999994,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1849037601,
+      "ours": {
+        "points": 44,
+        "rainbows": 1,
+        "chests": 5,
+        "died": false,
+        "steps": 29,
+        "calculationMs": 8181.066100000055,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 64,
+        "rainbows": 2,
+        "chests": 7,
+        "died": false,
+        "steps": 33,
+        "calculationMs": 6578.3787000001175,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1849045520,
+      "ours": {
+        "points": 46,
+        "rainbows": 1,
+        "chests": 5,
+        "died": false,
+        "steps": 47,
+        "calculationMs": 35575.8044,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 62,
+        "rainbows": 1,
+        "chests": 7,
+        "died": false,
+        "steps": 47,
+        "calculationMs": 14601.09139999999,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1849053439,
+      "ours": {
+        "points": 80,
+        "rainbows": 3,
+        "chests": 6,
+        "died": false,
+        "steps": 41,
+        "calculationMs": 23666.287899999923,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 85,
+        "rainbows": 3,
+        "chests": 4,
+        "died": false,
+        "steps": 31,
+        "calculationMs": 7423.442399999942,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1849061358,
+      "ours": {
+        "points": 18,
+        "rainbows": 0,
+        "chests": 4,
+        "died": false,
+        "steps": 33,
+        "calculationMs": 14574.759300000049,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 65,
+        "rainbows": 2,
+        "chests": 5,
+        "died": false,
+        "steps": 38,
+        "calculationMs": 7785.637700000007,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1849069277,
+      "ours": {
+        "points": 76,
+        "rainbows": 2,
+        "chests": 7,
+        "died": false,
+        "steps": 33,
+        "calculationMs": 9925.128999999943,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 90,
+        "rainbows": 2,
+        "chests": 6,
+        "died": false,
+        "steps": 42,
+        "calculationMs": 6057.061600000001,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1849077196,
+      "ours": {
+        "points": 93,
+        "rainbows": 3,
+        "chests": 7,
+        "died": false,
+        "steps": 41,
+        "calculationMs": 35635.588000000105,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 75,
+        "rainbows": 2,
+        "chests": 6,
+        "died": false,
+        "steps": 40,
+        "calculationMs": 18855.890399999917,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1849085115,
+      "ours": {
+        "points": 61,
+        "rainbows": 2,
+        "chests": 5,
+        "died": false,
+        "steps": 42,
+        "calculationMs": 19039.16849999997,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 48,
+        "rainbows": 1,
+        "chests": 5,
+        "died": false,
+        "steps": 40,
+        "calculationMs": 8633.076199999894,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1849093034,
+      "ours": {
+        "points": 75,
+        "rainbows": 3,
+        "chests": 3,
+        "died": false,
+        "steps": 28,
+        "calculationMs": 25391.89360000001,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 104,
+        "rainbows": 4,
+        "chests": 6,
+        "died": false,
+        "steps": 49,
+        "calculationMs": 43644.970699999976,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1849100953,
+      "ours": {
+        "points": 62,
+        "rainbows": 2,
+        "chests": 6,
+        "died": false,
+        "steps": 30,
+        "calculationMs": 16008.357300000032,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 43,
+        "rainbows": 1,
+        "chests": 7,
+        "died": false,
+        "steps": 41,
+        "calculationMs": 12072.316499999957,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1849108872,
+      "ours": {
+        "points": 70,
+        "rainbows": 2,
+        "chests": 7,
+        "died": false,
+        "steps": 42,
+        "calculationMs": 12651.581699999864,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 51,
+        "rainbows": 2,
+        "chests": 3,
+        "died": false,
+        "steps": 31,
+        "calculationMs": 5764.677199999918,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1849116791,
+      "ours": {
+        "points": 88,
+        "rainbows": 3,
+        "chests": 7,
+        "died": false,
+        "steps": 42,
+        "calculationMs": 20442.526500000095,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 80,
+        "rainbows": 3,
+        "chests": 6,
+        "died": false,
+        "steps": 33,
+        "calculationMs": 9962.237200000149,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1849124710,
+      "ours": {
+        "points": 80,
+        "rainbows": 3,
+        "chests": 6,
+        "died": false,
+        "steps": 37,
+        "calculationMs": 17921.567400000058,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 61,
+        "rainbows": 2,
+        "chests": 7,
+        "died": false,
+        "steps": 33,
+        "calculationMs": 9297.652500000026,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1849132629,
+      "ours": {
+        "points": 56,
+        "rainbows": 2,
+        "chests": 6,
+        "died": false,
+        "steps": 30,
+        "calculationMs": 17748.999299999967,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 52,
+        "rainbows": 2,
+        "chests": 4,
+        "died": false,
+        "steps": 31,
+        "calculationMs": 7504.817799999844,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1849140548,
+      "ours": {
+        "points": 70,
+        "rainbows": 2,
+        "chests": 4,
+        "died": false,
+        "steps": 35,
+        "calculationMs": 13354.75649999996,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 46,
+        "rainbows": 1,
+        "chests": 4,
+        "died": false,
+        "steps": 38,
+        "calculationMs": 9195.328199999873,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1849148467,
+      "ours": {
+        "points": 85,
+        "rainbows": 3,
+        "chests": 4,
+        "died": false,
+        "steps": 34,
+        "calculationMs": 12889.10060000018,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 32,
+        "rainbows": 1,
+        "chests": 4,
+        "died": false,
+        "steps": 22,
+        "calculationMs": 5323.650900000008,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1849156386,
+      "ours": {
+        "points": 55,
+        "rainbows": 1,
+        "chests": 7,
+        "died": false,
+        "steps": 40,
+        "calculationMs": 21788.296599999943,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 48,
+        "rainbows": 1,
+        "chests": 6,
+        "died": false,
+        "steps": 38,
+        "calculationMs": 6182.037699999986,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1849164305,
+      "ours": {
+        "points": 60,
+        "rainbows": 2,
+        "chests": 3,
+        "died": false,
+        "steps": 40,
+        "calculationMs": 12930.291099999915,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 9,
+        "rainbows": 0,
+        "chests": 3,
+        "died": false,
+        "steps": 26,
+        "calculationMs": 7104.540799999901,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1849172224,
+      "ours": {
+        "points": 28,
+        "rainbows": 0,
+        "chests": 5,
+        "died": false,
+        "steps": 26,
+        "calculationMs": 8889.3534,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 28,
+        "rainbows": 0,
+        "chests": 5,
+        "died": false,
+        "steps": 34,
+        "calculationMs": 7253.057800000006,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1849180143,
+      "ours": {
+        "points": 63,
+        "rainbows": 2,
+        "chests": 6,
+        "died": false,
+        "steps": 44,
+        "calculationMs": 17323.411000000022,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 81,
+        "rainbows": 3,
+        "chests": 7,
+        "died": false,
+        "steps": 48,
+        "calculationMs": 11321.340200000028,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1849188062,
+      "ours": {
+        "points": 66,
+        "rainbows": 2,
+        "chests": 5,
+        "died": false,
+        "steps": 35,
+        "calculationMs": 11486.686699999991,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 54,
+        "rainbows": 2,
+        "chests": 4,
+        "died": false,
+        "steps": 34,
+        "calculationMs": 7862.511000000006,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1849195981,
+      "ours": {
+        "points": 87,
+        "rainbows": 3,
+        "chests": 7,
+        "died": false,
+        "steps": 33,
+        "calculationMs": 14442.766999999956,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 73,
+        "rainbows": 1,
+        "chests": 7,
+        "died": false,
+        "steps": 36,
+        "calculationMs": 10916.734099999987,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1849203900,
+      "ours": {
+        "points": 56,
+        "rainbows": 1,
+        "chests": 6,
+        "died": false,
+        "steps": 41,
+        "calculationMs": 19530.05499999998,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 77,
+        "rainbows": 2,
+        "chests": 7,
+        "died": false,
+        "steps": 46,
+        "calculationMs": 13846.11559999999,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1849211819,
+      "ours": {
+        "points": 81,
+        "rainbows": 3,
+        "chests": 7,
+        "died": false,
+        "steps": 42,
+        "calculationMs": 12582.148200000069,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 84,
+        "rainbows": 3,
+        "chests": 6,
+        "died": false,
+        "steps": 36,
+        "calculationMs": 8629.948999999993,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1849219738,
+      "ours": {
+        "points": 79,
+        "rainbows": 3,
+        "chests": 5,
+        "died": false,
+        "steps": 38,
+        "calculationMs": 18681.232499999925,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 82,
+        "rainbows": 3,
+        "chests": 6,
+        "died": false,
+        "steps": 37,
+        "calculationMs": 13497.40419999996,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1849227657,
+      "ours": {
+        "points": 30,
+        "rainbows": 0,
+        "chests": 3,
+        "died": false,
+        "steps": 18,
+        "calculationMs": 5730.951999999874,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 61,
+        "rainbows": 2,
+        "chests": 7,
+        "died": false,
+        "steps": 34,
+        "calculationMs": 6969.224300000002,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1849235576,
+      "ours": {
+        "points": 25,
+        "rainbows": 1,
+        "chests": 1,
+        "died": false,
+        "steps": 22,
+        "calculationMs": 6606.658800000034,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 72,
+        "rainbows": 2,
+        "chests": 7,
+        "died": false,
+        "steps": 44,
+        "calculationMs": 9235.20670000001,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1849243495,
+      "ours": {
+        "points": 29,
+        "rainbows": 0,
+        "chests": 5,
+        "died": false,
+        "steps": 31,
+        "calculationMs": 13774.234800000006,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 46,
+        "rainbows": 0,
+        "chests": 7,
+        "died": false,
+        "steps": 38,
+        "calculationMs": 13356.57819999996,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1849251414,
+      "ours": {
+        "points": 60,
+        "rainbows": 1,
+        "chests": 5,
+        "died": false,
+        "steps": 43,
+        "calculationMs": 46269.78450000018,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 62,
+        "rainbows": 1,
+        "chests": 7,
+        "died": false,
+        "steps": 42,
+        "calculationMs": 15952.769899999956,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1849259333,
+      "ours": {
+        "points": 63,
+        "rainbows": 2,
+        "chests": 7,
+        "died": false,
+        "steps": 35,
+        "calculationMs": 17646.059500000207,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 63,
+        "rainbows": 2,
+        "chests": 7,
+        "died": false,
+        "steps": 36,
+        "calculationMs": 15470.631199999945,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1849267252,
+      "ours": {
+        "points": 50,
+        "rainbows": 2,
+        "chests": 2,
+        "died": false,
+        "steps": 35,
+        "calculationMs": 15484.388799999899,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 28,
+        "rainbows": 1,
+        "chests": 2,
+        "died": false,
+        "steps": 26,
+        "calculationMs": 7739.91869999998,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1849275171,
+      "ours": {
+        "points": 45,
+        "rainbows": 1,
+        "chests": 5,
+        "died": false,
+        "steps": 27,
+        "calculationMs": 14261.87149999995,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 19,
+        "rainbows": 0,
+        "chests": 5,
+        "died": false,
+        "steps": 24,
+        "calculationMs": 6805.023100000108,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1849283090,
+      "ours": {
+        "points": 94,
+        "rainbows": 3,
+        "chests": 7,
+        "died": false,
+        "steps": 51,
+        "calculationMs": 34254.87290000002,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 90,
+        "rainbows": 3,
+        "chests": 7,
+        "died": false,
+        "steps": 40,
+        "calculationMs": 15076.722400000144,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1849291009,
+      "ours": {
+        "points": 84,
+        "rainbows": 3,
+        "chests": 6,
+        "died": false,
+        "steps": 50,
+        "calculationMs": 28498.91810000001,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 69,
+        "rainbows": 2,
+        "chests": 7,
+        "died": false,
+        "steps": 48,
+        "calculationMs": 12873.557799999893,
+        "cutoff": false
+      },
+      "stratum": "No question tiles"
+    },
+    {
+      "seed": 1589302320,
+      "ours": {
+        "points": 38,
+        "rainbows": 1,
+        "chests": 6,
+        "died": false,
+        "steps": 36,
+        "calculationMs": 13043.9417,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 59,
+        "rainbows": 2,
+        "chests": 7,
+        "died": false,
+        "steps": 40,
+        "calculationMs": 10640.822300000007,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589310239,
+      "ours": {
+        "points": 73,
+        "rainbows": 2,
+        "chests": 6,
+        "died": false,
+        "steps": 44,
+        "calculationMs": 18470.889699999992,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 125,
+        "rainbows": 5,
+        "chests": 5,
+        "died": false,
+        "steps": 51,
+        "calculationMs": 12822.606099999968,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589318158,
+      "ours": {
+        "points": 95,
+        "rainbows": 3,
+        "chests": 6,
+        "died": false,
+        "steps": 46,
+        "calculationMs": 8664.09210000003,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 104,
+        "rainbows": 4,
+        "chests": 6,
+        "died": false,
+        "steps": 43,
+        "calculationMs": 6643.065500000019,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589326077,
+      "ours": {
+        "points": 95,
+        "rainbows": 3,
+        "chests": 5,
+        "died": false,
+        "steps": 47,
+        "calculationMs": 51629.374100000015,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 75,
+        "rainbows": 3,
+        "chests": 3,
+        "died": false,
+        "steps": 38,
+        "calculationMs": 14331.919800000105,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589333996,
+      "ours": {
+        "points": 72,
+        "rainbows": 2,
+        "chests": 7,
+        "died": false,
+        "steps": 48,
+        "calculationMs": 37544.305999999924,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 89,
+        "rainbows": 3,
+        "chests": 6,
+        "died": false,
+        "steps": 38,
+        "calculationMs": 7195.833000000013,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589341915,
+      "ours": {
+        "points": 88,
+        "rainbows": 3,
+        "chests": 7,
+        "died": false,
+        "steps": 40,
+        "calculationMs": 19920.091699999903,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 63,
+        "rainbows": 2,
+        "chests": 7,
+        "died": false,
+        "steps": 33,
+        "calculationMs": 8099.453800000076,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589349834,
+      "ours": {
+        "points": 112,
+        "rainbows": 4,
+        "chests": 7,
+        "died": false,
+        "steps": 37,
+        "calculationMs": 15318.542800000054,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 50,
+        "rainbows": 1,
+        "chests": 4,
+        "died": false,
+        "steps": 38,
+        "calculationMs": 8061.976300000009,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589357753,
+      "ours": {
+        "points": 96,
+        "rainbows": 3,
+        "chests": 7,
+        "died": false,
+        "steps": 50,
+        "calculationMs": 13912.9583999998,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 76,
+        "rainbows": 2,
+        "chests": 7,
+        "died": false,
+        "steps": 52,
+        "calculationMs": 11051.347099999839,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589365672,
+      "ours": {
+        "points": 46,
+        "rainbows": 1,
+        "chests": 5,
+        "died": false,
+        "steps": 39,
+        "calculationMs": 14911.332700000086,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 85,
+        "rainbows": 3,
+        "chests": 5,
+        "died": false,
+        "steps": 30,
+        "calculationMs": 5347.726500000106,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589373591,
+      "ours": {
+        "points": 106,
+        "rainbows": 4,
+        "chests": 6,
+        "died": false,
+        "steps": 48,
+        "calculationMs": 21490.57939999993,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 45,
+        "rainbows": 1,
+        "chests": 6,
+        "died": false,
+        "steps": 38,
+        "calculationMs": 8284.588099999819,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589381510,
+      "ours": {
+        "points": 95,
+        "rainbows": 2,
+        "chests": 7,
+        "died": false,
+        "steps": 34,
+        "calculationMs": 15098.156600000046,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 79,
+        "rainbows": 2,
+        "chests": 7,
+        "died": false,
+        "steps": 31,
+        "calculationMs": 7428.811100000166,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589389429,
+      "ours": {
+        "points": 48,
+        "rainbows": 1,
+        "chests": 5,
+        "died": false,
+        "steps": 33,
+        "calculationMs": 22832.95390000008,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 60,
+        "rainbows": 1,
+        "chests": 7,
+        "died": false,
+        "steps": 43,
+        "calculationMs": 6919.132599999837,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589397348,
+      "ours": {
+        "points": 73,
+        "rainbows": 2,
+        "chests": 5,
+        "died": false,
+        "steps": 45,
+        "calculationMs": 16259.561500000127,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 88,
+        "rainbows": 3,
+        "chests": 5,
+        "died": false,
+        "steps": 47,
+        "calculationMs": 9622.434500000032,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589405267,
+      "ours": {
+        "points": 52,
+        "rainbows": 1,
+        "chests": 7,
+        "died": false,
+        "steps": 42,
+        "calculationMs": 12210.115400000068,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 100,
+        "rainbows": 3,
+        "chests": 7,
+        "died": false,
+        "steps": 38,
+        "calculationMs": 8027.960299999977,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589413186,
+      "ours": {
+        "points": 50,
+        "rainbows": 2,
+        "chests": 2,
+        "died": false,
+        "steps": 36,
+        "calculationMs": 19631.987800000003,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 100,
+        "rainbows": 4,
+        "chests": 4,
+        "died": false,
+        "steps": 45,
+        "calculationMs": 10485.021000000008,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589421105,
+      "ours": {
+        "points": 89,
+        "rainbows": 3,
+        "chests": 7,
+        "died": false,
+        "steps": 48,
+        "calculationMs": 43407.42619999999,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 57,
+        "rainbows": 2,
+        "chests": 5,
+        "died": false,
+        "steps": 42,
+        "calculationMs": 18947.626099999994,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589429024,
+      "ours": {
+        "points": 83,
+        "rainbows": 2,
+        "chests": 6,
+        "died": false,
+        "steps": 40,
+        "calculationMs": 29123.391900000006,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 92,
+        "rainbows": 3,
+        "chests": 7,
+        "died": false,
+        "steps": 43,
+        "calculationMs": 12525.298499999997,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589436943,
+      "ours": {
+        "points": 93,
+        "rainbows": 2,
+        "chests": 7,
+        "died": false,
+        "steps": 57,
+        "calculationMs": 31561.89679999998,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 106,
+        "rainbows": 4,
+        "chests": 6,
+        "died": false,
+        "steps": 45,
+        "calculationMs": 11046.799699999989,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589444862,
+      "ours": {
+        "points": 85,
+        "rainbows": 3,
+        "chests": 4,
+        "died": false,
+        "steps": 56,
+        "calculationMs": 25693.09199999996,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 100,
+        "rainbows": 4,
+        "chests": 4,
+        "died": false,
+        "steps": 46,
+        "calculationMs": 11558.43200000003,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589452781,
+      "ours": {
+        "points": 45,
+        "rainbows": 1,
+        "chests": 3,
+        "died": false,
+        "steps": 33,
+        "calculationMs": 33117.32320000007,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 92,
+        "rainbows": 3,
+        "chests": 7,
+        "died": false,
+        "steps": 49,
+        "calculationMs": 14796.215999999957,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589460700,
+      "ours": {
+        "points": 116,
+        "rainbows": 4,
+        "chests": 7,
+        "died": false,
+        "steps": 31,
+        "calculationMs": 27203.188800000004,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 90,
+        "rainbows": 2,
+        "chests": 7,
+        "died": false,
+        "steps": 44,
+        "calculationMs": 14139.33409999992,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589468619,
+      "ours": {
+        "points": 81,
+        "rainbows": 3,
+        "chests": 5,
+        "died": false,
+        "steps": 35,
+        "calculationMs": 34846.288499999995,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 101,
+        "rainbows": 4,
+        "chests": 5,
+        "died": false,
+        "steps": 35,
+        "calculationMs": 10280.21510000006,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589476538,
+      "ours": {
+        "points": 47,
+        "rainbows": 1,
+        "chests": 6,
+        "died": false,
+        "steps": 39,
+        "calculationMs": 17577.103899999725,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 64,
+        "rainbows": 2,
+        "chests": 5,
+        "died": false,
+        "steps": 47,
+        "calculationMs": 9321.936399999831,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589484457,
+      "ours": {
+        "points": 81,
+        "rainbows": 3,
+        "chests": 5,
+        "died": false,
+        "steps": 39,
+        "calculationMs": 22473.67639999988,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 71,
+        "rainbows": 2,
+        "chests": 6,
+        "died": false,
+        "steps": 46,
+        "calculationMs": 17213.775500000105,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589492376,
+      "ours": {
+        "points": 66,
+        "rainbows": 2,
+        "chests": 6,
+        "died": false,
+        "steps": 48,
+        "calculationMs": 36739.98470000003,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 50,
+        "rainbows": 1,
+        "chests": 6,
+        "died": false,
+        "steps": 46,
+        "calculationMs": 10158.450499999919,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589500295,
+      "ours": {
+        "points": 48,
+        "rainbows": 1,
+        "chests": 7,
+        "died": false,
+        "steps": 42,
+        "calculationMs": 16635.782099999837,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 20,
+        "rainbows": 0,
+        "chests": 6,
+        "died": false,
+        "steps": 32,
+        "calculationMs": 10717.706499999855,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589508214,
+      "ours": {
+        "points": 50,
+        "rainbows": 1,
+        "chests": 6,
+        "died": false,
+        "steps": 45,
+        "calculationMs": 20949.75700000004,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 48,
+        "rainbows": 1,
+        "chests": 7,
+        "died": false,
+        "steps": 38,
+        "calculationMs": 7660.862700000056,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589516133,
+      "ours": {
+        "points": 55,
+        "rainbows": 1,
+        "chests": 7,
+        "died": false,
+        "steps": 37,
+        "calculationMs": 11070.72090000019,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 89,
+        "rainbows": 3,
+        "chests": 7,
+        "died": false,
+        "steps": 48,
+        "calculationMs": 11004.907300000254,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589524052,
+      "ours": {
+        "points": 75,
+        "rainbows": 2,
+        "chests": 7,
+        "died": false,
+        "steps": 46,
+        "calculationMs": 26863.505599999567,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 82,
+        "rainbows": 3,
+        "chests": 6,
+        "died": false,
+        "steps": 45,
+        "calculationMs": 9301.561800000083,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589531971,
+      "ours": {
+        "points": 140,
+        "rainbows": 5,
+        "chests": 7,
+        "died": false,
+        "steps": 46,
+        "calculationMs": 24095.46710000024,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 71,
+        "rainbows": 1,
+        "chests": 7,
+        "died": false,
+        "steps": 38,
+        "calculationMs": 9684.241700000013,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589539890,
+      "ours": {
+        "points": 88,
+        "rainbows": 3,
+        "chests": 6,
+        "died": false,
+        "steps": 49,
+        "calculationMs": 17283.630299999902,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 63,
+        "rainbows": 1,
+        "chests": 6,
+        "died": false,
+        "steps": 50,
+        "calculationMs": 13934.076399999205,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589547809,
+      "ours": {
+        "points": 70,
+        "rainbows": 2,
+        "chests": 4,
+        "died": false,
+        "steps": 40,
+        "calculationMs": 19649.05669999984,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 56,
+        "rainbows": 2,
+        "chests": 4,
+        "died": false,
+        "steps": 38,
+        "calculationMs": 10568.04319999949,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589555728,
+      "ours": {
+        "points": 175,
+        "rainbows": 7,
+        "chests": 7,
+        "died": false,
+        "steps": 40,
+        "calculationMs": 28891.0478,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 160,
+        "rainbows": 6,
+        "chests": 7,
+        "died": false,
+        "steps": 46,
+        "calculationMs": 10023.9866,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589563647,
+      "ours": {
+        "points": 90,
+        "rainbows": 3,
+        "chests": 6,
+        "died": false,
+        "steps": 47,
+        "calculationMs": 19051.19599999998,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 83,
+        "rainbows": 3,
+        "chests": 5,
+        "died": false,
+        "steps": 45,
+        "calculationMs": 18464.05549999998,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589571566,
+      "ours": {
+        "points": 85,
+        "rainbows": 2,
+        "chests": 6,
+        "died": false,
+        "steps": 50,
+        "calculationMs": 39741.6278,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 105,
+        "rainbows": 4,
+        "chests": 5,
+        "died": false,
+        "steps": 37,
+        "calculationMs": 20642.407599999977,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589579485,
+      "ours": {
+        "points": 66,
+        "rainbows": 2,
+        "chests": 6,
+        "died": false,
+        "steps": 32,
+        "calculationMs": 24278.702800000086,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 16,
+        "rainbows": 0,
+        "chests": 6,
+        "died": false,
+        "steps": 26,
+        "calculationMs": 12956.932599999913,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589587404,
+      "ours": {
+        "points": 20,
+        "rainbows": 0,
+        "chests": 4,
+        "died": false,
+        "steps": 15,
+        "calculationMs": 5610.694499999925,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 89,
+        "rainbows": 3,
+        "chests": 7,
+        "died": false,
+        "steps": 41,
+        "calculationMs": 5756.587599999999,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589595323,
+      "ours": {
+        "points": 55,
+        "rainbows": 2,
+        "chests": 3,
+        "died": false,
+        "steps": 28,
+        "calculationMs": 7098.459100000007,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 65,
+        "rainbows": 2,
+        "chests": 7,
+        "died": false,
+        "steps": 36,
+        "calculationMs": 6126.592699999921,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589603242,
+      "ours": {
+        "points": 51,
+        "rainbows": 2,
+        "chests": 3,
+        "died": false,
+        "steps": 35,
+        "calculationMs": 16266.40209999992,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 64,
+        "rainbows": 2,
+        "chests": 5,
+        "died": false,
+        "steps": 38,
+        "calculationMs": 6549.861299999931,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589611161,
+      "ours": {
+        "points": 140,
+        "rainbows": 5,
+        "chests": 7,
+        "died": false,
+        "steps": 39,
+        "calculationMs": 15139.810999999958,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 50,
+        "rainbows": 1,
+        "chests": 7,
+        "died": false,
+        "steps": 37,
+        "calculationMs": 6284.995800000004,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589619080,
+      "ours": {
+        "points": 61,
+        "rainbows": 2,
+        "chests": 5,
+        "died": false,
+        "steps": 41,
+        "calculationMs": 11382.804800000013,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 56,
+        "rainbows": 1,
+        "chests": 7,
+        "died": false,
+        "steps": 43,
+        "calculationMs": 5843.604199999914,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589626999,
+      "ours": {
+        "points": 69,
+        "rainbows": 2,
+        "chests": 7,
+        "died": false,
+        "steps": 54,
+        "calculationMs": 31548.719799999904,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 68,
+        "rainbows": 2,
+        "chests": 6,
+        "died": false,
+        "steps": 51,
+        "calculationMs": 22439.80030000041,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589634918,
+      "ours": {
+        "points": 65,
+        "rainbows": 2,
+        "chests": 4,
+        "died": false,
+        "steps": 37,
+        "calculationMs": 35206.76710000017,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 63,
+        "rainbows": 2,
+        "chests": 5,
+        "died": false,
+        "steps": 30,
+        "calculationMs": 6291.49869999988,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589642837,
+      "ours": {
+        "points": 52,
+        "rainbows": 1,
+        "chests": 7,
+        "died": false,
+        "steps": 35,
+        "calculationMs": 9784.570199999958,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 87,
+        "rainbows": 3,
+        "chests": 6,
+        "died": false,
+        "steps": 36,
+        "calculationMs": 6854.535699999949,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589650756,
+      "ours": {
+        "points": 76,
+        "rainbows": 2,
+        "chests": 6,
+        "died": false,
+        "steps": 41,
+        "calculationMs": 28940.732000000018,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 60,
+        "rainbows": 2,
+        "chests": 3,
+        "died": false,
+        "steps": 29,
+        "calculationMs": 9496.29640000005,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589658675,
+      "ours": {
+        "points": 41,
+        "rainbows": 1,
+        "chests": 7,
+        "died": false,
+        "steps": 36,
+        "calculationMs": 20377.259699999937,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 55,
+        "rainbows": 1,
+        "chests": 4,
+        "died": false,
+        "steps": 35,
+        "calculationMs": 11302.743400000036,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589666594,
+      "ours": {
+        "points": 73,
+        "rainbows": 2,
+        "chests": 7,
+        "died": false,
+        "steps": 49,
+        "calculationMs": 36743.63050000009,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 106,
+        "rainbows": 4,
+        "chests": 6,
+        "died": false,
+        "steps": 47,
+        "calculationMs": 22376.520500000042,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589674513,
+      "ours": {
+        "points": 50,
+        "rainbows": 1,
+        "chests": 7,
+        "died": false,
+        "steps": 42,
+        "calculationMs": 22883.13139999978,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 155,
+        "rainbows": 6,
+        "chests": 7,
+        "died": false,
+        "steps": 45,
+        "calculationMs": 6364.22880000039,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589682432,
+      "ours": {
+        "points": 80,
+        "rainbows": 3,
+        "chests": 4,
+        "died": false,
+        "steps": 39,
+        "calculationMs": 15938.702299999999,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 89,
+        "rainbows": 3,
+        "chests": 7,
+        "died": false,
+        "steps": 50,
+        "calculationMs": 10788.277799999982,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589690351,
+      "ours": {
+        "points": 111,
+        "rainbows": 4,
+        "chests": 7,
+        "died": false,
+        "steps": 56,
+        "calculationMs": 52294.30079999999,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 121,
+        "rainbows": 4,
+        "chests": 7,
+        "died": false,
+        "steps": 54,
+        "calculationMs": 19992.563300000038,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589698270,
+      "ours": {
+        "points": 37,
+        "rainbows": 1,
+        "chests": 5,
+        "died": false,
+        "steps": 39,
+        "calculationMs": 14967.901999999987,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 66,
+        "rainbows": 2,
+        "chests": 6,
+        "died": false,
+        "steps": 51,
+        "calculationMs": 15752.059699999983,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589706189,
+      "ours": {
+        "points": 63,
+        "rainbows": 2,
+        "chests": 7,
+        "died": false,
+        "steps": 37,
+        "calculationMs": 19620.285499999998,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 131,
+        "rainbows": 5,
+        "chests": 7,
+        "died": true,
+        "steps": 33,
+        "calculationMs": 13141.487400000071,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589714108,
+      "ours": {
+        "points": 96,
+        "rainbows": 3,
+        "chests": 7,
+        "died": false,
+        "steps": 38,
+        "calculationMs": 24427.073600000003,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 136,
+        "rainbows": 5,
+        "chests": 7,
+        "died": false,
+        "steps": 47,
+        "calculationMs": 13714.361599999887,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589722027,
+      "ours": {
+        "points": 91,
+        "rainbows": 3,
+        "chests": 7,
+        "died": false,
+        "steps": 52,
+        "calculationMs": 36179.158800000005,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 84,
+        "rainbows": 3,
+        "chests": 6,
+        "died": false,
+        "steps": 51,
+        "calculationMs": 18108.957399999985,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589729946,
+      "ours": {
+        "points": 69,
+        "rainbows": 2,
+        "chests": 6,
+        "died": false,
+        "steps": 42,
+        "calculationMs": 17050.05069999973,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 60,
+        "rainbows": 2,
+        "chests": 4,
+        "died": false,
+        "steps": 42,
+        "calculationMs": 7826.696599999967,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589737865,
+      "ours": {
+        "points": 60,
+        "rainbows": 1,
+        "chests": 7,
+        "died": false,
+        "steps": 46,
+        "calculationMs": 20241.684000000125,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 54,
+        "rainbows": 0,
+        "chests": 7,
+        "died": false,
+        "steps": 48,
+        "calculationMs": 12898.91610000009,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589745784,
+      "ours": {
+        "points": 130,
+        "rainbows": 4,
+        "chests": 7,
+        "died": false,
+        "steps": 62,
+        "calculationMs": 61471.30010000005,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 160,
+        "rainbows": 6,
+        "chests": 7,
+        "died": false,
+        "steps": 46,
+        "calculationMs": 11852.547399999923,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589753703,
+      "ours": {
+        "points": 83,
+        "rainbows": 2,
+        "chests": 6,
+        "died": false,
+        "steps": 35,
+        "calculationMs": 12428.448599999945,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 79,
+        "rainbows": 3,
+        "chests": 5,
+        "died": false,
+        "steps": 38,
+        "calculationMs": 12342.950100000191,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589761622,
+      "ours": {
+        "points": 49,
+        "rainbows": 1,
+        "chests": 7,
+        "died": false,
+        "steps": 40,
+        "calculationMs": 21623.136899999867,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 98,
+        "rainbows": 3,
+        "chests": 7,
+        "died": false,
+        "steps": 53,
+        "calculationMs": 17053.019399999816,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589769541,
+      "ours": {
+        "points": 69,
+        "rainbows": 2,
+        "chests": 6,
+        "died": false,
+        "steps": 36,
+        "calculationMs": 19840.042100000137,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 41,
+        "rainbows": 1,
+        "chests": 4,
+        "died": false,
+        "steps": 30,
+        "calculationMs": 7753.977799999819,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589777460,
+      "ours": {
+        "points": 17,
+        "rainbows": 0,
+        "chests": 4,
+        "died": false,
+        "steps": 15,
+        "calculationMs": 8017.81580000004,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 56,
+        "rainbows": 1,
+        "chests": 7,
+        "died": false,
+        "steps": 41,
+        "calculationMs": 9237.95929999993,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589785379,
+      "ours": {
+        "points": 75,
+        "rainbows": 3,
+        "chests": 3,
+        "died": false,
+        "steps": 40,
+        "calculationMs": 23275.96640000021,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 83,
+        "rainbows": 2,
+        "chests": 7,
+        "died": false,
+        "steps": 50,
+        "calculationMs": 12980.772400000365,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589793298,
+      "ours": {
+        "points": 110,
+        "rainbows": 3,
+        "chests": 7,
+        "died": false,
+        "steps": 62,
+        "calculationMs": 56860.55990000011,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 100,
+        "rainbows": 3,
+        "chests": 7,
+        "died": false,
+        "steps": 52,
+        "calculationMs": 12606.14430000016,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    },
+    {
+      "seed": 1589801217,
+      "ours": {
+        "points": 61,
+        "rainbows": 1,
+        "chests": 6,
+        "died": false,
+        "steps": 36,
+        "calculationMs": 13053.142400000012,
+        "cutoff": false
+      },
+      "reference": {
+        "points": 51,
+        "rainbows": 1,
+        "chests": 5,
+        "died": false,
+        "steps": 35,
+        "calculationMs": 7135.460599999642,
+        "cutoff": false
+      },
+      "stratum": "10% question tiles"
+    }
+  ]
+}

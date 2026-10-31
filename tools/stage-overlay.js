@@ -47,7 +47,7 @@ const scripts = ['engine.js', 'board.js', 'tool-combos.js', 'assessment-data.js'
   'scan-accelerator.js', 'scan-kernels.wasm', 'solver-worker.js', 'rust-solver.js', 'solver-core.wasm'];
 for (const name of scripts) file(path.join(ROOT, 'js', name), `js/${name}`);
 tree(path.join(ROOT, 'img'), 'img');
-for (const name of ['settings.html', 'settings.js']) file(path.join(ROOT, 'desktop/lib', name), `desktop/lib/${name}`);
+for (const name of ['settings.html', 'settings.js','arcana.html','arcana-ui.js']) file(path.join(ROOT, 'desktop/lib', name), `desktop/lib/${name}`);
 for (const name of ['tesseract.min.js', 'worker.min.js', 'tesseract.min.js.LICENSE.txt', 'worker.min.js.LICENSE.txt']) {
   file(path.join(DEPS, 'tesseract.js/dist', name), `vendor/ocr/${name}`);
 }

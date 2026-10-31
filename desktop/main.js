@@ -20,6 +20,8 @@ const STANDALONE = app.isPackaged && fs.existsSync(path.join(BUNDLED_ROOT, 'bund
 const OPTIMIZED = true;
 const FAST = true;
 let suite = null;
+let arcana = null;
+let lastArcanaState = null;
 let nativeReader = null;
 const nativeAllowed = () => settings.consent?.version === 4 && !settings.consent.withdrawn && game.running && suite?.mode === 'tartarus';
 let updates = null;
@@ -90,7 +92,7 @@ const settings = Object.assign({
   analyzer: null, // the analyzer window's bounds
 }, readJson(SETTINGS_FILE));
 settings.record = false;
-if (!['auto','tartarus','vorax'].includes(settings.mode)) settings.mode='auto';
+if (!['auto','tartarus','vorax','arcana'].includes(settings.mode)) settings.mode='auto';
 const previousVorax=readJson(path.join(app.getPath('appData'),'VoraxRs','settings.json'));
 if (!Number.isInteger(settings.shelley)) settings.shelley=previousVorax.shelley || 6;
 delete settings.onlyWithGame; // 0.1.1 hid the overlay behind other windows by default
@@ -159,7 +161,7 @@ function pageOf(url) {
     return null;
   }
 }
-const PAGES = { follow: FAST ? 'desktop/lib/settings.html' : 'follow.html', analyzer: 'analyze.html' };
+const PAGES = { follow: FAST ? 'desktop/lib/settings.html' : 'follow.html', analyzer: 'analyze.html', arcana:'desktop/lib/arcana.html' };
 const ADAPTERS = { analyzer: 'analyzer-adapter.js' };
 
 // ---------- Finding the game's log ----------
@@ -504,7 +506,7 @@ function makeSiteWindow(name, opts) {
   // The adapter goes in once the page's own scripts have run.
   wc.on('dom-ready', () => {
     if (pageOf(wc.getURL()) !== PAGES[name]) return;
-    if (FAST && name === 'follow') return;
+    if (name === 'arcana' || FAST && name === 'follow') return;
     const code = fs.readFileSync(path.join(__dirname, 'lib', ADAPTERS[name]), 'utf8');
     note(`${name} page loaded:`, wc.getURL());
     wc.executeJavaScript(code, true).then(() => {
@@ -573,6 +575,7 @@ function route(url) {
 
 function show(name) {
   if (FAST && name === 'follow' && !wins.follow) makeSiteWindow('follow', { width: 620, height: 740, title: 'Torchlight Overlay settings' });
+  if (name === 'arcana' && (!wins.arcana || wins.arcana.isDestroyed())) makeSiteWindow('arcana', { width: 1120, height: 860, title: 'Arcana board correction · Torchlight Overlay' });
   const win = wins[name];
   if (!win || win.isDestroyed()) return;
   if (OFFSCREEN) win.setPosition(Math.min(...screen.getAllDisplays().map((d) => d.bounds.x)) - win.getSize()[0] - 400, 0);
@@ -691,6 +694,7 @@ function makeOverlay() {
     pushGame();
     if (lastAdvice) send('overlay', 'advice', lastAdvice);
     if (lastFollow) send('overlay', 'follow', lastFollow);
+    if (lastArcanaState) send('overlay', 'arcana:state', lastArcanaState);
   });
   win.on('moved', () => {
     const b = win.getBounds();
@@ -708,7 +712,7 @@ function makeOverlay() {
 // tray menu), only while the game itself is in front.
 let overlayShown = false;
 function overlayWanted() {
-  if (!settings.overlayOn || !game.running || (suite && suite.mode !== 'tartarus')) return false;
+  if (!settings.overlayOn || !game.running || (suite && !['tartarus','arcana'].includes(suite.mode))) return false;
   if (!settings.hideBehind || !win32) return true;
   const front = win32.foreground();
   if (front === game.hwnd) return !win32.minimized(game.hwnd);
@@ -776,6 +780,7 @@ function pushShell(patch) {
     hotkeys: HOTKEYS,
     local: /^(localhost|127\.0\.0\.1)$/.test(SITE_URL.hostname),
     version: app.getVersion(),
+    mode: suite?.mode || 'idle',
   }, shellExtra));
 }
 
@@ -820,7 +825,7 @@ ipcMain.on('fast:set-settings', (e, patch) => {
   if (!fromPage(e, 'follow') || !patch || typeof patch !== 'object') return;
   const restart = ['shelley', 'threads'].some(key => key in patch && patch[key] !== settings[key]);
   if (typeof patch.speed === 'boolean') settings.speed = patch.speed;
-  if (['auto', 'tartarus', 'vorax'].includes(patch.mode)) settings.mode = patch.mode;
+  if (['auto', 'tartarus', 'vorax', 'arcana'].includes(patch.mode)) settings.mode = patch.mode;
   if (Number.isInteger(patch.shelley) && patch.shelley >= 1 && patch.shelley <= 6) settings.shelley = patch.shelley;
   if (Number.isInteger(patch.threads) && patch.threads >= 0 && patch.threads <= 128) settings.threads = patch.threads;
   settings.record = false; saveSettings();
@@ -832,6 +837,10 @@ ipcMain.handle('suite:info', e => (TEST || DEV) && fromPage(e, 'analyzer') ? {
   windows: { settings: !!wins.follow?.isVisible(), board: !!wins.analyzer?.isVisible() }
 } : null);
 ipcMain.on('suite:read', e => { if (fromPage(e, 'follow')) command('capture'); });
+ipcMain.handle('arcana:command', async (e, cmd, value) => {
+  if (!fromPage(e,'arcana') || !arcana || !small(value ?? null)) throw Error('Arcana request rejected');
+  return arcana.command(String(cmd),value);
+});
 ipcMain.handle('updates:get', e => fromPage(e, 'follow') ? updates?.info() || null : null);
 ipcMain.on('updates:command', (e, value) => {
   if (!fromPage(e, 'follow') || !value || !['check', 'download', 'install', 'enabled'].includes(value.action)) return;
@@ -1030,15 +1039,17 @@ function command(cmd) {
     case 'update-check': if (!TEST || updateTestOrigin) void updates?.check(); return;
     case 'update-download': if (!TEST || updateTestOrigin) void updates?.download(); return;
     case 'update-install': void installUpdate(); return;
-    case 'board': return lastAdvice?.toolsConfirm ? showInstruments() : toggle('analyzer');
+    case 'board': return suite?.mode === 'arcana' ? show('arcana') : lastAdvice?.toolsConfirm ? showInstruments() : toggle('analyzer');
+    case 'arcana': return show('arcana');
     case 'tools': return showInstruments();
     case 'follow': return show('follow');
     case 'capture':
       // Auto Screenshot Mode is off: its page, to turn it on (report 380).
       if (!settings.consent || settings.consent.withdrawn) return show('follow');
-      if (suite?.manual() === 'vorax') return;
+      if (['vorax','arcana'].includes(suite?.manual())) return;
       return send('follow', 'command', 'capture');
     case 'fix':
+      if (suite?.mode === 'arcana') return show('arcana');
       show('analyzer');
       return send('analyzer', 'command', 'fix');
     case 'recheck':
@@ -1125,6 +1136,7 @@ function rebuildMenu() {
     {label:'Show overlay',type:'checkbox',checked:settings.overlayOn,click:i=>setOverlayOn(i.checked)},
     {label:'Read screen now',accelerator:HOTKEYS.capture,click:()=>command('capture')},
     {label:'Correct Tartarus board',click:()=>show('analyzer')},
+    {label:'Correct Arcana board',click:()=>show('arcana')},
     {label:'Check Tartarus instruments',accelerator:HOTKEYS.instruments,click:()=>showInstruments()},
     {label:updates?.info().phase === 'ready' ? 'Install update '+updates.info().version : 'Check for updates',click:()=>command(updates?.info().phase === 'ready' ? 'update-install' : 'update-check')},
     {type:'separator'},
@@ -1217,10 +1229,31 @@ function registerHotkeys() {
       }
     }
     note(`start: version ${app.getVersion()}, site ${SITE}${DEV ? ', debug' : ''}${TEST ? ', test' : ''}, foreground check ${win32 ? 'on' : 'off'}`);
+    arcana = require('./lib/arcana-runtime').create({
+      game:()=>gameInfo(),library:TEST&&flag('arcana-test-fallback')?path.join(__dirname,'owned-test-missing.dll'):path.join(STANDALONE ? process.resourcesPath : __dirname,'native','tartarus-reader.dll'),
+      fixture:TEST ? arg('arcana-fixture') : null,note,
+      notify:state=>{lastArcanaState=state;send('overlay','arcana:state',state);send('arcana','arcana:state',state);},
+      fallback:async()=>{
+        if(!game.running||suite?.mode!=='arcana'||settings.consent?.withdrawn)throw Error('Capture stopped');
+        let thumbnail;
+        if(TEST){
+          // A test fallback must never enumerate thumbnails of other windows.
+          if(!testStandIn||testStandIn.isDestroyed())throw Error('No owned Arcana test window.');
+          thumbnail=await testStandIn.webContents.capturePage();
+        }else{
+          const sources=await desktopCapturer.getSources({types:['window'],thumbnailSize:{width:2560,height:1600},fetchWindowIcons:false});
+          thumbnail=sources.find(s=>s.id.startsWith(`window:${game.hwnd}:`))?.thumbnail;
+        }
+        if(!thumbnail||thumbnail.isEmpty())throw Error('No Arcana picture. Use windowed or borderless mode.');
+        const size=thumbnail.getSize(),bgra=thumbnail.toBitmap(),data=new Uint8ClampedArray(bgra.length);
+        for(let p=0;p<data.length;p+=4){data[p]=bgra[p+2];data[p+1]=bgra[p+1];data[p+2]=bgra[p];data[p+3]=255;}
+        return {...size,data};
+      }
+    });
     suite = require('./lib/unified-runtime').create({
       executable: path.join(STANDALONE ? process.resourcesPath : __dirname, 'native', 'vorax-backend.exe'),
       config: () => settings, game: () => gameInfo(), userData: app.getPath('userData'), test: TEST,
-      note, notify: () => { publishFastConfig(); updateOverlay(); rebuildMenu(); }
+      arcana,note, notify: () => { publishFastConfig(); pushShell(); updateOverlay(); rebuildMenu(); }
     });
     nativeReader = require('./lib/native-reader').create({
       site: STANDALONE ? BUNDLED_ROOT : path.resolve(__dirname, '..'),

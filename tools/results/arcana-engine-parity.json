@@ -1,0 +1,16 @@
+{
+  "version": "1.3.3",
+  "checkedAt": "2026-10-31T14:26:36.577Z",
+  "source": "Our own historical engine; non-reroll game-table transitions, not Arcana Helper.",
+  "trials": 500,
+  "transitions": 6673,
+  "excludedTransitions": [
+    "reroll: corrected from a selected face to an actual random die"
+  ],
+  "internalPlanningFieldsIgnored": [
+    "rerollBudget"
+  ],
+  "copyOnWriteIsolation": true,
+  "gameCapture": false,
+  "gameInput": false
+}

@@ -1,0 +1,71 @@
+{
+  "version": "1.3.3",
+  "checkedAt": "2026-10-31T14:26:27.720Z",
+  "cpu": "AMD Ryzen 5 3600 6-Core Processor              ",
+  "logicalProcessors": 12,
+  "scope": "Independent single warmed Node solver, synthetic fully observed boards; excludes game capture/recognition/UI. No comparison to Arcana Helper.",
+  "gameCapture": false,
+  "gameInput": false,
+  "cases": [
+    {
+      "position": 0,
+      "learningSamplesPerOption": 128,
+      "screenSamples": 32,
+      "extraSamplesPerFinalist": 256,
+      "learningRollouts": 1024,
+      "continuationStates": 310,
+      "exact": false,
+      "totalRollouts": 2080,
+      "options": 9,
+      "medianMs": 244.7849,
+      "minMs": 235.84160000000003,
+      "maxMs": 387.6216,
+      "move": "Play hand card 5: Select any 1 Note of Arcana:  Advance 1/2/3/4/5/6 cells → choose Advance 6 cells"
+    },
+    {
+      "position": 36,
+      "learningSamplesPerOption": 128,
+      "screenSamples": 32,
+      "extraSamplesPerFinalist": 256,
+      "learningRollouts": 1536,
+      "continuationStates": 318,
+      "exact": false,
+      "totalRollouts": 2720,
+      "options": 13,
+      "medianMs": 220.57190000000003,
+      "minMs": 202.78660000000013,
+      "maxMs": 224.85950000000003,
+      "move": "Play hand card 5: Select any 1 Note of Arcana:  Advance 1/2/3/4/5/6 cells → choose Advance 6 cells"
+    },
+    {
+      "position": 72,
+      "learningSamplesPerOption": 128,
+      "screenSamples": 32,
+      "extraSamplesPerFinalist": 256,
+      "learningRollouts": 1536,
+      "continuationStates": 332,
+      "exact": false,
+      "totalRollouts": 2720,
+      "options": 13,
+      "medianMs": 77.9049,
+      "minMs": 77.4260999999999,
+      "maxMs": 90.70039999999995,
+      "move": "Play hand card 1: Advance 1 cell"
+    },
+    {
+      "position": 79,
+      "learningSamplesPerOption": 128,
+      "screenSamples": 32,
+      "extraSamplesPerFinalist": 256,
+      "learningRollouts": 1280,
+      "continuationStates": 91,
+      "exact": false,
+      "totalRollouts": 2400,
+      "options": 11,
+      "medianMs": 23.978000000000065,
+      "minMs": 23.385600000000068,
+      "maxMs": 26.517900000000054,
+      "move": "Play hand card 1: 1 Chest of Destiny of the highest rarity among the collected ones (up to LV.5-Red): rarity +1"
+    }
+  ]
+}

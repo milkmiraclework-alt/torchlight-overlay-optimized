@@ -1,0 +1,90 @@
+{
+  "version": "1.3.3",
+  "checkedAt": "2026-10-31T14:16:18.726Z",
+  "scope": "Existing saved game image and in-memory resizes; labelled manually, no capture/input. Resolution checks do not prove arbitrary UI scales or live animation coverage.",
+  "gameCapture": false,
+  "gameInput": false,
+  "actualWorker": true,
+  "semanticCache": true,
+  "oldFrameBlockedAfterMove": true,
+  "cases": [
+    {
+      "width": 1600,
+      "height": 859,
+      "automaticAfterInitialSetup": true,
+      "life": 2,
+      "die": 1,
+      "hand": [
+        1,
+        204,
+        213,
+        201
+      ],
+      "collected": [
+        3,
+        2,
+        2,
+        1
+      ],
+      "positionInternal": 41,
+      "positionDisplayed": 42,
+      "knownTiles": 16,
+      "distantHealRecognised": true,
+      "readingMs": 1720.6285,
+      "staleEditRejected": true,
+      "animationDoesNotCompleteMove": true
+    },
+    {
+      "width": 1360,
+      "height": 730,
+      "automaticAfterInitialSetup": true,
+      "life": 2,
+      "die": 1,
+      "hand": [
+        1,
+        204,
+        213,
+        201
+      ],
+      "collected": [
+        3,
+        2,
+        2,
+        1
+      ],
+      "positionInternal": 41,
+      "positionDisplayed": 42,
+      "knownTiles": 16,
+      "distantHealRecognised": false,
+      "readingMs": 1705.9970999999996,
+      "staleEditRejected": true,
+      "animationDoesNotCompleteMove": true
+    },
+    {
+      "width": 2000,
+      "height": 1074,
+      "automaticAfterInitialSetup": true,
+      "life": 2,
+      "die": 1,
+      "hand": [
+        1,
+        204,
+        213,
+        201
+      ],
+      "collected": [
+        3,
+        2,
+        2,
+        1
+      ],
+      "positionInternal": 41,
+      "positionDisplayed": 42,
+      "knownTiles": 17,
+      "distantHealRecognised": true,
+      "readingMs": 1390.109699999999,
+      "staleEditRejected": true,
+      "animationDoesNotCompleteMove": true
+    }
+  ]
+}

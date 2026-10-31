@@ -35,6 +35,10 @@ assert.equal(sha(fs.readFileSync(path.join(DIST,'win-unpacked/resources/native/t
 assert.equal(nativeReader.librarySha256,sha(fs.readFileSync(path.join(ROOT,'desktop/native/tartarus-reader.dll'))));
 for (const name of ['lib/native-reader.js','lib/native-reader-worker.js','lib/native-reader-kernels.js'])
   assert.equal(sha(extractFile(archive,name)), manifest.sourceFiles['desktop/'+name], 'Wrong native reader host: '+name);
+for (const name of Object.keys(manifest.sourceFiles).filter(name=>name.startsWith('desktop/lib/arcana'))) {
+  const packed=path.normalize(name.slice('desktop/'.length));
+  assert.equal(sha(extractFile(archive,packed)),manifest.sourceFiles[name],'Wrong Arcana source in ASAR: '+packed);
+}
 const files = listPackage(archive).map((name) => name.replaceAll('\\', '/'));
 assert.ok(files.some((name) => name.endsWith('/koffi/build/koffi/win32_x64/koffi.node')), 'Native Koffi missing');
 assert.ok(fs.existsSync(archive + '.unpacked/node_modules/koffi/build/koffi/win32_x64/koffi.node'), 'Koffi native module must be unpacked');

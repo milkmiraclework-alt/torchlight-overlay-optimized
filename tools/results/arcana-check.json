@@ -1,0 +1,19 @@
+{
+  "version": "1.3.3",
+  "checkedAt": "2026-10-31T14:14:51.961Z",
+  "gameCapture": false,
+  "gameInput": false,
+  "source": "Independent local game data; synthetic fixtures only",
+  "cards": 88,
+  "effects": 158,
+  "monteCarloSamples": 128,
+  "verificationSamples": 256,
+  "deterministicSeed": true,
+  "distinctUpgrades": true,
+  "noHiddenPolicyPeek": true,
+  "exactFrameConfirmation": true,
+  "workerFixture": true,
+  "finalUpgradeCheck": true,
+  "flexibleRetreatCycle": true,
+  "qualityImprovementMeasured": false
+}
