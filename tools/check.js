@@ -24,6 +24,7 @@ const root=path.resolve(__dirname,'..'),jobs=[
  ['worker-lifecycle',['tools/worker-lifecycle-check.js']],['bundled-site',['tools/bundled-site-check.js']],
 ];
 const frameAt=process.argv.indexOf('--arcana-frame');if(frameAt>=0)jobs.push(['arcana-vision',['tools/arcana-vision-check.js','--frame',path.resolve(process.argv[frameAt+1])]]);
+const handAt=process.argv.indexOf('--arcana-hand-frame');if(handAt>=0)jobs.push(['arcana-hand',['tools/arcana-hand-check.js','--frame',path.resolve(process.argv[handAt+1])]]);
 const textureAt=process.argv.indexOf('--arcana-textures');if(textureAt>=0)jobs.push(['arcana-popup',['tools/arcana-popup-check.js','--textures',path.resolve(process.argv[textureAt+1])]]);
 fs.mkdirSync(path.join(root,'sandbox/checks'),{recursive:true});
 for(const [name,args]of jobs){const r=cp.spawnSync(process.execPath,args,{cwd:root,encoding:'utf8',windowsHide:true});fs.writeFileSync(path.join(root,'sandbox/checks',name+'.log'),(r.stdout||'')+(r.stderr||''));console.log(name,r.status);if(r.status!==0){console.error(r.stdout,r.stderr);process.exit(1);}}

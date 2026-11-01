@@ -1,0 +1,46 @@
+{
+  "version": "1.3.5",
+  "checkedAt": "2026-11-01T19:26:55.995Z",
+  "source": "User-supplied saved 222112 frame; image remains outside the repository.",
+  "gameCapture": false,
+  "gameInput": false,
+  "cases": [
+    {
+      "width": 2559,
+      "height": 1439,
+      "hand": [
+        22,
+        13,
+        4,
+        21
+      ],
+      "refillDie": 6,
+      "confident": true
+    },
+    {
+      "width": 1919,
+      "height": 1079,
+      "hand": [
+        22,
+        13,
+        4,
+        21
+      ],
+      "refillDie": 6,
+      "confident": true
+    },
+    {
+      "width": 1599,
+      "height": 899,
+      "hand": [
+        22,
+        13,
+        4,
+        21
+      ],
+      "refillDie": 6,
+      "confident": true
+    }
+  ],
+  "emptyFrameRejected": true
+}

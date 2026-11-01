@@ -100,9 +100,20 @@ const ratio=(img,x,y,w,h)=>({x:x*img.width,y:y*img.height,w:w*img.width,h:h*img.
 function cards(img){
  const H=img.height,ts=byKind('card').filter(t=>activeIcons.has(t.name)),widths=[.083,.1035,.133,.154].map(v=>v*H);
  const refill=topMatches(img,refillTemplates,ratio(img,.60,.76,.37,.17),[.083,.1035,.11,.133,.136,.143,.154].map(v=>v*H),{stride:Math.max(4,Math.round(H/110)),threshold:.82,limit:6});
- const candidateDie=refill.filter(x=>x.score>.88).sort((a,b)=>b.box.x-a.box.x)[0];
+ let candidateDie=refill.filter(x=>x.score>.88).sort((a,b)=>b.box.x-a.box.x)[0];
  const region=ratio(img,.12,.76,.68,.16);if(candidateDie)region.w=Math.min(region.w,candidateDie.box.x-img.width*.12-candidateDie.box.w*.3);
- const hand=topMatches(img,ts,region,widths,{stride:Math.max(4,Math.round(H/110)),coarseThreshold:.64,threshold:.88,limit:22}).map(m=>refinePips(img,m));
+ let hand=topMatches(img,ts,region,widths,{stride:Math.max(4,Math.round(H/110)),coarseThreshold:.64,threshold:.88,limit:22}).map(m=>refinePips(img,m));
+ // A coarse stride can miss the narrow correlation peak of small card faces.
+ // Retry only their already located row, keeping the confidence thresholds.
+ if((hand.length||candidateDie)&&(!candidateDie||!hand.length||hand.some(m=>m.score<.89||m.margin<.025))){
+  const anchors=hand.length?hand:[candidateDie],y=Math.min(...anchors.map(m=>m.box.y)),band={...region,y:y-H*.006,h:H*.018};
+  const anchor=anchors.slice().sort((a,b)=>b.score-a.score)[0].box.w,fine=[.94,.97,1,1.03].map(v=>v*anchor);
+  const detailed=topMatches(img,ts,band,fine,{stride:3,coarseThreshold:.64,threshold:.89,limit:22}).map(m=>refinePips(img,m));
+  if(detailed.length>=hand.length)hand=detailed;
+  const dice=topMatches(img,refillTemplates,{x:img.width*.60,y:band.y,w:img.width*.37,h:band.h},fine,{stride:3,coarseThreshold:.64,threshold:.89,limit:6});
+  candidateDie=dice.filter(m=>m.margin>=.025).sort((a,b)=>b.box.x-a.box.x)[0]||candidateDie;
+ }
+ if(candidateDie)hand=hand.filter(m=>m.box.x<candidateDie.box.x-candidateDie.box.w*.3);
  const ids=[];let confident=true;
  for(const got of hand){
   const choices=DATA.cards.filter(c=>c.icon===got.name&&c.tag!==99&&c.selection>0);

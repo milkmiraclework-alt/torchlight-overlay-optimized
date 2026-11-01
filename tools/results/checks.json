@@ -1,6 +1,6 @@
 {
-  "version": "1.3.4",
-  "checkedAt": "2026-11-01T19:13:41.691Z",
+  "version": "1.3.5",
+  "checkedAt": "2026-11-01T19:26:53.149Z",
   "checks": [
     "arcana",
     "arcana-terminal",
@@ -39,6 +39,7 @@
     "worker-lifecycle",
     "bundled-site",
     "arcana-vision",
+    "arcana-hand",
     "arcana-popup"
   ],
   "gameCapture": false,
