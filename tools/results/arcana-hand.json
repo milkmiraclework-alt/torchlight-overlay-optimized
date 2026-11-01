@@ -1,11 +1,12 @@
 {
-  "version": "1.3.5",
-  "checkedAt": "2026-11-01T19:26:55.995Z",
-  "source": "User-supplied saved 222112 frame; image remains outside the repository.",
+  "version": "1.3.7",
+  "checkedAt": "2026-11-01T20:10:18.860Z",
+  "source": "Existing saved hand frames; images remain outside the repository.",
   "gameCapture": false,
   "gameInput": false,
   "cases": [
     {
+      "frame": "user-222100",
       "width": 2559,
       "height": 1439,
       "hand": [
@@ -15,9 +16,11 @@
         21
       ],
       "refillDie": 6,
-      "confident": true
+      "confident": true,
+      "counter": 4
     },
     {
+      "frame": "user-222100",
       "width": 1919,
       "height": 1079,
       "hand": [
@@ -27,9 +30,11 @@
         21
       ],
       "refillDie": 6,
-      "confident": true
+      "confident": true,
+      "counter": 4
     },
     {
+      "frame": "user-222100",
       "width": 1599,
       "height": 899,
       "hand": [
@@ -39,8 +44,95 @@
         21
       ],
       "refillDie": 6,
-      "confident": true
+      "confident": true,
+      "counter": null
+    },
+    {
+      "frame": "user-222106",
+      "width": 2556,
+      "height": 1439,
+      "hand": [
+        22,
+        13,
+        4,
+        21
+      ],
+      "refillDie": 6,
+      "confident": true,
+      "counter": 4
+    },
+    {
+      "frame": "user-222106",
+      "width": 1917,
+      "height": 1079,
+      "hand": [
+        22,
+        13,
+        4,
+        21
+      ],
+      "refillDie": 6,
+      "confident": true,
+      "counter": 4
+    },
+    {
+      "frame": "user-222106",
+      "width": 1598,
+      "height": 899,
+      "hand": [
+        22,
+        13,
+        4,
+        21
+      ],
+      "refillDie": 6,
+      "confident": true,
+      "counter": null
+    },
+    {
+      "frame": "user-222112",
+      "width": 2559,
+      "height": 1439,
+      "hand": [
+        22,
+        13,
+        4,
+        21
+      ],
+      "refillDie": 6,
+      "confident": true,
+      "counter": 4
+    },
+    {
+      "frame": "user-222112",
+      "width": 1919,
+      "height": 1079,
+      "hand": [
+        22,
+        13,
+        4,
+        21
+      ],
+      "refillDie": 6,
+      "confident": true,
+      "counter": 4
+    },
+    {
+      "frame": "user-222112",
+      "width": 1599,
+      "height": 899,
+      "hand": [
+        22,
+        13,
+        4,
+        21
+      ],
+      "refillDie": 6,
+      "confident": true,
+      "counter": null
     }
   ],
-  "emptyFrameRejected": true
+  "emptyFrameRejected": true,
+  "coveredCardRejected": true,
+  "completeCounterVerified": true
 }

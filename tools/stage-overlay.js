@@ -67,7 +67,7 @@ put('vendor/ocr/NOTICE.txt', packages.map((name) => {
 const sourceFiles = {};
 function source(name) { sourceFiles[name] = createHash('sha256').update(fs.readFileSync(path.join(ROOT, name))).digest('hex'); }
 for (const name of ['desktop/main.js', 'desktop/preload.js', 'desktop/package.json', 'desktop/package-lock.json',
-  'desktop/build/icon.png', 'analyze.html', 'css/style.css', 'tools/stage-overlay.js']) source(name);
+  'desktop/build/icon.png', 'desktop/build/portable.nsi', 'tools/build-desktop.js', 'analyze.html', 'css/style.css', 'tools/stage-overlay.js']) source(name);
 for (const name of Object.keys(rust.sources)) source(name);
 for (const name of Object.keys(reader.sources)) source(name);
 for (const name of Object.keys(vorax.sources)) source(name);

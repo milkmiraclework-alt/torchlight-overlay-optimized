@@ -13,5 +13,8 @@ for(const [name]of jobs){const log=fs.readFileSync(path.join(root,'sandbox/packa
 if(verifyOnly){
  for(const name of ['overlay','lifecycle','instruments'])if(!fs.readFileSync(path.join(root,'sandbox/packaged',name+'.log'),'utf8').includes('"version":"'+version+'"'))throw new Error('Stale packaged log: '+name);
  for(const file of ['tools/results/suite-e2e.json','tools/results/updates-e2e.json','tools/results/native-reader-e2e.json','desktop/dist/portable-smoke.json'])if(JSON.parse(fs.readFileSync(path.join(root,file),'utf8')).version!==version)throw new Error('Stale report: '+file);
+ const portable=JSON.parse(fs.readFileSync(path.join(root,'desktop/dist/portable-smoke.json'),'utf8'));
+ const binary=fs.readFileSync(path.join(root,'desktop/dist/builds',version,portable.executable));
+ if(portable.sha256!==require('node:crypto').createHash('sha256').update(binary).digest('hex')||portable.portableRelaunchPreservesResources!==true||portable.portableReaderFilesVerifiedOnDisk!==true)throw new Error('Portable isolation check is stale or missing');
 }
 fs.mkdirSync(path.join(root,'tools/results'),{recursive:true});fs.writeFileSync(path.join(root,'tools/results/packaged-checks.json'),JSON.stringify({version,checkedAt:new Date().toISOString(),checks:jobs.map(([name])=>name),gameCapture:false,gameInput:false},null,2)+'\n');

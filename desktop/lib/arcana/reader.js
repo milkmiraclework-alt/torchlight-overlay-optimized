@@ -119,7 +119,7 @@ function create(){
   else if(!issues.length){expectedState=null;settledCycle=false;}
   next.confirmed=issues.length===0;newBoard=false;
   model=next;key=nextKey;alignmentNeedsRead=false;
-  return {model:clone(model),issues:[...new Set(issues)],waiting,ms:performance.now()-started,grid,cardMatches:card.handMatches,refill:card.dieMatch,bases:bases.length};
+  return {model:clone(model),issues:[...new Set(issues)],waiting,ms:performance.now()-started,grid,cardMatches:card.handMatches,refill:card.dieMatch,bases:bases.length,handCount:card.handCount,rowRegular:card.rowRegular,rowCentered:card.rowCentered};
  }
  function correct(value){
   if(alignmentNeedsRead)throw Error('Read the screen after aligning the path, then check the new reading.');

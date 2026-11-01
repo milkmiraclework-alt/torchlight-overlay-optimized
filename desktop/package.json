@@ -1,7 +1,7 @@
 {
   "name": "torchlight-overlay-optimized",
   "productName": "Torchlight Overlay",
-  "version": "1.3.5",
+  "version": "1.3.7",
   "description": "Read-only Tartarus, Vorax and experimental Arcana overlays for Torchlight: Infinite",
   "author": "CoffeeBns",
   "license": "UNLICENSED",
@@ -10,8 +10,8 @@
   "scripts": {
     "start": "electron .",
     "local": "electron . --fast --site=http://localhost:8090/",
-    "dist": "node ../tools/stage-overlay.js && electron-builder --win --x64 --publish never",
-    "dist:dir": "node ../tools/stage-overlay.js && electron-builder --win --x64 --dir --publish never"
+    "dist": "node ../tools/stage-overlay.js && node ../tools/build-desktop.js --out dist",
+    "dist:dir": "node ../tools/stage-overlay.js && node ../tools/build-desktop.js --out dist --dir"
   },
   "dependencies": {
     "koffi": "2.16.3"
@@ -76,7 +76,8 @@
       "node_modules/koffi/**/*.dll"
     ],
     "portable": {
-      "artifactName": "Torchlight-Overlay-Portable-${version}-${arch}.${ext}"
+      "artifactName": "Torchlight-Overlay-Portable-${version}-${arch}.${ext}",
+      "unpackDirName": true
     }
   }
 }

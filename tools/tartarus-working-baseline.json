@@ -1,0 +1,16 @@
+{
+  "version": "1.2.1",
+  "commit": "ebf21079a63b41599893a2f227c73af809c0b51f",
+  "scope": "Restored Tartarus analyzer and screenshot/instrument reader sources; Arcana, Vorax and Portable launcher are independent.",
+  "files": {
+    "js/analyze.js": "b86ae47c2e745428106678c0458f1a41b8d8c11ecb2ebeef2019238f115f1d8e",
+    "js/scan.js": "e91e0cc60dad371aad5b7e9995f6512d3d5b3f0b30b8cb5d71d5e663f24a5095",
+    "js/scan-tracker.js": "826100947b79dcbdbebe85f1909e316bb49beaaf2507bb62cf8a13cec7405b62",
+    "js/scan-worker.js": "89a24c97ae0bc9279bdb52fa1bfab75c69eda5c2fe83eda38aaaca63fb5a5479",
+    "js/scan-data.js": "f57960d9b2625c1ea6adcebe378b90598ce7fdc2af26c856bf03394884db6e22",
+    "js/pick-data.js": "5159dbb166afe222f6033594b47f16ef8f7393f94a1b3d0cfe8ad638ac480aa8",
+    "desktop/lib/native-reader.js": "8bcddbae76c9163099791574a76aeab1a344b2979938f80c195f9e508055ea43",
+    "desktop/lib/native-reader-worker.js": "0fdc2ec81b2c9735f5d03453ed59b216232531229addb9193b12c984cc425a8e",
+    "desktop/lib/native-reader-kernels.js": "af89082e02646194a86d77c4b75350669d411e00f6ee57df2ab88aab33ce0a0f"
+  }
+}

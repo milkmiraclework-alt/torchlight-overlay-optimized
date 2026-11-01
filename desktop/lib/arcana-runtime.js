@@ -7,9 +7,10 @@ function create({game,library,notify,note=()=>{},WorkerClass=Worker,fixture=null
  let worker=null,active=false,closed=false,revision=0,request=0,timer=null,last=null,resume=null,lastHwnd=0,fallbackReads=0;
  const pending=new Map(),retiring=new Set();
  let animationTypes=[];
+ let lastCheck='',lastCheckAt=0;
  function publish(value){last=value;notify(value);}
  function stop(){
-  revision++;clearTimeout(timer);timer=null;animationTypes=[];
+  revision++;clearTimeout(timer);timer=null;animationTypes=[];lastCheck='';lastCheckAt=0;
   const old=worker;worker=null;
   if(old){const done=old.terminate();retiring.add(done);Promise.resolve(done).finally(()=>retiring.delete(done));}
   for(const p of pending.values()){clearTimeout(p.timer);p.reject(Error('Arcana session stopped'));}pending.clear();
@@ -27,7 +28,9 @@ function create({game,library,notify,note=()=>{},WorkerClass=Worker,fixture=null
     const mine=revision;
     Promise.resolve(fallback()).then(frame=>{if(mine===revision&&worker===current&&active)current.postMessage({cmd:'frame',frame,requestRevision:message.requestRevision});}).catch(error=>{if(mine===revision)publish({phase:'error',reason:error.message});});return;
    }
-   if(message.event==='status'){publish(message.state);if(message.state.phase==='error')note('Arcana:',message.state.reason);}
+   if(message.event==='status'){publish(message.state);if(message.state.phase==='error')note('Arcana:',message.state.reason);
+    if(message.state.phase==='check'){const detail=JSON.stringify({reason:message.state.reason,recognition:message.state.recognition});if(detail!==lastCheck&&Date.now()-lastCheckAt>1000){lastCheck=detail;lastCheckAt=Date.now();note('Arcana check:',detail);}}
+   }
   });
   const gone=error=>{if(worker!==current)return;if(error)note('Arcana worker:',error.message);stop();publish({phase:'error',reason:'Arcana stopped. Read the screen again.'});};
   current.on('error',gone);current.on('exit',()=>gone(null));

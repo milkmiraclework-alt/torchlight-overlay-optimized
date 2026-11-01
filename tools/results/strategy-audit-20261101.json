@@ -62,5 +62,9 @@
     }
   ],
   "scope": "Development regression tests on synthetic boards; no live game capture or profit measurement.",
-  "arcanaWidthControlReport": "arcana-width-experiment-20261101.json"
+  "arcanaWidthControlReport": "arcana-width-experiment-20261101.json",
+  "followup": {
+    "version": "1.3.7",
+    "tartarusRollback": "Usurpation pool preservation introduced in 1.3.4 was reverted. Analyzer and eight reader sources match working 1.2.1 (ebf2107). The implemented list above describes the historical 1.3.4 audit."
+  }
 }

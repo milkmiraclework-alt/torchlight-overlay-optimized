@@ -12,8 +12,8 @@ Push-Location (Join-Path $root 'desktop')
 try {
  if (!$SkipInstall) {& $npm ci --no-audit --no-fund;if ($LASTEXITCODE -ne 0) {throw 'npm ci failed.'}}
  & $nodeExe (Join-Path $PSScriptRoot 'stage-overlay.js');if ($LASTEXITCODE -ne 0){throw 'Staging failed.'}
- $args=@('--win','--x64','--publish=never',('-c.directories.output='+$out));if ($UnpackedOnly){$args+='--dir'}
- & $nodeExe (Join-Path $root 'desktop\node_modules\electron-builder\cli.js') @args
+ $args=@('--out',$out);if ($UnpackedOnly){$args+='--dir'}
+ & $nodeExe (Join-Path $root 'tools\build-desktop.js') @args
  if ($LASTEXITCODE -ne 0){throw 'Packaging failed.'}
  $verify=@('--dist',$out);if ($UnpackedOnly){$verify+='--unpacked-only'}
  & $nodeExe (Join-Path $PSScriptRoot 'standalone-manifest.js') @verify

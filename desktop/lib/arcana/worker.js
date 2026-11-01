@@ -49,7 +49,7 @@ function processFrame(img,attempt=0){
  if(!img||!Number.isInteger(img.width)||!Number.isInteger(img.height)||img.width<64||img.height<64||img.width*img.height>16777216||img.data?.length!==img.width*img.height*4)throw Error('Invalid Arcana frame dimensions');
  frame={width:img.width,height:img.height,data:new Uint8ClampedArray(img.data)};const reading=reader.read(frame);
  if(reading.model.confirmed){solve();return;}
- status({phase:'check',reason:reading.issues.slice(0,3).join(' ')+(reading.issues.length>3?` ${reading.issues.length-3} more checks in Board.`:''),readingMs:reading.ms,issues:reading.issues});
+ status({phase:'check',reason:reading.issues.slice(0,3).join(' ')+(reading.issues.length>3?` ${reading.issues.length-3} more checks in Board.`:''),readingMs:reading.ms,issues:reading.issues,recognition:{width:img.width,height:img.height,hand:reading.model.hand,count:reading.handCount,regular:reading.rowRegular,centered:reading.rowCentered,die:reading.model.die,faces:reading.cardMatches?.map(m=>({icon:m.name,score:+m.score.toFixed(4),margin:+m.margin.toFixed(4),box:m.box}))}});
  // A fixed, bounded retry waits for entering animations; unclear recognition
  // cannot create an endless background screenshot loop.
  if(attempt<2&&!workerData.fixture&&(reading.waiting||reading.bases<5)){const mine=revision;retryTimer=setTimeout(()=>{if(mine===revision)read(attempt+1);},220);}

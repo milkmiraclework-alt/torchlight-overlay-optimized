@@ -2,9 +2,9 @@
 const assert=require('node:assert/strict'),{EventEmitter}=require('node:events'),{create}=require('../desktop/lib/arcana-runtime');
 const pause=ms=>new Promise(r=>setTimeout(r,ms));
 (async()=>{
- const workers=[],states=[];let allowedGame={window:123},fallbackResolve;
+ const workers=[],states=[],notes=[];let allowedGame={window:123},fallbackResolve;
  class Fake extends EventEmitter{constructor(file,options){super();this.file=file;this.options=options;this.messages=[];this.stopped=false;workers.push(this);}postMessage(m){this.messages.push(m);}terminate(){this.stopped=true;return Promise.resolve(0);}}
- const app=create({game:()=>allowedGame,library:'owned.dll',WorkerClass:Fake,notify:s=>states.push(s),fallback:()=>new Promise(r=>{fallbackResolve=r;})});
+ const app=create({game:()=>allowedGame,library:'owned.dll',WorkerClass:Fake,notify:s=>states.push(s),note:(...args)=>notes.push(args),fallback:()=>new Promise(r=>{fallbackResolve=r;})});
  try{
   app.sync(false);await app.command('read');assert.equal(workers.length,0,'Disabled Arcana created a thread');
   app.sync(true);app.read();const first=workers[0];assert.equal(first.options.workerData.hwnd,123);
@@ -15,6 +15,9 @@ const pause=ms=>new Promise(r=>setTimeout(r,ms));
   const hoverStates=states.length,hoverMessages=second.messages.length;
   app.feed(['S9HandCard_C_OnMouseEnter','S9PreCard_C_OnMouseEnter','S9ChooseCard_C_OnMouseEnter']);
   assert.equal(states.length,hoverStates,'Card hover removed a valid advice');assert.equal(second.messages.length,hoverMessages,'Card hover restarted recognition');
+  const check={phase:'check',reason:'Check the hand',recognition:{hand:[13,4,21],count:4}};
+  second.emit('message',{event:'status',state:check});second.emit('message',{event:'status',state:check});
+  assert.equal(notes.filter(n=>n[0]==='Arcana check:').length,1,'Missing or repeated reading diagnostics');assert(notes[0][1].includes('"count":4'));
   app.feed(['ProtoId = 5552']);assert.equal(states.at(-1).phase,'reading','A real game move left the previous advice visible');assert.equal(second.messages.at(-1).cmd,'invalidate');
   app.feed(['S9Taro HandleOrderAni Start Step=1 Type=CardGroupAdd','S9Taro HandleOrderAni All done']);assert.equal(second.messages.at(-1).cmd,'settled');assert.equal(second.messages.at(-1).value.refillOnly,true,'A completed default-card refresh was not recognised');
   app.feed(['S9Taro HandleOrderAni Start Step=1 Type=CardDraw','S9Taro HandleOrderAni Start Step=2 Type=Move','S9Taro HandleOrderAni All done']);assert.equal(second.messages.at(-1).value.refillOnly,false,'A real move was mistaken for a same-face refill');

@@ -87,6 +87,9 @@ function topMatches(img,ts,region,widths,{stride=8,threshold=.74,coarseThreshold
    const box={x:m.box.x+dx,y:m.box.y+dy,w:m.box.w*(1+dw),h:m.box.w*(1+dw)/m.t.aspect},score=fit(img,m.t,box);
    if(score>best.score)best={...m,box,score};
   }
+  if(best.kind==='card'){
+   for(let pass=0;pass<2;pass++){let improved=best;for(const dw of [.99,1,1.01])for(const dx of [-1,0,1])for(const dy of [-1,0,1]){const box={x:best.box.x+dx,y:best.box.y+dy,w:best.box.w*dw,h:best.box.w*dw/best.t.aspect},score=fit(img,best.t,box);if(score>improved.score)improved={...best,box,score};}best=improved;}
+  }
   const ranking=ts.map(t=>({t,score:fit(img,t,{...best.box,h:best.box.w/t.aspect})})).sort((a,b)=>b.score-a.score);
   const first=ranking[0],second=ranking[1];
   if(first.score<threshold)continue;
@@ -106,10 +109,11 @@ function cards(img){
  // A coarse stride can miss the narrow correlation peak of small card faces.
  // Retry only their already located row, keeping the confidence thresholds.
  if((hand.length||candidateDie)&&(!candidateDie||!hand.length||hand.some(m=>m.score<.89||m.margin<.025))){
-  const anchors=hand.length?hand:[candidateDie],y=Math.min(...anchors.map(m=>m.box.y)),band={...region,y:y-H*.006,h:H*.018};
+  const anchors=hand.length?hand:[candidateDie],y=Math.min(...anchors.map(m=>m.box.y)),band={...region,y:y-H*.006,h:Math.max(...anchors.map(m=>m.box.y))-y+H*.018};
   const anchor=anchors.slice().sort((a,b)=>b.score-a.score)[0].box.w,fine=[.94,.97,1,1.03].map(v=>v*anchor);
   const detailed=topMatches(img,ts,band,fine,{stride:3,coarseThreshold:.64,threshold:.89,limit:22}).map(m=>refinePips(img,m));
-  if(detailed.length>=hand.length)hand=detailed;
+  for(const old of hand){const index=detailed.findIndex(m=>Math.abs(m.box.x-old.box.x)<Math.max(m.box.w,old.box.w)*.5);if(index<0)detailed.push(old);else if(old.score>detailed[index].score&&old.margin>=.025)detailed[index]=old;}
+  hand=detailed.sort((a,b)=>a.box.x-b.box.x);
   const dice=topMatches(img,refillTemplates,{x:img.width*.60,y:band.y,w:img.width*.37,h:band.h},fine,{stride:3,coarseThreshold:.64,threshold:.89,limit:6});
   candidateDie=dice.filter(m=>m.margin>=.025).sort((a,b)=>b.box.x-a.box.x)[0]||candidateDie;
  }
@@ -121,8 +125,10 @@ function cards(img){
  }
  const die=refinePips(img,candidateDie),top=hand.length?Math.min(...hand.map(m=>m.box.y)):H*.9,center=hand.length?(hand[0].box.x+hand.at(-1).box.x+hand.at(-1).box.w)/2:img.width*.5;
  const countIcon=topMatches(img,byKind('hand-count'),{x:center-img.width*.1,y:top-H*.1,w:img.width*.2,h:H*.075},[.010,.013,.016,.020,.024].map(v=>v*H),{stride:2,threshold:.88,coarseThreshold:.5,limit:3}).sort((a,b)=>b.score-a.score)[0];
- const count=countIcon?Digits.read(img,{x:countIcon.box.x+countIcon.box.w*1.4,y:countIcon.box.y,w:countIcon.box.w*1.05,h:countIcon.box.h*1.1}):null;
- return {hand:ids,handMatches:hand,handConfident:confident&&hand.length>0&&hand.length<=10&&(!count||count.value===ids.length),handCount:count?.value??null,die:die&&die.score>=.88&&die.margin>=.025?Number(die.name.slice(-2))-19:null,dieMatch:die||null};
+ const count=countIcon?Digits.handCount(img,{x:countIcon.box.x+countIcon.box.w*.95,y:countIcon.box.y-countIcon.box.h*.5,w:countIcon.box.w*5,h:countIcon.box.h*2}):null;
+ const gaps=hand.slice(1).map((m,i)=>m.box.x-hand[i].box.x),regular=gaps.length<2||Math.max(...gaps)<=Math.min(...gaps)*1.45;
+ const centered=!countIcon||!hand.length||Math.abs(center-countIcon.box.x-countIcon.box.w*2.2)<=Math.max(...hand.map(m=>m.box.w))*.35;
+ return {hand:ids,handMatches:hand,handConfident:confident&&(hand.length>0||count?.value===0)&&hand.length<=10&&regular&&centered&&(!count||count.value===ids.length),handCount:count?.value??null,counterMatch:countIcon||null,rowRegular:regular,rowCentered:centered,die:die&&die.score>=.88&&die.margin>=.025?Number(die.name.slice(-2))-19:null,dieMatch:die||null};
 }
 function chestAt(img,x,y,width){
  const ts=byKind('chest'),rank=[];

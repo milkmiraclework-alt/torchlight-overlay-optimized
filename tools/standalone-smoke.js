@@ -41,6 +41,9 @@ async function connect(url) {
     TARTARUS_OVERLAY_EXE: path.join(profile, 'absent', 'original.exe'),
     APPDATA: path.join(profile, 'empty-roaming'), LOCALAPPDATA: path.join(profile, 'empty-local') };
   fs.mkdirSync(env.APPDATA, { recursive: true }); fs.mkdirSync(env.LOCALAPPDATA, { recursive: true });
+  // Older Portable launchers reuse a build-specific extraction directory.
+  // A smoke run must never erase a player's running copy of that build.
+  env.TEMP=env.TMP=path.join(profile,'portable-temp');fs.mkdirSync(env.TEMP,{recursive:true});
   delete env.ELECTRON_RUN_AS_NODE;
   const started = performance.now(); let output = '', browser, page;
   const child = spawn(exe, ['--test', '--offscreen', '--offline-check', `--site-port=${sitePort}`, `--user-data=${profile}`,
@@ -85,6 +88,26 @@ async function connect(url) {
       return {text,ocrMs,version:(await(await fetch('/bundle.json')).json()).version,agreed:TartarusCapture.agreed(),rustSampleParity:true,rustRollouts:8};
     })()`);
     assert.match(result.text, /TARTARUS\s+12345/i); assert.equal(result.version, version); assert.equal(result.agreed, false);
+    // Two launchers of the same Portable build must own different extraction
+    // directories, even when the second app exits on the single-instance lock.
+    const readerFiles=fs.readdirSync(env.TEMP,{recursive:true}).filter(p=>String(p).replace(/\\/g,'/').endsWith('/app/resources/site/js/scan.js'));
+    assert.equal(readerFiles.length,1,'Expected one private Portable extraction before relaunch');
+    const firstReader=path.join(env.TEMP,readerFiles[0]),readerBytes=fs.readFileSync(firstReader);
+    const firstResources=path.resolve(path.dirname(firstReader),'../..');
+    const koffiIndex=path.join(firstResources,'app.asar.unpacked/node_modules/koffi/index.js');
+    assert.ok(fs.existsSync(koffiIndex),'Native reader dependency missing before relaunch');
+    const again=spawn(exe,['--test','--offscreen','--offline-check',`--site-port=${sitePort}`,`--user-data=${profile}`,
+      '--game-title=^StandaloneSmokeNoGame$',`--log=${path.join(profile,'UE_game.log')}`],{cwd:profile,env,windowsHide:true,stdio:['ignore','pipe','pipe']});
+    let againError='';again.stderr.on('data',b=>againError+=b);again.stdout.on('data',b=>againError+=b);again.on('error',e=>againError+=e.message);
+    for(let i=0;again.exitCode===null&&i<600;i++)await pause(100);
+    if(again.exitCode===null){again.kill();throw Error('Second Portable launcher did not exit: '+againError);}
+    assert.equal(child.exitCode,null,'A relaunch closed the original Portable process');
+    assert.deepEqual(fs.readFileSync(firstReader),readerBytes,'A relaunch changed the first extraction on disk');
+    assert.ok(fs.existsSync(koffiIndex),'A relaunch deleted the native reader dependency');
+    const intact=await page.evaluate(`Promise.all(['/js/scan.js','/js/scan-data.js','/js/scan-worker.js','/vendor/ocr/worker.min.js'].map(async p=>{const r=await fetch(p,{cache:'no-store'});return r.ok&&(await r.text()).length>100;})).then(a=>a.every(Boolean))`);
+    assert.equal(intact,true,'A second Portable launcher deleted the first app resources');
+    result.portableRelaunchPreservesResources=true;
+    result.portableReaderFilesVerifiedOnDisk=true;
     const log = fs.readFileSync(path.join(profile, 'logs/overlay.log'), 'utf8');
     assert.ok(log.includes('foreground check on'), 'Portable native Koffi did not load');
     assert.ok(!/console error|runtime error|adapter error/.test(log), log);

@@ -1,0 +1,18 @@
+{
+  "version": "1.3.7",
+  "executable": "Torchlight-Overlay-Portable-1.3.7-x64.exe",
+  "sha256": "15b58382d5a42e296def2597c8f791e523b33f672eaf852ad0a59d8d793e544d",
+  "checkedAt": "2026-11-01T20:21:02.437Z",
+  "bootMs": 6759,
+  "text": "TARTARUS 12345",
+  "ocrMs": 984,
+  "agreed": false,
+  "rustSampleParity": true,
+  "rustRollouts": 8,
+  "portableRelaunchPreservesResources": true,
+  "portableReaderFilesVerifiedOnDisk": true,
+  "externalHttpBlocked": true,
+  "originalInstallUnavailable": true,
+  "occupiedPortIndependent": true,
+  "gameInput": false
+}
