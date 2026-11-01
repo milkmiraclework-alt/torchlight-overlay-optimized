@@ -28,7 +28,8 @@
   ],
   "implemented": [
     "Tartarus: preserve explicitly known Usurpation incident pool across analyzer rebuilds; no inference from ambiguous screen changes.",
-    "Vorax: preserve a reopened run only with confirmed continuing round; instrument-panel icons are not evidence."
+    "Vorax: preserve a reopened run only with confirmed continuing round; instrument-panel icons are not evidence.",
+    "Arcana: before recommending End, exhaustively order remaining deterministic chest upgrades; prefer a strictly better guaranteed exit. Synthetic counterexample corrected from 5 to 10 points."
   ],
   "notImported": [
     "Giboork automatic Usurpation stage recognition and brightness/OCR patches need separate saved-frame validation.",
@@ -60,5 +61,6 @@
       "promoted": false
     }
   ],
-  "scope": "Development regression tests on synthetic boards; no live game capture or profit measurement."
+  "scope": "Development regression tests on synthetic boards; no live game capture or profit measurement.",
+  "arcanaWidthControlReport": "arcana-width-experiment-20261101.json"
 }

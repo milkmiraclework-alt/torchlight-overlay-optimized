@@ -3,6 +3,7 @@ const cp=require('node:child_process'),fs=require('node:fs'),path=require('node:
 const root=path.resolve(__dirname,'..'),jobs=[
  ['arcana',['tools/arcana-check.js']],
  ['arcana-terminal',['tools/arcana-terminal-check.js']],
+ ['arcana-exit',['tools/arcana-exit-check.js']],
  ['arcana-runtime',['tools/arcana-runtime-check.js']],
  ['native-capture',['tools/native-capture-check.js']],
  ['native-screen',['tools/native-screen-check.js']],

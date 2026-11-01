@@ -1,0 +1,79 @@
+{
+  "checkedAt": "2026-11-01T19:08:42.488Z",
+  "candidate": "Continuation tree width 8 instead of 4; same sampling budgets and 3-decision depth",
+  "scope": "Synthetic regression boards; public helper reference remains 1.1.15. Candidate selected after a 32-board pilot. No live-game claims.",
+  "pilot": {
+    "name": "wider-search-133-q",
+    "boards": 32,
+    "baselinePoints": 60.96875,
+    "candidatePoints": 65.34375,
+    "pairedPoints": {
+      "mean": 4.375,
+      "approx95CI": [
+        -1.7221171797191008,
+        10.4721171797191
+      ]
+    },
+    "pairedRainbows": {
+      "mean": 0.3125,
+      "approx95CI": [
+        0.028176028151437882,
+        0.5968239718485622
+      ]
+    },
+    "cutoffs": 0
+  },
+  "control": [
+    {
+      "name": "wider-search-133-normal",
+      "boards": 32,
+      "baselinePoints": 54.375,
+      "candidatePoints": 56.375,
+      "pairedPoints": {
+        "mean": 2,
+        "approx95CI": [
+          -4.643186662457865,
+          8.643186662457865
+        ]
+      },
+      "pairedRainbows": {
+        "mean": 0.09375,
+        "approx95CI": [
+          -0.2397401428876509,
+          0.4272401428876509
+        ]
+      },
+      "cutoffs": 0
+    },
+    {
+      "name": "wider-search-133-q-control",
+      "boards": 64,
+      "baselinePoints": 69.671875,
+      "candidatePoints": 67.203125,
+      "pairedPoints": {
+        "mean": -2.46875,
+        "approx95CI": [
+          -8.586351781948544,
+          3.6488517819485438
+        ]
+      },
+      "pairedRainbows": {
+        "mean": -0.09375,
+        "approx95CI": [
+          -0.41959532160384183,
+          0.23209532160384183
+        ]
+      },
+      "cutoffs": 0
+    }
+  ],
+  "combinedControl": {
+    "mean": -0.9791666666666666,
+    "approx95CI": [
+      -5.6187333803734205,
+      3.660400047040087
+    ]
+  },
+  "strictImprovementGate": false,
+  "promoted": false
+}

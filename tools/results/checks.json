@@ -1,9 +1,10 @@
 {
   "version": "1.3.4",
-  "checkedAt": "2026-11-01T18:58:36.161Z",
+  "checkedAt": "2026-11-01T19:13:41.691Z",
   "checks": [
     "arcana",
     "arcana-terminal",
+    "arcana-exit",
     "arcana-runtime",
     "native-capture",
     "native-screen",

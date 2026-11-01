@@ -295,6 +295,7 @@ function createPolicyJob(model,{samples=128,seed=0x41524341,verify=3,verifySampl
    const options=rows.map(row=>({action:row.action,label:E.label(row.action,s),mean:row.n?row.sum/row.n:E.score(s),se:row.n>1?Math.sqrt(Math.max(0,(row.square-row.sum*row.sum/row.n)/(row.n-1))/row.n):0,
     rainbows:row.rainbows/Math.max(1,row.n),deathRisk:row.deaths/Math.max(1,row.n),frontierRate:row.frontiers/Math.max(1,row.n),samples:row.n,verified:row.verified,verificationSamples:row.extra}));
    options.sort((a,b)=>b.mean-a.mean||(emptyCanContinue?(a.action.kind==='end')-(b.action.kind==='end'):0)||tie(a.action)-tie(b.action));
+   upgradeBeforeExit(s,options);
    const best=options[0]||{action:{kind:'end'},label:'Start Fateful Contest',mean:E.score(s),rainbows:s.chests.filter(t=>t===6).length};
    return {options,best,target:target(s,best.action),samples:round,totalRollouts:rows.reduce((n,row)=>n+row.n,0),verifiedCandidates,estimatedHidden:!!distribution&&s.path.some(t=>t.kind==='unknown'),unknownEvents:s.path.some(t=>t.kind==='random'),model:s};
   }
@@ -338,10 +339,24 @@ function createJob(model,{samples=128,seed=0x41524341,verify=3,verifySamples=sam
   result(){
    const options=rows.map(row=>({action:row.action,label:E.label(row.action,s),mean:row.n?row.sum/row.n:E.score(s),se:row.n>1?Math.sqrt(Math.max(0,(row.square-row.sum*row.sum/row.n)/(row.n-1))/row.n):0,rainbows:row.rainbows/Math.max(1,row.n),deathRisk:row.deaths/Math.max(1,row.n),frontierRate:row.frontiers/Math.max(1,row.n),samples:row.n,verified:row.verified,verificationSamples:row.extra}));
    options.sort((a,b)=>b.mean-a.mean||(emptyCanContinue?(a.action.kind==='end')-(b.action.kind==='end'):0)||tie(a.action)-tie(b.action));
+   upgradeBeforeExit(s,options);
    const best=options[0]||{action:{kind:'end'},label:'Start Fateful Contest',mean:E.score(s),rainbows:s.chests.filter(t=>t===6).length};
    return {options,best,target:target(s,best.action),samples:round,totalRollouts:learningRollouts+rows.reduce((n,row)=>n+row.n,0),learningRollouts,screenSamples:screenRound,continuationStates:tree.size,verifiedCandidates,estimatedHidden:s.path.some(t=>t.kind==='unknown'),unknownEvents:s.path.some(t=>t.kind==='random'),model:s};
   }
  };
+}
+function upgradeBeforeExit(s,options){
+ if(s.pending||s.life<=0||options[0]?.action.kind!=='end')return;
+ const hand=s.hand.filter(id=>{const q=upgradeSpecs.get(id);return q&&q.e.p[2]!==2&&q.e.a[0]===q.e.a[1];});
+ if(!hand.length)return;
+ // Only compare with finishing now. Deterministic upgrades followed by End
+ // strictly dominate End; no hidden tile or future event is used here.
+ const solved=terminalJob({...s,position:s.path.length-1,hand}).result().best;
+ if(solved.action.kind!=='card'||solved.mean<=E.score(s))return;
+ const action={...solved.action,index:s.hand.indexOf(solved.action.id)};
+ const previous=options.findIndex(v=>v.action.kind==='card'&&v.action.index===action.index&&v.action.id===action.id);
+ if(previous>=0)options.splice(previous,1);
+ options.unshift({...solved,action,label:E.label(action,s),guaranteedExit:true});
 }
 function terminalJob(s){
  if(s.pending||s.position!==s.path.length-1)return null;
