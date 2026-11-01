@@ -14,6 +14,21 @@ use vorax_scan::{scan, scan_data};
 
 pub type TextReader<'a> = Option<&'a mut dyn FnMut(&Img) -> String>;
 
+// An icon can be a map drop, not proof that this is the preceding run.
+fn resumes(before: Option<i32>, now: Option<i32>) -> bool {
+    matches!((before, now), (Some(b), Some(n)) if n > 1 && b < 13 && n >= b)
+}
+
+#[cfg(test)]
+mod continuation_tests {
+    use super::resumes;
+    #[test]
+    fn reopening_preserves_only_a_confirmed_continuing_run() {
+        for pair in [(Some(6),Some(6)),(Some(6),Some(7)),(Some(12),Some(12))] { assert!(resumes(pair.0,pair.1)); }
+        for pair in [(Some(13),Some(1)),(Some(6),Some(1)),(Some(13),Some(13)),(Some(8),Some(5)),(Some(6),None),(None,Some(6))] { assert!(!resumes(pair.0,pair.1)); }
+    }
+}
+
 pub enum Outcome {
     /// not the Surgical Preparation screen
     NotGame,
@@ -96,6 +111,10 @@ impl Pipeline {
         if raw.has(|p| matches!(p, Problem::NotFound)) {
             return Outcome::NotGame;
         }
+        let round_sure = raw.fields.get("round").is_some_and(|f| f.sure);
+        let before = self.last.as_ref().and_then(|(r, ..)| r.state.round);
+        let continued = trigger == Some("screen") && resumes(before, raw.state.round.filter(|_| round_sure));
+        let trigger = if continued { None } else { trigger };
         if trigger == Some("screen") {
             self.instrument_refreshes = None;
         }

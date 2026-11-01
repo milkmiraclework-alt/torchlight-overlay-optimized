@@ -12,6 +12,8 @@ if (!(Get-Command cargo -ErrorAction SilentlyContinue) -and (Test-Path (Join-Pat
 if ($LASTEXITCODE -ne 0) { throw 'Vorax rules/Smart parity failed.' }
 & cargo test --manifest-path (Join-Path $root 'vorax\Cargo.toml') --release --locked -p vorax-scan --lib --test parity --test round --test faint_label
 if ($LASTEXITCODE -ne 0) { throw 'Vorax recognition checks failed.' }
+& cargo test --manifest-path (Join-Path $root 'vorax\Cargo.toml') --release --locked -p vorax-overlay continuation_tests
+if ($LASTEXITCODE -ne 0) { throw 'Vorax run-continuation checks failed.' }
 & cargo build --manifest-path (Join-Path $root 'vorax\Cargo.toml') --release --locked -p vorax-overlay
 if ($LASTEXITCODE -ne 0) { throw 'Vorax backend build failed.' }
 $target = if ($env:CARGO_TARGET_DIR) { $env:CARGO_TARGET_DIR } else { Join-Path $root 'vorax\target' }

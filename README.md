@@ -8,8 +8,10 @@
 исправления поля; повторный запуск приложения открывает общие настройки.
 Полностью нативная оболочка без Electron пока не реализована.
 
+В **1.3.4 preview** исправлено сохранение стадии Usurpation при пересборке поля Tartarus: будущие инциденты больше не возвращаются к стадии I после подтверждённого продвижения. В Vorax повторное открытие экрана сохраняет инструменты и оставшиеся обновления только при подтверждённом продолжении забега; значок постороннего предмета не считается доказательством. [Релиз с EXE](https://github.com/milkmiraclework-alt/torchlight-overlay-optimized/releases/tag/v1.3.4).
+
 В **1.3.3 preview** добавлен независимый советчик Arcana. Скачать
-[Portable EXE или Setup EXE этой версии](https://github.com/milkmiraclework-alt/torchlight-overlay-optimized/releases/tag/v1.3.3).
+[Portable EXE или Setup EXE этой версии](https://github.com/milkmiraclework-alt/torchlight-overlay-optimized/releases/tag/v1.3.4).
 Это тестовая версия; стабильный канал автоматически на неё не переключается.
 
 Arcana использует общие захват, трей, настройки и панель подсказок. При смене
@@ -297,7 +299,7 @@ Confirm instruments подтверждает отредактированный 
 
 ## Запуск
 
-Версия с Arcana: **[1.3.3 preview — Portable EXE и Setup EXE](https://github.com/milkmiraclework-alt/torchlight-overlay-optimized/releases/tag/v1.3.3)**. [Стабильный выпуск](https://github.com/milkmiraclework-alt/torchlight-overlay-optimized/releases/latest) обновляется отдельно. Node.js, Rust и прежние оверлеи для запуска не нужны.
+Версия с Arcana: **[1.3.4 preview — Portable EXE и Setup EXE](https://github.com/milkmiraclework-alt/torchlight-overlay-optimized/releases/tag/v1.3.4)**. [Стабильный выпуск](https://github.com/milkmiraclework-alt/torchlight-overlay-optimized/releases/latest) обновляется отдельно. Node.js, Rust и прежние оверлеи для запуска не нужны.
 
 С **1.0.3** оба EXE проверяют новые стабильные версии в нашем GitHub Releases:
 через 45 секунд после запуска, затем раз в 6 часов. Загрузка начинается, когда
@@ -343,7 +345,7 @@ Check now, Download update и переключатель автоматичес�
 .\Start-Overlay.cmd
 ```
 
-Результат текущей сборки: `desktop/dist/builds/1.3.3/`. Изменения Vorax требуют Rust и Windows build tools: `powershell -File tools/build-vorax-backend.ps1`. Изменения ядра Tartarus: `powershell -File tools/build-rust-solver.ps1`. Нативный захват/пиксельный читатель: `powershell -File tools/build-native-reader.ps1`; WASM-резерв: `powershell -File tools/build-scan-kernels.ps1`. Скрипты проверяют соответствие бинарников исходникам.
+Результат текущей сборки: `desktop/dist/builds/1.3.4/`. Изменения Vorax требуют Rust и Windows build tools: `powershell -File tools/build-vorax-backend.ps1`. Изменения ядра Tartarus: `powershell -File tools/build-rust-solver.ps1`. Нативный захват/пиксельный читатель: `powershell -File tools/build-native-reader.ps1`; WASM-резерв: `powershell -File tools/build-scan-kernels.ps1`. Скрипты проверяют соответствие бинарников исходникам.
 
 ```powershell
 node tools/unified-runtime-check.js

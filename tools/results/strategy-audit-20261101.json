@@ -1,0 +1,64 @@
+{
+  "checkedAt": "2026-11-01T19:00:11.846Z",
+  "version": "1.3.4",
+  "sources": [
+    {
+      "repository": "blahdot3h/tartarus-simulator",
+      "head": "5e8af6654542a1a850c0413da5a70c47fe4183b1",
+      "latestRelease": "v0.2.23"
+    },
+    {
+      "repository": "Giboork/tli-overlay-plus",
+      "latestRelease": "v0.2.30",
+      "strategyRelevantRelease": "v0.2.25",
+      "recognitionChainFollowups": "v0.2.26"
+    },
+    {
+      "repository": "DinoRaos/vorax-solver-rs",
+      "head": "9aabc20469bf055aa88811b0f0bd3cc234095c81",
+      "linearModelSemanticallyIdentical": true
+    },
+    {
+      "repository": "Timer-Lol/Arcana-Helper",
+      "latestRelease": "v1.1.19",
+      "publishedAt": "2026-10-31T17:51:29Z",
+      "comparisonReferenceRemains": "1.1.15",
+      "note": "Published latest notes: refill die excluded from hand count; near-equal moves prefer an immediately reachable purple-or-better chest. Latest binary has not been compared."
+    }
+  ],
+  "implemented": [
+    "Tartarus: preserve explicitly known Usurpation incident pool across analyzer rebuilds; no inference from ambiguous screen changes.",
+    "Vorax: preserve a reopened run only with confirmed continuing round; instrument-panel icons are not evidence."
+  ],
+  "notImported": [
+    "Giboork automatic Usurpation stage recognition and brightness/OCR patches need separate saved-frame validation.",
+    "Vorax 1024-future recommendation is not a measured improvement over our adaptive Smart policy."
+  ],
+  "arcanaPilot": [
+    {
+      "candidate": "deeper-search-133-q",
+      "boards": 32,
+      "baselinePoints": 60.96875,
+      "candidatePoints": 60.9375,
+      "pairedDifference": -0.03125,
+      "approx95CI": [
+        -7.837829314575498,
+        7.775329314575498
+      ],
+      "promoted": false
+    },
+    {
+      "candidate": "wider-search-133-q",
+      "boards": 32,
+      "baselinePoints": 60.96875,
+      "candidatePoints": 65.34375,
+      "pairedDifference": 4.375,
+      "approx95CI": [
+        -1.7221171797191008,
+        10.4721171797191
+      ],
+      "promoted": false
+    }
+  ],
+  "scope": "Development regression tests on synthetic boards; no live game capture or profit measurement."
+}
