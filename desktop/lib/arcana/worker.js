@@ -4,6 +4,7 @@ const E=require('./engine'),Solver=require('./solver'),Reader=require('./reader'
 const reader=Reader.create();
 reader.restore(workerData.resume);
 let capture=null,handle=null,revision=0,retryTimer=null,job=null,lastAdvice=null,lastSolvedKey=null,frame=null,fallbackPending=false,fallbackAttempt=0,closed=false;
+let preferFallback=false;
 let cycleContext=null,cycleAttempts=0,cycleCounted=false;
 const cards=E.DATA.cards.filter(c=>c.tag!==99).map(c=>({id:c.id,name:c.name,sort:c.sort,choices:c.choices})).sort((a,b)=>a.sort-b.sort||a.id-b.id);
 const tileEffects=Object.entries(E.DATA.tiles).filter(([id,t])=>t.events.length&&![1000,1051,1052,1053].includes(Number(id))).map(([id,t])=>({id:Number(id),name:t.events.map(e=>E.DATA.events[e]?.text).filter(Boolean).join('; ')||(Number(id)===1001?'Draw 1–3 random notes':'')})).filter(t=>t.name);
@@ -45,25 +46,33 @@ function solve(){
   setImmediate(step);
  }catch(error){status({phase:'check',reason:error.message});}
 }
-function processFrame(img,attempt=0){
+function requestFallback(attempt,reason){fallbackPending=true;fallbackAttempt=attempt;parentPort.postMessage({event:'fallback',reason,requestRevision:revision});}
+function processFrame(img,attempt=0,source='native'){
  if(!img||!Number.isInteger(img.width)||!Number.isInteger(img.height)||img.width<64||img.height<64||img.width*img.height>16777216||img.data?.length!==img.width*img.height*4)throw Error('Invalid Arcana frame dimensions');
+ const before=structuredClone(reader.checkpoint());
  frame={width:img.width,height:img.height,data:new Uint8ClampedArray(img.data)};const reading=reader.read(frame);
+ const noAnchors=!reading.model.hand.length&&reading.model.die===null&&reading.model.life===null;
+ // BitBlt may succeed on a GPU window while returning a bright, unusable
+ // picture. Try the independent capture path once, without relaxing OCR.
+ if(source==='native'&&!workerData.fixture&&noAnchors){reader.restore(before);requestFallback(attempt,'Native picture has no Arcana hand, refill die or life marker');return;}
+ if(source==='fallback'&&reading.model.hand.length&&reading.model.die!==null&&reading.model.life!==null)preferFallback=true;
  if(reading.model.confirmed){solve();return;}
- status({phase:'check',reason:reading.issues.slice(0,3).join(' ')+(reading.issues.length>3?` ${reading.issues.length-3} more checks in Board.`:''),readingMs:reading.ms,issues:reading.issues,recognition:{width:img.width,height:img.height,hand:reading.model.hand,count:reading.handCount,regular:reading.rowRegular,centered:reading.rowCentered,die:reading.model.die,faces:reading.cardMatches?.map(m=>({icon:m.name,score:+m.score.toFixed(4),margin:+m.margin.toFixed(4),box:m.box}))}});
+ status({phase:'check',reason:reading.issues.slice(0,3).join(' ')+(reading.issues.length>3?` ${reading.issues.length-3} more checks in Board.`:''),readingMs:reading.ms,issues:reading.issues,recognition:{capture:source,bases:reading.bases,width:img.width,height:img.height,hand:reading.model.hand,count:reading.handCount,regular:reading.rowRegular,centered:reading.rowCentered,die:reading.model.die,faces:reading.cardMatches?.map(m=>({icon:m.name,score:+m.score.toFixed(4),margin:+m.margin.toFixed(4),box:m.box}))}});
  // A fixed, bounded retry waits for entering animations; unclear recognition
  // cannot create an endless background screenshot loop.
  if(attempt<2&&!workerData.fixture&&(reading.waiting||reading.bases<5)){const mine=revision;retryTimer=setTimeout(()=>{if(mine===revision)read(attempt+1);},220);}
 }
 function read(attempt=0){
  invalidate();status({phase:'reading'});
- try{processFrame(grab(),attempt);}catch(error){if(!fallbackPending&&!workerData.fixture){fallbackPending=true;fallbackAttempt=attempt;parentPort.postMessage({event:'fallback',reason:error.message,requestRevision:revision});}else status({phase:'error',reason:error.message});}
+ if(preferFallback&&!workerData.fixture){requestFallback(attempt,'Using the capture path that read Arcana successfully');return;}
+ try{processFrame(grab(),attempt);}catch(error){if(!fallbackPending&&!workerData.fixture){requestFallback(attempt,error.message);}else status({phase:'error',reason:error.message});}
 }
 parentPort.on('message',message=>{
  const {id,cmd,value}=message;
  try{
   let result=true;
   if(cmd==='read')read();
-  else if(cmd==='frame'){if(message.requestRevision!==revision||!fallbackPending)return;fallbackPending=false;processFrame(message.frame,fallbackAttempt);}
+  else if(cmd==='frame'){if(message.requestRevision!==revision||!fallbackPending)return;fallbackPending=false;processFrame(message.frame,fallbackAttempt,'fallback');}
   else if(cmd==='invalidate'){if(message.changed&&!cycleCounted&&cycleContext&&lastAdvice?.action?.kind==='reroll'){cycleAttempts++;cycleCounted=true;}invalidate();if(message.changed)reader.expectChange();}
   else if(cmd==='settled'){if(value?.refillOnly&&cycleCounted&&cycleContext&&lastAdvice?.action?.kind==='reroll')reader.settleCycle();}
   else if(cmd==='reset'){invalidate();reader.reset(!!message.fresh);lastAdvice=null;lastSolvedKey=null;cycleContext=null;cycleAttempts=0;cycleCounted=false;status({phase:'waiting'});}

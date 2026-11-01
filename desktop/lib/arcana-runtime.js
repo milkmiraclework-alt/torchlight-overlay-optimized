@@ -24,6 +24,7 @@ function create({game,library,notify,note=()=>{},WorkerClass=Worker,fixture=null
    if(message.id){const p=pending.get(message.id);if(p){pending.delete(message.id);clearTimeout(p.timer);message.error?p.reject(Error(message.error)):p.resolve(message.result);}return;}
    if(message.event==='checkpoint'){resume=message.value;return;}
    if(message.event==='fallback'&&fallback){
+    if(!message.reason?.startsWith('Using the capture path'))note('Arcana capture fallback:',message.reason);
     fallbackReads++;
     const mine=revision;
     Promise.resolve(fallback()).then(frame=>{if(mine===revision&&worker===current&&active)current.postMessage({cmd:'frame',frame,requestRevision:message.requestRevision});}).catch(error=>{if(mine===revision)publish({phase:'error',reason:error.message});});return;
