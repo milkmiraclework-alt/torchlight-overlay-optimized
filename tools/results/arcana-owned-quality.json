@@ -1,0 +1,599 @@
+{
+  "scope": "Our two policies on seeded local-rule worlds, mixed capped and uncapped upgrades, first 20 tiles visible. Not a server-layout or live profit measurement.",
+  "checkedAt": "2026-11-01T21:19:11.438Z",
+  "fingerprints": {
+    "baseline": "545f95f5269a47b110d0ed5d25f6d1ae9243db06ba2669cabfefc1241dadd397",
+    "candidate": "beb57da5ef54567d591b3972defbc4ccc159078eaac86cb1fdf124667e5adf61"
+  },
+  "boards": 32,
+  "offset": 131072,
+  "length": 32,
+  "samples": 128,
+  "baselinePoints": 97.90625,
+  "candidatePoints": 98.34375,
+  "pairedDifference": 0.4375,
+  "approx95CI": [
+    -1.6763765318569304,
+    2.5513765318569304
+  ],
+  "cutoffs": 0,
+  "pairs": [
+    {
+      "seed": 131072,
+      "stress": false,
+      "baseline": {
+        "points": 85,
+        "rainbows": 2,
+        "steps": 12,
+        "cutoff": false,
+        "calculationMs": 1233.3171000000002
+      },
+      "candidate": {
+        "points": 85,
+        "rainbows": 2,
+        "steps": 12,
+        "cutoff": false,
+        "calculationMs": 1444.9392999999998
+      }
+    },
+    {
+      "seed": 131073,
+      "stress": true,
+      "baseline": {
+        "points": 127,
+        "rainbows": 5,
+        "steps": 16,
+        "cutoff": false,
+        "calculationMs": 1847.3602999999998
+      },
+      "candidate": {
+        "points": 114,
+        "rainbows": 4,
+        "steps": 16,
+        "cutoff": false,
+        "calculationMs": 2276.3086999999996
+      }
+    },
+    {
+      "seed": 131074,
+      "stress": false,
+      "baseline": {
+        "points": 89,
+        "rainbows": 3,
+        "steps": 24,
+        "cutoff": false,
+        "calculationMs": 1256.4885999999997
+      },
+      "candidate": {
+        "points": 89,
+        "rainbows": 3,
+        "steps": 24,
+        "cutoff": false,
+        "calculationMs": 1533.8568000000005
+      }
+    },
+    {
+      "seed": 131075,
+      "stress": true,
+      "baseline": {
+        "points": 151,
+        "rainbows": 6,
+        "steps": 18,
+        "cutoff": false,
+        "calculationMs": 1199.9667000000009
+      },
+      "candidate": {
+        "points": 151,
+        "rainbows": 6,
+        "steps": 18,
+        "cutoff": false,
+        "calculationMs": 1392.1628
+      }
+    },
+    {
+      "seed": 131076,
+      "stress": false,
+      "baseline": {
+        "points": 45,
+        "rainbows": 1,
+        "steps": 10,
+        "cutoff": false,
+        "calculationMs": 703.8923999999988
+      },
+      "candidate": {
+        "points": 45,
+        "rainbows": 1,
+        "steps": 10,
+        "cutoff": false,
+        "calculationMs": 880.1672999999992
+      }
+    },
+    {
+      "seed": 131077,
+      "stress": true,
+      "baseline": {
+        "points": 160,
+        "rainbows": 6,
+        "steps": 15,
+        "cutoff": false,
+        "calculationMs": 1269.3032999999996
+      },
+      "candidate": {
+        "points": 160,
+        "rainbows": 6,
+        "steps": 13,
+        "cutoff": false,
+        "calculationMs": 1256.842200000001
+      }
+    },
+    {
+      "seed": 131078,
+      "stress": false,
+      "baseline": {
+        "points": 65,
+        "rainbows": 2,
+        "steps": 13,
+        "cutoff": false,
+        "calculationMs": 1486.2708000000002
+      },
+      "candidate": {
+        "points": 65,
+        "rainbows": 2,
+        "steps": 13,
+        "cutoff": false,
+        "calculationMs": 1751.753499999999
+      }
+    },
+    {
+      "seed": 131079,
+      "stress": true,
+      "baseline": {
+        "points": 129,
+        "rainbows": 5,
+        "steps": 19,
+        "cutoff": false,
+        "calculationMs": 1876.4226999999992
+      },
+      "candidate": {
+        "points": 133,
+        "rainbows": 5,
+        "steps": 17,
+        "cutoff": false,
+        "calculationMs": 2098.4878000000026
+      }
+    },
+    {
+      "seed": 131080,
+      "stress": false,
+      "baseline": {
+        "points": 61,
+        "rainbows": 2,
+        "steps": 15,
+        "cutoff": false,
+        "calculationMs": 1644.078999999998
+      },
+      "candidate": {
+        "points": 61,
+        "rainbows": 2,
+        "steps": 15,
+        "cutoff": false,
+        "calculationMs": 1871.888899999998
+      }
+    },
+    {
+      "seed": 131081,
+      "stress": true,
+      "baseline": {
+        "points": 136,
+        "rainbows": 5,
+        "steps": 15,
+        "cutoff": false,
+        "calculationMs": 1155.686899999997
+      },
+      "candidate": {
+        "points": 136,
+        "rainbows": 5,
+        "steps": 16,
+        "cutoff": false,
+        "calculationMs": 1246.2484000000004
+      }
+    },
+    {
+      "seed": 131082,
+      "stress": false,
+      "baseline": {
+        "points": 29,
+        "rainbows": 1,
+        "steps": 14,
+        "cutoff": false,
+        "calculationMs": 1190.5642000000007
+      },
+      "candidate": {
+        "points": 29,
+        "rainbows": 1,
+        "steps": 14,
+        "cutoff": false,
+        "calculationMs": 1432.249100000001
+      }
+    },
+    {
+      "seed": 131083,
+      "stress": true,
+      "baseline": {
+        "points": 153,
+        "rainbows": 6,
+        "steps": 16,
+        "cutoff": false,
+        "calculationMs": 1203.2947999999997
+      },
+      "candidate": {
+        "points": 153,
+        "rainbows": 6,
+        "steps": 14,
+        "cutoff": false,
+        "calculationMs": 955.3774000000049
+      }
+    },
+    {
+      "seed": 131084,
+      "stress": false,
+      "baseline": {
+        "points": 29,
+        "rainbows": 1,
+        "steps": 14,
+        "cutoff": false,
+        "calculationMs": 1052.4451000000045
+      },
+      "candidate": {
+        "points": 29,
+        "rainbows": 1,
+        "steps": 14,
+        "cutoff": false,
+        "calculationMs": 1219.8859999999986
+      }
+    },
+    {
+      "seed": 131085,
+      "stress": true,
+      "baseline": {
+        "points": 129,
+        "rainbows": 5,
+        "steps": 12,
+        "cutoff": false,
+        "calculationMs": 1271.5506000000023
+      },
+      "candidate": {
+        "points": 126,
+        "rainbows": 5,
+        "steps": 16,
+        "cutoff": false,
+        "calculationMs": 1830.9176000000007
+      }
+    },
+    {
+      "seed": 131086,
+      "stress": false,
+      "baseline": {
+        "points": 42,
+        "rainbows": 1,
+        "steps": 15,
+        "cutoff": false,
+        "calculationMs": 1052.1613999999972
+      },
+      "candidate": {
+        "points": 42,
+        "rainbows": 1,
+        "steps": 15,
+        "cutoff": false,
+        "calculationMs": 1201.8142000000007
+      }
+    },
+    {
+      "seed": 131087,
+      "stress": true,
+      "baseline": {
+        "points": 107,
+        "rainbows": 4,
+        "steps": 15,
+        "cutoff": false,
+        "calculationMs": 856.5119999999952
+      },
+      "candidate": {
+        "points": 109,
+        "rainbows": 4,
+        "steps": 15,
+        "cutoff": false,
+        "calculationMs": 1302.027900000001
+      }
+    },
+    {
+      "seed": 131088,
+      "stress": false,
+      "baseline": {
+        "points": 92,
+        "rainbows": 3,
+        "steps": 14,
+        "cutoff": false,
+        "calculationMs": 1462.3214000000007
+      },
+      "candidate": {
+        "points": 92,
+        "rainbows": 3,
+        "steps": 14,
+        "cutoff": false,
+        "calculationMs": 1753.9848000000056
+      }
+    },
+    {
+      "seed": 131089,
+      "stress": true,
+      "baseline": {
+        "points": 103,
+        "rainbows": 4,
+        "steps": 15,
+        "cutoff": false,
+        "calculationMs": 1385.4714999999997
+      },
+      "candidate": {
+        "points": 131,
+        "rainbows": 5,
+        "steps": 20,
+        "cutoff": false,
+        "calculationMs": 2493.5513999999966
+      }
+    },
+    {
+      "seed": 131090,
+      "stress": false,
+      "baseline": {
+        "points": 138,
+        "rainbows": 5,
+        "steps": 15,
+        "cutoff": false,
+        "calculationMs": 864.0581999999995
+      },
+      "candidate": {
+        "points": 138,
+        "rainbows": 5,
+        "steps": 15,
+        "cutoff": false,
+        "calculationMs": 1030.5783999999985
+      }
+    },
+    {
+      "seed": 131091,
+      "stress": true,
+      "baseline": {
+        "points": 106,
+        "rainbows": 4,
+        "steps": 15,
+        "cutoff": false,
+        "calculationMs": 674.4038999999975
+      },
+      "candidate": {
+        "points": 106,
+        "rainbows": 4,
+        "steps": 15,
+        "cutoff": false,
+        "calculationMs": 861.102899999998
+      }
+    },
+    {
+      "seed": 131092,
+      "stress": false,
+      "baseline": {
+        "points": 54,
+        "rainbows": 2,
+        "steps": 13,
+        "cutoff": false,
+        "calculationMs": 780.7928000000029
+      },
+      "candidate": {
+        "points": 54,
+        "rainbows": 2,
+        "steps": 13,
+        "cutoff": false,
+        "calculationMs": 885.2379000000001
+      }
+    },
+    {
+      "seed": 131093,
+      "stress": true,
+      "baseline": {
+        "points": 151,
+        "rainbows": 6,
+        "steps": 15,
+        "cutoff": false,
+        "calculationMs": 1412.059199999996
+      },
+      "candidate": {
+        "points": 160,
+        "rainbows": 6,
+        "steps": 15,
+        "cutoff": false,
+        "calculationMs": 1734.553899999999
+      }
+    },
+    {
+      "seed": 131094,
+      "stress": false,
+      "baseline": {
+        "points": 37,
+        "rainbows": 1,
+        "steps": 16,
+        "cutoff": false,
+        "calculationMs": 1259.0480000000025
+      },
+      "candidate": {
+        "points": 37,
+        "rainbows": 1,
+        "steps": 16,
+        "cutoff": false,
+        "calculationMs": 1452.1005000000005
+      }
+    },
+    {
+      "seed": 131095,
+      "stress": true,
+      "baseline": {
+        "points": 136,
+        "rainbows": 5,
+        "steps": 20,
+        "cutoff": false,
+        "calculationMs": 2302.0455999999976
+      },
+      "candidate": {
+        "points": 127,
+        "rainbows": 5,
+        "steps": 17,
+        "cutoff": false,
+        "calculationMs": 2921.182200000003
+      }
+    },
+    {
+      "seed": 131096,
+      "stress": false,
+      "baseline": {
+        "points": 19,
+        "rainbows": 0,
+        "steps": 13,
+        "cutoff": false,
+        "calculationMs": 760.0825999999943
+      },
+      "candidate": {
+        "points": 19,
+        "rainbows": 0,
+        "steps": 13,
+        "cutoff": false,
+        "calculationMs": 893.3653000000049
+      }
+    },
+    {
+      "seed": 131097,
+      "stress": true,
+      "baseline": {
+        "points": 129,
+        "rainbows": 5,
+        "steps": 15,
+        "cutoff": false,
+        "calculationMs": 1788.1308000000136
+      },
+      "candidate": {
+        "points": 129,
+        "rainbows": 5,
+        "steps": 15,
+        "cutoff": false,
+        "calculationMs": 2472.1964000000007
+      }
+    },
+    {
+      "seed": 131098,
+      "stress": false,
+      "baseline": {
+        "points": 86,
+        "rainbows": 3,
+        "steps": 15,
+        "cutoff": false,
+        "calculationMs": 1463.7932
+      },
+      "candidate": {
+        "points": 86,
+        "rainbows": 3,
+        "steps": 15,
+        "cutoff": false,
+        "calculationMs": 1722.3796000000002
+      }
+    },
+    {
+      "seed": 131099,
+      "stress": true,
+      "baseline": {
+        "points": 160,
+        "rainbows": 6,
+        "steps": 17,
+        "cutoff": false,
+        "calculationMs": 1278.8800999999949
+      },
+      "candidate": {
+        "points": 160,
+        "rainbows": 6,
+        "steps": 18,
+        "cutoff": false,
+        "calculationMs": 1650.0152999999991
+      }
+    },
+    {
+      "seed": 131100,
+      "stress": false,
+      "baseline": {
+        "points": 70,
+        "rainbows": 2,
+        "steps": 13,
+        "cutoff": false,
+        "calculationMs": 780.130600000004
+      },
+      "candidate": {
+        "points": 70,
+        "rainbows": 2,
+        "steps": 13,
+        "cutoff": false,
+        "calculationMs": 926.153999999995
+      }
+    },
+    {
+      "seed": 131101,
+      "stress": true,
+      "baseline": {
+        "points": 133,
+        "rainbows": 5,
+        "steps": 16,
+        "cutoff": false,
+        "calculationMs": 894.3966999999975
+      },
+      "candidate": {
+        "points": 129,
+        "rainbows": 5,
+        "steps": 15,
+        "cutoff": false,
+        "calculationMs": 934.3332999999984
+      }
+    },
+    {
+      "seed": 131102,
+      "stress": false,
+      "baseline": {
+        "points": 31,
+        "rainbows": 1,
+        "steps": 12,
+        "cutoff": false,
+        "calculationMs": 951.460699999996
+      },
+      "candidate": {
+        "points": 31,
+        "rainbows": 1,
+        "steps": 12,
+        "cutoff": false,
+        "calculationMs": 1053.8493999999919
+      }
+    },
+    {
+      "seed": 131103,
+      "stress": true,
+      "baseline": {
+        "points": 151,
+        "rainbows": 6,
+        "steps": 15,
+        "cutoff": false,
+        "calculationMs": 803.4648000000016
+      },
+      "candidate": {
+        "points": 151,
+        "rainbows": 6,
+        "steps": 15,
+        "cutoff": false,
+        "calculationMs": 1015.2784000000102
+      }
+    }
+  ],
+  "releaseSelection": "Rejected; not enabled in 1.3.10. See overnight-progress-20261102.json for the control results and reason."
+}

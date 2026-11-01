@@ -1,6 +1,6 @@
 {
   "version": "1.3.10",
-  "checkedAt": "2026-11-01T21:12:33.022Z",
+  "checkedAt": "2026-11-01T22:08:13.993Z",
   "gameCapture": false,
   "gameInput": false,
   "source": "Saved game frame painted inside an owned window",
@@ -13,6 +13,7 @@
   ],
   "die": 1,
   "life": 2,
+  "handDieLifeChecksCleared": true,
   "adviceAfterInitialConfirmation": true,
   "zeroCaptureChildrenAfterStop": true
 }

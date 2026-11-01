@@ -1,5 +1,6 @@
 'use strict';
 const E=require('./engine');
+const Endgame=require('./endgame');
 // Independent maximum-entropy prior over the 25 question effects in local game
 // data. Server odds are unknown; these are not Arcana Helper's fitted weights.
 const questionEvents=Object.keys(E.DATA.events).map(Number).filter(id=>id>=9201&&id<=9225);
@@ -301,7 +302,7 @@ function createPolicyJob(model,{samples=128,seed=0x41524341,verify=3,verifySampl
   }
  };
 }
-function createJob(model,{samples=128,seed=0x41524341,verify=3,verifySamples=samples*2,allowReroll=true,rerollBudget=3}={}){
+function createSampledJob(model,{samples=128,seed=0x41524341,verify=3,verifySamples=samples*2,allowReroll=true,rerollBudget=3}={}){
  if(verify<=0)return createPolicyJob(model,{samples,seed,verify,verifySamples,allowReroll,rerollBudget});
  const s=E.normalize(model);if(!s.confirmed)throw Error('Check the Arcana reading before calculating.');if(!s.lengthConfirmed)throw Error('Confirm the total path length.');
  s.rerollBudget=Math.min(s.rerollBudget,allowReroll?rerollBudget:0);
@@ -377,5 +378,13 @@ function terminalJob(s){
  options.sort((a,b)=>b.mean-a.mean||b.rainbows-a.rainbows||(a.action.kind==='end'?0:1)-(b.action.kind==='end'?0:1)||(upgradeSpecs.get(a.action.id)?.cap||0)-(upgradeSpecs.get(b.action.id)?.cap||0));
  const winner=options[0],result={options,best:winner,target:null,samples:0,totalRollouts:0,learningRollouts:0,screenSamples:0,continuationStates:0,verifiedCandidates:0,estimatedHidden:false,unknownEvents:false,model:s,exact:true,exactStates:memo.size};
  return {step:()=>true,result:()=>result};
+}
+function createJob(model,options={}){
+ if(options.verify<=0)return createSampledJob(model,options);
+ const s=E.normalize(model);if(!s.confirmed)throw Error('Check the Arcana reading before calculating.');if(!s.lengthConfirmed)throw Error('Confirm the total path length.');
+ const terminal=terminalJob(s);if(terminal)return terminal;
+ const exact=Endgame.createJob(s,options);if(!exact)return createSampledJob(model,options);
+ let fallback=null;
+ return {step(batch=4){if(fallback)return fallback.step(batch);const done=exact.step(batch);if(done&&!exact.result()){fallback=createSampledJob(model,options);return fallback.step(batch);}return done;},result(){if(fallback)return fallback.result();const result=exact.result();return result?{...result,target:target(s,result.best.action)}:null;}};
 }
 module.exports={createJob,rollout,policy,target,immediate,valueOf,knownDistribution,informationKey:observationKey};

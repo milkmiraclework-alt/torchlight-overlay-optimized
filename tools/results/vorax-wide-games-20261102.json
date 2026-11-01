@@ -1,0 +1,320 @@
+{
+  "kind": "games",
+  "profile": "wide",
+  "baselineSmart": true,
+  "baselineFutures": null,
+  "games": 32,
+  "seed": 8800000,
+  "baselineMean": 1127708.78125,
+  "smartMean": 1177603.90625,
+  "baselineCapped": 791572.96875,
+  "smartCapped": 808535.9375,
+  "baselineReach": 0.75,
+  "smartReach": 0.84375,
+  "rows": [
+    {
+      "seed": 8800000,
+      "baseline": 931403,
+      "smart": 931403,
+      "baselineSeconds": 6.1189438,
+      "smartSeconds": 11.2871845,
+      "baselineDecisions": 15,
+      "smartDecisions": 15
+    },
+    {
+      "seed": 8800001,
+      "baseline": 2155214,
+      "smart": 2155214,
+      "baselineSeconds": 10.2835273,
+      "smartSeconds": 18.8831646,
+      "baselineDecisions": 15,
+      "smartDecisions": 15
+    },
+    {
+      "seed": 8800002,
+      "baseline": 901174,
+      "smart": 1169209,
+      "baselineSeconds": 11.40114,
+      "smartSeconds": 17.3403748,
+      "baselineDecisions": 16,
+      "smartDecisions": 17
+    },
+    {
+      "seed": 8800003,
+      "baseline": 593282,
+      "smart": 593282,
+      "baselineSeconds": 5.0047847,
+      "smartSeconds": 8.0351429,
+      "baselineDecisions": 16,
+      "smartDecisions": 16
+    },
+    {
+      "seed": 8800004,
+      "baseline": 1411279,
+      "smart": 1411279,
+      "baselineSeconds": 7.1923112,
+      "smartSeconds": 12.7450431,
+      "baselineDecisions": 14,
+      "smartDecisions": 14
+    },
+    {
+      "seed": 8800005,
+      "baseline": 1079276,
+      "smart": 1079276,
+      "baselineSeconds": 9.9428941,
+      "smartSeconds": 17.9486713,
+      "baselineDecisions": 16,
+      "smartDecisions": 16
+    },
+    {
+      "seed": 8800006,
+      "baseline": 692640,
+      "smart": 692640,
+      "baselineSeconds": 6.4527613,
+      "smartSeconds": 10.0487401,
+      "baselineDecisions": 17,
+      "smartDecisions": 17
+    },
+    {
+      "seed": 8800007,
+      "baseline": 627952,
+      "smart": 627952,
+      "baselineSeconds": 4.9694574,
+      "smartSeconds": 8.1710016,
+      "baselineDecisions": 18,
+      "smartDecisions": 18
+    },
+    {
+      "seed": 8800008,
+      "baseline": 920262,
+      "smart": 871408,
+      "baselineSeconds": 8.1012862,
+      "smartSeconds": 15.5796763,
+      "baselineDecisions": 18,
+      "smartDecisions": 17
+    },
+    {
+      "seed": 8800009,
+      "baseline": 1998229,
+      "smart": 1998229,
+      "baselineSeconds": 9.0993948,
+      "smartSeconds": 15.4534004,
+      "baselineDecisions": 16,
+      "smartDecisions": 16
+    },
+    {
+      "seed": 8800010,
+      "baseline": 1013540,
+      "smart": 965838,
+      "baselineSeconds": 11.734487099999999,
+      "smartSeconds": 17.6664307,
+      "baselineDecisions": 17,
+      "smartDecisions": 18
+    },
+    {
+      "seed": 8800011,
+      "baseline": 1481847,
+      "smart": 1481847,
+      "baselineSeconds": 4.4324829,
+      "smartSeconds": 6.5791657,
+      "baselineDecisions": 16,
+      "smartDecisions": 16
+    },
+    {
+      "seed": 8800012,
+      "baseline": 770288,
+      "smart": 933912,
+      "baselineSeconds": 8.8335546,
+      "smartSeconds": 16.1023855,
+      "baselineDecisions": 21,
+      "smartDecisions": 18
+    },
+    {
+      "seed": 8800013,
+      "baseline": 665420,
+      "smart": 665420,
+      "baselineSeconds": 4.7825312,
+      "smartSeconds": 7.2225281,
+      "baselineDecisions": 17,
+      "smartDecisions": 17
+    },
+    {
+      "seed": 8800014,
+      "baseline": 1095809,
+      "smart": 1095809,
+      "baselineSeconds": 6.6590404,
+      "smartSeconds": 10.657221700000001,
+      "baselineDecisions": 18,
+      "smartDecisions": 18
+    },
+    {
+      "seed": 8800015,
+      "baseline": 1634367,
+      "smart": 1634367,
+      "baselineSeconds": 7.2286265,
+      "smartSeconds": 13.6312055,
+      "baselineDecisions": 16,
+      "smartDecisions": 16
+    },
+    {
+      "seed": 8800016,
+      "baseline": 1027544,
+      "smart": 1027544,
+      "baselineSeconds": 9.7796043,
+      "smartSeconds": 16.8231472,
+      "baselineDecisions": 15,
+      "smartDecisions": 15
+    },
+    {
+      "seed": 8800017,
+      "baseline": 754689,
+      "smart": 1295940,
+      "baselineSeconds": 8.3361179,
+      "smartSeconds": 12.3800503,
+      "baselineDecisions": 17,
+      "smartDecisions": 16
+    },
+    {
+      "seed": 8800018,
+      "baseline": 2841111,
+      "smart": 2841111,
+      "baselineSeconds": 11.4814945,
+      "smartSeconds": 19.3144193,
+      "baselineDecisions": 16,
+      "smartDecisions": 16
+    },
+    {
+      "seed": 8800019,
+      "baseline": 613856,
+      "smart": 613856,
+      "baselineSeconds": 7.762332,
+      "smartSeconds": 11.9067956,
+      "baselineDecisions": 18,
+      "smartDecisions": 18
+    },
+    {
+      "seed": 8800020,
+      "baseline": 866911,
+      "smart": 866911,
+      "baselineSeconds": 8.4296972,
+      "smartSeconds": 15.5111165,
+      "baselineDecisions": 14,
+      "smartDecisions": 14
+    },
+    {
+      "seed": 8800021,
+      "baseline": 1108094,
+      "smart": 1108094,
+      "baselineSeconds": 15.4900868,
+      "smartSeconds": 25.7282393,
+      "baselineDecisions": 18,
+      "smartDecisions": 18
+    },
+    {
+      "seed": 8800022,
+      "baseline": 925432,
+      "smart": 925432,
+      "baselineSeconds": 9.263855,
+      "smartSeconds": 14.724369,
+      "baselineDecisions": 20,
+      "smartDecisions": 20
+    },
+    {
+      "seed": 8800023,
+      "baseline": 985098,
+      "smart": 1067548,
+      "baselineSeconds": 5.350487,
+      "smartSeconds": 9.3043402,
+      "baselineDecisions": 16,
+      "smartDecisions": 17
+    },
+    {
+      "seed": 8800024,
+      "baseline": 864608,
+      "smart": 864608,
+      "baselineSeconds": 5.0696034,
+      "smartSeconds": 9.1216615,
+      "baselineDecisions": 18,
+      "smartDecisions": 18
+    },
+    {
+      "seed": 8800025,
+      "baseline": 1039500,
+      "smart": 1039500,
+      "baselineSeconds": 9.1972846,
+      "smartSeconds": 15.7741548,
+      "baselineDecisions": 18,
+      "smartDecisions": 18
+    },
+    {
+      "seed": 8800026,
+      "baseline": 1088035,
+      "smart": 1014219,
+      "baselineSeconds": 7.2131633,
+      "smartSeconds": 10.0583137,
+      "baselineDecisions": 20,
+      "smartDecisions": 20
+    },
+    {
+      "seed": 8800027,
+      "baseline": 452208,
+      "smart": 1163864,
+      "baselineSeconds": 8.8909714,
+      "smartSeconds": 10.2479239,
+      "baselineDecisions": 19,
+      "smartDecisions": 14
+    },
+    {
+      "seed": 8800028,
+      "baseline": 878680,
+      "smart": 878680,
+      "baselineSeconds": 6.7391243,
+      "smartSeconds": 9.8675926,
+      "baselineDecisions": 19,
+      "smartDecisions": 19
+    },
+    {
+      "seed": 8800029,
+      "baseline": 1734546,
+      "smart": 1734546,
+      "baselineSeconds": 7.1545643,
+      "smartSeconds": 11.4284289,
+      "baselineDecisions": 19,
+      "smartDecisions": 19
+    },
+    {
+      "seed": 8800030,
+      "baseline": 1165777,
+      "smart": 1165777,
+      "baselineSeconds": 11.2300899,
+      "smartSeconds": 17.3843472,
+      "baselineDecisions": 16,
+      "smartDecisions": 16
+    },
+    {
+      "seed": 8800031,
+      "baseline": 1768610,
+      "smart": 1768610,
+      "baselineSeconds": 7.0392814,
+      "smartSeconds": 10.5495026,
+      "baselineDecisions": 14,
+      "smartDecisions": 14
+    }
+  ],
+  "checkedAt": "2026-11-01T21:47:30.530Z",
+  "scope": "Candidate versus Balanced advisers on seeded full local-rule games. Not live profit or calibrated server performance.",
+  "code": {
+    "vorax/crates/vorax/src/smart.rs": "4764ce21c3e8a7e7959fe6a9fafe8492c93fa9d439425bbe195958cd858948f3",
+    "vorax/crates/vorax-cli/src/quality.rs": "b297ebdba0a5e54b2a795d9bfac4c1152a63085b833f54d1fee8569a0bf9e950",
+    "vorax/crates/vorax/src/bot.rs": "96a32b5753be972342e10edca30417883a4eee2348acb91e4618b5c1ab808b58",
+    "vorax/crates/vorax/src/advisor.rs": "cc47b8e7bd4757563d29be8454d72c2847fbf920ff632924515e108d2cefe61d"
+  },
+  "pairedCappedDifference": 16962.96875,
+  "approx95CI": [
+    -7403.30815476393,
+    41329.24565476393
+  ],
+  "baselineSeconds": 8.145780649999999,
+  "candidateSeconds": 13.358616856250002,
+  "releaseSelection": "Rejected; not enabled in 1.3.10. See overnight-progress-20261102.json for the control results and reason."
+}

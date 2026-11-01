@@ -1,0 +1,69 @@
+{
+  "checkedAt": "2026-11-01T22:03:13.390Z",
+  "scope": "Owned inventory, deterministic upgrade chains; not a profit measurement",
+  "counterexamples": [
+    {
+      "chests": [
+        2,
+        3,
+        2,
+        2
+      ],
+      "hand": [
+        213,
+        53
+      ],
+      "expected": 32
+    },
+    {
+      "chests": [
+        2,
+        2,
+        3,
+        3,
+        3
+      ],
+      "hand": [
+        223,
+        58,
+        222,
+        59
+      ],
+      "expected": 125
+    },
+    {
+      "chests": [
+        1,
+        1
+      ],
+      "hand": [
+        212,
+        54,
+        213,
+        53,
+        201
+      ],
+      "expected": 35
+    },
+    {
+      "chests": [
+        2,
+        5,
+        3,
+        5,
+        1
+      ],
+      "hand": [
+        51,
+        58,
+        51,
+        58
+      ],
+      "expected": 110
+    }
+  ],
+  "randomInventories": 256,
+  "bruteForceAgreement": true,
+  "orderIndependentCache": true,
+  "inputUnchanged": true
+}

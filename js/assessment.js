@@ -24,7 +24,8 @@
   function remaining(st){if(st.phase==='ended')return 0;return Math.max(0,features(st).reduce((sum,x,i)=>sum+x*data.weights[i],0));}
   const rainbows=st=>Math.min(10,st.vault.length+remaining(st));
   const reds=st=>st.cells.filter(c=>!c.sealed&&c.inmate&&c.inmate.tier===4&&!c.inmate.marked).length;
-  const score=(st,initial)=>rainbows(st)+.3*(st.vault.length-initial)+.25*reds(st);
+  // Once the run ends, remaining red inmates have no collectible value.
+  const score=(st,initial)=>rainbows(st)+.3*(st.vault.length-initial)+(st.phase==='ended'?0:.25*reds(st));
   const params=st=>({...solver().paramsFor(st),assessment:true,preySurvival:false,terminalGifts:false,giftAdaptive:false});
   function decide(st,P,rng,adaptive=true,policy){const S=solver(),c=st.pending[0];if(adaptive&&c&&c.kind==='gift'){let best=null;for(const id of c.options){let sum=0;for(let n=0;n<3;n++){const trial=S.clone(st);trial.rng=(rng()*4294967296)>>>0;if(S.apply(trial,{type:'choose',id}).ok)sum+=trial.vault.length+remaining(trial);}if(!best||sum>best.sum)best={id,sum};}return best?{type:'choose',id:best.id}:null;}return S.decide(st,P,rng,policy);}
   function playout(st,P,rng,until,policy){const S=solver();for(let i=0;i<400;i++){if(st.phase==='ended'||st.phase==='patrol'&&st.day>until&&!st.pending.length)return;const a=decide(st,P,rng,true,policy);if(!a)return;if(!S.apply(st,a).ok&&!(a.type!=='end'&&S.apply(st,{type:'end'}).ok))throw Error('Assessment playout rejected a legal continuation');}}

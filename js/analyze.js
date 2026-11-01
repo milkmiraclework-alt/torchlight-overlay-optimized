@@ -287,14 +287,16 @@
       return cell;
     });
 
-    // Prey marks: a Lion and the same-rarity meal it marked.
+    // Rarity can diverge after a mark (for example, Usurpation promotes one
+    // side). Existing marks survive while the same beasts remain on board.
+    st.tools = T.TOOL_IDS.filter((id) => m.tools.includes(id));
     st.prey = [];
     m.cells.forEach((c, n) => {
       if (c.kind !== 'inmate' || c.beast !== 'lion' || !c.prey) return;
       const lion = st.cells[n].inmate;
       const target = st.cells[c.prey.cell];
-      if (!target || !target.inmate || !T.canEat(st, lion, target.inmate)) {
-        problems.push(`The prey mark from cell ${L(n)} needs a same-rarity meal for the Lion in cell ${L(c.prey.cell)}.`);
+      if (!validPreyTarget(st, lion, target, c.prey)) {
+        problems.push(`The prey mark from cell ${L(n)} needs an open matching target in cell ${L(c.prey.cell)}.`);
         return;
       }
       if (st.prey.some((l) => [l.lion, l.prey].includes(target.inmate.id) || [l.lion, l.prey].includes(lion.id))) {
@@ -306,7 +308,6 @@
 
     st.vault = m.vault.filter((b) => T.BEASTS.includes(b)).map((beast) => ({ id: st.nextId++, beast, day: 1 }));
     st.cache = st.vault.length;
-    st.tools = T.TOOL_IDS.filter((id) => m.tools.includes(id));
     st.position = clamp(toInt(m.warden, 0), 0, T.CELL_COUNT - 1);
     st.chain = !!m.chainArmed;
     const need = (T.OBJECTIVES[m.objective] && T.OBJECTIVES[m.objective].need) || 0;
@@ -449,7 +450,7 @@
       if (!c.inmate) return { kind: 'empty' };
       const link = T.linkOf(st, c.inmate.id);
       const preyCell = link && link.lion === c.inmate.id ? T.cellOf(st, link.prey) : null;
-      return { kind: 'inmate', beast: c.inmate.beast, tier: Math.min(TOP_TIER, c.inmate.tier), ivory: !!c.ivory, prey: preyCell ? { cell: preyCell.n, rounds: link.rounds } : null, marked: !!c.inmate.marked, event };
+      return { kind: 'inmate', beast: c.inmate.beast, tier: Math.min(TOP_TIER, c.inmate.tier), ivory: !!c.ivory, prey: preyCell ? { cell: preyCell.n, rounds: link.rounds, beast: link.preyBeast } : null, marked: !!c.inmate.marked, event };
     });
     if (st.pending.length) {
       m.step = 'choice';
@@ -543,7 +544,7 @@
 
   const solver = { workers: null, failed: false, id: 0, starts: 0, resumed: 0, st: null, key: '', cacheKey: '', cached: false, instant: null, result: null, shares: null, meta: null, goal: '', forecastAlias: null, forecastHit: false, forecastResumed: false };
   // Bump for rule/strategy imports, retain across compatible UI-only fixes.
-  const SOLVER_CACHE_REVISION = '?v=20261101usurp-pool';
+  const SOLVER_CACHE_REVISION = '?v=20261102terminal-reward';
   const solverCache = FAST_DESKTOP && window.TartarusSolverCache ? window.TartarusSolverCache.create({ version: `mc-v4:giboork-0216:depth=4:rules=308b947:${SOLVER_CACHE_REVISION}:move=${MOVE_PLAYOUTS}:choice=${CHOICE_PLAYOUTS}` }) : null;
   const forecast = { sequence: 0, generation: 0, timer: 0, active: null, plan: null, queue: [], seen: new Set(), ready: new Set(), paused: false,
     families: new Map(),
@@ -1815,14 +1816,20 @@
     else setCell(n, { kind });
   }
 
-  // Ends prey marks that no longer point at a meal the Lion can eat.
+  function validPreyTarget(st, lion, target, mark) {
+    if (!lion || lion.beast !== 'lion' || !target || target.sealed || !target.inmate) return false;
+    if (mark.beast && mark.beast !== target.inmate.beast) return false;
+    return T.canEat(st, Object.assign({}, lion, { tier: target.inmate.tier }), target.inmate);
+  }
+
+  // Losing a target or changing its beast ends the mark; tier changes do not.
   function cleanPrey() {
     const { st } = buildState(Object.assign({}, model, { step: 'manage' }));
     model.cells.forEach((c, n) => {
       if (!c.prey) return;
       const lion = st.cells[n];
       const target = st.cells[c.prey.cell];
-      const ok = c.kind === 'inmate' && c.beast === 'lion' && target && target.inmate && T.canEat(st, lion.inmate, target.inmate);
+      const ok = c.kind === 'inmate' && validPreyTarget(st, lion.inmate, target, c.prey);
       if (!ok) model.cells[n] = Object.assign({}, c, { prey: null });
     });
   }

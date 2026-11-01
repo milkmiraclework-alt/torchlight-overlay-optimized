@@ -1,0 +1,21 @@
+{
+  "version": "1.3.10",
+  "beforeVersion": "1.2.1",
+  "checkedAt": "2026-11-01T21:41:23.853Z",
+  "planned": 1,
+  "completed": 1,
+  "blocked": [],
+  "beforeMean": 10,
+  "afterMean": 10,
+  "difference": 0,
+  "normal95": null,
+  "beforeFull": 1,
+  "afterFull": 1,
+  "goal": "Actual vaulted Rainbow capped at 10",
+  "setup": "1 independent synthetic 20-day seeds, rewards on, one reroll per instrument offer; both advisers play every action independently using the same unchanged game rules. Hidden future information is withheld. Single native MC stream per adviser; matching controller/quota semantics, not identical browser worker RNG streams.",
+  "before": "Frozen four-day Giboork assessment including the old ended red-inmate bonus, 2000/8000 per action",
+  "after": "Same four-day assessment and 2000/8000 budget; remove only the ended red-inmate bonus",
+  "limitations": "Small paired experiment, not a guarantee of improved Rainbow or actual user profit; this compares our old/new applications. Native evaluation parity is checked separately; this is not a full run of the closed Giboork app.",
+  "gameCapture": false,
+  "gameInput": false
+}

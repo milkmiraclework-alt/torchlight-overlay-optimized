@@ -26,8 +26,8 @@ fn all_targets_screened_and_more_samples_without_changing_the_board() {
             (Best::Refresh, Best::Refresh) | (Best::Nothing, Best::Nothing) => true,
             _ => false,
         };
-        if !same_action { assert!(result.diagnostics.switch_verified); }
-        if result.diagnostics.reference_retained { assert!(same_action); }
+        if !same_action { assert!(result.diagnostics.switch_verified || result.diagnostics.objective_rank_corrected); }
+        if result.diagnostics.reference_retained && !result.diagnostics.objective_rank_corrected { assert!(same_action); }
         if result.diagnostics.switch_verified {
             assert!(result.diagnostics.verification_futures >= 64);
             assert!(result.diagnostics.verification_gain > 2.0 * result.diagnostics.verification_error + 1_000.0);
@@ -135,4 +135,28 @@ fn deep_profile_has_a_distinct_budget_and_keeps_legal_actions() {
             assert!(best.targets.iter().all(|&t| screen.tanks[t as usize].is_some()));
         }
     }
+}
+
+#[test]
+fn final_goal_is_not_sacrificed_to_make_the_board_change() {
+    let screen=ScreenState {
+        tanks:(0..6).map(|i|Some(advisor::ScreenMonster{archetype:if i==0{vorax::Archetype::BoneSentry}else{vorax::Archetype::Agito},rarity:vorax::Rarity::Normal,activity:500,quantity:if i==0{280}else{284}})).collect(),
+        hand:vec!["Viviparous Hormone".into(),"Osteogenic Powder".into(),"Spinal Solution - Agito".into()],
+        instruments:vec!["Aberrant Sprout".into(),"Prismatic Liver".into(),"Beak of the Twice-Born".into()],instrument_rounds:Some(vec![1,4,8]),phase:ScreenPhase::Potion,round:Some(10),potion_refreshes:Some(0),instrument_refreshes:Some(0),shelley:Some(6)
+    };
+    let reference=advisor::advise_plan(&screen,None,false);
+    let Best::Card(old)=reference.best else{panic!("Expected potion")};assert_eq!(old.index,1,"Reference no-effect preference changed");
+    let result=smart::calculate(&screen,false);assert!(result.diagnostics.objective_rank_corrected);
+    let Best::Card(best)=result.advice.best else{panic!("Expected safe potion")};assert_eq!(best.no_effect,Some(true));assert_eq!(best.end.unwrap().activity,840000.);assert_eq!(best.end.unwrap().reached,1.);
+    let mut state=advisor::to_state(&screen,&mut Vec::new());let mut old_failures=0;
+    let policy=bot::Chooser::Ev(bot::Policy{samples:2,horizon:0,roll_samples:None,steer:None,value:Some(true)});
+    for seed in 1..=512 {
+        state.rng_state=seed;
+        for (safe,pick) in [(true,&best),(false,&old)] {
+            let after=bot::play_opt(&state,&bot::Opt::card(pick.index,&pick.targets));let end=bot::finish(&after,seed,&policy,&bot::Picker::Value);assert_eq!(end.phase,vorax::Phase::GameOver);
+            let score=vorax::game::ultimate_activity(&end);
+            if safe{assert!(score>=840000);}else if score<840000{old_failures+=1;}
+        }
+    }
+    assert!(old_failures>0,"Counterexample did not produce the avoidable final-goal loss");
 }

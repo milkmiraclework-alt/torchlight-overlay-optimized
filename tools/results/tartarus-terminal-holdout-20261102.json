@@ -1,0 +1,34 @@
+{
+  "version": "1.3.10",
+  "beforeVersion": "1.2.1",
+  "checkedAt": "2026-11-01T21:35:26.790Z",
+  "planned": 8,
+  "completed": 7,
+  "blocked": [
+    {
+      "seed": "TERMINAL-HOLDOUT-20261102-004",
+      "before": [
+        "The prey mark from cell 08 needs a same-rarity meal for the Lion in cell 07."
+      ],
+      "after": [
+        "The prey mark from cell 08 needs a same-rarity meal for the Lion in cell 07."
+      ]
+    }
+  ],
+  "beforeMean": 7.428571428571429,
+  "afterMean": 7.285714285714286,
+  "difference": -0.14285714285714285,
+  "normal95": [
+    -0.6540648631952979,
+    0.36835057748101213
+  ],
+  "beforeFull": 2,
+  "afterFull": 2,
+  "goal": "Actual vaulted Rainbow capped at 10",
+  "setup": "8 independent synthetic 20-day seeds, rewards on, one reroll per instrument offer; both advisers play every action independently using the same unchanged game rules. Hidden future information is withheld. Single native MC stream per adviser; matching controller/quota semantics, not identical browser worker RNG streams.",
+  "before": "Frozen four-day Giboork assessment including the old ended red-inmate bonus, 2000/8000 per action",
+  "after": "Same four-day assessment and 2000/8000 budget; remove only the ended red-inmate bonus",
+  "limitations": "Small paired experiment, not a guarantee of improved Rainbow or actual user profit; this compares our old/new applications. Native evaluation parity is checked separately; this is not a full run of the closed Giboork app.",
+  "gameCapture": false,
+  "gameInput": false
+}

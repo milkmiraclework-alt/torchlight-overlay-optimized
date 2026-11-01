@@ -1,0 +1,108 @@
+{
+  "checkedAt": "2026-11-01T22:03:21.498Z",
+  "version": "1.3.10",
+  "scope": "Constructed final-day gift position, fixed 8000 rollout budget; not a full-run profit measurement",
+  "gameCapture": false,
+  "gameInput": false,
+  "activeAssessmentUnchanged": true,
+  "endedRedBonusRemoved": true,
+  "baseline": [
+    {
+      "id": "wine",
+      "mean": 1.6282687499998731,
+      "rainbows": 0.676625
+    },
+    {
+      "id": "horn",
+      "mean": 1.549999999999838,
+      "rainbows": 1
+    },
+    {
+      "id": "brand",
+      "mean": 1.242356249999991,
+      "rainbows": 0.427125
+    },
+    {
+      "id": "ring",
+      "mean": 1.2268562499999955,
+      "rainbows": 0.36775
+    }
+  ],
+  "corrected": [
+    {
+      "seed": 117,
+      "options": [
+        {
+          "id": "horn",
+          "mean": 1.2999999999999465,
+          "rainbows": 1
+        },
+        {
+          "id": "wine",
+          "mean": 0.879612500000081,
+          "rainbows": 0.676625
+        },
+        {
+          "id": "brand",
+          "mean": 0.5552625000000355,
+          "rainbows": 0.427125
+        },
+        {
+          "id": "ring",
+          "mean": 0.4780750000000248,
+          "rainbows": 0.36775
+        }
+      ]
+    },
+    {
+      "seed": 937,
+      "options": [
+        {
+          "id": "horn",
+          "mean": 1.2999999999999465,
+          "rainbows": 1
+        },
+        {
+          "id": "wine",
+          "mean": 0.8786375000000808,
+          "rainbows": 0.675875
+        },
+        {
+          "id": "brand",
+          "mean": 0.5624125000000365,
+          "rainbows": 0.432625
+        },
+        {
+          "id": "ring",
+          "mean": 0.48002500000002507,
+          "rainbows": 0.36925
+        }
+      ]
+    },
+    {
+      "seed": 8819,
+      "options": [
+        {
+          "id": "horn",
+          "mean": 1.2999999999999465,
+          "rainbows": 1
+        },
+        {
+          "id": "wine",
+          "mean": 0.8815625000000812,
+          "rainbows": 0.678125
+        },
+        {
+          "id": "brand",
+          "mean": 0.558675000000036,
+          "rainbows": 0.42975
+        },
+        {
+          "id": "ring",
+          "mean": 0.49156250000002666,
+          "rainbows": 0.378125
+        }
+      ]
+    }
+  ]
+}

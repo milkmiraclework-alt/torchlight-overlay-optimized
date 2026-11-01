@@ -1,5 +1,5 @@
 {
-  "goalStatus": "active",
+  "goalStatus": "implementation_verified",
   "scope": "Improve Vorax, Tartarus and especially Arcana decisions; establish reliable Arcana capture and verify full release without regressions.",
   "developmentVersion": "1.3.10",
   "captureChanges": [
@@ -12,13 +12,52 @@
     "43 source check groups passed, including GPU protocol/cancellation and real GPU-window capture.",
     "Owned WebGL window changed colors twice; the second update was correctly captured behind an owned black cover.",
     "Actual unpacked application captured saved game pixels from an owned window using Windows Graphics Capture, read the complete hand/die/life and produced solver advice after initial path confirmation.",
-    "Normal Arcana packaged lifecycle/correction/overlay test passed."
+    "Normal Arcana packaged lifecycle/correction/overlay test passed.",
+    "Forced Chromium fallback and normal Arcana packaged lifecycle tests both passed.",
+    "Candidate exact upgrade valuation agrees with every-order enumeration on four counterexamples and 256 random inventories.",
+    "32-board owned-policy pilot: 97.90625 baseline vs 98.34375 candidate, paired +0.4375 with approximate 95% interval [-1.6764,2.5514], zero cutoffs. This is not evidence of a reliable overall gain.",
+    "Arcana exact-endgame held-out comparison completed 64 long local-rule paths with identical final scores to baseline (110.328125 each, zero cutoffs); separate three oracle-checked tactical cases improve 64 to 66.4186, 19 to 19.6651, and 17 to 18 points.",
+    "Tartarus terminal assessment root check passed on three 8000-sample seeds and exact JS/Rust parity; original active 89-state Giboork evaluation unchanged.",
+    "Previously blocked Prey full-run seed reran to completion after reconstruction fix: 10 Rainbow for both old and new score versions.",
+    "Vorax objective-fix full-game control: 64 games, capped mean 782651.84375 and reach 71.875% for both; this is not a measured whole-run gain."
   ],
   "remaining": [
-    "Check forced Chromium fallback and full packaged suite after final edits.",
-    "Audit Arcana upgrade pruning and terminal potential; measure candidates against frozen baseline in sandbox/arcana-brain-baseline-20261102 before promoting strategy changes.",
-    "Audit and improve Vorax and Tartarus decisions with rule/parity guards and quality comparisons; preserve objectives and budgets.",
-    "Build final installers, verify manifests/hashes and publish only after final regression gates.",
-    "Do not claim live-game capture verification: all tests capture owned windows, not the user's game."
-  ]
+    "Publish the verified 1.3.10 EXEs and verify uploaded hashes and release target."
+  ],
+  "captureCommit": "1ea5483",
+  "nextAudits": [
+    "Vorax: compare actual Smart policy against reference/stronger settings on final run outcomes; review reconstruction of temporary potion-kit state and thresholds before changing logic.",
+    "Tartarus: review confirmed incident-state preservation, continuation policy and final Rainbow reward selection with native/JS parity."
+  ],
+  "currentBuild": "Final 1.3.10 Portable and Setup verified: 47 source groups and 11 packaged groups; strengthened GPU hand/die/life assertions passed on user frame and reference frame, latter through actual advice.",
+  "rejectedCandidates": [
+    {
+      "name": "Exact owned-upgrade valuation inside general rollout heuristic",
+      "reason": "64 held-out long paths: 108.375 baseline vs 106.328125 candidate, difference -2.046875, approximate 95% interval [-4.2938,0.2000]. Production integration reverted; diagnostic remains under tools."
+    },
+    {
+      "name": "Vorax Deep as default",
+      "reason": "32 full runs: capped mean 816807.40625 Balanced vs 816639.375 Deep; calculation time 8.45s vs 23.73s per simulated game. No supported quality gain for the extra cost."
+    },
+    {
+      "name": "Vorax Wide default (max512 futures, inner2)",
+      "reason": "128 held-out full games: capped mean 789114.59375 Balanced vs 787049.6875 Wide, delta -2064.90625; approx95 interval [-11108.60,6978.79]; runtime 8.55 vs13.80 simulated-game seconds. Experimental profile removed."
+    }
+  ],
+  "confirmedFixes": [
+    "Tartarus ended-state red-inmate bonus removed: a constructed final-day 8000-rollout gift decision now picks Horn with 1 Rainbow instead of Wine ~0.68; native/JS parity and 89 active pinned reference states pass.",
+    "Tartarus existing Prey marks survive unequal-rarity promotions; held Crown is restored before validating. Previously blocked full-run seed 004 now finishes at 10 Rainbow.",
+    "Arcana bounded exact final-region planner agrees with independent oracle on 128 inventories and improves three frozen counterexamples. Hidden/random/oversized cases fall back to Monte Carlo.",
+    "Vorax objective rank: respect completed final-score estimates instead of the reference preference for a changing potion. Synthetic round-10 counterexample has two no-effect cards preserving guaranteed 840k, while the previously recommended Osteogenic Powder has avoidable failure risk. Integration test and full-run comparison in progress.",
+    "Vorax completed-score preference correction passed 512 engine seeds and 64 independent full games with unchanged capped mean/reach; the constructed final-round avoidable failure is eliminated."
+  ],
+  "activeProcesses": [],
+  "pendingProfileDecision": "Resolved: retain Balanced 256/inner2; Deep and Wide expansion not promoted.",
+  "finalLocalAudit": "tools/results/release-audit.json",
+  "completedChecks": {
+    "source": 47,
+    "packaged": 11,
+    "initialArcanaConfirmationRetained": true,
+    "realGameCapturePerformed": false
+  }
 }

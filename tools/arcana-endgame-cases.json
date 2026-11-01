@@ -1,0 +1,282 @@
+{
+  "exact": 128,
+  "cases": [
+    {
+      "state": {
+        "position": 11,
+        "life": 2,
+        "die": 1,
+        "rerollBudget": 3,
+        "hand": [
+          23,
+          204,
+          11,
+          3
+        ],
+        "chests": [
+          5,
+          3,
+          2
+        ],
+        "path": [
+          {
+            "used": false,
+            "kind": "trap",
+            "amount": 1
+          },
+          {
+            "used": false,
+            "kind": "empty"
+          },
+          {
+            "used": false,
+            "kind": "trap",
+            "amount": 1
+          },
+          {
+            "used": false,
+            "kind": "empty"
+          },
+          {
+            "used": false,
+            "kind": "empty"
+          },
+          {
+            "used": false,
+            "kind": "chest",
+            "tier": 1
+          },
+          {
+            "used": false,
+            "kind": "chest",
+            "tier": 3
+          },
+          {
+            "used": false,
+            "kind": "chest",
+            "tier": 3
+          },
+          {
+            "used": false,
+            "kind": "chest",
+            "tier": 5
+          },
+          {
+            "used": false,
+            "kind": "chest",
+            "tier": 6
+          },
+          {
+            "used": false,
+            "kind": "empty"
+          },
+          {
+            "used": true,
+            "kind": "empty"
+          }
+        ],
+        "confirmed": true,
+        "lengthConfirmed": true,
+        "pending": null
+      },
+      "baseline": {
+        "kind": "card",
+        "index": 0,
+        "id": 23,
+        "selected": 12
+      },
+      "baselineExactValue": 64,
+      "candidate": {
+        "kind": "reroll"
+      },
+      "candidateExactValue": 66.41857990159656,
+      "states": 1794
+    },
+    {
+      "state": {
+        "position": 11,
+        "life": 1,
+        "die": 4,
+        "rerollBudget": 3,
+        "hand": [
+          1,
+          13,
+          3,
+          212
+        ],
+        "chests": [
+          3,
+          1,
+          5
+        ],
+        "path": [
+          {
+            "used": false,
+            "kind": "trap",
+            "amount": 1
+          },
+          {
+            "used": false,
+            "kind": "heal",
+            "amount": 1
+          },
+          {
+            "used": false,
+            "kind": "chest",
+            "tier": 6
+          },
+          {
+            "used": false,
+            "kind": "empty"
+          },
+          {
+            "used": false,
+            "kind": "empty"
+          },
+          {
+            "used": false,
+            "kind": "chest",
+            "tier": 3
+          },
+          {
+            "used": false,
+            "kind": "empty"
+          },
+          {
+            "used": false,
+            "kind": "chest",
+            "tier": 4
+          },
+          {
+            "used": false,
+            "kind": "heal",
+            "amount": 1
+          },
+          {
+            "used": false,
+            "kind": "chest",
+            "tier": 2
+          },
+          {
+            "used": false,
+            "kind": "chest",
+            "tier": 1
+          },
+          {
+            "used": true,
+            "kind": "empty"
+          }
+        ],
+        "confirmed": true,
+        "lengthConfirmed": true,
+        "pending": null
+      },
+      "baseline": {
+        "kind": "card",
+        "index": 1,
+        "id": 13
+      },
+      "baselineExactValue": 19,
+      "candidate": {
+        "kind": "reroll"
+      },
+      "candidateExactValue": 19.66510202331962,
+      "states": 666
+    },
+    {
+      "state": {
+        "position": 8,
+        "life": 2,
+        "die": 4,
+        "rerollBudget": 3,
+        "hand": [
+          5,
+          12,
+          13,
+          1
+        ],
+        "chests": [
+          4,
+          4,
+          3
+        ],
+        "path": [
+          {
+            "used": false,
+            "kind": "chest",
+            "tier": 4
+          },
+          {
+            "used": false,
+            "kind": "trap",
+            "amount": 1
+          },
+          {
+            "used": false,
+            "kind": "chest",
+            "tier": 5
+          },
+          {
+            "used": false,
+            "kind": "heal",
+            "amount": 1
+          },
+          {
+            "used": false,
+            "kind": "trap",
+            "amount": 1
+          },
+          {
+            "used": false,
+            "kind": "chest",
+            "tier": 2
+          },
+          {
+            "used": false,
+            "kind": "chest",
+            "tier": 2
+          },
+          {
+            "used": false,
+            "kind": "empty"
+          },
+          {
+            "used": true,
+            "kind": "empty"
+          },
+          {
+            "used": false,
+            "kind": "trap",
+            "amount": 1
+          },
+          {
+            "used": false,
+            "kind": "chest",
+            "tier": 3
+          },
+          {
+            "used": false,
+            "kind": "trap",
+            "amount": 1
+          }
+        ],
+        "confirmed": true,
+        "lengthConfirmed": true,
+        "pending": null
+      },
+      "baseline": {
+        "kind": "card",
+        "index": 0,
+        "id": 5
+      },
+      "baselineExactValue": 17,
+      "candidate": {
+        "kind": "card",
+        "index": 2,
+        "id": 13
+      },
+      "candidateExactValue": 18,
+      "states": 1686
+    }
+  ]
+}

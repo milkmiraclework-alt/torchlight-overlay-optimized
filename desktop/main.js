@@ -1237,6 +1237,7 @@ function registerHotkeys() {
       notify:state=>{lastArcanaState=state;send('overlay','arcana:state',state);send('arcana','arcana:state',state);},
       fallback:async()=>{
         if(!game.running||suite?.mode!=='arcana'||settings.consent?.withdrawn)throw Error('Capture stopped');
+        if(win32?.minimized(game.hwnd))throw Error('Restore the game window before reading Arcana.');
         const requestedWindow=game.hwnd;
         if(!(TEST&&flag('arcana-test-fallback'))){
           try{return await arcanaCapture.grab(requestedWindow);}catch(error){

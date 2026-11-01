@@ -1,6 +1,6 @@
 {
   "version": "1.3.10",
-  "checkedAt": "2026-11-01T21:13:46.446Z",
+  "checkedAt": "2026-11-01T22:04:29.448Z",
   "scope": "Existing saved game image and in-memory resizes; labelled manually, no capture/input. Resolution checks do not prove arbitrary UI scales or live animation coverage.",
   "gameCapture": false,
   "gameInput": false,
@@ -30,7 +30,7 @@
       "positionDisplayed": 42,
       "knownTiles": 16,
       "distantHealRecognised": true,
-      "readingMs": 975.7605000000001,
+      "readingMs": 783.2601999999999,
       "staleEditRejected": true,
       "animationDoesNotCompleteMove": true
     },
@@ -56,7 +56,7 @@
       "positionDisplayed": 42,
       "knownTiles": 16,
       "distantHealRecognised": false,
-      "readingMs": 1191.2650000000003,
+      "readingMs": 1061.4038,
       "staleEditRejected": true,
       "animationDoesNotCompleteMove": true
     },
@@ -82,7 +82,7 @@
       "positionDisplayed": 42,
       "knownTiles": 17,
       "distantHealRecognised": true,
-      "readingMs": 838.3501000000006,
+      "readingMs": 977.3456999999989,
       "staleEditRejected": true,
       "animationDoesNotCompleteMove": true
     }

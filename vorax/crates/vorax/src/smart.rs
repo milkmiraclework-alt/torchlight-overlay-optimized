@@ -49,6 +49,9 @@ pub struct Diagnostics {
     pub verification_error: f64,
     pub switch_verified: bool,
     pub reference_retained: bool,
+    /// Undo the reference's preference for a changing move when completed
+    /// futures give a strictly better final score to a no-effect card.
+    pub objective_rank_corrected: bool,
 }
 
 #[derive(Clone, Debug, Serialize)]
@@ -137,6 +140,17 @@ fn chosen_arm(work: &Work, screen: &ScreenState, best: &Best) -> Option<usize> {
             _ => false,
         }),
     }
+}
+
+fn respect_final_score(advice: &mut Advice) -> bool {
+    let Best::Card(current) = &advice.best else { return false };
+    let Some(value) = current.end.map(|e| e.activity) else { return false };
+    let alternative = advice.ranking.iter().filter(|r| r.no_effect == Some(true) && r.end.is_some_and(|e| e.activity > value + 1e-9))
+        .max_by(|a,b| a.end.unwrap().activity.total_cmp(&b.end.unwrap().activity));
+    let Some(best) = alternative.cloned() else { return false };
+    advice.best = Best::Card(best);
+    advice.ranking.sort_by(|a,b| b.end.unwrap().activity.total_cmp(&a.end.unwrap().activity));
+    true
 }
 
 fn verify_switch(work: &Work, incumbent: usize, challenger: usize, parallel: bool, diagnostics: &mut Diagnostics) -> bool {
@@ -242,6 +256,7 @@ pub fn calculate_profile(screen: &ScreenState, parallel: bool, profile: Profile)
     diagnostics.max_futures = samples.iter().map(|s| s.tally.n).max().unwrap_or(0);
     let tallies: Vec<Tally> = samples.iter().map(|s| s.tally).collect();
     let mut advice = advisor::conclude(&work, screen, unknown.clone(), start, &tallies);
+    diagnostics.objective_rank_corrected = respect_final_score(&mut advice);
     // Recover the original decision from the already completed first 64 futures
     // whenever the continuation policy matches. Only Deep potions need another
     // reference calculation because their continuation policy is different.
@@ -252,7 +267,8 @@ pub fn calculate_profile(screen: &ScreenState, parallel: bool, profile: Profile)
     } else {
         samples.iter().take(count).map(|s| Tally { goal: s.blocks.iter().take(8).sum::<f64>() * BLOCK as f64, reached: 0, n: 64 }).collect()
     };
-    let reference = advisor::conclude(&original, screen, unknown, start, &original_tallies);
+    let mut reference = advisor::conclude(&original, screen, unknown, start, &original_tallies);
+    diagnostics.objective_rank_corrected |= respect_final_score(&mut reference);
     if let (Some(incumbent), Some(challenger)) = (chosen_arm(&work, screen, &reference.best), chosen_arm(&work, screen, &advice.best)) {
         if incumbent != challenger {
             diagnostics.switch_verified = verify_switch(&work, incumbent, challenger, parallel, &mut diagnostics);

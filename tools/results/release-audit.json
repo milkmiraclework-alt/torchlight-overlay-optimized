@@ -1,0 +1,53 @@
+{
+  "version": "1.3.10",
+  "checkedAt": "2026-11-01T22:10:24.257Z",
+  "sourceGroups": 47,
+  "packagedGroups": 11,
+  "arcana": {
+    "freshGpuCapture": true,
+    "updatesBehindBlackCover": true,
+    "minimizedRejected": true,
+    "userHandChecksCleared": true,
+    "adviceAfterInitialPathConfirmation": true,
+    "exactEndgameOracleAgreement": true,
+    "improvedCounterexamples": [
+      {
+        "before": 64,
+        "after": 66.41857990159656
+      },
+      {
+        "before": 19,
+        "after": 19.66510202331962
+      },
+      {
+        "before": 17,
+        "after": 18
+      }
+    ]
+  },
+  "tartarus": {
+    "terminalRewardCorrected": true,
+    "activeReferenceModelPreserved": true,
+    "preyRebuildChecked": true,
+    "readerBaselineRetained": true
+  },
+  "vorax": {
+    "finalObjectivePreferenceCorrected": true,
+    "fastBalancedProfileRetained": true
+  },
+  "artifacts": [
+    {
+      "file": "Torchlight-Overlay-Portable-1.3.10-x64.exe",
+      "bytes": 129518188,
+      "sha256": "6290070818a592d98d47411d7fbb3f0cffd7a4c7724e26366f59deb4b2333a9e"
+    },
+    {
+      "file": "Torchlight-Overlay-Setup-1.3.10-x64.exe",
+      "bytes": 129684046,
+      "sha256": "f15df4d4124113cdc60f00bb5da35fad9d9bd57975bc58cd8ff1c36c3cce726c"
+    }
+  ],
+  "appAsarSha256": "53fcaef5c40b7369c37284ae343d138dbe27acae2a813c9e5c5153af2d20d827",
+  "portableDoubleLaunchVerified": true,
+  "scope": "Saved frames, owned GPU test windows and local-rule simulations. No live-game capture/input, no claim of universal hardware/screen support or verified profit increase. Initial Arcana board confirmation remains required."
+}

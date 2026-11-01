@@ -1,0 +1,26 @@
+{
+  "checkedAt": "2026-11-01T21:55:33.571Z",
+  "scope": "Constructed final-potion board; embedded rules, 512 engine seeds checked in Rust test",
+  "before": {
+    "index": 1,
+    "targets": [],
+    "value": 837764,
+    "end": {
+      "activity": 837764.2421875,
+      "reached": 0.85546875
+    }
+  },
+  "after": {
+    "index": 2,
+    "targets": [],
+    "value": 840000,
+    "end": {
+      "activity": 840000,
+      "reached": 1
+    },
+    "noEffect": true
+  },
+  "objectiveRankCorrected": true,
+  "gameCapture": false,
+  "gameInput": false
+}

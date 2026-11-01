@@ -1,14 +1,15 @@
 {
-  "checkedAt": "2026-11-01T21:12:48.147Z",
+  "checkedAt": "2026-11-01T22:03:17.362Z",
   "gameCapture": false,
   "gameInput": false,
   "ownedWebGLWindow": true,
   "liveColorsVerified": 3,
   "updatesBehindBlackCover": true,
+  "minimizedWindowRejected": true,
   "zeroCaptureChildren": true,
   "times": [
-    577.6490999999999,
-    579.6415000000002,
-    569.6165999999998
+    444.5890999999999,
+    441.2808000000002,
+    494.99440000000004
   ]
 }

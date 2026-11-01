@@ -254,5 +254,6 @@ pub fn reds(s: &State) -> usize {
         .count()
 }
 pub fn score(s: &State, initial_vault: usize) -> f64 {
-    rainbows(s) + 0.3 * (s.vault.len() as f64 - initial_vault as f64) + 0.25 * reds(s) as f64
+    rainbows(s) + 0.3 * (s.vault.len() as f64 - initial_vault as f64)
+        + if s.phase == Phase::Ended { 0. } else { 0.25 * reds(s) as f64 }
 }
