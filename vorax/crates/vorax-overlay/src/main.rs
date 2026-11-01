@@ -20,6 +20,11 @@ pub fn arg<T: std::str::FromStr>(args: &[String], name: &str) -> Option<T> {
 
 fn main() {
     let args: Vec<String> = std::env::args().skip(1).collect();
+    #[cfg(windows)]
+    if args.iter().any(|a| a == "--capture-window") {
+        if let Err(e) = app::capture_window(&args) { eprintln!("{e}"); std::process::exit(1); }
+        return;
+    }
     if let Some(i) = args.iter().position(|a| a == "--preview") {
         let (Some(input), Some(output)) = (args.get(i + 1), args.get(i + 2)) else {
             eprintln!("usage: vorax-overlay --preview <screenshot.png> <out.png> [--shelley N]");

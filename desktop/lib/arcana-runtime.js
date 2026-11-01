@@ -3,13 +3,14 @@
 // Nothing runs outside Arcana or after the player's capture consent is withdrawn.
 const {Worker}=require('node:worker_threads');
 const path=require('node:path');
-function create({game,library,notify,note=()=>{},WorkerClass=Worker,fixture=null,fallback=null}){
+function create({game,library,notify,note=()=>{},WorkerClass=Worker,fixture=null,fallback=null,captureFirst=false,cancelCapture=()=>{},captureInfo=()=>({children:0})}){
  let worker=null,active=false,closed=false,revision=0,request=0,timer=null,last=null,resume=null,lastHwnd=0,fallbackReads=0;
  const pending=new Map(),retiring=new Set();
  let animationTypes=[];
  let lastCheck='',lastCheckAt=0;
  function publish(value){last=value;notify(value);}
  function stop(){
+  cancelCapture();
   revision++;clearTimeout(timer);timer=null;animationTypes=[];lastCheck='';lastCheckAt=0;
   const old=worker;worker=null;
   if(old){const done=old.terminate();retiring.add(done);Promise.resolve(done).finally(()=>retiring.delete(done));}
@@ -18,7 +19,7 @@ function create({game,library,notify,note=()=>{},WorkerClass=Worker,fixture=null
  function start(){
   if(worker||!active||closed)return;
   const hwnd=Number(game().window);if(hwnd!==lastHwnd)resume=null;lastHwnd=hwnd;
-  const current=new WorkerClass(path.join(__dirname,'arcana/worker.js'),{workerData:{library,hwnd,fixture,resume}});worker=current;
+  const current=new WorkerClass(path.join(__dirname,'arcana/worker.js'),{workerData:{library,hwnd,fixture,resume,captureFirst}});worker=current;
   current.on('message',message=>{
    if(current!==worker)return;
    if(message.id){const p=pending.get(message.id);if(p){pending.delete(message.id);clearTimeout(p.timer);message.error?p.reject(Error(message.error)):p.resolve(message.result);}return;}
@@ -44,7 +45,7 @@ function create({game,library,notify,note=()=>{},WorkerClass=Worker,fixture=null
   return new Promise((resolve,reject)=>{const t=setTimeout(()=>{pending.delete(id);reject(Error('Arcana request timed out'));},8000);pending.set(id,{resolve,reject,timer:t});worker.postMessage({id,cmd,...args});});
  }
  return {
-  sync(on){on=!!on&&!closed;if(on===active)return;active=on;if(!on){stop();last=null;notify(null);}else{publish({phase:'waiting'});schedule();}},
+  sync(on){on=!!on&&!closed;if(on===active){if(on&&worker&&Number(game().window)!==lastHwnd){stop();resume=null;publish({phase:'waiting'});schedule();}return;}active=on;if(!on){stop();last=null;notify(null);}else{publish({phase:'waiting'});schedule();}},
   feed(lines,{initial=false}={}){
    if(!active)return;
    // Exact game UI triggers are supplied by the Arcana event parser. Asset
@@ -71,7 +72,7 @@ function create({game,library,notify,note=()=>{},WorkerClass=Worker,fixture=null
    if(!['correct','calibrate','reset'].includes(cmd))throw Error('Unsupported Arcana command');
    return call(cmd,{value:args});
   },
-  info:()=>({active,running:!!worker,pending:pending.size,retiring:retiring.size,phase:last?.phase||'off',revision,fallbackReads}),
+  info:()=>({active,running:!!worker,pending:pending.size,retiring:retiring.size,phase:last?.phase||'off',revision,fallbackReads,captureChildren:captureInfo().children}),
   close(){closed=true;active=false;stop();}
  };
 }

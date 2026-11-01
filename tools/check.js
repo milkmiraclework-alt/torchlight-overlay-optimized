@@ -6,6 +6,8 @@ const root=path.resolve(__dirname,'..'),jobs=[
  ['arcana-exit',['tools/arcana-exit-check.js']],
  ['arcana-runtime',['tools/arcana-runtime-check.js']],
  ['native-capture',['tools/native-capture-check.js']],
+ ['window-capture',['tools/window-capture-check.js']],
+ ['gpu-capture',['tools/wgc-window-check.js']],
  ['native-screen',['tools/native-screen-check.js']],
  ['assessment',['tools/assessment-check.js']],
  ['tartarus-baseline',['tools/tartarus-baseline-check.js']],

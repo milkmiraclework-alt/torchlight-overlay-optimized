@@ -26,6 +26,10 @@ const pause=ms=>new Promise(r=>setTimeout(r,ms));
   app.sync(false);allowedGame={window:456};app.sync(true);app.read();assert.equal(workers[2].options.workerData.resume,null,'Another window inherited the previous board');
   const promise=app.command('correct',{});app.sync(false);await assert.rejects(promise,/stopped/);await pause(1);assert.equal(app.info().retiring,0);assert.equal(app.info().pending,0);
   app.close();assert.ok(workers.every(w=>w.stopped));await assert.rejects(app.command('correct',{}),/Enable/);
+  let cancelled=0;const switched=create({game:()=>allowedGame,library:'owned.dll',WorkerClass:Fake,notify(){},captureFirst:true,cancelCapture:()=>cancelled++});
+  switched.sync(true);switched.read();const old=workers.at(-1);assert.equal(old.options.workerData.captureFirst,true);
+  allowedGame={window:789};switched.sync(true);assert.equal(old.stopped,true,'Active window change retained old capture worker');assert(cancelled>0);
+  switched.read();assert.equal(workers.at(-1).options.workerData.hwnd,789);assert.equal(workers.at(-1).options.workerData.resume,null);switched.close();
   console.log('PASS: Arcana shared capture consent, stopped/stale workers, fallback isolation, state retention per game window, immediate advice invalidation and pending request cleanup.');
  }finally{app.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});

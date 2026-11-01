@@ -3,6 +3,7 @@ const cp=require('node:child_process'),fs=require('node:fs'),path=require('node:
 const exe=path.join(root,'desktop/dist/builds',version,'win-unpacked/Torchlight Overlay.exe');
 const jobs=[['arcana',['tools/arcana-overlay-check.js',exe]],['arcana-fallback',['tools/arcana-overlay-check.js',exe,'--fallback']],['suite',['tools/suite-overlay-check.js',exe]],['overlay',['tools/overlay-check.js','--standalone',exe,'--forecast']],['lifecycle',['tools/overlay-check.js','--standalone',exe,'--worker-lifecycle-only']],['instruments',['tools/overlay-check.js','--standalone',exe,'--instruments-only']],['updates',['tools/updates-overlay-check.js',exe]],['portable',['tools/standalone-smoke.js']]];
 const at=process.argv.indexOf('--frames');if(at>=0)for(const [,args]of jobs)if(args[0]==='tools/overlay-check.js')args.push('--frames',path.resolve(process.argv[at+1]));
+const arcanaAt=process.argv.indexOf('--arcana-frame');if(arcanaAt>=0)jobs.push(['arcana-game',['tools/arcana-overlay-check.js',exe,'--game-frame',path.resolve(process.argv[arcanaAt+1])]]);
 if(at>=0){const folder=path.resolve(process.argv[at+1]),frame=fs.readdirSync(folder).find(f=>f.endsWith('.webp')&&fs.existsSync(path.join(folder,f+'.rgba')));if(!frame)throw Error('Native integration needs a saved RGBA frame');jobs.push(['native-reader',['tools/overlay-check.js','--standalone',exe,'--native-reader-only','--native-fixture',path.join(folder,frame)]]);}
 else if(process.argv.includes('--verify-only'))jobs.push(['native-reader',[]]);
 fs.mkdirSync(path.join(root,'sandbox/packaged'),{recursive:true});

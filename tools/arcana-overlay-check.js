@@ -17,7 +17,11 @@ async function connect(url){
  let output='',page,overlay,arcana;
  const env={...process.env};delete env.ELECTRON_RUN_AS_NODE;
  const forcedFallback=process.argv.includes('--fallback');
- const child=spawn(exe,['--test','--offscreen','--offline-check','--remote-debugging-port=0','--game-title=^ArcanaOverlayCheckOnly$',`--user-data=${profile}`,`--log=${log}`,`--test-window=${html}`,...(forcedFallback?['--arcana-test-fallback']:[])],{windowsHide:true,stdio:['pipe','pipe','pipe'],env});
+ const gameFrameAt=process.argv.indexOf('--game-frame');let gameFrame=null;
+ if(gameFrameAt>=0){const prefix=path.resolve(process.argv[gameFrameAt+1]),meta=JSON.parse(fs.readFileSync(prefix+'.json','utf8').replace(/^\uFEFF/,'')),pixels=fs.readFileSync(prefix+'.rgba');gameFrame=meta;
+  fs.writeFileSync(html,`<!doctype html><title>ArcanaOverlayCheckOnly</title><style>html,body{margin:0;width:100%;height:100%;overflow:hidden}canvas{width:100%;height:100%}</style><canvas width="${meta.width}" height="${meta.height}"></canvas><script>const bytes=Uint8ClampedArray.from(atob('${pixels.toString('base64')}'),c=>c.charCodeAt(0));document.querySelector('canvas').getContext('2d').putImageData(new ImageData(bytes,${meta.width},${meta.height}),0,0);</script>`);
+ }
+  const child=spawn(exe,['--test','--offscreen','--offline-check','--remote-debugging-port=0','--game-title=^ArcanaOverlayCheckOnly$',`--user-data=${profile}`,`--log=${log}`,`--test-window=${html}`,...(forcedFallback?['--arcana-test-fallback']:[]),...(gameFrame?['--test-window-visible','--test-window-frameless',`--test-window-width=${gameFrame.width}`,`--test-window-height=${gameFrame.height}`]:[])],{windowsHide:true,stdio:['pipe','pipe','pipe'],env});
  child.stdout.on('data',b=>output+=b);child.stderr.on('data',b=>output+=b);
  const wait=async(fn,label,limit=400)=>{for(let i=0;i<limit;i++){const result=await fn();if(result)return result;if(child.exitCode!==null)throw Error(output);await pause(50);}throw Error(label+'\n'+output);};
  try{
@@ -35,6 +39,16 @@ async function connect(url){
   const target=await wait(async()=>{const ts=await targets();return ts.find(t=>t.url.endsWith('/desktop/lib/arcana.html'));},'No Arcana correction page');arcana=await connect(target.webSocketDebuggerUrl);
   await wait(()=>arcana.evaluate("typeof window.TartarusDesktop!=='undefined'&&document.readyState==='complete'"),'Arcana page did not finish loading');
   const state=await arcana.evaluate("TartarusDesktop.arcana('get')");assert.equal(state.active,true);assert.equal(state.state.model.confirmed,false);assert.ok(state.state.model.frameKey);
+  if(gameFrame){
+   assert.equal(state.state.recognition.capture,'windows-graphics-capture','Actual GPU capture was bypassed');
+   assert.deepEqual(state.state.model.hand,[1,204,213,201]);assert.equal(state.state.model.die,1);assert.equal(state.state.model.life,2);
+   await arcana.evaluate(`TartarusDesktop.arcana('correct',${JSON.stringify({...state.state.model,position:41,lengthConfirmed:true,confirmed:true})})`);
+   await wait(()=>arcana.evaluate("TartarusDesktop.arcana('get').then(s=>s.state.phase==='advice')"),'Captured game pixels did not produce advice');
+   await page.evaluate("TartarusDesktop.setConsent({withdrawn:true,at:new Date().toISOString()})");
+   await wait(()=>page.evaluate("TartarusDesktop.suiteInfo().then(s=>!s.arcana.running&&s.arcana.retiring===0&&s.arcana.captureChildren===0)"),'GPU capture child survived stop');
+   fs.writeFileSync(path.join(root,'tools/results/arcana-gpu-e2e.json'),JSON.stringify({version,checkedAt:new Date().toISOString(),gameCapture:false,gameInput:false,source:'Saved game frame painted inside an owned window',actualWindowsGraphicsCapture:true,hand:[1,204,213,201],die:1,life:2,adviceAfterInitialConfirmation:true,zeroCaptureChildrenAfterStop:true},null,2)+'\n');
+   console.log('PASS: saved game pixels through an owned window, actual Windows Graphics Capture, complete hand/die/life and actual solver advice after initial path confirmation; stop leaves no capture child.');return;
+  }
   const model={...state.state.model,position:7,life:3,die:2,chests:[5],hand:[204],path:Array.from({length:8},()=>({kind:'empty'})),confirmed:true,lengthConfirmed:true};
   await arcana.evaluate(`TartarusDesktop.arcana('correct',${JSON.stringify(model)})`);
   await wait(()=>overlay.evaluate("document.getElementById('body').textContent.includes('25.00 rarity points')"),'Packaged Arcana did not show the final rainbow upgrade');

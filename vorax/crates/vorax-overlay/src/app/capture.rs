@@ -115,6 +115,14 @@ impl Capturer {
         Ok(self.latest(&s, 1000)?.map(|img| client_only(hwnd, img)))
     }
 
+    /// Prefer the next GPU presentation after session initialization. Never
+    /// use a GDI backing bitmap left behind by a previous game screen.
+    pub fn grab_fresh(&self, hwnd: Hwnd) -> windows::core::Result<Option<Img>> {
+        let s = self.start(hwnd)?;
+        let Some(first) = self.latest(&s, 1000)? else { return Ok(None) };
+        Ok(Some(client_only(hwnd, self.latest(&s, 250)?.unwrap_or(first))))
+    }
+
     /// Pictures every 150 ms until two in a row look alike (the cards have stopped moving), at most 2.5 s.
     pub fn grab_stable(&self, hwnd: Hwnd) -> windows::core::Result<Option<Img>> {
         let s = self.start(hwnd)?;

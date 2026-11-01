@@ -1229,12 +1229,21 @@ function registerHotkeys() {
       }
     }
     note(`start: version ${app.getVersion()}, site ${SITE}${DEV ? ', debug' : ''}${TEST ? ', test' : ''}, foreground check ${win32 ? 'on' : 'off'}`);
+    const arcanaCapture=require('./lib/window-capture').create(path.join(STANDALONE ? process.resourcesPath : __dirname,'native','vorax-backend.exe'));
     arcana = require('./lib/arcana-runtime').create({
+      captureFirst:true,cancelCapture:()=>arcanaCapture.cancel(),captureInfo:()=>arcanaCapture.info(),
       game:()=>gameInfo(),library:TEST&&flag('arcana-test-fallback')?path.join(__dirname,'owned-test-missing.dll'):path.join(STANDALONE ? process.resourcesPath : __dirname,'native','tartarus-reader.dll'),
       fixture:TEST ? arg('arcana-fixture') : null,note,
       notify:state=>{lastArcanaState=state;send('overlay','arcana:state',state);send('arcana','arcana:state',state);},
       fallback:async()=>{
         if(!game.running||suite?.mode!=='arcana'||settings.consent?.withdrawn)throw Error('Capture stopped');
+        const requestedWindow=game.hwnd;
+        if(!(TEST&&flag('arcana-test-fallback'))){
+          try{return await arcanaCapture.grab(requestedWindow);}catch(error){
+            if(!game.running||game.hwnd!==requestedWindow||suite?.mode!=='arcana'||settings.consent?.withdrawn)throw Error('Capture stopped');
+            note('Arcana GPU capture:',error.message);
+          }
+        }
         let thumbnail;
         if(TEST){
           // A test fallback must never enumerate thumbnails of other windows.
@@ -1285,7 +1294,8 @@ function registerHotkeys() {
       const area = screen.getPrimaryDisplay().bounds;
       // Windows excludes fully off-screen windows from capture enumeration.
       const exactFixture = flag('test-window-frameless');
-      testStandIn = new BrowserWindow({ title: 'TartarusOverlayCheckOnly', width: 1280, height: exactFixture ? 720 : 800, frame: !exactFixture, show: false, x: area.x + area.width - 1, y: area.y + area.height - 1, webPreferences: { sandbox: true, backgroundThrottling: false } });
+      const testWidth=Math.max(64,Math.min(2600,Number(arg('test-window-width'))||1280)),testHeight=Math.max(64,Math.min(2600,Number(arg('test-window-height'))||(exactFixture?720:800)));
+      testStandIn = new BrowserWindow({ title: 'TartarusOverlayCheckOnly', width:testWidth, height:testHeight, frame: !exactFixture, show: false, x: area.x + (flag('test-window-visible')?20:area.width-1), y: area.y + (flag('test-window-visible')?20:area.height-1), webPreferences: { sandbox: true, backgroundThrottling: false } });
       await testStandIn.loadFile(path.resolve(arg('test-window')));
       testStandIn.showInactive();
     }

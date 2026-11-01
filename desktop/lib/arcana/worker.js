@@ -4,7 +4,7 @@ const E=require('./engine'),Solver=require('./solver'),Reader=require('./reader'
 const reader=Reader.create();
 reader.restore(workerData.resume);
 let capture=null,handle=null,revision=0,retryTimer=null,job=null,lastAdvice=null,lastSolvedKey=null,frame=null,fallbackPending=false,fallbackAttempt=0,closed=false;
-let preferFallback=false;
+let preferFallback=!!workerData.captureFirst;
 let cycleContext=null,cycleAttempts=0,cycleCounted=false;
 const cards=E.DATA.cards.filter(c=>c.tag!==99).map(c=>({id:c.id,name:c.name,sort:c.sort,choices:c.choices})).sort((a,b)=>a.sort-b.sort||a.id-b.id);
 const tileEffects=Object.entries(E.DATA.tiles).filter(([id,t])=>t.events.length&&![1000,1051,1052,1053].includes(Number(id))).map(([id,t])=>({id:Number(id),name:t.events.map(e=>E.DATA.events[e]?.text).filter(Boolean).join('; ')||(Number(id)===1001?'Draw 1–3 random notes':'')})).filter(t=>t.name);
@@ -55,7 +55,7 @@ function processFrame(img,attempt=0,source='native'){
  // BitBlt may succeed on a GPU window while returning a bright, unusable
  // picture. Try the independent capture path once, without relaxing OCR.
  if(source==='native'&&!workerData.fixture&&noAnchors){reader.restore(before);requestFallback(attempt,'Native picture has no Arcana hand, refill die or life marker');return;}
- if(source==='fallback'&&reading.model.hand.length&&reading.model.die!==null&&reading.model.life!==null)preferFallback=true;
+ if(source!=='native'&&reading.model.hand.length&&reading.model.die!==null&&reading.model.life!==null)preferFallback=true;
  if(reading.model.confirmed){solve();return;}
  status({phase:'check',reason:reading.issues.slice(0,3).join(' ')+(reading.issues.length>3?` ${reading.issues.length-3} more checks in Board.`:''),readingMs:reading.ms,issues:reading.issues,recognition:{capture:source,bases:reading.bases,width:img.width,height:img.height,hand:reading.model.hand,count:reading.handCount,regular:reading.rowRegular,centered:reading.rowCentered,die:reading.model.die,faces:reading.cardMatches?.map(m=>({icon:m.name,score:+m.score.toFixed(4),margin:+m.margin.toFixed(4),box:m.box}))}});
  // A fixed, bounded retry waits for entering animations; unclear recognition
@@ -72,7 +72,7 @@ parentPort.on('message',message=>{
  try{
   let result=true;
   if(cmd==='read')read();
-  else if(cmd==='frame'){if(message.requestRevision!==revision||!fallbackPending)return;fallbackPending=false;processFrame(message.frame,fallbackAttempt,'fallback');}
+  else if(cmd==='frame'){if(message.requestRevision!==revision||!fallbackPending)return;fallbackPending=false;processFrame(message.frame,fallbackAttempt,message.frame.captureSource||'fallback');}
   else if(cmd==='invalidate'){if(message.changed&&!cycleCounted&&cycleContext&&lastAdvice?.action?.kind==='reroll'){cycleAttempts++;cycleCounted=true;}invalidate();if(message.changed)reader.expectChange();}
   else if(cmd==='settled'){if(value?.refillOnly&&cycleCounted&&cycleContext&&lastAdvice?.action?.kind==='reroll')reader.settleCycle();}
   else if(cmd==='reset'){invalidate();reader.reset(!!message.fresh);lastAdvice=null;lastSolvedKey=null;cycleContext=null;cycleAttempts=0;cycleCounted=false;status({phase:'waiting'});}

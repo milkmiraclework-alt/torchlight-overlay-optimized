@@ -1,0 +1,24 @@
+{
+  "goalStatus": "active",
+  "scope": "Improve Vorax, Tartarus and especially Arcana decisions; establish reliable Arcana capture and verify full release without regressions.",
+  "developmentVersion": "1.3.10",
+  "captureChanges": [
+    "Arcana requests Windows Graphics Capture first through a window-scoped one-shot mode in the existing Rust executable; Vorax adviser behavior is unchanged.",
+    "Each capture session is closed after returning a frame. Cancellation and timeouts kill owned capture children.",
+    "Changing the active game HWND retires the old Arcana worker and its checkpoint."
+  ],
+  "evidence": [
+    "Rust Vorax engine/adviser/Smart parity and scan/round/continuation tests passed during backend rebuild.",
+    "43 source check groups passed, including GPU protocol/cancellation and real GPU-window capture.",
+    "Owned WebGL window changed colors twice; the second update was correctly captured behind an owned black cover.",
+    "Actual unpacked application captured saved game pixels from an owned window using Windows Graphics Capture, read the complete hand/die/life and produced solver advice after initial path confirmation.",
+    "Normal Arcana packaged lifecycle/correction/overlay test passed."
+  ],
+  "remaining": [
+    "Check forced Chromium fallback and full packaged suite after final edits.",
+    "Audit Arcana upgrade pruning and terminal potential; measure candidates against frozen baseline in sandbox/arcana-brain-baseline-20261102 before promoting strategy changes.",
+    "Audit and improve Vorax and Tartarus decisions with rule/parity guards and quality comparisons; preserve objectives and budgets.",
+    "Build final installers, verify manifests/hashes and publish only after final regression gates.",
+    "Do not claim live-game capture verification: all tests capture owned windows, not the user's game."
+  ]
+}

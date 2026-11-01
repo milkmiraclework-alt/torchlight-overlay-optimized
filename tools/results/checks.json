@@ -1,12 +1,14 @@
 {
-  "version": "1.3.9",
-  "checkedAt": "2026-11-01T20:45:35.981Z",
+  "version": "1.3.10",
+  "checkedAt": "2026-11-01T21:14:07.951Z",
   "checks": [
     "arcana",
     "arcana-terminal",
     "arcana-exit",
     "arcana-runtime",
     "native-capture",
+    "window-capture",
+    "gpu-capture",
     "native-screen",
     "assessment",
     "tartarus-baseline",
