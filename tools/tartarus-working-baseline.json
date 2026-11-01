@@ -1,9 +1,8 @@
 {
   "version": "1.2.1",
   "commit": "ebf21079a63b41599893a2f227c73af809c0b51f",
-  "scope": "Restored Tartarus analyzer and screenshot/instrument reader sources; Arcana, Vorax and Portable launcher are independent.",
+  "scope": "Screenshot/instrument readers and native reader hosts retain the working 1.2.1 sources. Analyzer Usurpation progression is verified separately.",
   "files": {
-    "js/analyze.js": "b86ae47c2e745428106678c0458f1a41b8d8c11ecb2ebeef2019238f115f1d8e",
     "js/scan.js": "e91e0cc60dad371aad5b7e9995f6512d3d5b3f0b30b8cb5d71d5e663f24a5095",
     "js/scan-tracker.js": "826100947b79dcbdbebe85f1909e316bb49beaaf2507bb62cf8a13cec7405b62",
     "js/scan-worker.js": "89a24c97ae0bc9279bdb52fa1bfab75c69eda5c2fe83eda38aaaca63fb5a5479",

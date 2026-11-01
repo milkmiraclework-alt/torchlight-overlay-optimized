@@ -64,7 +64,7 @@
   "scope": "Development regression tests on synthetic boards; no live game capture or profit measurement.",
   "arcanaWidthControlReport": "arcana-width-experiment-20261101.json",
   "followup": {
-    "version": "1.3.7",
-    "tartarusRollback": "Usurpation pool preservation introduced in 1.3.4 was reverted. Analyzer and eight reader sources match working 1.2.1 (ebf2107). The implemented list above describes the historical 1.3.4 audit."
+    "version": "1.3.8",
+    "tartarusRestore": "Restored the Usurpation incident pool preservation introduced in 1.3.4 and reverted in 1.3.7. The confirmed Portable extraction collision was independent of this analyzer change. Eight screenshot/instrument reader and native reader host files retain the working 1.2.1 sources."
   }
 }

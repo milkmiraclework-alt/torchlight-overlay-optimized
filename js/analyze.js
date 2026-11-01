@@ -239,6 +239,11 @@
     const st = T.newGame({ params, seed: 'ANALYZER' });
     st.rng = (Math.random() * 4294967296) >>> 0;
     st.log = [];
+    // Keep the incident pool advanced by a confirmed Usurpation. Rebuilding
+    // the analyzer state must not silently put stage I back into the future.
+    if (Array.isArray(m.eventPool) && m.eventPool.length && m.eventPool.every(id => T.EVENTS[id])) st.eventPool = m.eventPool.slice();
+    const stages = [...new Set(m.cells.map(c => c.event).concat(m.step === 'event' ? [m.eventKind] : []).filter(id => T.USURP[id]))];
+    if (stages.length === 1) st.eventPool = st.eventPool.filter(id => !T.USURP[id]).concat(stages);
     st.day = clamp(toInt(m.day, 1), 1, st.maxDays);
     st.nextId = 1;
     const make = (beast, tier) => ({ id: st.nextId++, beast: T.BEASTS.includes(beast) ? beast : 'mammoth', tier: clamp(toInt(tier, 0), 0, TOP_TIER) });
@@ -411,6 +416,7 @@
     m.rewards = !!st.params.rewards;
     m.day = st.day;
     m.maxDays = st.maxDays;
+    m.eventPool = st.eventPool.slice();
     m.warden = st.position;
     m.chainArmed = !!st.chain;
     m.objective = st.objective ? st.objective.id : 'other';
@@ -537,7 +543,7 @@
 
   const solver = { workers: null, failed: false, id: 0, starts: 0, resumed: 0, st: null, key: '', cacheKey: '', cached: false, instant: null, result: null, shares: null, meta: null, goal: '', forecastAlias: null, forecastHit: false, forecastResumed: false };
   // Bump for rule/strategy imports, retain across compatible UI-only fixes.
-  const SOLVER_CACHE_REVISION = '?v=20261027assessment121';
+  const SOLVER_CACHE_REVISION = '?v=20261101usurp-pool';
   const solverCache = FAST_DESKTOP && window.TartarusSolverCache ? window.TartarusSolverCache.create({ version: `mc-v4:giboork-0216:depth=4:rules=308b947:${SOLVER_CACHE_REVISION}:move=${MOVE_PLAYOUTS}:choice=${CHOICE_PLAYOUTS}` }) : null;
   const forecast = { sequence: 0, generation: 0, timer: 0, active: null, plan: null, queue: [], seen: new Set(), ready: new Set(), paused: false,
     families: new Map(),

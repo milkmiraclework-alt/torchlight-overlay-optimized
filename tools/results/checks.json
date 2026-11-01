@@ -1,6 +1,6 @@
 {
-  "version": "1.3.7",
-  "checkedAt": "2026-11-01T20:10:22.529Z",
+  "version": "1.3.8",
+  "checkedAt": "2026-11-01T20:30:36.837Z",
   "checks": [
     "arcana",
     "arcana-terminal",
@@ -10,6 +10,7 @@
     "native-screen",
     "assessment",
     "tartarus-baseline",
+    "usurp-pool",
     "assessment-model",
     "native-reader",
     "routing",
