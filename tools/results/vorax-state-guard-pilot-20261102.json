@@ -1,0 +1,183 @@
+{
+  "kind": "games",
+  "profile": "balanced",
+  "baselineSmart": true,
+  "baselineFutures": null,
+  "games": 16,
+  "seed": 18000000,
+  "baselineMean": 1278486.6875,
+  "smartMean": 1194365.9375,
+  "baselineCapped": 824416.8125,
+  "smartCapped": 812679.75,
+  "baselineReach": 0.875,
+  "smartReach": 0.8125,
+  "rows": [
+    {
+      "seed": 18000000,
+      "baseline": 2052915,
+      "smart": 913699,
+      "baselineSeconds": 37.6180909,
+      "smartSeconds": 26.2781656,
+      "baselineDecisions": 19,
+      "smartDecisions": 18
+    },
+    {
+      "seed": 18000001,
+      "baseline": 1422725,
+      "smart": 1422725,
+      "baselineSeconds": 24.4863725,
+      "smartSeconds": 27.4987085,
+      "baselineDecisions": 15,
+      "smartDecisions": 15
+    },
+    {
+      "seed": 18000002,
+      "baseline": 1350662,
+      "smart": 1350662,
+      "baselineSeconds": 13.1347668,
+      "smartSeconds": 13.4338945,
+      "baselineDecisions": 16,
+      "smartDecisions": 16
+    },
+    {
+      "seed": 18000003,
+      "baseline": 1151380,
+      "smart": 1151380,
+      "baselineSeconds": 14.7398748,
+      "smartSeconds": 17.5392656,
+      "baselineDecisions": 13,
+      "smartDecisions": 13
+    },
+    {
+      "seed": 18000004,
+      "baseline": 944121,
+      "smart": 944121,
+      "baselineSeconds": 14.8883073,
+      "smartSeconds": 13.8585494,
+      "baselineDecisions": 18,
+      "smartDecisions": 18
+    },
+    {
+      "seed": 18000005,
+      "baseline": 800598,
+      "smart": 800598,
+      "baselineSeconds": 8.5278578,
+      "smartSeconds": 8.4507564,
+      "baselineDecisions": 17,
+      "smartDecisions": 17
+    },
+    {
+      "seed": 18000006,
+      "baseline": 970793,
+      "smart": 970793,
+      "baselineSeconds": 10.3064798,
+      "smartSeconds": 11.0654113,
+      "baselineDecisions": 17,
+      "smartDecisions": 17
+    },
+    {
+      "seed": 18000007,
+      "baseline": 1096176,
+      "smart": 1056554,
+      "baselineSeconds": 7.4339737,
+      "smartSeconds": 10.5203475,
+      "baselineDecisions": 14,
+      "smartDecisions": 16
+    },
+    {
+      "seed": 18000008,
+      "baseline": 997135,
+      "smart": 652207,
+      "baselineSeconds": 16.3248725,
+      "smartSeconds": 12.3755169,
+      "baselineDecisions": 16,
+      "smartDecisions": 16
+    },
+    {
+      "seed": 18000009,
+      "baseline": 1122717,
+      "smart": 1118965,
+      "baselineSeconds": 30.9564501,
+      "smartSeconds": 22.4433905,
+      "baselineDecisions": 17,
+      "smartDecisions": 17
+    },
+    {
+      "seed": 18000010,
+      "baseline": 1301400,
+      "smart": 1301400,
+      "baselineSeconds": 21.2658612,
+      "smartSeconds": 11.1136402,
+      "baselineDecisions": 21,
+      "smartDecisions": 21
+    },
+    {
+      "seed": 18000011,
+      "baseline": 925057,
+      "smart": 1662324,
+      "baselineSeconds": 19.1305343,
+      "smartSeconds": 14.6067695,
+      "baselineDecisions": 16,
+      "smartDecisions": 15
+    },
+    {
+      "seed": 18000012,
+      "baseline": 630071,
+      "smart": 630071,
+      "baselineSeconds": 15.8921936,
+      "smartSeconds": 15.6142701,
+      "baselineDecisions": 19,
+      "smartDecisions": 19
+    },
+    {
+      "seed": 18000013,
+      "baseline": 1050016,
+      "smart": 1050016,
+      "baselineSeconds": 6.6984459,
+      "smartSeconds": 7.539291,
+      "baselineDecisions": 15,
+      "smartDecisions": 15
+    },
+    {
+      "seed": 18000014,
+      "baseline": 1513204,
+      "smart": 957523,
+      "baselineSeconds": 8.7028424,
+      "smartSeconds": 6.2091845,
+      "baselineDecisions": 18,
+      "smartDecisions": 17
+    },
+    {
+      "seed": 18000015,
+      "baseline": 3126817,
+      "smart": 3126817,
+      "baselineSeconds": 9.4193483,
+      "smartSeconds": 8.4226707,
+      "baselineDecisions": 15,
+      "smartDecisions": 15
+    }
+  ],
+  "terminalSamples": 0,
+  "checkedAt": "2026-11-02T05:39:08.645Z",
+  "scope": "Candidate versus Balanced advisers on seeded full local-rule games. Not live profit or calibrated server performance.",
+  "code": {
+    "vorax/crates/vorax/src/smart.rs": "5c399820bd674f01d10ef14fdb9172e5922ba0482feb91b9e70ff716a99d6f9c",
+    "vorax/crates/vorax-cli/src/main.rs": "bef7332efb29361e1de3d9db4313e57b8b46168093086b762b36977ada7ede30",
+    "vorax/crates/vorax-cli/src/quality.rs": "a7bf0abbd57c98d65a30b565e82e9fcb9d7026dc188bb728658435376d57f8d1",
+    "vorax/crates/vorax/src/bot.rs": "96a32b5753be972342e10edca30417883a4eee2348acb91e4618b5c1ab808b58",
+    "vorax/crates/vorax/src/advisor.rs": "240b594128b2c9f4469d19091951136df9c362a8a47ce38dba4e93acc9cdafe1",
+    "vorax/crates/vorax/src/session.rs": "fe53bca8f0addad12bbf6a2c1d07e88490f04c6215d7979597618bf72e2525d5",
+    "vorax/crates/vorax/src/continuation.rs": "ef0b67812f830221e1f67049448e92174ac545d27dccf860173a2798e9737f21",
+    "vorax/crates/vorax/src/value.rs": "5258b1131f14d1bd0bd478c0ea4a1b9c8477842771dc4784181f804c5b21e2b7"
+  },
+  "binarySha256": "214fef9cb0ad6a526d907e24ca299948f5f9f440227f80447e57dbc710ef1250",
+  "baselineBinarySha256": "ce55a872ff2561fc3484060ec61c53425efa301b87d1ea25720f55fd40ff23e7",
+  "pairedCappedDifference": -11737.0625,
+  "approx95CI": [
+    -34741.705,
+    11267.579999999998
+  ],
+  "baselineSeconds": 16.22039199375,
+  "candidateSeconds": 14.185614512499997,
+  "releaseSelection": "context and statistical guards alone; diagnostic comparison"
+}

@@ -142,6 +142,7 @@ pub fn scan_with(captured: &Img, data: &ScanData, pictures: bool, hand_dy: Optio
         potion_refreshes: None,
         instrument_refreshes: None,
         shelley: None,
+        context: None,
     };
 
     let round = read_text(img, &g, &l.round, TextKind::Round, &data.digits["round"]);

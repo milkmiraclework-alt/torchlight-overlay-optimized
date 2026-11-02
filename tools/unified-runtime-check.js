@@ -17,6 +17,7 @@ const pause=ms=>new Promise(r=>setTimeout(r,ms));
   config.consent={withdrawn:true};await feed('S13GamePlayMain Run');assert.equal(app.mode,'vorax');assert.equal(children.length,0,'Disabled capture spawned a worker');
   config.consent={version:4};app.sync();assert.equal(children.length,1);const first=children[0];
   assert.ok(Number(first.options.env.RAYON_NUM_THREADS)>=1);assert.equal(first.options.env.TORCHLIGHT_GAME_HWND,'123');assert.equal(first.options.windowsHide,true);
+  assert.equal(first.options.env.VORAX_SMART_PROFILE,'balanced');assert.equal(first.options.env.VORAX_TERMINAL_SAMPLES,'8');assert.equal(first.options.env.VORAX_TERMINAL_TIES,'1');
   first.stdout.write(JSON.stringify({event:'ready'})+'\n');await feed('S13GamePlayMain Run');await feed('Play_UI_S13_KYZ_Card_some_animation');await pause(450);
   assert.equal(first.writes.filter(x=>x.cmd==='read').length,1);assert.equal(first.writes.find(x=>x.cmd==='read').trigger,'screen','Animation discarded screen-reset trigger');
   const beforeIdle=first.writes.length;for(let i=0;i<100;i++)app.sync();assert.equal(first.writes.length,beforeIdle,'Unchanged log/status polls caused repeated overlay redraws');

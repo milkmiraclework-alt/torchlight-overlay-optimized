@@ -14,7 +14,7 @@ function create({executable,config,game,notify,note,userData,test=false,spawnWor
   arcana?.sync(enabled()&&mode==='arcana');
   if(!enabled()||mode!=='vorax'){if(child)stop();return;}
   if(!child&&Date.now()-failedAt>3000){
-   const env={...process.env,TORCHLIGHT_GAME_HWND:String(game().window),TORCHLIGHT_USER_DATA:userData,RAYON_NUM_THREADS:String(threads()),VORAX_ADVISOR:'smart',VORAX_SMART_PROFILE:'balanced',VORAX_CAPTURE_VISIBLE:config().hideFromCaptures===false?'1':'0'};
+   const env={...process.env,TORCHLIGHT_GAME_HWND:String(game().window),TORCHLIGHT_USER_DATA:userData,RAYON_NUM_THREADS:String(threads()),VORAX_ADVISOR:'smart',VORAX_SMART_PROFILE:'balanced',VORAX_TERMINAL_SAMPLES:'8',VORAX_TERMINAL_TIES:'1',VORAX_CAPTURE_VISIBLE:config().hideFromCaptures===false?'1':'0'};
    // Only this child is owned by the host. No existing overlay is terminated.
    const current=spawnWorker(executable,['--hosted','--shelley',String(config().shelley||6),'--accent',String(config().accent||0)],{windowsHide:true,stdio:['pipe','pipe','pipe'],env});
    child=current;children.add(current);let rest='';

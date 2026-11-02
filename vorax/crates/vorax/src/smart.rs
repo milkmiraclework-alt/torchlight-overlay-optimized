@@ -35,6 +35,9 @@ impl Profile {
 #[serde(rename_all = "camelCase")]
 pub struct Diagnostics {
     pub profile: Profile,
+    pub terminal_samples: u32,
+    pub terminal_ties: bool,
+    pub guaranteed_target: bool,
     pub options_screened: usize,
     pub candidates: usize,
     pub min_futures: u32,
@@ -64,9 +67,11 @@ pub struct Result {
 struct Samples {
     tally: Tally,
     blocks: Vec<f64>,
+    first64: Tally,
 }
 impl Samples {
     fn add(&mut self, tally: Tally) {
+        if self.first64.n<64 {self.first64.goal+=tally.goal;self.first64.reached+=tally.reached;self.first64.n+=tally.n;}
         self.tally.goal += tally.goal;
         self.tally.reached += tally.reached;
         self.tally.n += tally.n;
@@ -77,7 +82,7 @@ impl Samples {
 
 fn batches(work: &Work, from: u32, to: u32, parallel: bool) -> Vec<Vec<Tally>> {
     let starts: Vec<u32> = (from..to).step_by(BLOCK as usize).collect();
-    let run = |start: &u32| advisor::play_work(work, *start, (*start + BLOCK).min(to), false);
+    let run = |start: &u32| if crate::continuation::terminal_samples()==0 {advisor::play_work(work,*start,(*start+BLOCK).min(to),false)}else{crate::continuation::play_work(work, *start, (*start + BLOCK).min(to), false)};
     // Parallelise blocks, not floating-point reductions: stable answers on any CPU.
     if parallel { starts.par_iter().map(run).collect() } else { starts.iter().map(run).collect() }
 }
@@ -107,11 +112,14 @@ fn difference(a: &Samples, b: &Samples) -> (f64, f64) {
     let diffs: Vec<f64> = a.blocks.iter().zip(&b.blocks).map(|(a, b)| a - b).collect();
     let mean = diffs.iter().sum::<f64>() / n as f64;
     let variance = diffs.iter().map(|d| (d - mean).powi(2)).sum::<f64>() / (n - 1) as f64;
-    (a.mean() - b.mean(), (variance / n as f64).sqrt())
+    // The gap and its uncertainty must describe the same paired futures.
+    // Comparing a 256-future mean with 128 futures while estimating error from
+    // only their shared prefix can incorrectly discard a close challenger.
+    (mean, (variance / n as f64).sqrt())
 }
 fn close(a: &Samples, b: &Samples) -> bool {
     let (gap, se) = difference(a, b);
-    if gap == 0.0 && se == 0.0 { return false }
+    if gap == 0.0 && se == 0.0 { return a.tally.n != b.tally.n }
     gap <= 2.5 * se + 2_000.0
 }
 fn order(samples: &[Samples]) -> Vec<usize> {
@@ -186,11 +194,23 @@ pub fn calculate_profile(screen: &ScreenState, parallel: bool, profile: Profile)
         Prepared::Done(advice) => return Result { advice, diagnostics: Diagnostics { profile, ..Diagnostics::default() } },
         Prepared::Work { work, unknown, .. } => (work, unknown),
     };
-    let mut diagnostics = Diagnostics { profile, ..Diagnostics::default() };
+    let mut diagnostics = Diagnostics { profile, terminal_samples:crate::continuation::terminal_samples(),terminal_ties:crate::continuation::terminal_ties(), ..Diagnostics::default() };
+    if let Work::Potion{s,..}=&original{
+        if s.round==crate::game::LAST_POTION_ROUND&&s.non_empty().len()==crate::TANK_COUNT&&crate::game::ultimate_activity(s)>=crate::value::TARGET&&s.monsters().all(|m|m.activity>=0&&m.quantity>=0)&&screen.instruments.iter().all(|n|crate::data().instrument_by_name(n).is_some()){
+            // Pure additions on full tanks cannot remove or reduce a group.
+            // Every subsequent instrument-only tick is nondecreasing, so this
+            // reaches the exact upper bound; a Monte Carlo comparison is moot.
+            if let Some((index,id))=screen.hand.iter().enumerate().filter_map(|(i,n)|crate::data().potion_by_name(n).map(|id|(i,id))).find(|(_,id)|matches!(id,7|25|30)){
+                let model_index=s.hand.iter().position(|c|c.id==id).unwrap();let r=advisor::Ranked{index,targets:vec![],value:crate::value::TARGET as f64,end:Some(advisor::End{activity:crate::value::TARGET as f64,reached:1.}),no_effect:(!crate::game::card_changes(s,model_index,&[])).then_some(true)};
+                diagnostics.guaranteed_target=true;
+                return Result{advice:Advice{best:Best::Card(r.clone()),ranking:vec![r],board:crate::game::ultimate_activity(s),refresh_end:None,plan:true,final_:true,ms:start.elapsed().as_millis()as u64,unknown,note:Some("840,000 target secured by a safe final potion.".into())},diagnostics};
+            }
+        }
+    }
     let (work, mut samples) = match &original {
         Work::Potion { s, seed, la, opts: original_opts, .. } => {
             let mut opts: Vec<(Opt, f64)> = options(s).iter().map(|o| (*o, 0.0)).collect();
-            if original_opts.iter().any(|o| o.0 == Opt::Refresh) { opts.push((Opt::Refresh, 0.0)); }
+            if crate::game::can_refresh(s) { opts.push((Opt::Refresh, 0.0)); }
             if opts.is_empty() {
                 return Result { advice: advisor::advise_plan(screen, None, parallel), diagnostics };
             }
@@ -257,18 +277,16 @@ pub fn calculate_profile(screen: &ScreenState, parallel: bool, profile: Profile)
     let tallies: Vec<Tally> = samples.iter().map(|s| s.tally).collect();
     let mut advice = advisor::conclude(&work, screen, unknown.clone(), start, &tallies);
     diagnostics.objective_rank_corrected = respect_final_score(&mut advice);
-    // Recover the original decision from the already completed first 64 futures
-    // whenever the continuation policy matches. Only Deep potions need another
-    // reference calculation because their continuation policy is different.
+    // The reference keeps its original continuation policy and sample budget.
     let count = match &original { Work::Potion { opts, .. } => opts.len(), Work::Instrument { choices, .. } => choices.len() };
-    let original_tallies: Vec<Tally> = if matches!(profile, Profile::Deep) && matches!(&original, Work::Potion { .. }) {
-        diagnostics.total_futures += count as u32 * 64;
-        advisor::play_work(&original, 0, 64, parallel)
-    } else {
-        samples.iter().take(count).map(|s| Tally { goal: s.blocks.iter().take(8).sum::<f64>() * BLOCK as f64, reached: 0, n: 64 }).collect()
-    };
-    let mut reference = advisor::conclude(&original, screen, unknown, start, &original_tallies);
-    diagnostics.objective_rank_corrected |= respect_final_score(&mut reference);
+    // Smart's endgame-aware continuation differs from the reference policy, so
+    // its first 64 futures cannot be relabelled as an unchanged control.
+    let original_tallies=if diagnostics.terminal_samples==0&&!(matches!(profile,Profile::Deep)&&matches!(&original,Work::Potion{..})){
+        samples.iter().take(count).map(|s|s.first64).collect()
+    }else{diagnostics.total_futures+=count as u32*64;advisor::play_work(&original,0,64,parallel)};
+    // Keep this control unmodified: correcting BOTH decisions before comparing
+    // them lets a noisy no-effect preference bypass independent verification.
+    let reference = advisor::conclude(&original, screen, unknown, start, &original_tallies);
     if let (Some(incumbent), Some(challenger)) = (chosen_arm(&work, screen, &reference.best), chosen_arm(&work, screen, &advice.best)) {
         if incumbent != challenger {
             diagnostics.switch_verified = verify_switch(&work, incumbent, challenger, parallel, &mut diagnostics);
@@ -291,6 +309,8 @@ pub fn advise(screen: &ScreenState) -> Result {
     let profile = Profile::configured();
     let mut key = serde_json::to_vec(screen).unwrap_or_default();
     key.push(match profile { Profile::Balanced => 0, Profile::Deep => 1 });
+    key.push(crate::continuation::terminal_samples()as u8);
+    key.push(crate::continuation::terminal_ties()as u8);
     let cache = CACHE.get_or_init(|| Mutex::new(VecDeque::new()));
     if let Ok(mut entries) = cache.lock() {
         if let Some(i) = entries.iter().position(|(k, _)| k == &key) {
@@ -319,5 +339,18 @@ pub fn configured_result(screen: &ScreenState) -> Result {
         Result { advice: advisor::advise_plan(screen, None, true), diagnostics: Diagnostics::default() }
     } else {
         advise(screen)
+    }
+}
+
+#[cfg(test)]
+mod paired_tests {
+    use super::*;
+    #[test]
+    fn unequal_futures_use_a_matched_gap_and_keep_identical_prefixes_close(){
+        let mut a=Samples::default();let mut b=Samples::default();
+        for _ in 0..2 {a.add(Tally{goal:80.,reached:0,n:8});b.add(Tally{goal:80.,reached:0,n:8});}
+        assert!(!close(&a,&b));
+        a.add(Tally{goal:800000.,reached:0,n:8});
+        assert_ne!(a.mean(),b.mean());assert_eq!(difference(&a,&b),(0.,0.));assert!(close(&a,&b));
     }
 }

@@ -46,6 +46,9 @@ pub struct Pipeline {
     /// the last board advised on, with the size of its picture, for advising again when a setting changes (and
     /// for its round, when the next board's can't be read)
     last: Option<(Reading, usize, usize)>,
+    /// Last reliable transition source; a blurred intermediate frame must not
+    /// erase a confirmed small-kit session or invent one on the next reading.
+    context_frame: Option<vorax::advisor::ScreenState>,
 }
 
 /// Instrument rerolls a game starts with, by Intern Shelley level (src/data/shelley.ts).
@@ -55,7 +58,7 @@ pub fn shelley_rerolls(level: i32) -> i32 {
 
 impl Pipeline {
     pub fn new(shelley: i32) -> Pipeline {
-        Pipeline { tracker: InstrumentTracker::default(), shelley, instrument_refreshes: None, last: None }
+        Pipeline { tracker: InstrumentTracker::default(), shelley, instrument_refreshes: None, last: None, context_frame: None }
     }
 
     /// The board's instrument rerolls: as read on an instrument offer, else carried from the last one this game,
@@ -117,6 +120,7 @@ impl Pipeline {
         let trigger = if continued { None } else { trigger };
         if trigger == Some("screen") {
             self.instrument_refreshes = None;
+            self.context_frame = None;
         }
         let tr = track_instruments(&self.tracker, &raw, trigger);
         self.tracker = tr.tracker.clone();
@@ -131,6 +135,9 @@ impl Pipeline {
         }
         reading.state.shelley = Some(self.shelley);
         self.fill_rerolls(&mut reading);
+        let transition_sure=round_sure&&reading.fields.get("refreshes").is_some_and(|f|f.sure)&&!reading.problems.iter().any(|p|matches!(p,Problem::Unreadable{..}|Problem::UnknownArt{..}|Problem::UnknownName{..}));
+        vorax::session::enrich(&mut reading.state,self.context_frame.as_ref(),transition_sure);
+        if transition_sure { self.context_frame=Some(reading.state.clone()); }
         let read_ms = t.elapsed().as_secs_f64() * 1000.0;
         let (advice, plan) = recommend(&reading, img.width, img.height);
         self.last = Some((reading.clone(), img.width, img.height));

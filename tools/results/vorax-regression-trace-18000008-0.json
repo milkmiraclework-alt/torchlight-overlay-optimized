@@ -1,0 +1,103 @@
+{
+  "baselineDecisions": 16,
+  "baselineScore": 997135,
+  "candidateDecisions": 16,
+  "candidateScore": 652207,
+  "firstDivergence": {
+    "actualContext": {
+      "openBox": null,
+      "pendingPicks": 2,
+      "thresholds": [
+        true,
+        true
+      ]
+    },
+    "after": {
+      "end": {
+        "activity": 822970.4296875,
+        "reached": 0.8671875
+      },
+      "index": 1,
+      "targets": [],
+      "value": 822970
+    },
+    "afterReach": 0.8662109375,
+    "afterValue": 819238.3781738281,
+    "before": "refresh",
+    "beforeReach": 0.792724609375,
+    "beforeValue": 808130.5590820312,
+    "decision": 2,
+    "independentFutures": 4096,
+    "phase": "instrumentSelect",
+    "round": 2,
+    "screen": {
+      "hand": [
+        "Canine Teeth File",
+        "Black Goat Gut Suture",
+        "Egg-Burdened Butterfly"
+      ],
+      "instrumentRefreshes": 2,
+      "instrumentRounds": [
+        1
+      ],
+      "instruments": [
+        "Contracted Claws"
+      ],
+      "phase": "instrument",
+      "potionRefreshes": 3,
+      "round": 2,
+      "shelley": 6,
+      "tanks": [
+        {
+          "activity": 15,
+          "archetype": "boneSentry",
+          "quantity": 12,
+          "rarity": "rare"
+        },
+        {
+          "activity": 300,
+          "archetype": "aemberon",
+          "quantity": 151,
+          "rarity": "boss"
+        },
+        {
+          "activity": 5,
+          "archetype": "boneSentry",
+          "quantity": 49,
+          "rarity": "magic"
+        },
+        {
+          "activity": 1,
+          "archetype": "aemberon",
+          "quantity": 36,
+          "rarity": "normal"
+        },
+        {
+          "activity": 5,
+          "archetype": "agito",
+          "quantity": 49,
+          "rarity": "magic"
+        },
+        null
+      ]
+    }
+  },
+  "gameCapture": false,
+  "gameInput": false,
+  "seed": 18000008,
+  "terminalSamples": 0,
+  "checkedAt": "2026-11-02T05:42:37.029Z",
+  "sourceSha256": {
+    "vorax/crates/vorax/src/smart.rs": "5c399820bd674f01d10ef14fdb9172e5922ba0482feb91b9e70ff716a99d6f9c",
+    "vorax/crates/vorax/src/advisor.rs": "240b594128b2c9f4469d19091951136df9c362a8a47ce38dba4e93acc9cdafe1",
+    "vorax/crates/vorax/src/bot.rs": "96a32b5753be972342e10edca30417883a4eee2348acb91e4618b5c1ab808b58",
+    "vorax/crates/vorax/src/game.rs": "eecfdcfb94a4c3b47c65ca9a0d82214956fa5ead07494b3af9da7d2a1fe834c4",
+    "vorax/crates/vorax/src/value.rs": "5258b1131f14d1bd0bd478c0ea4a1b9c8477842771dc4784181f804c5b21e2b7",
+    "vorax/crates/vorax/src/session.rs": "fe53bca8f0addad12bbf6a2c1d07e88490f04c6215d7979597618bf72e2525d5",
+    "vorax/crates/vorax/src/continuation.rs": "ef0b67812f830221e1f67049448e92174ac545d27dccf860173a2798e9737f21",
+    "vorax/data/game.json": "09e17ac3c111ca5256d1b598fdc96f7fe2594f0ee256667617b5f8a2e9a61004",
+    "vorax/data/boardValue.json": "31acf8fc57fd7af8000ca0a8ab57191ecb1730d6431ce532d235fdc74c3582af",
+    "desktop/native/vorax-backend.exe": "ddb99b96efc32b8bd3702e21bbf73c0336d877c4898bdfea0654173d6ddc4aa2"
+  },
+  "productionUnchanged": true
+}

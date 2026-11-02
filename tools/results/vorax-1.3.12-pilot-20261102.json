@@ -1,0 +1,327 @@
+{
+  "kind": "games",
+  "profile": "balanced",
+  "baselineSmart": true,
+  "baselineFutures": null,
+  "games": 32,
+  "seed": 18000000,
+  "baselineMean": 1128857.96875,
+  "smartMean": 1078187.28125,
+  "baselineCapped": 809436.15625,
+  "smartCapped": 800037.375,
+  "baselineReach": 0.8125,
+  "smartReach": 0.75,
+  "rows": [
+    {
+      "seed": 18000000,
+      "baseline": 2052915,
+      "smart": 1215567,
+      "baselineSeconds": 26.3786101,
+      "smartSeconds": 26.5712963,
+      "baselineDecisions": 19,
+      "smartDecisions": 19
+    },
+    {
+      "seed": 18000001,
+      "baseline": 1422725,
+      "smart": 1422725,
+      "baselineSeconds": 19.9897268,
+      "smartSeconds": 24.7102764,
+      "baselineDecisions": 15,
+      "smartDecisions": 15
+    },
+    {
+      "seed": 18000002,
+      "baseline": 1350662,
+      "smart": 1206087,
+      "baselineSeconds": 21.0253412,
+      "smartSeconds": 18.3172841,
+      "baselineDecisions": 16,
+      "smartDecisions": 17
+    },
+    {
+      "seed": 18000003,
+      "baseline": 1151380,
+      "smart": 876950,
+      "baselineSeconds": 24.0219916,
+      "smartSeconds": 23.1067849,
+      "baselineDecisions": 13,
+      "smartDecisions": 14
+    },
+    {
+      "seed": 18000004,
+      "baseline": 944121,
+      "smart": 895050,
+      "baselineSeconds": 23.2963794,
+      "smartSeconds": 21.5889846,
+      "baselineDecisions": 18,
+      "smartDecisions": 19
+    },
+    {
+      "seed": 18000005,
+      "baseline": 800598,
+      "smart": 800598,
+      "baselineSeconds": 19.1442008,
+      "smartSeconds": 13.9031904,
+      "baselineDecisions": 17,
+      "smartDecisions": 17
+    },
+    {
+      "seed": 18000006,
+      "baseline": 970793,
+      "smart": 970793,
+      "baselineSeconds": 17.7573791,
+      "smartSeconds": 14.9929501,
+      "baselineDecisions": 17,
+      "smartDecisions": 17
+    },
+    {
+      "seed": 18000007,
+      "baseline": 1096176,
+      "smart": 1056554,
+      "baselineSeconds": 12.9695208,
+      "smartSeconds": 15.7963791,
+      "baselineDecisions": 14,
+      "smartDecisions": 16
+    },
+    {
+      "seed": 18000008,
+      "baseline": 997135,
+      "smart": 652207,
+      "baselineSeconds": 11.3044178,
+      "smartSeconds": 12.59711,
+      "baselineDecisions": 16,
+      "smartDecisions": 16
+    },
+    {
+      "seed": 18000009,
+      "baseline": 1122717,
+      "smart": 1097712,
+      "baselineSeconds": 28.7156956,
+      "smartSeconds": 22.2963999,
+      "baselineDecisions": 17,
+      "smartDecisions": 16
+    },
+    {
+      "seed": 18000010,
+      "baseline": 1301400,
+      "smart": 1122360,
+      "baselineSeconds": 11.2645344,
+      "smartSeconds": 15.5141477,
+      "baselineDecisions": 21,
+      "smartDecisions": 18
+    },
+    {
+      "seed": 18000011,
+      "baseline": 925057,
+      "smart": 1662324,
+      "baselineSeconds": 21.433887,
+      "smartSeconds": 25.7134709,
+      "baselineDecisions": 16,
+      "smartDecisions": 15
+    },
+    {
+      "seed": 18000012,
+      "baseline": 630071,
+      "smart": 630071,
+      "baselineSeconds": 24.163144,
+      "smartSeconds": 28.9496449,
+      "baselineDecisions": 19,
+      "smartDecisions": 19
+    },
+    {
+      "seed": 18000013,
+      "baseline": 1050016,
+      "smart": 1050016,
+      "baselineSeconds": 11.4793653,
+      "smartSeconds": 8.6275419,
+      "baselineDecisions": 15,
+      "smartDecisions": 15
+    },
+    {
+      "seed": 18000014,
+      "baseline": 1513204,
+      "smart": 957523,
+      "baselineSeconds": 15.8095306,
+      "smartSeconds": 13.4624113,
+      "baselineDecisions": 18,
+      "smartDecisions": 17
+    },
+    {
+      "seed": 18000015,
+      "baseline": 3126817,
+      "smart": 3126817,
+      "baselineSeconds": 16.0201023,
+      "smartSeconds": 17.1591238,
+      "baselineDecisions": 15,
+      "smartDecisions": 15
+    },
+    {
+      "seed": 18000016,
+      "baseline": 864476,
+      "smart": 864476,
+      "baselineSeconds": 19.6664615,
+      "smartSeconds": 28.9030828,
+      "baselineDecisions": 17,
+      "smartDecisions": 17
+    },
+    {
+      "seed": 18000017,
+      "baseline": 1191264,
+      "smart": 929736,
+      "baselineSeconds": 12.589542699999999,
+      "smartSeconds": 16.4239798,
+      "baselineDecisions": 17,
+      "smartDecisions": 18
+    },
+    {
+      "seed": 18000018,
+      "baseline": 914029,
+      "smart": 1137022,
+      "baselineSeconds": 16.1837917,
+      "smartSeconds": 32.6709388,
+      "baselineDecisions": 16,
+      "smartDecisions": 15
+    },
+    {
+      "seed": 18000019,
+      "baseline": 1140008,
+      "smart": 727032,
+      "baselineSeconds": 15.6731304,
+      "smartSeconds": 14.3696898,
+      "baselineDecisions": 19,
+      "smartDecisions": 18
+    },
+    {
+      "seed": 18000020,
+      "baseline": 1290947,
+      "smart": 1332098,
+      "baselineSeconds": 25.8561217,
+      "smartSeconds": 23.9073194,
+      "baselineDecisions": 18,
+      "smartDecisions": 17
+    },
+    {
+      "seed": 18000021,
+      "baseline": 1005120,
+      "smart": 1430346,
+      "baselineSeconds": 21.6018196,
+      "smartSeconds": 13.7596624,
+      "baselineDecisions": 19,
+      "smartDecisions": 16
+    },
+    {
+      "seed": 18000022,
+      "baseline": 973438,
+      "smart": 1138351,
+      "baselineSeconds": 24.3200319,
+      "smartSeconds": 16.4427897,
+      "baselineDecisions": 16,
+      "smartDecisions": 15
+    },
+    {
+      "seed": 18000023,
+      "baseline": 899178,
+      "smart": 993525,
+      "baselineSeconds": 20.634364,
+      "smartSeconds": 28.5465578,
+      "baselineDecisions": 18,
+      "smartDecisions": 18
+    },
+    {
+      "seed": 18000024,
+      "baseline": 1109284,
+      "smart": 1109284,
+      "baselineSeconds": 13.0123922,
+      "smartSeconds": 13.0227909,
+      "baselineDecisions": 16,
+      "smartDecisions": 16
+    },
+    {
+      "seed": 18000025,
+      "baseline": 832714,
+      "smart": 832714,
+      "baselineSeconds": 13.5448853,
+      "smartSeconds": 13.1765654,
+      "baselineDecisions": 18,
+      "smartDecisions": 18
+    },
+    {
+      "seed": 18000026,
+      "baseline": 534861,
+      "smart": 534861,
+      "baselineSeconds": 18.1096359,
+      "smartSeconds": 17.5239874,
+      "baselineDecisions": 19,
+      "smartDecisions": 19
+    },
+    {
+      "seed": 18000027,
+      "baseline": 1249668,
+      "smart": 1249668,
+      "baselineSeconds": 21.0421535,
+      "smartSeconds": 24.4267536,
+      "baselineDecisions": 16,
+      "smartDecisions": 16
+    },
+    {
+      "seed": 18000028,
+      "baseline": 1244600,
+      "smart": 1061445,
+      "baselineSeconds": 30.8495646,
+      "smartSeconds": 33.8714359,
+      "baselineDecisions": 19,
+      "smartDecisions": 19
+    },
+    {
+      "seed": 18000029,
+      "baseline": 1154368,
+      "smart": 1154368,
+      "baselineSeconds": 16.9003591,
+      "smartSeconds": 13.1425668,
+      "baselineDecisions": 16,
+      "smartDecisions": 16
+    },
+    {
+      "seed": 18000030,
+      "baseline": 475396,
+      "smart": 475396,
+      "baselineSeconds": 22.4593033,
+      "smartSeconds": 20.1743664,
+      "baselineDecisions": 18,
+      "smartDecisions": 18
+    },
+    {
+      "seed": 18000031,
+      "baseline": 788317,
+      "smart": 788317,
+      "baselineSeconds": 20.3968057,
+      "smartSeconds": 24.8181288,
+      "baselineDecisions": 18,
+      "smartDecisions": 18
+    }
+  ],
+  "checkedAt": "2026-11-02T05:28:51.967Z",
+  "scope": "Candidate versus Balanced advisers on seeded full local-rule games. Not live profit or calibrated server performance.",
+  "code": {
+    "vorax/crates/vorax/src/smart.rs": "581557300396961df2f194a8628704b3de00ba3fb2ece962590009bc69b91c02",
+    "vorax/crates/vorax-cli/src/quality.rs": "a7bf0abbd57c98d65a30b565e82e9fcb9d7026dc188bb728658435376d57f8d1",
+    "vorax/crates/vorax/src/bot.rs": "96a32b5753be972342e10edca30417883a4eee2348acb91e4618b5c1ab808b58",
+    "vorax/crates/vorax/src/advisor.rs": "240b594128b2c9f4469d19091951136df9c362a8a47ce38dba4e93acc9cdafe1",
+    "vorax/crates/vorax/src/session.rs": "fe53bca8f0addad12bbf6a2c1d07e88490f04c6215d7979597618bf72e2525d5",
+    "vorax/crates/vorax/src/continuation.rs": "d69c65c6cd58fc386b58777aba731faeedaf5bf73d622bfb0f4f622dec1bea56",
+    "vorax/crates/vorax/src/value.rs": "5258b1131f14d1bd0bd478c0ea4a1b9c8477842771dc4784181f804c5b21e2b7"
+  },
+  "binarySha256": "632554471ddb14a5cb1825c392161b31e8c46ee58bd28ae26722bc3143b52b1e",
+  "baselineBinarySha256": "ce55a872ff2561fc3484060ec61c53425efa301b87d1ea25720f55fd40ff23e7",
+  "pairedCappedDifference": -9398.78125,
+  "approx95CI": [
+    -22629.248560289147,
+    3831.6860602891484
+  ],
+  "baselineSeconds": 19.300443434375,
+  "candidateSeconds": 19.952737875000004,
+  "terminalSamples": 2,
+  "terminalTies": false,
+  "releaseSelection": "rejected full terminal-model replacement; mixed full-game results"
+}

@@ -1,0 +1,215 @@
+{
+  "conditionalHeuristic": {
+    "beforeScore": 60000,
+    "confirmed": true,
+    "currentRound": 10,
+    "fixedTerminalProjection": [
+      92000,
+      60000
+    ],
+    "instrument": "Hypertrophic Pituitary",
+    "kind": "learned heuristic misses a joint prerequisite; fixed final-stage policy uses actual remaining effects",
+    "sameArchetypeCounts": true,
+    "sameHeuristicValues": [
+      287533.84497601213,
+      287533.84497601213
+    ],
+    "sameRarityCounts": true,
+    "scoreAfterTickWithRareAgito": 68000,
+    "scoreAfterTickWithRarePest": 60000
+  },
+  "forcedKitPriority": {
+    "unchanged": "Prior independent audit did not establish that removing this rule improves choices"
+  },
+  "gameCapture": false,
+  "gameInput": false,
+  "openBoxState": {
+    "actualOpenBox": 33,
+    "actualRefreshedCards": 5,
+    "confirmed": true,
+    "fixedOpenBox": 33,
+    "fixedRefreshedCards": 5,
+    "forbiddenKitCardsIn512RebuiltRefreshes": 75,
+    "rebuiltOpenBox": null,
+    "rebuiltRefreshedCards": 3,
+    "screen": {
+      "hand": [
+        "Potent Xenopurge Powder",
+        "Anesthetic Tincture - Aemberon",
+        "Viscous Bile Solution",
+        "Vivigenic Powder",
+        "Anesthetic Tincture - Agito"
+      ],
+      "instrumentRefreshes": 2,
+      "instrumentRounds": [
+        1
+      ],
+      "instruments": [
+        "Aberrant Sprout"
+      ],
+      "phase": "potion",
+      "potionRefreshes": 3,
+      "round": 5,
+      "shelley": 6,
+      "tanks": [
+        {
+          "activity": 5,
+          "archetype": "aemberon",
+          "quantity": 24,
+          "rarity": "magic"
+        },
+        {
+          "activity": 5,
+          "archetype": "agito",
+          "quantity": 24,
+          "rarity": "magic"
+        },
+        {
+          "activity": 1,
+          "archetype": "aemberon",
+          "quantity": 36,
+          "rarity": "normal"
+        },
+        {
+          "activity": 300,
+          "archetype": "agito",
+          "quantity": 1,
+          "rarity": "boss"
+        },
+        null,
+        null
+      ]
+    }
+  },
+  "passiveMonotonicity": {
+    "cases": 6528,
+    "everyLegalInstrumentTriple": true,
+    "passed": true,
+    "scope": "Constructed nonnegative boards at the capped goal, three archetype/rarity patterns and two seeds; every remaining tick dispatched through the reference engine"
+  },
+  "pendingInstrumentState": {
+    "actualAfterFirstPick": "instrumentSelect",
+    "actualPendingPicks": 2,
+    "actualThresholds": [
+      true,
+      true
+    ],
+    "confirmed": true,
+    "fixedAfterFirstPick": "instrumentSelect",
+    "fixedPendingPicks": 2,
+    "rebuiltAfterFirstPick": "potionSelect",
+    "rebuiltPendingPicks": 0,
+    "rebuiltThresholds": [
+      true,
+      false
+    ],
+    "screen": {
+      "hand": [
+        "Tanned Leather Restraint",
+        "Black Goat Gut Suture",
+        "Nettle Toggle"
+      ],
+      "instrumentRefreshes": 2,
+      "instrumentRounds": [
+        1
+      ],
+      "instruments": [
+        "Aberrant Sprout"
+      ],
+      "phase": "instrument",
+      "potionRefreshes": 3,
+      "round": 4,
+      "shelley": 6,
+      "tanks": [
+        {
+          "activity": 100,
+          "archetype": "pest",
+          "quantity": 60,
+          "rarity": "normal"
+        },
+        {
+          "activity": 100,
+          "archetype": "pest",
+          "quantity": 60,
+          "rarity": "normal"
+        },
+        {
+          "activity": 100,
+          "archetype": "pest",
+          "quantity": 60,
+          "rarity": "normal"
+        },
+        {
+          "activity": 100,
+          "archetype": "pest",
+          "quantity": 60,
+          "rarity": "normal"
+        },
+        {
+          "activity": 100,
+          "archetype": "pest",
+          "quantity": 60,
+          "rarity": "normal"
+        },
+        {
+          "activity": 100,
+          "archetype": "pest",
+          "quantity": 60,
+          "rarity": "normal"
+        }
+      ]
+    },
+    "thresholdCrossingScore": 36000
+  },
+  "periodicHeuristic": {
+    "acquiredRounds": [
+      1,
+      2
+    ],
+    "confirmed": true,
+    "currentRound": 10,
+    "differentEndOfRoundBoardsOutOf256": 256,
+    "fixedTerminalProjection": [
+      81000,
+      105300
+    ],
+    "instruments": [
+      "Aberrant Sprout",
+      "Aberrant Stinger",
+      "Nettle Toggle"
+    ],
+    "kind": "heuristic limitation; fixed final-stage policy resolves actual remaining effects",
+    "meanNextScoreWhenDue": 106393.359375,
+    "meanNextScoreWhenNotDue": 78000,
+    "periodicInstrument": "Aberrant Stinger",
+    "sameHeuristicValues": [
+      216857.34262198117,
+      216857.34262198117
+    ]
+  },
+  "verificationGuard": {
+    "corrected": true,
+    "expectedFinal": 840000,
+    "expectedReached": 1,
+    "independentlyVerified": false,
+    "provedOptimal": true,
+    "verificationError": 0,
+    "verificationFutures": 0,
+    "verificationGain": 0
+  },
+  "version": "1.3.12",
+  "checkedAt": "2026-11-02T15:43:03.122Z",
+  "sourceSha256": {
+    "vorax/crates/vorax/src/smart.rs": "7cc75aa772f594fec436cc6d3942a763f21fb0b08b1d8938f82e2785ebdb8659",
+    "vorax/crates/vorax/src/advisor.rs": "240b594128b2c9f4469d19091951136df9c362a8a47ce38dba4e93acc9cdafe1",
+    "vorax/crates/vorax/src/bot.rs": "96a32b5753be972342e10edca30417883a4eee2348acb91e4618b5c1ab808b58",
+    "vorax/crates/vorax/src/game.rs": "eecfdcfb94a4c3b47c65ca9a0d82214956fa5ead07494b3af9da7d2a1fe834c4",
+    "vorax/crates/vorax/src/value.rs": "5258b1131f14d1bd0bd478c0ea4a1b9c8477842771dc4784181f804c5b21e2b7",
+    "vorax/crates/vorax/src/session.rs": "fe53bca8f0addad12bbf6a2c1d07e88490f04c6215d7979597618bf72e2525d5",
+    "vorax/crates/vorax/src/continuation.rs": "57cd87c9a3a7a6eb912bdb085cc9a35b901c6c1025f876cdcf5458d704cace0a",
+    "vorax/data/game.json": "09e17ac3c111ca5256d1b598fdc96f7fe2594f0ee256667617b5f8a2e9a61004",
+    "vorax/data/boardValue.json": "31acf8fc57fd7af8000ca0a8ab57191ecb1730d6431ce532d235fdc74c3582af",
+    "desktop/native/vorax-backend.exe": "baa724574a975f65f2955ae92e367bf09a72ac1a6601ffe4a54cf3e1be2e5fcd"
+  },
+  "productionUnchanged": true
+}

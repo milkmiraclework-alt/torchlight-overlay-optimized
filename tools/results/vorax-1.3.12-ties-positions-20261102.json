@@ -1,0 +1,3188 @@
+{
+  "kind": "positions",
+  "profile": "balanced",
+  "baselineSmart": true,
+  "seed": 20100000,
+  "futuresPerChoice": 1024,
+  "positions": 64,
+  "changed": 5,
+  "baselineMean": 767461.129196167,
+  "smartMean": 767416.7576293945,
+  "baselineReach": 0.6908111572265625,
+  "smartReach": 0.6908721923828125,
+  "rows": [
+    {
+      "game": 0,
+      "round": 1,
+      "phase": "instrument",
+      "changed": false,
+      "baseline": {
+        "index": 2,
+        "targets": [],
+        "value": 669486,
+        "end": {
+          "activity": 669485.55859375,
+          "reached": 0.4375
+        }
+      },
+      "smart": {
+        "index": 2,
+        "targets": [],
+        "value": 669486,
+        "end": {
+          "activity": 669485.55859375,
+          "reached": 0.4375
+        }
+      },
+      "baselineValue": 660468.638671875,
+      "smartValue": 660468.638671875,
+      "baselineReach": 0.4287109375,
+      "smartReach": 0.4287109375,
+      "baselineMs": 2297.517,
+      "smartMs": 3090.8964,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 4,
+        "candidates": 4,
+        "minFutures": 128,
+        "maxFutures": 256,
+        "totalFutures": 1408,
+        "refinements": 1,
+        "closeDecision": true,
+        "cacheHit": false,
+        "verificationFutures": 128,
+        "verificationGain": -39260.7734375,
+        "verificationError": 23304.548211513065,
+        "switchVerified": false,
+        "referenceRetained": true,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 1,
+      "round": 4,
+      "phase": "potion",
+      "changed": true,
+      "baseline": {
+        "index": 1,
+        "targets": [],
+        "value": 838372,
+        "end": {
+          "activity": 838371.921875,
+          "reached": 0.953125
+        },
+        "noEffect": true
+      },
+      "smart": {
+        "index": 2,
+        "targets": [
+          0
+        ],
+        "value": 834802,
+        "end": {
+          "activity": 834802.46875,
+          "reached": 0.96484375
+        }
+      },
+      "baselineValue": 838673.0751953125,
+      "smartValue": 837830.087890625,
+      "baselineReach": 0.974609375,
+      "smartReach": 0.9814453125,
+      "baselineMs": 1447.6276,
+      "smartMs": 2282.7185,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 9,
+        "candidates": 8,
+        "minFutures": 128,
+        "maxFutures": 256,
+        "totalFutures": 2384,
+        "refinements": 1,
+        "closeDecision": true,
+        "cacheHit": false,
+        "verificationFutures": 64,
+        "verificationGain": -1774.25,
+        "verificationError": 765.4882764218441,
+        "switchVerified": false,
+        "referenceRetained": true,
+        "objectiveRankCorrected": true
+      }
+    },
+    {
+      "game": 2,
+      "round": 7,
+      "phase": "potion",
+      "changed": false,
+      "baseline": {
+        "index": 2,
+        "targets": [
+          2,
+          3
+        ],
+        "value": 790658,
+        "end": {
+          "activity": 790657.59765625,
+          "reached": 0.62109375
+        }
+      },
+      "smart": {
+        "index": 2,
+        "targets": [
+          2,
+          3
+        ],
+        "value": 790669,
+        "end": {
+          "activity": 790669.05078125,
+          "reached": 0.625
+        }
+      },
+      "baselineValue": 791402.9921875,
+      "smartValue": 791402.9921875,
+      "baselineReach": 0.626953125,
+      "smartReach": 0.626953125,
+      "baselineMs": 599.7279,
+      "smartMs": 761.7357999999999,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 21,
+        "candidates": 8,
+        "minFutures": 128,
+        "maxFutures": 256,
+        "totalFutures": 2640,
+        "refinements": 1,
+        "closeDecision": true,
+        "cacheHit": false,
+        "verificationFutures": 256,
+        "verificationGain": 3754.0859375,
+        "verificationError": 3389.0848610068424,
+        "switchVerified": false,
+        "referenceRetained": true,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 3,
+      "round": 9,
+      "phase": "potion",
+      "changed": false,
+      "baseline": {
+        "index": 1,
+        "targets": [
+          0
+        ],
+        "value": 840000,
+        "end": {
+          "activity": 840000,
+          "reached": 1
+        }
+      },
+      "smart": {
+        "index": 1,
+        "targets": [
+          0
+        ],
+        "value": 840000,
+        "end": {
+          "activity": 840000,
+          "reached": 1
+        }
+      },
+      "baselineValue": 840000,
+      "smartValue": 840000,
+      "baselineReach": 1,
+      "smartReach": 1,
+      "baselineMs": 86.5207,
+      "smartMs": 12.1706,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 4,
+        "candidates": 4,
+        "minFutures": 128,
+        "maxFutures": 128,
+        "totalFutures": 768,
+        "refinements": 0,
+        "closeDecision": false,
+        "cacheHit": false,
+        "verificationFutures": 0,
+        "verificationGain": 0,
+        "verificationError": 0,
+        "switchVerified": false,
+        "referenceRetained": false,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 4,
+      "round": 2,
+      "phase": "potion",
+      "changed": false,
+      "baseline": {
+        "index": 2,
+        "targets": [
+          0
+        ],
+        "value": 769274,
+        "end": {
+          "activity": 769274.1796875,
+          "reached": 0.6875
+        }
+      },
+      "smart": {
+        "index": 2,
+        "targets": [
+          0
+        ],
+        "value": 769274,
+        "end": {
+          "activity": 769274.1796875,
+          "reached": 0.6875
+        }
+      },
+      "baselineValue": 777811.8828125,
+      "smartValue": 777811.8828125,
+      "baselineReach": 0.68359375,
+      "smartReach": 0.68359375,
+      "baselineMs": 3032.4891,
+      "smartMs": 3118.0679,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 14,
+        "candidates": 8,
+        "minFutures": 256,
+        "maxFutures": 256,
+        "totalFutures": 2720,
+        "refinements": 1,
+        "closeDecision": true,
+        "cacheHit": false,
+        "verificationFutures": 128,
+        "verificationGain": -8498.4453125,
+        "verificationError": 10721.32170370542,
+        "switchVerified": false,
+        "referenceRetained": true,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 5,
+      "round": 5,
+      "phase": "instrument",
+      "changed": true,
+      "baseline": "refresh",
+      "smart": {
+        "index": 1,
+        "targets": [],
+        "value": 807906,
+        "end": {
+          "activity": 807905.89453125,
+          "reached": 0.76171875
+        }
+      },
+      "baselineValue": 802997.634765625,
+      "smartValue": 810236.8203125,
+      "baselineReach": 0.7626953125,
+      "smartReach": 0.7783203125,
+      "baselineMs": 1141.4888999999998,
+      "smartMs": 1901.6461,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 4,
+        "candidates": 4,
+        "minFutures": 128,
+        "maxFutures": 256,
+        "totalFutures": 1024,
+        "refinements": 1,
+        "closeDecision": true,
+        "cacheHit": false,
+        "verificationFutures": 0,
+        "verificationGain": 0,
+        "verificationError": 0,
+        "switchVerified": false,
+        "referenceRetained": false,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 6,
+      "round": 7,
+      "phase": "potion",
+      "changed": false,
+      "baseline": {
+        "index": 0,
+        "targets": [],
+        "value": 834609,
+        "end": {
+          "activity": 834609.234375,
+          "reached": 0.98046875
+        }
+      },
+      "smart": {
+        "index": 0,
+        "targets": [],
+        "value": 837843,
+        "end": {
+          "activity": 837843.0859375,
+          "reached": 0.9921875
+        }
+      },
+      "baselineValue": 839736.3486328125,
+      "smartValue": 839736.3486328125,
+      "baselineReach": 0.9892578125,
+      "smartReach": 0.9892578125,
+      "baselineMs": 1177.9591,
+      "smartMs": 1478.8437999999999,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 8,
+        "candidates": 8,
+        "minFutures": 128,
+        "maxFutures": 256,
+        "totalFutures": 2624,
+        "refinements": 1,
+        "closeDecision": true,
+        "cacheHit": false,
+        "verificationFutures": 256,
+        "verificationGain": 539.85546875,
+        "verificationError": 889.5978714170839,
+        "switchVerified": false,
+        "referenceRetained": true,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 7,
+      "round": 9,
+      "phase": "potion",
+      "changed": false,
+      "baseline": {
+        "index": 0,
+        "targets": [
+          0
+        ],
+        "value": 822080,
+        "end": {
+          "activity": 822079.8359375,
+          "reached": 0.6796875
+        }
+      },
+      "smart": {
+        "index": 0,
+        "targets": [
+          0
+        ],
+        "value": 822080,
+        "end": {
+          "activity": 822079.8359375,
+          "reached": 0.6796875
+        }
+      },
+      "baselineValue": 819092.7314453125,
+      "smartValue": 819092.7314453125,
+      "baselineReach": 0.60546875,
+      "smartReach": 0.60546875,
+      "baselineMs": 138.2705,
+      "smartMs": 110.17530000000001,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 21,
+        "candidates": 8,
+        "minFutures": 128,
+        "maxFutures": 128,
+        "totalFutures": 1488,
+        "refinements": 0,
+        "closeDecision": false,
+        "cacheHit": false,
+        "verificationFutures": 0,
+        "verificationGain": 0,
+        "verificationError": 0,
+        "switchVerified": false,
+        "referenceRetained": false,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 8,
+      "round": 2,
+      "phase": "potion",
+      "changed": false,
+      "baseline": {
+        "index": 2,
+        "targets": [],
+        "value": 563821,
+        "end": {
+          "activity": 563820.76171875,
+          "reached": 0.21484375
+        }
+      },
+      "smart": {
+        "index": 2,
+        "targets": [],
+        "value": 563821,
+        "end": {
+          "activity": 563820.76171875,
+          "reached": 0.21484375
+        }
+      },
+      "baselineValue": 646352.166015625,
+      "smartValue": 646352.166015625,
+      "baselineReach": 0.3466796875,
+      "smartReach": 0.3466796875,
+      "baselineMs": 1329.5665999999999,
+      "smartMs": 1267.0556,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 11,
+        "candidates": 8,
+        "minFutures": 128,
+        "maxFutures": 256,
+        "totalFutures": 1904,
+        "refinements": 1,
+        "closeDecision": true,
+        "cacheHit": false,
+        "verificationFutures": 0,
+        "verificationGain": 0,
+        "verificationError": 0,
+        "switchVerified": false,
+        "referenceRetained": false,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 9,
+      "round": 4,
+      "phase": "potion",
+      "changed": false,
+      "baseline": {
+        "index": 1,
+        "targets": [
+          3
+        ],
+        "value": 831817,
+        "end": {
+          "activity": 831817.2265625,
+          "reached": 0.953125
+        }
+      },
+      "smart": {
+        "index": 1,
+        "targets": [
+          3
+        ],
+        "value": 831961,
+        "end": {
+          "activity": 831960.58984375,
+          "reached": 0.953125
+        }
+      },
+      "baselineValue": 836575.1591796875,
+      "smartValue": 836575.1591796875,
+      "baselineReach": 0.9560546875,
+      "smartReach": 0.9560546875,
+      "baselineMs": 2171.0005,
+      "smartMs": 1237.1489,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 16,
+        "candidates": 8,
+        "minFutures": 256,
+        "maxFutures": 256,
+        "totalFutures": 3008,
+        "refinements": 1,
+        "closeDecision": true,
+        "cacheHit": false,
+        "verificationFutures": 256,
+        "verificationGain": 1988.3671875,
+        "verificationError": 1406.1874250519704,
+        "switchVerified": false,
+        "referenceRetained": true,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 10,
+      "round": 1,
+      "phase": "instrument",
+      "changed": false,
+      "baseline": {
+        "index": 0,
+        "targets": [],
+        "value": 776428,
+        "end": {
+          "activity": 776428.1328125,
+          "reached": 0.68359375
+        }
+      },
+      "smart": {
+        "index": 0,
+        "targets": [],
+        "value": 776428,
+        "end": {
+          "activity": 776428.1328125,
+          "reached": 0.68359375
+        }
+      },
+      "baselineValue": 786949.1943359375,
+      "smartValue": 786949.1943359375,
+      "baselineReach": 0.703125,
+      "smartReach": 0.703125,
+      "baselineMs": 2220.4983,
+      "smartMs": 2046.1611,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 4,
+        "candidates": 4,
+        "minFutures": 128,
+        "maxFutures": 256,
+        "totalFutures": 1408,
+        "refinements": 1,
+        "closeDecision": true,
+        "cacheHit": false,
+        "verificationFutures": 128,
+        "verificationGain": 34249.5390625,
+        "verificationError": 16596.149032609752,
+        "switchVerified": true,
+        "referenceRetained": false,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 11,
+      "round": 9,
+      "phase": "potion",
+      "changed": false,
+      "baseline": {
+        "index": 2,
+        "targets": [
+          5
+        ],
+        "value": 839981,
+        "end": {
+          "activity": 839981.11328125,
+          "reached": 0.99609375
+        }
+      },
+      "smart": {
+        "index": 2,
+        "targets": [
+          5
+        ],
+        "value": 840000,
+        "end": {
+          "activity": 840000,
+          "reached": 1
+        }
+      },
+      "baselineValue": 838964.16796875,
+      "smartValue": 838964.16796875,
+      "baselineReach": 0.9853515625,
+      "smartReach": 0.9853515625,
+      "baselineMs": 275.96389999999997,
+      "smartMs": 164.1071,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 26,
+        "candidates": 8,
+        "minFutures": 128,
+        "maxFutures": 256,
+        "totalFutures": 2016,
+        "refinements": 1,
+        "closeDecision": true,
+        "cacheHit": false,
+        "verificationFutures": 0,
+        "verificationGain": 0,
+        "verificationError": 0,
+        "switchVerified": false,
+        "referenceRetained": false,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 12,
+      "round": 2,
+      "phase": "potion",
+      "changed": false,
+      "baseline": {
+        "index": 0,
+        "targets": [
+          1,
+          2
+        ],
+        "value": 815317,
+        "end": {
+          "activity": 815316.796875,
+          "reached": 0.81640625
+        }
+      },
+      "smart": {
+        "index": 0,
+        "targets": [
+          1,
+          2
+        ],
+        "value": 816764,
+        "end": {
+          "activity": 816764.02734375,
+          "reached": 0.84375
+        }
+      },
+      "baselineValue": 823182.2451171875,
+      "smartValue": 823182.2451171875,
+      "baselineReach": 0.8486328125,
+      "smartReach": 0.8486328125,
+      "baselineMs": 2462.3328,
+      "smartMs": 4515.8018999999995,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 34,
+        "candidates": 8,
+        "minFutures": 256,
+        "maxFutures": 256,
+        "totalFutures": 3040,
+        "refinements": 1,
+        "closeDecision": true,
+        "cacheHit": false,
+        "verificationFutures": 128,
+        "verificationGain": -2150.140625,
+        "verificationError": 5844.809871676874,
+        "switchVerified": false,
+        "referenceRetained": true,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 13,
+      "round": 4,
+      "phase": "potion",
+      "changed": false,
+      "baseline": {
+        "index": 1,
+        "targets": [],
+        "value": 678566,
+        "end": {
+          "activity": 678565.703125,
+          "reached": 0.38671875
+        }
+      },
+      "smart": {
+        "index": 1,
+        "targets": [],
+        "value": 678810,
+        "end": {
+          "activity": 678809.71875,
+          "reached": 0.38671875
+        }
+      },
+      "baselineValue": 675126.2861328125,
+      "smartValue": 675126.2861328125,
+      "baselineReach": 0.3798828125,
+      "smartReach": 0.3798828125,
+      "baselineMs": 1273.5574000000001,
+      "smartMs": 1440.4039,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 12,
+        "candidates": 8,
+        "minFutures": 128,
+        "maxFutures": 256,
+        "totalFutures": 1664,
+        "refinements": 1,
+        "closeDecision": false,
+        "cacheHit": false,
+        "verificationFutures": 0,
+        "verificationGain": 0,
+        "verificationError": 0,
+        "switchVerified": false,
+        "referenceRetained": false,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 14,
+      "round": 7,
+      "phase": "potion",
+      "changed": false,
+      "baseline": {
+        "index": 0,
+        "targets": [
+          0
+        ],
+        "value": 813987,
+        "end": {
+          "activity": 813987.46875,
+          "reached": 0.5390625
+        }
+      },
+      "smart": {
+        "index": 0,
+        "targets": [
+          0
+        ],
+        "value": 813991,
+        "end": {
+          "activity": 813991.34375,
+          "reached": 0.5390625
+        }
+      },
+      "baselineValue": 812745.61328125,
+      "smartValue": 812745.61328125,
+      "baselineReach": 0.4912109375,
+      "smartReach": 0.4912109375,
+      "baselineMs": 64.11580000000001,
+      "smartMs": 23.4352,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 3,
+        "candidates": 3,
+        "minFutures": 128,
+        "maxFutures": 128,
+        "totalFutures": 576,
+        "refinements": 0,
+        "closeDecision": false,
+        "cacheHit": false,
+        "verificationFutures": 0,
+        "verificationGain": 0,
+        "verificationError": 0,
+        "switchVerified": false,
+        "referenceRetained": false,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 15,
+      "round": 2,
+      "phase": "instrument",
+      "changed": false,
+      "baseline": "refresh",
+      "smart": "refresh",
+      "baselineValue": 822394.111328125,
+      "smartValue": 822394.111328125,
+      "baselineReach": 0.873046875,
+      "smartReach": 0.873046875,
+      "baselineMs": 2395.4098,
+      "smartMs": 4325.5055999999995,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 4,
+        "candidates": 4,
+        "minFutures": 128,
+        "maxFutures": 256,
+        "totalFutures": 1024,
+        "refinements": 1,
+        "closeDecision": true,
+        "cacheHit": false,
+        "verificationFutures": 0,
+        "verificationGain": 0,
+        "verificationError": 0,
+        "switchVerified": false,
+        "referenceRetained": false,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 16,
+      "round": 2,
+      "phase": "potion",
+      "changed": false,
+      "baseline": "refresh",
+      "smart": "refresh",
+      "baselineValue": 599756.2939453125,
+      "smartValue": 599756.2939453125,
+      "baselineReach": 0.33203125,
+      "smartReach": 0.33203125,
+      "baselineMs": 2283.8862,
+      "smartMs": 2385.3073,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 9,
+        "candidates": 8,
+        "minFutures": 256,
+        "maxFutures": 256,
+        "totalFutures": 2384,
+        "refinements": 1,
+        "closeDecision": true,
+        "cacheHit": false,
+        "verificationFutures": 0,
+        "verificationGain": 0,
+        "verificationError": 0,
+        "switchVerified": false,
+        "referenceRetained": false,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 17,
+      "round": 4,
+      "phase": "potion",
+      "changed": false,
+      "baseline": "refresh",
+      "smart": "refresh",
+      "baselineValue": 665651.39453125,
+      "smartValue": 665651.39453125,
+      "baselineReach": 0.3525390625,
+      "smartReach": 0.3525390625,
+      "baselineMs": 2526.9700999999995,
+      "smartMs": 2696.4339,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 9,
+        "candidates": 8,
+        "minFutures": 256,
+        "maxFutures": 256,
+        "totalFutures": 2384,
+        "refinements": 1,
+        "closeDecision": true,
+        "cacheHit": false,
+        "verificationFutures": 0,
+        "verificationGain": 0,
+        "verificationError": 0,
+        "switchVerified": false,
+        "referenceRetained": false,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 18,
+      "round": 7,
+      "phase": "potion",
+      "changed": true,
+      "baseline": {
+        "index": 2,
+        "targets": [],
+        "value": 827779,
+        "end": {
+          "activity": 827778.79296875,
+          "reached": 0.90625
+        },
+        "noEffect": true
+      },
+      "smart": {
+        "index": 0,
+        "targets": [],
+        "value": 828065,
+        "end": {
+          "activity": 828064.6484375,
+          "reached": 0.90234375
+        }
+      },
+      "baselineValue": 828320.6689453125,
+      "smartValue": 827990.3798828125,
+      "baselineReach": 0.908203125,
+      "smartReach": 0.908203125,
+      "baselineMs": 1006.5432999999999,
+      "smartMs": 1265.9997999999998,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 4,
+        "candidates": 4,
+        "minFutures": 256,
+        "maxFutures": 256,
+        "totalFutures": 1792,
+        "refinements": 1,
+        "closeDecision": true,
+        "cacheHit": false,
+        "verificationFutures": 256,
+        "verificationGain": 5554.1640625,
+        "verificationError": 4490.751008244817,
+        "switchVerified": false,
+        "referenceRetained": true,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 19,
+      "round": 9,
+      "phase": "potion",
+      "changed": false,
+      "baseline": {
+        "index": 2,
+        "targets": [],
+        "value": 840000,
+        "end": {
+          "activity": 840000,
+          "reached": 1
+        }
+      },
+      "smart": {
+        "index": 2,
+        "targets": [],
+        "value": 840000,
+        "end": {
+          "activity": 840000,
+          "reached": 1
+        }
+      },
+      "baselineValue": 840000,
+      "smartValue": 840000,
+      "baselineReach": 1,
+      "smartReach": 1,
+      "baselineMs": 106.3249,
+      "smartMs": 9.0881,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 4,
+        "candidates": 4,
+        "minFutures": 128,
+        "maxFutures": 128,
+        "totalFutures": 768,
+        "refinements": 0,
+        "closeDecision": false,
+        "cacheHit": false,
+        "verificationFutures": 0,
+        "verificationGain": 0,
+        "verificationError": 0,
+        "switchVerified": false,
+        "referenceRetained": false,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 20,
+      "round": 1,
+      "phase": "instrument",
+      "changed": false,
+      "baseline": {
+        "index": 1,
+        "targets": [],
+        "value": 688152,
+        "end": {
+          "activity": 688152.125,
+          "reached": 0.484375
+        }
+      },
+      "smart": {
+        "index": 1,
+        "targets": [],
+        "value": 688152,
+        "end": {
+          "activity": 688152.125,
+          "reached": 0.484375
+        }
+      },
+      "baselineValue": 691354.6025390625,
+      "smartValue": 691354.6025390625,
+      "baselineReach": 0.4736328125,
+      "smartReach": 0.4736328125,
+      "baselineMs": 2173.48,
+      "smartMs": 2047.6546999999998,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 4,
+        "candidates": 4,
+        "minFutures": 256,
+        "maxFutures": 256,
+        "totalFutures": 1280,
+        "refinements": 1,
+        "closeDecision": false,
+        "cacheHit": false,
+        "verificationFutures": 0,
+        "verificationGain": 0,
+        "verificationError": 0,
+        "switchVerified": false,
+        "referenceRetained": false,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 21,
+      "round": 4,
+      "phase": "potion",
+      "changed": false,
+      "baseline": "refresh",
+      "smart": "refresh",
+      "baselineValue": 823270.81640625,
+      "smartValue": 823270.81640625,
+      "baselineReach": 0.8310546875,
+      "smartReach": 0.8310546875,
+      "baselineMs": 1579.5053,
+      "smartMs": 1941.6992,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 14,
+        "candidates": 8,
+        "minFutures": 128,
+        "maxFutures": 256,
+        "totalFutures": 2848,
+        "refinements": 1,
+        "closeDecision": true,
+        "cacheHit": false,
+        "verificationFutures": 256,
+        "verificationGain": 6918.39453125,
+        "verificationError": 6319.951183637071,
+        "switchVerified": false,
+        "referenceRetained": true,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 22,
+      "round": 7,
+      "phase": "potion",
+      "changed": false,
+      "baseline": {
+        "index": 0,
+        "targets": [],
+        "value": 837576,
+        "end": {
+          "activity": 837576.0859375,
+          "reached": 0.94140625
+        }
+      },
+      "smart": {
+        "index": 0,
+        "targets": [],
+        "value": 837725,
+        "end": {
+          "activity": 837724.9140625,
+          "reached": 0.9453125
+        }
+      },
+      "baselineValue": 837780.9658203125,
+      "smartValue": 837780.9658203125,
+      "baselineReach": 0.95703125,
+      "smartReach": 0.95703125,
+      "baselineMs": 425.4072,
+      "smartMs": 532.5982,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 7,
+        "candidates": 7,
+        "minFutures": 128,
+        "maxFutures": 256,
+        "totalFutures": 1600,
+        "refinements": 1,
+        "closeDecision": false,
+        "cacheHit": false,
+        "verificationFutures": 0,
+        "verificationGain": 0,
+        "verificationError": 0,
+        "switchVerified": false,
+        "referenceRetained": false,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 23,
+      "round": 9,
+      "phase": "potion",
+      "changed": false,
+      "baseline": {
+        "index": 0,
+        "targets": [
+          5
+        ],
+        "value": 784669,
+        "end": {
+          "activity": 784669.0390625,
+          "reached": 0.828125
+        }
+      },
+      "smart": {
+        "index": 0,
+        "targets": [
+          5
+        ],
+        "value": 784669,
+        "end": {
+          "activity": 784669.0390625,
+          "reached": 0.828125
+        }
+      },
+      "baselineValue": 798004.294921875,
+      "smartValue": 798004.294921875,
+      "baselineReach": 0.84375,
+      "smartReach": 0.84375,
+      "baselineMs": 109.1283,
+      "smartMs": 35.3017,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 18,
+        "candidates": 8,
+        "minFutures": 128,
+        "maxFutures": 128,
+        "totalFutures": 1440,
+        "refinements": 0,
+        "closeDecision": false,
+        "cacheHit": false,
+        "verificationFutures": 0,
+        "verificationGain": 0,
+        "verificationError": 0,
+        "switchVerified": false,
+        "referenceRetained": false,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 24,
+      "round": 2,
+      "phase": "potion",
+      "changed": false,
+      "baseline": {
+        "index": 2,
+        "targets": [
+          2
+        ],
+        "value": 767759,
+        "end": {
+          "activity": 767759.18359375,
+          "reached": 0.62890625
+        }
+      },
+      "smart": {
+        "index": 2,
+        "targets": [
+          2
+        ],
+        "value": 769226,
+        "end": {
+          "activity": 769225.99609375,
+          "reached": 0.6328125
+        }
+      },
+      "baselineValue": 771840.642578125,
+      "smartValue": 771840.642578125,
+      "baselineReach": 0.6455078125,
+      "smartReach": 0.6455078125,
+      "baselineMs": 1195.6736,
+      "smartMs": 1241.8597,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 16,
+        "candidates": 8,
+        "minFutures": 128,
+        "maxFutures": 256,
+        "totalFutures": 1728,
+        "refinements": 1,
+        "closeDecision": false,
+        "cacheHit": false,
+        "verificationFutures": 0,
+        "verificationGain": 0,
+        "verificationError": 0,
+        "switchVerified": false,
+        "referenceRetained": false,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 25,
+      "round": 4,
+      "phase": "instrument",
+      "changed": false,
+      "baseline": {
+        "index": 1,
+        "targets": [],
+        "value": 745552,
+        "end": {
+          "activity": 745552.23046875,
+          "reached": 0.59375
+        }
+      },
+      "smart": {
+        "index": 1,
+        "targets": [],
+        "value": 745552,
+        "end": {
+          "activity": 745552.23046875,
+          "reached": 0.59375
+        }
+      },
+      "baselineValue": 743299.2353515625,
+      "smartValue": 743299.2353515625,
+      "baselineReach": 0.609375,
+      "smartReach": 0.609375,
+      "baselineMs": 1153.3858,
+      "smartMs": 1463.9713,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 4,
+        "candidates": 4,
+        "minFutures": 128,
+        "maxFutures": 256,
+        "totalFutures": 1024,
+        "refinements": 1,
+        "closeDecision": true,
+        "cacheHit": false,
+        "verificationFutures": 0,
+        "verificationGain": 0,
+        "verificationError": 0,
+        "switchVerified": false,
+        "referenceRetained": false,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 26,
+      "round": 7,
+      "phase": "potion",
+      "changed": false,
+      "baseline": {
+        "index": 0,
+        "targets": [
+          0
+        ],
+        "value": 840000,
+        "end": {
+          "activity": 840000,
+          "reached": 1
+        }
+      },
+      "smart": {
+        "index": 0,
+        "targets": [
+          0
+        ],
+        "value": 840000,
+        "end": {
+          "activity": 840000,
+          "reached": 1
+        }
+      },
+      "baselineValue": 840000,
+      "smartValue": 840000,
+      "baselineReach": 1,
+      "smartReach": 1,
+      "baselineMs": 72.548,
+      "smartMs": 23.1833,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 3,
+        "candidates": 3,
+        "minFutures": 128,
+        "maxFutures": 128,
+        "totalFutures": 576,
+        "refinements": 0,
+        "closeDecision": false,
+        "cacheHit": false,
+        "verificationFutures": 0,
+        "verificationGain": 0,
+        "verificationError": 0,
+        "switchVerified": false,
+        "referenceRetained": false,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 27,
+      "round": 9,
+      "phase": "potion",
+      "changed": false,
+      "baseline": {
+        "index": 0,
+        "targets": [
+          0
+        ],
+        "value": 837540,
+        "end": {
+          "activity": 837539.609375,
+          "reached": 0.96484375
+        }
+      },
+      "smart": {
+        "index": 0,
+        "targets": [
+          0
+        ],
+        "value": 837540,
+        "end": {
+          "activity": 837539.609375,
+          "reached": 0.96484375
+        }
+      },
+      "baselineValue": 838990.33984375,
+      "smartValue": 838990.33984375,
+      "baselineReach": 0.9609375,
+      "smartReach": 0.9609375,
+      "baselineMs": 315.5768,
+      "smartMs": 347.6846,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 19,
+        "candidates": 8,
+        "minFutures": 256,
+        "maxFutures": 256,
+        "totalFutures": 3056,
+        "refinements": 1,
+        "closeDecision": true,
+        "cacheHit": false,
+        "verificationFutures": 256,
+        "verificationGain": -195.50390625,
+        "verificationError": 776.1010231805145,
+        "switchVerified": false,
+        "referenceRetained": true,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 28,
+      "round": 2,
+      "phase": "potion",
+      "changed": false,
+      "baseline": "refresh",
+      "smart": "refresh",
+      "baselineValue": 753577.404296875,
+      "smartValue": 753577.404296875,
+      "baselineReach": 0.6201171875,
+      "smartReach": 0.6201171875,
+      "baselineMs": 2088.2846,
+      "smartMs": 2237.7808,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 16,
+        "candidates": 8,
+        "minFutures": 128,
+        "maxFutures": 256,
+        "totalFutures": 1984,
+        "refinements": 1,
+        "closeDecision": true,
+        "cacheHit": false,
+        "verificationFutures": 0,
+        "verificationGain": 0,
+        "verificationError": 0,
+        "switchVerified": false,
+        "referenceRetained": false,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 29,
+      "round": 4,
+      "phase": "potion",
+      "changed": true,
+      "baseline": "refresh",
+      "smart": {
+        "index": 1,
+        "targets": [
+          1
+        ],
+        "value": 663200,
+        "end": {
+          "activity": 663199.82421875,
+          "reached": 0.30078125
+        }
+      },
+      "baselineValue": 706507.3203125,
+      "smartValue": 694475.1201171875,
+      "baselineReach": 0.40625,
+      "smartReach": 0.3798828125,
+      "baselineMs": 905.1953000000001,
+      "smartMs": 1036.0925,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 6,
+        "candidates": 6,
+        "minFutures": 128,
+        "maxFutures": 256,
+        "totalFutures": 2240,
+        "refinements": 1,
+        "closeDecision": true,
+        "cacheHit": false,
+        "verificationFutures": 256,
+        "verificationGain": 29892.91796875,
+        "verificationError": 14741.001055195266,
+        "switchVerified": false,
+        "referenceRetained": true,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 30,
+      "round": 1,
+      "phase": "instrument",
+      "changed": false,
+      "baseline": {
+        "index": 1,
+        "targets": [],
+        "value": 681364,
+        "end": {
+          "activity": 681363.71875,
+          "reached": 0.41796875
+        }
+      },
+      "smart": {
+        "index": 1,
+        "targets": [],
+        "value": 681364,
+        "end": {
+          "activity": 681363.71875,
+          "reached": 0.41796875
+        }
+      },
+      "baselineValue": 671906.529296875,
+      "smartValue": 671906.529296875,
+      "baselineReach": 0.4052734375,
+      "smartReach": 0.4052734375,
+      "baselineMs": 1702.4371999999998,
+      "smartMs": 2372.7474,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 4,
+        "candidates": 4,
+        "minFutures": 128,
+        "maxFutures": 256,
+        "totalFutures": 1280,
+        "refinements": 1,
+        "closeDecision": true,
+        "cacheHit": false,
+        "verificationFutures": 64,
+        "verificationGain": 74774.953125,
+        "verificationError": 25203.153867144676,
+        "switchVerified": true,
+        "referenceRetained": false,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 31,
+      "round": 9,
+      "phase": "potion",
+      "changed": false,
+      "baseline": {
+        "index": 2,
+        "targets": [],
+        "value": 840000,
+        "end": {
+          "activity": 840000,
+          "reached": 1
+        }
+      },
+      "smart": {
+        "index": 2,
+        "targets": [],
+        "value": 840000,
+        "end": {
+          "activity": 840000,
+          "reached": 1
+        }
+      },
+      "baselineValue": 839175.16796875,
+      "smartValue": 839175.16796875,
+      "baselineReach": 0.998046875,
+      "smartReach": 0.998046875,
+      "baselineMs": 71.9032,
+      "smartMs": 58.8906,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 6,
+        "candidates": 6,
+        "minFutures": 128,
+        "maxFutures": 256,
+        "totalFutures": 1280,
+        "refinements": 1,
+        "closeDecision": true,
+        "cacheHit": false,
+        "verificationFutures": 0,
+        "verificationGain": 0,
+        "verificationError": 0,
+        "switchVerified": false,
+        "referenceRetained": false,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 32,
+      "round": 2,
+      "phase": "potion",
+      "changed": false,
+      "baseline": {
+        "index": 0,
+        "targets": [],
+        "value": 785583,
+        "end": {
+          "activity": 785583.015625,
+          "reached": 0.6796875
+        }
+      },
+      "smart": {
+        "index": 0,
+        "targets": [],
+        "value": 789032,
+        "end": {
+          "activity": 789032.1953125,
+          "reached": 0.703125
+        }
+      },
+      "baselineValue": 790821.2265625,
+      "smartValue": 790821.2265625,
+      "baselineReach": 0.720703125,
+      "smartReach": 0.720703125,
+      "baselineMs": 2828.7218,
+      "smartMs": 1613.5782000000002,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 8,
+        "candidates": 8,
+        "minFutures": 128,
+        "maxFutures": 256,
+        "totalFutures": 1984,
+        "refinements": 1,
+        "closeDecision": true,
+        "cacheHit": false,
+        "verificationFutures": 0,
+        "verificationGain": 0,
+        "verificationError": 0,
+        "switchVerified": false,
+        "referenceRetained": false,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 33,
+      "round": 4,
+      "phase": "potion",
+      "changed": false,
+      "baseline": {
+        "index": 0,
+        "targets": [],
+        "value": 528122,
+        "end": {
+          "activity": 528122.3828125,
+          "reached": 0.15625
+        }
+      },
+      "smart": {
+        "index": 0,
+        "targets": [],
+        "value": 528377,
+        "end": {
+          "activity": 528376.9453125,
+          "reached": 0.16015625
+        }
+      },
+      "baselineValue": 554571.1123046875,
+      "smartValue": 554571.1123046875,
+      "baselineReach": 0.1708984375,
+      "smartReach": 0.1708984375,
+      "baselineMs": 1172.4216000000001,
+      "smartMs": 1311.9938,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 10,
+        "candidates": 8,
+        "minFutures": 128,
+        "maxFutures": 256,
+        "totalFutures": 1760,
+        "refinements": 1,
+        "closeDecision": true,
+        "cacheHit": false,
+        "verificationFutures": 0,
+        "verificationGain": 0,
+        "verificationError": 0,
+        "switchVerified": false,
+        "referenceRetained": false,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 34,
+      "round": 7,
+      "phase": "potion",
+      "changed": false,
+      "baseline": {
+        "index": 0,
+        "targets": [],
+        "value": 839649,
+        "end": {
+          "activity": 839648.96484375,
+          "reached": 0.99609375
+        }
+      },
+      "smart": {
+        "index": 0,
+        "targets": [],
+        "value": 840000,
+        "end": {
+          "activity": 840000,
+          "reached": 1
+        }
+      },
+      "baselineValue": 840000,
+      "smartValue": 840000,
+      "baselineReach": 1,
+      "smartReach": 1,
+      "baselineMs": 1026.0578,
+      "smartMs": 747.4984000000001,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 9,
+        "candidates": 8,
+        "minFutures": 128,
+        "maxFutures": 128,
+        "totalFutures": 1360,
+        "refinements": 0,
+        "closeDecision": false,
+        "cacheHit": false,
+        "verificationFutures": 0,
+        "verificationGain": 0,
+        "verificationError": 0,
+        "switchVerified": false,
+        "referenceRetained": false,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 35,
+      "round": 3,
+      "phase": "instrument",
+      "changed": false,
+      "baseline": {
+        "index": 1,
+        "targets": [],
+        "value": 765807,
+        "end": {
+          "activity": 765807.07421875,
+          "reached": 0.60546875
+        }
+      },
+      "smart": {
+        "index": 1,
+        "targets": [],
+        "value": 765818,
+        "end": {
+          "activity": 765818.21484375,
+          "reached": 0.60546875
+        }
+      },
+      "baselineValue": 764011.900390625,
+      "smartValue": 764011.900390625,
+      "baselineReach": 0.599609375,
+      "smartReach": 0.599609375,
+      "baselineMs": 1264.4348,
+      "smartMs": 2162.3866000000003,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 4,
+        "candidates": 4,
+        "minFutures": 128,
+        "maxFutures": 256,
+        "totalFutures": 1024,
+        "refinements": 1,
+        "closeDecision": true,
+        "cacheHit": false,
+        "verificationFutures": 0,
+        "verificationGain": 0,
+        "verificationError": 0,
+        "switchVerified": false,
+        "referenceRetained": false,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 36,
+      "round": 2,
+      "phase": "potion",
+      "changed": false,
+      "baseline": {
+        "index": 0,
+        "targets": [
+          2
+        ],
+        "value": 777165,
+        "end": {
+          "activity": 777165.4609375,
+          "reached": 0.640625
+        }
+      },
+      "smart": {
+        "index": 0,
+        "targets": [
+          2
+        ],
+        "value": 777706,
+        "end": {
+          "activity": 777706.43359375,
+          "reached": 0.6484375
+        }
+      },
+      "baselineValue": 776695.673828125,
+      "smartValue": 776695.673828125,
+      "baselineReach": 0.666015625,
+      "smartReach": 0.666015625,
+      "baselineMs": 2646.8393,
+      "smartMs": 3666.1850999999997,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 19,
+        "candidates": 8,
+        "minFutures": 128,
+        "maxFutures": 256,
+        "totalFutures": 2544,
+        "refinements": 1,
+        "closeDecision": true,
+        "cacheHit": false,
+        "verificationFutures": 128,
+        "verificationGain": -637.5078125,
+        "verificationError": 7881.711239142328,
+        "switchVerified": false,
+        "referenceRetained": true,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 37,
+      "round": 4,
+      "phase": "potion",
+      "changed": false,
+      "baseline": {
+        "index": 0,
+        "targets": [
+          0
+        ],
+        "value": 812446,
+        "end": {
+          "activity": 812446.421875,
+          "reached": 0.6328125
+        }
+      },
+      "smart": {
+        "index": 0,
+        "targets": [
+          0
+        ],
+        "value": 812446,
+        "end": {
+          "activity": 812446.421875,
+          "reached": 0.6328125
+        }
+      },
+      "baselineValue": 814796.1240234375,
+      "smartValue": 814796.1240234375,
+      "baselineReach": 0.6875,
+      "smartReach": 0.6875,
+      "baselineMs": 217.0604,
+      "smartMs": 287.5437,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 4,
+        "candidates": 4,
+        "minFutures": 128,
+        "maxFutures": 128,
+        "totalFutures": 768,
+        "refinements": 0,
+        "closeDecision": false,
+        "cacheHit": false,
+        "verificationFutures": 0,
+        "verificationGain": 0,
+        "verificationError": 0,
+        "switchVerified": false,
+        "referenceRetained": false,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 38,
+      "round": 7,
+      "phase": "potion",
+      "changed": false,
+      "baseline": {
+        "index": 2,
+        "targets": [
+          2
+        ],
+        "value": 834457,
+        "end": {
+          "activity": 834457.2421875,
+          "reached": 0.87890625
+        }
+      },
+      "smart": {
+        "index": 2,
+        "targets": [
+          2
+        ],
+        "value": 834809,
+        "end": {
+          "activity": 834808.89453125,
+          "reached": 0.88671875
+        }
+      },
+      "baselineValue": 835719.48046875,
+      "smartValue": 835719.48046875,
+      "baselineReach": 0.89453125,
+      "smartReach": 0.89453125,
+      "baselineMs": 1094.3404,
+      "smartMs": 1322.8484,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 22,
+        "candidates": 8,
+        "minFutures": 128,
+        "maxFutures": 256,
+        "totalFutures": 2336,
+        "refinements": 1,
+        "closeDecision": true,
+        "cacheHit": false,
+        "verificationFutures": 0,
+        "verificationGain": 0,
+        "verificationError": 0,
+        "switchVerified": false,
+        "referenceRetained": false,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 39,
+      "round": 9,
+      "phase": "potion",
+      "changed": false,
+      "baseline": {
+        "index": 2,
+        "targets": [
+          3
+        ],
+        "value": 839527,
+        "end": {
+          "activity": 839527.49609375,
+          "reached": 0.98046875
+        }
+      },
+      "smart": {
+        "index": 2,
+        "targets": [
+          3
+        ],
+        "value": 839561,
+        "end": {
+          "activity": 839561.04296875,
+          "reached": 0.9921875
+        }
+      },
+      "baselineValue": 839575.546875,
+      "smartValue": 839575.546875,
+      "baselineReach": 0.986328125,
+      "smartReach": 0.986328125,
+      "baselineMs": 411.1047,
+      "smartMs": 593.8588,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 29,
+        "candidates": 8,
+        "minFutures": 128,
+        "maxFutures": 256,
+        "totalFutures": 2704,
+        "refinements": 1,
+        "closeDecision": true,
+        "cacheHit": false,
+        "verificationFutures": 128,
+        "verificationGain": 0,
+        "verificationError": 0,
+        "switchVerified": false,
+        "referenceRetained": true,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 40,
+      "round": 1,
+      "phase": "instrument",
+      "changed": false,
+      "baseline": {
+        "index": 0,
+        "targets": [],
+        "value": 722336,
+        "end": {
+          "activity": 722336.359375,
+          "reached": 0.5703125
+        }
+      },
+      "smart": {
+        "index": 0,
+        "targets": [],
+        "value": 714554,
+        "end": {
+          "activity": 714554.078125,
+          "reached": 0.5546875
+        }
+      },
+      "baselineValue": 691995.7685546875,
+      "smartValue": 691995.7685546875,
+      "baselineReach": 0.470703125,
+      "smartReach": 0.470703125,
+      "baselineMs": 1180.0477,
+      "smartMs": 1782.4804,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 4,
+        "candidates": 4,
+        "minFutures": 128,
+        "maxFutures": 256,
+        "totalFutures": 1024,
+        "refinements": 1,
+        "closeDecision": true,
+        "cacheHit": false,
+        "verificationFutures": 0,
+        "verificationGain": 0,
+        "verificationError": 0,
+        "switchVerified": false,
+        "referenceRetained": false,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 41,
+      "round": 4,
+      "phase": "potion",
+      "changed": false,
+      "baseline": "refresh",
+      "smart": "refresh",
+      "baselineValue": 798958.2138671875,
+      "smartValue": 798958.2138671875,
+      "baselineReach": 0.6318359375,
+      "smartReach": 0.6318359375,
+      "baselineMs": 562.1037,
+      "smartMs": 500.6254,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 7,
+        "candidates": 7,
+        "minFutures": 128,
+        "maxFutures": 256,
+        "totalFutures": 1600,
+        "refinements": 1,
+        "closeDecision": true,
+        "cacheHit": false,
+        "verificationFutures": 0,
+        "verificationGain": 0,
+        "verificationError": 0,
+        "switchVerified": false,
+        "referenceRetained": false,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 42,
+      "round": 7,
+      "phase": "potion",
+      "changed": false,
+      "baseline": {
+        "index": 1,
+        "targets": [],
+        "value": 837357,
+        "end": {
+          "activity": 837356.7890625,
+          "reached": 0.9609375
+        }
+      },
+      "smart": {
+        "index": 1,
+        "targets": [],
+        "value": 837400,
+        "end": {
+          "activity": 837399.5859375,
+          "reached": 0.96484375
+        }
+      },
+      "baselineValue": 838093.4873046875,
+      "smartValue": 838093.4873046875,
+      "baselineReach": 0.9677734375,
+      "smartReach": 0.9677734375,
+      "baselineMs": 1207.5415999999998,
+      "smartMs": 1021.6079,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 9,
+        "candidates": 8,
+        "minFutures": 256,
+        "maxFutures": 256,
+        "totalFutures": 2384,
+        "refinements": 1,
+        "closeDecision": true,
+        "cacheHit": false,
+        "verificationFutures": 0,
+        "verificationGain": 0,
+        "verificationError": 0,
+        "switchVerified": false,
+        "referenceRetained": false,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 43,
+      "round": 9,
+      "phase": "potion",
+      "changed": false,
+      "baseline": {
+        "index": 1,
+        "targets": [
+          2
+        ],
+        "value": 807263,
+        "end": {
+          "activity": 807262.9453125,
+          "reached": 0.85546875
+        }
+      },
+      "smart": {
+        "index": 1,
+        "targets": [
+          2
+        ],
+        "value": 809278,
+        "end": {
+          "activity": 809277.73046875,
+          "reached": 0.86328125
+        }
+      },
+      "baselineValue": 797901.7421875,
+      "smartValue": 797901.7421875,
+      "baselineReach": 0.814453125,
+      "smartReach": 0.814453125,
+      "baselineMs": 207.1129,
+      "smartMs": 284.7553,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 19,
+        "candidates": 8,
+        "minFutures": 128,
+        "maxFutures": 256,
+        "totalFutures": 1904,
+        "refinements": 1,
+        "closeDecision": true,
+        "cacheHit": false,
+        "verificationFutures": 0,
+        "verificationGain": 0,
+        "verificationError": 0,
+        "switchVerified": false,
+        "referenceRetained": false,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 44,
+      "round": 2,
+      "phase": "potion",
+      "changed": false,
+      "baseline": "refresh",
+      "smart": "refresh",
+      "baselineValue": 639271.12890625,
+      "smartValue": 639271.12890625,
+      "baselineReach": 0.3701171875,
+      "smartReach": 0.3701171875,
+      "baselineMs": 1236.2413000000001,
+      "smartMs": 1464.9257,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 10,
+        "candidates": 8,
+        "minFutures": 128,
+        "maxFutures": 256,
+        "totalFutures": 2400,
+        "refinements": 1,
+        "closeDecision": true,
+        "cacheHit": false,
+        "verificationFutures": 128,
+        "verificationGain": -35640.8203125,
+        "verificationError": 22228.127137049338,
+        "switchVerified": false,
+        "referenceRetained": true,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 45,
+      "round": 4,
+      "phase": "instrument",
+      "changed": false,
+      "baseline": "refresh",
+      "smart": "refresh",
+      "baselineValue": 806686.224609375,
+      "smartValue": 806686.224609375,
+      "baselineReach": 0.771484375,
+      "smartReach": 0.771484375,
+      "baselineMs": 1495.7993000000001,
+      "smartMs": 1520.729,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 4,
+        "candidates": 4,
+        "minFutures": 128,
+        "maxFutures": 128,
+        "totalFutures": 768,
+        "refinements": 0,
+        "closeDecision": false,
+        "cacheHit": false,
+        "verificationFutures": 0,
+        "verificationGain": 0,
+        "verificationError": 0,
+        "switchVerified": false,
+        "referenceRetained": false,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 46,
+      "round": 7,
+      "phase": "potion",
+      "changed": false,
+      "baseline": {
+        "index": 2,
+        "targets": [],
+        "value": 829638,
+        "end": {
+          "activity": 829637.61328125,
+          "reached": 0.828125
+        }
+      },
+      "smart": {
+        "index": 2,
+        "targets": [],
+        "value": 831097,
+        "end": {
+          "activity": 831096.61328125,
+          "reached": 0.83203125
+        }
+      },
+      "baselineValue": 834105.6435546875,
+      "smartValue": 834105.6435546875,
+      "baselineReach": 0.8740234375,
+      "smartReach": 0.8740234375,
+      "baselineMs": 1273.9043,
+      "smartMs": 1356.6985,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 22,
+        "candidates": 8,
+        "minFutures": 128,
+        "maxFutures": 256,
+        "totalFutures": 2464,
+        "refinements": 1,
+        "closeDecision": true,
+        "cacheHit": false,
+        "verificationFutures": 0,
+        "verificationGain": 0,
+        "verificationError": 0,
+        "switchVerified": false,
+        "referenceRetained": false,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 47,
+      "round": 9,
+      "phase": "potion",
+      "changed": false,
+      "baseline": {
+        "index": 0,
+        "targets": [
+          0
+        ],
+        "value": 532270,
+        "end": {
+          "activity": 532270.0390625,
+          "reached": 0
+        }
+      },
+      "smart": {
+        "index": 0,
+        "targets": [
+          0
+        ],
+        "value": 532270,
+        "end": {
+          "activity": 532270.0390625,
+          "reached": 0
+        }
+      },
+      "baselineValue": 528922.80859375,
+      "smartValue": 528922.80859375,
+      "baselineReach": 0,
+      "smartReach": 0,
+      "baselineMs": 75.48299999999999,
+      "smartMs": 13.1002,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 3,
+        "candidates": 3,
+        "minFutures": 128,
+        "maxFutures": 128,
+        "totalFutures": 576,
+        "refinements": 0,
+        "closeDecision": false,
+        "cacheHit": false,
+        "verificationFutures": 0,
+        "verificationGain": 0,
+        "verificationError": 0,
+        "switchVerified": false,
+        "referenceRetained": false,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 48,
+      "round": 2,
+      "phase": "potion",
+      "changed": false,
+      "baseline": "refresh",
+      "smart": "refresh",
+      "baselineValue": 791974.1064453125,
+      "smartValue": 791974.1064453125,
+      "baselineReach": 0.724609375,
+      "smartReach": 0.724609375,
+      "baselineMs": 2774.1618,
+      "smartMs": 3181.4173,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 16,
+        "candidates": 8,
+        "minFutures": 128,
+        "maxFutures": 256,
+        "totalFutures": 2368,
+        "refinements": 1,
+        "closeDecision": true,
+        "cacheHit": false,
+        "verificationFutures": 128,
+        "verificationGain": -5990.3828125,
+        "verificationError": 9468.945538825774,
+        "switchVerified": false,
+        "referenceRetained": true,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 49,
+      "round": 4,
+      "phase": "potion",
+      "changed": false,
+      "baseline": {
+        "index": 2,
+        "targets": [
+          1
+        ],
+        "value": 835152,
+        "end": {
+          "activity": 835151.8046875,
+          "reached": 0.9296875
+        }
+      },
+      "smart": {
+        "index": 2,
+        "targets": [
+          1
+        ],
+        "value": 835343,
+        "end": {
+          "activity": 835343.0390625,
+          "reached": 0.953125
+        }
+      },
+      "baselineValue": 833731.0693359375,
+      "smartValue": 833731.0693359375,
+      "baselineReach": 0.953125,
+      "smartReach": 0.953125,
+      "baselineMs": 532.4774,
+      "smartMs": 628.5781000000001,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 10,
+        "candidates": 8,
+        "minFutures": 128,
+        "maxFutures": 128,
+        "totalFutures": 1376,
+        "refinements": 0,
+        "closeDecision": false,
+        "cacheHit": false,
+        "verificationFutures": 0,
+        "verificationGain": 0,
+        "verificationError": 0,
+        "switchVerified": false,
+        "referenceRetained": false,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 50,
+      "round": 1,
+      "phase": "instrument",
+      "changed": false,
+      "baseline": {
+        "index": 2,
+        "targets": [],
+        "value": 823586,
+        "end": {
+          "activity": 823585.78515625,
+          "reached": 0.91796875
+        }
+      },
+      "smart": {
+        "index": 2,
+        "targets": [],
+        "value": 823586,
+        "end": {
+          "activity": 823585.78515625,
+          "reached": 0.91796875
+        }
+      },
+      "baselineValue": 827465.7333984375,
+      "smartValue": 827465.7333984375,
+      "baselineReach": 0.8994140625,
+      "smartReach": 0.8994140625,
+      "baselineMs": 1736.6971,
+      "smartMs": 2124.6231,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 4,
+        "candidates": 4,
+        "minFutures": 128,
+        "maxFutures": 256,
+        "totalFutures": 1024,
+        "refinements": 1,
+        "closeDecision": true,
+        "cacheHit": false,
+        "verificationFutures": 0,
+        "verificationGain": 0,
+        "verificationError": 0,
+        "switchVerified": false,
+        "referenceRetained": false,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 51,
+      "round": 9,
+      "phase": "potion",
+      "changed": false,
+      "baseline": {
+        "index": 2,
+        "targets": [],
+        "value": 652945,
+        "end": {
+          "activity": 652945.265625,
+          "reached": 0.453125
+        }
+      },
+      "smart": {
+        "index": 2,
+        "targets": [],
+        "value": 652945,
+        "end": {
+          "activity": 652945.265625,
+          "reached": 0.453125
+        }
+      },
+      "baselineValue": 659673.2119140625,
+      "smartValue": 659673.2119140625,
+      "baselineReach": 0.47265625,
+      "smartReach": 0.47265625,
+      "baselineMs": 107.2047,
+      "smartMs": 32.105399999999996,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 6,
+        "candidates": 6,
+        "minFutures": 128,
+        "maxFutures": 256,
+        "totalFutures": 1472,
+        "refinements": 1,
+        "closeDecision": true,
+        "cacheHit": false,
+        "verificationFutures": 0,
+        "verificationGain": 0,
+        "verificationError": 0,
+        "switchVerified": false,
+        "referenceRetained": false,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 52,
+      "round": 2,
+      "phase": "potion",
+      "changed": false,
+      "baseline": {
+        "index": 1,
+        "targets": [
+          0,
+          2
+        ],
+        "value": 733988,
+        "end": {
+          "activity": 733988.16015625,
+          "reached": 0.64453125
+        }
+      },
+      "smart": {
+        "index": 1,
+        "targets": [
+          0,
+          2
+        ],
+        "value": 733988,
+        "end": {
+          "activity": 733988.16015625,
+          "reached": 0.64453125
+        }
+      },
+      "baselineValue": 717152.5615234375,
+      "smartValue": 717152.5615234375,
+      "baselineReach": 0.5986328125,
+      "smartReach": 0.5986328125,
+      "baselineMs": 1662.4334,
+      "smartMs": 1450.7543,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 16,
+        "candidates": 8,
+        "minFutures": 128,
+        "maxFutures": 256,
+        "totalFutures": 1856,
+        "refinements": 1,
+        "closeDecision": true,
+        "cacheHit": false,
+        "verificationFutures": 0,
+        "verificationGain": 0,
+        "verificationError": 0,
+        "switchVerified": false,
+        "referenceRetained": false,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 53,
+      "round": 4,
+      "phase": "potion",
+      "changed": false,
+      "baseline": {
+        "index": 0,
+        "targets": [
+          2,
+          5
+        ],
+        "value": 720425,
+        "end": {
+          "activity": 720424.73828125,
+          "reached": 0.56640625
+        }
+      },
+      "smart": {
+        "index": 0,
+        "targets": [
+          2,
+          5
+        ],
+        "value": 720145,
+        "end": {
+          "activity": 720145.34375,
+          "reached": 0.56640625
+        }
+      },
+      "baselineValue": 724071.56640625,
+      "smartValue": 724071.56640625,
+      "baselineReach": 0.572265625,
+      "smartReach": 0.572265625,
+      "baselineMs": 993.7918,
+      "smartMs": 1071.5188,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 29,
+        "candidates": 8,
+        "minFutures": 128,
+        "maxFutures": 256,
+        "totalFutures": 2320,
+        "refinements": 1,
+        "closeDecision": true,
+        "cacheHit": false,
+        "verificationFutures": 64,
+        "verificationGain": -44694.75,
+        "verificationError": 20540.533831191256,
+        "switchVerified": false,
+        "referenceRetained": true,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 54,
+      "round": 7,
+      "phase": "potion",
+      "changed": false,
+      "baseline": {
+        "index": 1,
+        "targets": [
+          5
+        ],
+        "value": 800993,
+        "end": {
+          "activity": 800992.9453125,
+          "reached": 0.58984375
+        }
+      },
+      "smart": {
+        "index": 1,
+        "targets": [
+          5
+        ],
+        "value": 800337,
+        "end": {
+          "activity": 800336.625,
+          "reached": 0.6015625
+        }
+      },
+      "baselineValue": 810116.7294921875,
+      "smartValue": 810116.7294921875,
+      "baselineReach": 0.615234375,
+      "smartReach": 0.615234375,
+      "baselineMs": 468.8394,
+      "smartMs": 435.3853,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 10,
+        "candidates": 8,
+        "minFutures": 128,
+        "maxFutures": 256,
+        "totalFutures": 2272,
+        "refinements": 1,
+        "closeDecision": true,
+        "cacheHit": false,
+        "verificationFutures": 0,
+        "verificationGain": 0,
+        "verificationError": 0,
+        "switchVerified": false,
+        "referenceRetained": false,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 55,
+      "round": 3,
+      "phase": "instrument",
+      "changed": true,
+      "baseline": "refresh",
+      "smart": {
+        "index": 1,
+        "targets": [],
+        "value": 810409,
+        "end": {
+          "activity": 810408.85546875,
+          "reached": 0.8203125
+        }
+      },
+      "baselineValue": 807347.384765625,
+      "smartValue": 810473.8955078125,
+      "baselineReach": 0.8173828125,
+      "smartReach": 0.8251953125,
+      "baselineMs": 1725.843,
+      "smartMs": 2172.902,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 4,
+        "candidates": 4,
+        "minFutures": 128,
+        "maxFutures": 256,
+        "totalFutures": 1152,
+        "refinements": 1,
+        "closeDecision": true,
+        "cacheHit": false,
+        "verificationFutures": 0,
+        "verificationGain": 0,
+        "verificationError": 0,
+        "switchVerified": false,
+        "referenceRetained": false,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 56,
+      "round": 2,
+      "phase": "potion",
+      "changed": false,
+      "baseline": {
+        "index": 2,
+        "targets": [],
+        "value": 730533,
+        "end": {
+          "activity": 730532.5859375,
+          "reached": 0.54296875
+        }
+      },
+      "smart": {
+        "index": 2,
+        "targets": [],
+        "value": 730533,
+        "end": {
+          "activity": 730532.5859375,
+          "reached": 0.54296875
+        }
+      },
+      "baselineValue": 735149.3623046875,
+      "smartValue": 735149.3623046875,
+      "baselineReach": 0.5859375,
+      "smartReach": 0.5859375,
+      "baselineMs": 1045.0629000000001,
+      "smartMs": 1148.6870000000001,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 8,
+        "candidates": 8,
+        "minFutures": 128,
+        "maxFutures": 256,
+        "totalFutures": 2240,
+        "refinements": 1,
+        "closeDecision": true,
+        "cacheHit": false,
+        "verificationFutures": 128,
+        "verificationGain": -49570.671875,
+        "verificationError": 16144.120165898585,
+        "switchVerified": false,
+        "referenceRetained": true,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 57,
+      "round": 4,
+      "phase": "potion",
+      "changed": false,
+      "baseline": {
+        "index": 1,
+        "targets": [
+          0
+        ],
+        "value": 794984,
+        "end": {
+          "activity": 794983.69921875,
+          "reached": 0.76171875
+        }
+      },
+      "smart": {
+        "index": 1,
+        "targets": [
+          0
+        ],
+        "value": 794984,
+        "end": {
+          "activity": 794983.69921875,
+          "reached": 0.76171875
+        }
+      },
+      "baselineValue": 806970.0361328125,
+      "smartValue": 806970.0361328125,
+      "baselineReach": 0.7734375,
+      "smartReach": 0.7734375,
+      "baselineMs": 2643.0275,
+      "smartMs": 2854.9336,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 29,
+        "candidates": 8,
+        "minFutures": 128,
+        "maxFutures": 256,
+        "totalFutures": 3088,
+        "refinements": 1,
+        "closeDecision": true,
+        "cacheHit": false,
+        "verificationFutures": 256,
+        "verificationGain": -2027.5078125,
+        "verificationError": 7137.215512223424,
+        "switchVerified": false,
+        "referenceRetained": true,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 58,
+      "round": 7,
+      "phase": "potion",
+      "changed": false,
+      "baseline": {
+        "index": 2,
+        "targets": [
+          0
+        ],
+        "value": 642135,
+        "end": {
+          "activity": 642135.1640625,
+          "reached": 0.02734375
+        }
+      },
+      "smart": {
+        "index": 2,
+        "targets": [
+          0
+        ],
+        "value": 642135,
+        "end": {
+          "activity": 642135.1640625,
+          "reached": 0.02734375
+        }
+      },
+      "baselineValue": 640720.240234375,
+      "smartValue": 640720.240234375,
+      "baselineReach": 0.029296875,
+      "smartReach": 0.029296875,
+      "baselineMs": 297.3631,
+      "smartMs": 318.0998,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 7,
+        "candidates": 7,
+        "minFutures": 128,
+        "maxFutures": 256,
+        "totalFutures": 1984,
+        "refinements": 1,
+        "closeDecision": true,
+        "cacheHit": false,
+        "verificationFutures": 256,
+        "verificationGain": 8920.24609375,
+        "verificationError": 8437.04993776237,
+        "switchVerified": false,
+        "referenceRetained": true,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 59,
+      "round": 9,
+      "phase": "potion",
+      "changed": false,
+      "baseline": {
+        "index": 2,
+        "targets": [],
+        "value": 838702,
+        "end": {
+          "activity": 838702.2578125,
+          "reached": 0.9921875
+        }
+      },
+      "smart": {
+        "index": 2,
+        "targets": [],
+        "value": 840000,
+        "end": {
+          "activity": 840000,
+          "reached": 1
+        }
+      },
+      "baselineValue": 839803.3203125,
+      "smartValue": 839803.3203125,
+      "baselineReach": 0.9970703125,
+      "smartReach": 0.9970703125,
+      "baselineMs": 458.11039999999997,
+      "smartMs": 382.8565,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 8,
+        "candidates": 8,
+        "minFutures": 128,
+        "maxFutures": 256,
+        "totalFutures": 1856,
+        "refinements": 1,
+        "closeDecision": true,
+        "cacheHit": false,
+        "verificationFutures": 0,
+        "verificationGain": 0,
+        "verificationError": 0,
+        "switchVerified": false,
+        "referenceRetained": false,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 60,
+      "round": 1,
+      "phase": "instrument",
+      "changed": false,
+      "baseline": {
+        "index": 1,
+        "targets": [],
+        "value": 759886,
+        "end": {
+          "activity": 759885.5390625,
+          "reached": 0.64453125
+        }
+      },
+      "smart": {
+        "index": 1,
+        "targets": [],
+        "value": 760012,
+        "end": {
+          "activity": 760012.23046875,
+          "reached": 0.6484375
+        }
+      },
+      "baselineValue": 768920.9111328125,
+      "smartValue": 768920.9111328125,
+      "baselineReach": 0.6865234375,
+      "smartReach": 0.6865234375,
+      "baselineMs": 1908.9258999999997,
+      "smartMs": 1989.0853,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 4,
+        "candidates": 4,
+        "minFutures": 128,
+        "maxFutures": 256,
+        "totalFutures": 1152,
+        "refinements": 1,
+        "closeDecision": true,
+        "cacheHit": false,
+        "verificationFutures": 0,
+        "verificationGain": 0,
+        "verificationError": 0,
+        "switchVerified": false,
+        "referenceRetained": false,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 61,
+      "round": 4,
+      "phase": "potion",
+      "changed": false,
+      "baseline": {
+        "index": 2,
+        "targets": [],
+        "value": 812558,
+        "end": {
+          "activity": 812557.78125,
+          "reached": 0.83203125
+        }
+      },
+      "smart": {
+        "index": 2,
+        "targets": [],
+        "value": 813931,
+        "end": {
+          "activity": 813931.0234375,
+          "reached": 0.83984375
+        }
+      },
+      "baselineValue": 819689.04296875,
+      "smartValue": 819689.04296875,
+      "baselineReach": 0.8623046875,
+      "smartReach": 0.8623046875,
+      "baselineMs": 461.3383,
+      "smartMs": 499.73220000000003,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 4,
+        "candidates": 4,
+        "minFutures": 256,
+        "maxFutures": 256,
+        "totalFutures": 1280,
+        "refinements": 1,
+        "closeDecision": true,
+        "cacheHit": false,
+        "verificationFutures": 0,
+        "verificationGain": 0,
+        "verificationError": 0,
+        "switchVerified": false,
+        "referenceRetained": false,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 62,
+      "round": 7,
+      "phase": "potion",
+      "changed": false,
+      "baseline": {
+        "index": 0,
+        "targets": [
+          0
+        ],
+        "value": 840000,
+        "end": {
+          "activity": 840000,
+          "reached": 1
+        }
+      },
+      "smart": {
+        "index": 0,
+        "targets": [
+          0
+        ],
+        "value": 840000,
+        "end": {
+          "activity": 840000,
+          "reached": 1
+        }
+      },
+      "baselineValue": 839925.283203125,
+      "smartValue": 839925.283203125,
+      "baselineReach": 0.9990234375,
+      "smartReach": 0.9990234375,
+      "baselineMs": 286.97909999999996,
+      "smartMs": 312.2144,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 9,
+        "candidates": 8,
+        "minFutures": 128,
+        "maxFutures": 256,
+        "totalFutures": 2192,
+        "refinements": 1,
+        "closeDecision": true,
+        "cacheHit": false,
+        "verificationFutures": 0,
+        "verificationGain": 0,
+        "verificationError": 0,
+        "switchVerified": false,
+        "referenceRetained": false,
+        "objectiveRankCorrected": false
+      }
+    },
+    {
+      "game": 63,
+      "round": 9,
+      "phase": "potion",
+      "changed": false,
+      "baseline": {
+        "index": 0,
+        "targets": [
+          2
+        ],
+        "value": 479435,
+        "end": {
+          "activity": 479435.11328125,
+          "reached": 0
+        }
+      },
+      "smart": {
+        "index": 0,
+        "targets": [
+          2
+        ],
+        "value": 479435,
+        "end": {
+          "activity": 479435.11328125,
+          "reached": 0
+        }
+      },
+      "baselineValue": 480767.703125,
+      "smartValue": 480767.703125,
+      "baselineReach": 0,
+      "smartReach": 0,
+      "baselineMs": 80.8952,
+      "smartMs": 46.9032,
+      "diagnostics": {
+        "profile": "balanced",
+        "terminalSamples": 8,
+        "terminalTies": true,
+        "guaranteedTarget": false,
+        "optionsScreened": 11,
+        "candidates": 8,
+        "minFutures": 128,
+        "maxFutures": 256,
+        "totalFutures": 1584,
+        "refinements": 1,
+        "closeDecision": false,
+        "cacheHit": false,
+        "verificationFutures": 0,
+        "verificationGain": 0,
+        "verificationError": 0,
+        "switchVerified": false,
+        "referenceRetained": false,
+        "objectiveRankCorrected": false
+      }
+    }
+  ],
+  "terminalSamples": 8,
+  "terminalTies": true,
+  "checkedAt": "2026-11-02T15:41:43.825Z",
+  "scope": "Candidate versus Balanced decisions on independent positions; disjoint 1024-future continuation evaluation. Not live profit.",
+  "code": {
+    "vorax/crates/vorax/src/smart.rs": "7cc75aa772f594fec436cc6d3942a763f21fb0b08b1d8938f82e2785ebdb8659",
+    "vorax/crates/vorax-cli/src/main.rs": "5e0f44ab7a444a12247bedab929d09ac1b140565972cf13b4ba0fb421c9620a8",
+    "vorax/crates/vorax-cli/src/quality.rs": "a7bf0abbd57c98d65a30b565e82e9fcb9d7026dc188bb728658435376d57f8d1",
+    "vorax/crates/vorax/src/bot.rs": "96a32b5753be972342e10edca30417883a4eee2348acb91e4618b5c1ab808b58",
+    "vorax/crates/vorax/src/advisor.rs": "240b594128b2c9f4469d19091951136df9c362a8a47ce38dba4e93acc9cdafe1",
+    "vorax/crates/vorax/src/session.rs": "fe53bca8f0addad12bbf6a2c1d07e88490f04c6215d7979597618bf72e2525d5",
+    "vorax/crates/vorax/src/continuation.rs": "57cd87c9a3a7a6eb912bdb085cc9a35b901c6c1025f876cdcf5458d704cace0a",
+    "vorax/crates/vorax/src/value.rs": "5258b1131f14d1bd0bd478c0ea4a1b9c8477842771dc4784181f804c5b21e2b7"
+  },
+  "binarySha256": "59a51b8728a2eb9653daf460e690bcb8ebd63fe1f41a915efa4810365049549d",
+  "baselineBinarySha256": "ce55a872ff2561fc3484060ec61c53425efa301b87d1ea25720f55fd40ff23e7",
+  "pairedCappedDifference": -44.37156677246094,
+  "approx95CI": [
+    -489.16681285395936,
+    400.4236793090375
+  ],
+  "baselineSeconds": 1.1705103328124997,
+  "candidateSeconds": 1.3401996640624998
+}

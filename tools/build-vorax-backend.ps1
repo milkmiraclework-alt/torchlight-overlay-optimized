@@ -8,7 +8,7 @@ if (!(Get-Command cargo -ErrorAction SilentlyContinue) -and (Test-Path (Join-Pat
   $env:PATH = (Join-Path $portable 'cargo\bin') + ';' + (Join-Path $portable 'w64devkit\bin') + ';' + $env:PATH
   $env:RUSTFLAGS = '-C link-self-contained=yes'
 }
-& cargo test --manifest-path (Join-Path $root 'vorax\Cargo.toml') --release --locked -p vorax --test parity --test smart
+& cargo test --manifest-path (Join-Path $root 'vorax\Cargo.toml') --release --locked -p vorax --lib --test parity --test smart --test session --test continuation
 if ($LASTEXITCODE -ne 0) { throw 'Vorax rules/Smart parity failed.' }
 & cargo test --manifest-path (Join-Path $root 'vorax\Cargo.toml') --release --locked -p vorax-scan --lib --test parity --test round --test faint_label
 if ($LASTEXITCODE -ne 0) { throw 'Vorax recognition checks failed.' }

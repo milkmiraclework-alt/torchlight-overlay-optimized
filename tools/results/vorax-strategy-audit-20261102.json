@@ -1,0 +1,448 @@
+{
+  "conditionalHeuristic": {
+    "beforeScore": 60000,
+    "confirmed": true,
+    "currentRound": 10,
+    "instrument": "Hypertrophic Pituitary",
+    "kind": "heuristic misses a joint archetype/rarity prerequisite; engine effects are correct",
+    "sameArchetypeCounts": true,
+    "sameHeuristicValues": [
+      287533.84497601213,
+      287533.84497601213
+    ],
+    "sameRarityCounts": true,
+    "scoreAfterTickWithRareAgito": 68000,
+    "scoreAfterTickWithRarePest": 60000
+  },
+  "forcedKitPriority": {
+    "examples": [
+      {
+        "boardScore": 583371,
+        "diagnostics": {
+          "cacheHit": false,
+          "candidates": 8,
+          "closeDecision": true,
+          "maxFutures": 256,
+          "minFutures": 128,
+          "objectiveRankCorrected": false,
+          "optionsScreened": 9,
+          "profile": "balanced",
+          "referenceRetained": true,
+          "refinements": 1,
+          "switchVerified": false,
+          "totalFutures": 2192,
+          "verificationError": 844.9209452067778,
+          "verificationFutures": 256,
+          "verificationGain": 1862.1640625
+        },
+        "independentFutures": 2048,
+        "independentKit": 838801.1079101562,
+        "independentRefresh": 838379.212890625,
+        "screen": {
+          "hand": [
+            "Potion Kit (Large)",
+            "Petrified Spinal Solution",
+            "Eggshell Powder"
+          ],
+          "instrumentRefreshes": 0,
+          "instrumentRounds": [
+            1,
+            3,
+            6
+          ],
+          "instruments": [
+            "Incubation Sac",
+            "Lady of the Plague Quarter",
+            "Canine Teeth File"
+          ],
+          "phase": "potion",
+          "potionRefreshes": 1,
+          "round": 10,
+          "shelley": 6,
+          "tanks": [
+            {
+              "activity": 659,
+              "archetype": "boneSentry",
+              "quantity": 528,
+              "rarity": "boss"
+            },
+            {
+              "activity": 398,
+              "archetype": "aemberon",
+              "quantity": 321,
+              "rarity": "rare"
+            },
+            {
+              "activity": 141,
+              "archetype": "pest",
+              "quantity": 237,
+              "rarity": "magic"
+            },
+            {
+              "activity": 32,
+              "archetype": "aemberon",
+              "quantity": 81,
+              "rarity": "normal"
+            },
+            {
+              "activity": 127,
+              "archetype": "pest",
+              "quantity": 216,
+              "rarity": "magic"
+            },
+            {
+              "activity": 201,
+              "archetype": "pest",
+              "quantity": 220,
+              "rarity": "boss"
+            }
+          ]
+        },
+        "searchKit": 838936.64453125,
+        "searchRefresh": 839143.87109375,
+        "seed": 17000028,
+        "selected": "Potion Kit (Large)"
+      },
+      {
+        "boardScore": 716336,
+        "diagnostics": {
+          "cacheHit": false,
+          "candidates": 8,
+          "closeDecision": true,
+          "maxFutures": 256,
+          "minFutures": 128,
+          "objectiveRankCorrected": false,
+          "optionsScreened": 29,
+          "profile": "balanced",
+          "referenceRetained": true,
+          "refinements": 1,
+          "switchVerified": false,
+          "totalFutures": 1872,
+          "verificationError": 0,
+          "verificationFutures": 128,
+          "verificationGain": 0
+        },
+        "independentFutures": 2048,
+        "independentKit": 833109.4243164062,
+        "independentRefresh": 832711.0336914062,
+        "screen": {
+          "hand": [
+            "Potion Kit (Large)",
+            "Twin Hormone - Bone Sentry",
+            "Xeno-Hormone"
+          ],
+          "instrumentRefreshes": 1,
+          "instrumentRounds": [
+            1,
+            2,
+            2
+          ],
+          "instruments": [
+            "Incubation Sac",
+            "Canine Teeth File",
+            "Pig Iron Bone Saw"
+          ],
+          "phase": "potion",
+          "potionRefreshes": 1,
+          "round": 10,
+          "shelley": 6,
+          "tanks": [
+            {
+              "activity": 193,
+              "archetype": "boneSentry",
+              "quantity": 395,
+              "rarity": "rare"
+            },
+            {
+              "activity": 15,
+              "archetype": "boneSentry",
+              "quantity": 269,
+              "rarity": "rare"
+            },
+            {
+              "activity": 776,
+              "archetype": "pest",
+              "quantity": 816,
+              "rarity": "magic"
+            },
+            {
+              "activity": 10,
+              "archetype": "agito",
+              "quantity": 114,
+              "rarity": "magic"
+            },
+            {
+              "activity": 10,
+              "archetype": "pest",
+              "quantity": 69,
+              "rarity": "magic"
+            },
+            {
+              "activity": 5,
+              "archetype": "pest",
+              "quantity": 204,
+              "rarity": "magic"
+            }
+          ]
+        },
+        "searchKit": 834641.6484375,
+        "searchRefresh": 835574.4296875,
+        "seed": 17000037,
+        "selected": "Potion Kit (Large)"
+      },
+      {
+        "boardScore": 594728,
+        "diagnostics": {
+          "cacheHit": false,
+          "candidates": 8,
+          "closeDecision": true,
+          "maxFutures": 256,
+          "minFutures": 128,
+          "objectiveRankCorrected": false,
+          "optionsScreened": 9,
+          "profile": "balanced",
+          "referenceRetained": true,
+          "refinements": 1,
+          "switchVerified": false,
+          "totalFutures": 1808,
+          "verificationError": 1020.9455292460746,
+          "verificationFutures": 256,
+          "verificationGain": 1477.1328125
+        },
+        "independentFutures": 2048,
+        "independentKit": 839509.0556640625,
+        "independentRefresh": 839255.873046875,
+        "screen": {
+          "hand": [
+            "Potion Kit (Large)",
+            "Spinal Solution - Agito",
+            "Digestive Enzyme Solution"
+          ],
+          "instrumentRefreshes": 2,
+          "instrumentRounds": [
+            1,
+            3,
+            3
+          ],
+          "instruments": [
+            "Contracted Claws",
+            "Pig Iron Bone Saw",
+            "Canine Teeth File"
+          ],
+          "phase": "potion",
+          "potionRefreshes": 1,
+          "round": 10,
+          "shelley": 6,
+          "tanks": [
+            {
+              "activity": 376,
+              "archetype": "boneSentry",
+              "quantity": 343,
+              "rarity": "magic"
+            },
+            {
+              "activity": 6,
+              "archetype": "aemberon",
+              "quantity": 270,
+              "rarity": "normal"
+            },
+            {
+              "activity": 405,
+              "archetype": "aemberon",
+              "quantity": 592,
+              "rarity": "normal"
+            },
+            {
+              "activity": 5,
+              "archetype": "aemberon",
+              "quantity": 216,
+              "rarity": "normal"
+            },
+            {
+              "activity": 350,
+              "archetype": "aemberon",
+              "quantity": 340,
+              "rarity": "boss"
+            },
+            {
+              "activity": 350,
+              "archetype": "aemberon",
+              "quantity": 298,
+              "rarity": "boss"
+            }
+          ]
+        },
+        "searchKit": 839321.515625,
+        "searchRefresh": 840000,
+        "seed": 17000061,
+        "selected": "Potion Kit (Large)"
+      }
+    ],
+    "scope": "Seeded valid boards at round 10; offer replaced with a legal kit and other potion choices; disjoint evaluation uses the same continuation policy, not live-game outcomes.",
+    "testedConstructedOffers": 62
+  },
+  "gameCapture": false,
+  "gameInput": false,
+  "openBoxState": {
+    "actualOpenBox": 33,
+    "actualRefreshedCards": 5,
+    "confirmed": true,
+    "forbiddenKitCardsIn512RebuiltRefreshes": 75,
+    "rebuiltOpenBox": null,
+    "rebuiltRefreshedCards": 3,
+    "screen": {
+      "hand": [
+        "Potent Xenopurge Powder",
+        "Anesthetic Tincture - Aemberon",
+        "Viscous Bile Solution",
+        "Vivigenic Powder",
+        "Anesthetic Tincture - Agito"
+      ],
+      "instrumentRefreshes": 2,
+      "instrumentRounds": [
+        1
+      ],
+      "instruments": [
+        "Aberrant Sprout"
+      ],
+      "phase": "potion",
+      "potionRefreshes": 3,
+      "round": 5,
+      "shelley": 6,
+      "tanks": [
+        {
+          "activity": 5,
+          "archetype": "aemberon",
+          "quantity": 24,
+          "rarity": "magic"
+        },
+        {
+          "activity": 5,
+          "archetype": "agito",
+          "quantity": 24,
+          "rarity": "magic"
+        },
+        {
+          "activity": 1,
+          "archetype": "aemberon",
+          "quantity": 36,
+          "rarity": "normal"
+        },
+        {
+          "activity": 300,
+          "archetype": "agito",
+          "quantity": 1,
+          "rarity": "boss"
+        },
+        null,
+        null
+      ]
+    }
+  },
+  "pendingInstrumentState": {
+    "actualAfterFirstPick": "instrumentSelect",
+    "actualPendingPicks": 2,
+    "actualThresholds": [
+      true,
+      true
+    ],
+    "confirmed": true,
+    "rebuiltAfterFirstPick": "potionSelect",
+    "rebuiltPendingPicks": 0,
+    "rebuiltThresholds": [
+      true,
+      false
+    ],
+    "screen": {
+      "hand": [
+        "Tanned Leather Restraint",
+        "Black Goat Gut Suture",
+        "Nettle Toggle"
+      ],
+      "instrumentRefreshes": 2,
+      "instrumentRounds": [
+        1
+      ],
+      "instruments": [
+        "Aberrant Sprout"
+      ],
+      "phase": "instrument",
+      "potionRefreshes": 3,
+      "round": 4,
+      "shelley": 6,
+      "tanks": [
+        {
+          "activity": 100,
+          "archetype": "pest",
+          "quantity": 60,
+          "rarity": "normal"
+        },
+        {
+          "activity": 100,
+          "archetype": "pest",
+          "quantity": 60,
+          "rarity": "normal"
+        },
+        {
+          "activity": 100,
+          "archetype": "pest",
+          "quantity": 60,
+          "rarity": "normal"
+        },
+        {
+          "activity": 100,
+          "archetype": "pest",
+          "quantity": 60,
+          "rarity": "normal"
+        },
+        {
+          "activity": 100,
+          "archetype": "pest",
+          "quantity": 60,
+          "rarity": "normal"
+        },
+        {
+          "activity": 100,
+          "archetype": "pest",
+          "quantity": 60,
+          "rarity": "normal"
+        }
+      ]
+    },
+    "thresholdCrossingScore": 36000
+  },
+  "periodicHeuristic": {
+    "acquiredRounds": [
+      1,
+      2
+    ],
+    "confirmed": true,
+    "currentRound": 10,
+    "differentEndOfRoundBoardsOutOf256": 256,
+    "instruments": [
+      "Aberrant Sprout",
+      "Aberrant Stinger",
+      "Nettle Toggle"
+    ],
+    "kind": "heuristic limitation, not an engine timing error",
+    "meanNextScoreWhenDue": 106393.359375,
+    "meanNextScoreWhenNotDue": 78000,
+    "periodicInstrument": "Aberrant Stinger",
+    "sameHeuristicValues": [
+      216857.34262198117,
+      216857.34262198117
+    ]
+  },
+  "checkedAt": "2026-11-02T04:57:44.248Z",
+  "sourceSha256": {
+    "vorax/crates/vorax/src/smart.rs": "2919592166f38c8678157cf03d6a520044a5c867e0e2701a20c53b04e46998c0",
+    "vorax/crates/vorax/src/advisor.rs": "cc47b8e7bd4757563d29be8454d72c2847fbf920ff632924515e108d2cefe61d",
+    "vorax/crates/vorax/src/bot.rs": "96a32b5753be972342e10edca30417883a4eee2348acb91e4618b5c1ab808b58",
+    "vorax/crates/vorax/src/game.rs": "eecfdcfb94a4c3b47c65ca9a0d82214956fa5ead07494b3af9da7d2a1fe834c4",
+    "vorax/crates/vorax/src/value.rs": "5258b1131f14d1bd0bd478c0ea4a1b9c8477842771dc4784181f804c5b21e2b7",
+    "vorax/data/game.json": "09e17ac3c111ca5256d1b598fdc96f7fe2594f0ee256667617b5f8a2e9a61004",
+    "vorax/data/boardValue.json": "31acf8fc57fd7af8000ca0a8ab57191ecb1730d6431ce532d235fdc74c3582af",
+    "desktop/native/vorax-backend.exe": "78c5e637762a35de970fc40c6b5c210cdf2499654f66635428dec740c153bee3"
+  },
+  "productionUnchanged": true
+}

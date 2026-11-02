@@ -47,6 +47,37 @@ pub struct ScreenState {
     /// Intern Shelley level (only changes the instrument rerolls a new game starts with)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub shelley: Option<i32>,
+    /// Confirmed live-session context that cannot always be recovered from one
+    /// picture (three-card kits look like ordinary hands). Absent on the legacy
+    /// reference fixtures, whose reconstruction stays unchanged.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub context: Option<RunContext>,
+}
+
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct RunContext {
+    pub open_box: Option<u8>,
+    pub pending_picks: i32,
+    pub thresholds: [bool; 2],
+}
+
+impl RunContext {
+    /// The instrument thresholds are consumed in order. An instrument offer
+    /// after crossing both with only the starting instrument owes two picks.
+    pub fn infer(x: &ScreenState, open_box: Option<u8>) -> Self {
+        let owned=x.instruments.iter().filter(|n|data().instrument_by_name(n).is_some()).count().min(3);
+        let activity:i64=x.tanks.iter().flatten().map(|m|m.activity*m.quantity).sum();
+        let pending=if x.phase==ScreenPhase::Instrument&&owned>0 {
+            if owned==1&&activity>=crate::game::THRESHOLDS[1]{2}else{(3-owned).min(1)}
+        }else{0};
+        let earned=owned+pending;
+        Self{open_box:if x.phase==ScreenPhase::Potion{open_box}else{None},pending_picks:pending as i32,thresholds:[earned>=2,earned>=3]}
+    }
+
+    pub fn from_state(s:&GameState)->Self {
+        Self{open_box:s.open_box,pending_picks:s.pending_picks,thresholds:[s.t8000,s.t28000]}
+    }
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
@@ -178,7 +209,7 @@ pub fn to_state(x: &ScreenState, unknown: &mut Vec<String>) -> GameState {
         *t = m.as_ref().map(|m| Monster { archetype: m.archetype, rarity: m.rarity, activity: m.activity, quantity: m.quantity });
     }
     let had = equipped.len() + (x.phase == ScreenPhase::Instrument) as usize;
-    GameState {
+    let mut rebuilt=GameState {
         tanks,
         instruments: equipped,
         round: x.round.unwrap_or(1),
@@ -190,7 +221,13 @@ pub fn to_state(x: &ScreenState, unknown: &mut Vec<String>) -> GameState {
         t8000: had >= 2,
         t28000: had >= 3,
         ..s
+    };
+    if let Some(context)=&x.context {
+        rebuilt.open_box=if potion {context.open_box.filter(|id|data().potions.iter().any(|p|p.id==*id&&matches!(p.targeting,Targeting::Box(_))))}else{None};
+        rebuilt.pending_picks=if potion{0}else{context.pending_picks.clamp(0,(3-rebuilt.instruments.len().min(3))as i32)};
+        rebuilt.t8000=context.thresholds[0];rebuilt.t28000=context.thresholds[1];
     }
+    rebuilt
 }
 
 /// The futures a board's advice needs, so slices of them can be played on other cores.

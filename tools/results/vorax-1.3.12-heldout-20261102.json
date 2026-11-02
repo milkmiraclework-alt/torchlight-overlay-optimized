@@ -1,0 +1,1191 @@
+{
+  "kind": "games",
+  "profile": "balanced",
+  "baselineSmart": true,
+  "baselineFutures": null,
+  "games": 128,
+  "seed": 19000000,
+  "baselineMean": 1074294.921875,
+  "smartMean": 1036218.9375,
+  "baselineCapped": 782274.671875,
+  "smartCapped": 777498.5390625,
+  "baselineReach": 0.6953125,
+  "smartReach": 0.7109375,
+  "rows": [
+    {
+      "seed": 19000000,
+      "baseline": 1209697,
+      "smart": 837962,
+      "baselineSeconds": 15.2598828,
+      "smartSeconds": 14.838674,
+      "baselineDecisions": 15,
+      "smartDecisions": 15
+    },
+    {
+      "seed": 19000001,
+      "baseline": 1543148,
+      "smart": 1543148,
+      "baselineSeconds": 13.9790709,
+      "smartSeconds": 11.3879066,
+      "baselineDecisions": 16,
+      "smartDecisions": 16
+    },
+    {
+      "seed": 19000002,
+      "baseline": 1075667,
+      "smart": 1037664,
+      "baselineSeconds": 16.9411172,
+      "smartSeconds": 15.8999459,
+      "baselineDecisions": 18,
+      "smartDecisions": 17
+    },
+    {
+      "seed": 19000003,
+      "baseline": 1238936,
+      "smart": 1238936,
+      "baselineSeconds": 18.0673758,
+      "smartSeconds": 16.6507505,
+      "baselineDecisions": 18,
+      "smartDecisions": 18
+    },
+    {
+      "seed": 19000004,
+      "baseline": 386784,
+      "smart": 386784,
+      "baselineSeconds": 17.4799561,
+      "smartSeconds": 18.5334787,
+      "baselineDecisions": 20,
+      "smartDecisions": 20
+    },
+    {
+      "seed": 19000005,
+      "baseline": 1620612,
+      "smart": 850325,
+      "baselineSeconds": 23.351735,
+      "smartSeconds": 15.7476039,
+      "baselineDecisions": 14,
+      "smartDecisions": 17
+    },
+    {
+      "seed": 19000006,
+      "baseline": 1375160,
+      "smart": 1375160,
+      "baselineSeconds": 14.0261413,
+      "smartSeconds": 11.5070046,
+      "baselineDecisions": 16,
+      "smartDecisions": 16
+    },
+    {
+      "seed": 19000007,
+      "baseline": 836325,
+      "smart": 1046656,
+      "baselineSeconds": 12.7305798,
+      "smartSeconds": 8.1275915,
+      "baselineDecisions": 18,
+      "smartDecisions": 19
+    },
+    {
+      "seed": 19000008,
+      "baseline": 1184378,
+      "smart": 876562,
+      "baselineSeconds": 17.9464678,
+      "smartSeconds": 21.397284,
+      "baselineDecisions": 15,
+      "smartDecisions": 19
+    },
+    {
+      "seed": 19000009,
+      "baseline": 1030709,
+      "smart": 1293435,
+      "baselineSeconds": 9.2839703,
+      "smartSeconds": 9.0247419,
+      "baselineDecisions": 19,
+      "smartDecisions": 20
+    },
+    {
+      "seed": 19000010,
+      "baseline": 1294694,
+      "smart": 1229228,
+      "baselineSeconds": 15.9487119,
+      "smartSeconds": 15.3880532,
+      "baselineDecisions": 16,
+      "smartDecisions": 13
+    },
+    {
+      "seed": 19000011,
+      "baseline": 956012,
+      "smart": 956012,
+      "baselineSeconds": 15.3008978,
+      "smartSeconds": 19.1171538,
+      "baselineDecisions": 15,
+      "smartDecisions": 15
+    },
+    {
+      "seed": 19000012,
+      "baseline": 777556,
+      "smart": 540857,
+      "baselineSeconds": 8.7284327,
+      "smartSeconds": 11.1371686,
+      "baselineDecisions": 16,
+      "smartDecisions": 18
+    },
+    {
+      "seed": 19000013,
+      "baseline": 414980,
+      "smart": 414980,
+      "baselineSeconds": 11.3231383,
+      "smartSeconds": 11.2007447,
+      "baselineDecisions": 18,
+      "smartDecisions": 18
+    },
+    {
+      "seed": 19000014,
+      "baseline": 833826,
+      "smart": 594894,
+      "baselineSeconds": 10.9251427,
+      "smartSeconds": 16.943707,
+      "baselineDecisions": 18,
+      "smartDecisions": 19
+    },
+    {
+      "seed": 19000015,
+      "baseline": 1095615,
+      "smart": 1374480,
+      "baselineSeconds": 15.007149,
+      "smartSeconds": 15.2120452,
+      "baselineDecisions": 17,
+      "smartDecisions": 19
+    },
+    {
+      "seed": 19000016,
+      "baseline": 593349,
+      "smart": 593349,
+      "baselineSeconds": 13.476619,
+      "smartSeconds": 12.4279812,
+      "baselineDecisions": 19,
+      "smartDecisions": 19
+    },
+    {
+      "seed": 19000017,
+      "baseline": 1205671,
+      "smart": 1205671,
+      "baselineSeconds": 21.3673708,
+      "smartSeconds": 29.3567962,
+      "baselineDecisions": 17,
+      "smartDecisions": 17
+    },
+    {
+      "seed": 19000018,
+      "baseline": 504774,
+      "smart": 504774,
+      "baselineSeconds": 8.4079093,
+      "smartSeconds": 8.8388952,
+      "baselineDecisions": 17,
+      "smartDecisions": 17
+    },
+    {
+      "seed": 19000019,
+      "baseline": 940580,
+      "smart": 1108413,
+      "baselineSeconds": 21.1620055,
+      "smartSeconds": 15.1808018,
+      "baselineDecisions": 15,
+      "smartDecisions": 16
+    },
+    {
+      "seed": 19000020,
+      "baseline": 644082,
+      "smart": 643741,
+      "baselineSeconds": 18.744769,
+      "smartSeconds": 12.9424372,
+      "baselineDecisions": 19,
+      "smartDecisions": 19
+    },
+    {
+      "seed": 19000021,
+      "baseline": 1155683,
+      "smart": 873956,
+      "baselineSeconds": 22.2739376,
+      "smartSeconds": 16.0987388,
+      "baselineDecisions": 18,
+      "smartDecisions": 16
+    },
+    {
+      "seed": 19000022,
+      "baseline": 1946324,
+      "smart": 1946324,
+      "baselineSeconds": 27.4568972,
+      "smartSeconds": 24.2986406,
+      "baselineDecisions": 15,
+      "smartDecisions": 15
+    },
+    {
+      "seed": 19000023,
+      "baseline": 969596,
+      "smart": 969596,
+      "baselineSeconds": 9.2171455,
+      "smartSeconds": 12.2404132,
+      "baselineDecisions": 15,
+      "smartDecisions": 15
+    },
+    {
+      "seed": 19000024,
+      "baseline": 1367485,
+      "smart": 1367485,
+      "baselineSeconds": 10.4142913,
+      "smartSeconds": 12.435597,
+      "baselineDecisions": 16,
+      "smartDecisions": 16
+    },
+    {
+      "seed": 19000025,
+      "baseline": 1127666,
+      "smart": 1127666,
+      "baselineSeconds": 6.088789,
+      "smartSeconds": 7.8341967,
+      "baselineDecisions": 18,
+      "smartDecisions": 18
+    },
+    {
+      "seed": 19000026,
+      "baseline": 933260,
+      "smart": 704226,
+      "baselineSeconds": 6.0286313,
+      "smartSeconds": 7.0673286,
+      "baselineDecisions": 19,
+      "smartDecisions": 20
+    },
+    {
+      "seed": 19000027,
+      "baseline": 570234,
+      "smart": 844662,
+      "baselineSeconds": 9.7094141,
+      "smartSeconds": 8.69171,
+      "baselineDecisions": 20,
+      "smartDecisions": 16
+    },
+    {
+      "seed": 19000028,
+      "baseline": 624799,
+      "smart": 906261,
+      "baselineSeconds": 7.7621972,
+      "smartSeconds": 17.1581453,
+      "baselineDecisions": 18,
+      "smartDecisions": 17
+    },
+    {
+      "seed": 19000029,
+      "baseline": 901217,
+      "smart": 841063,
+      "baselineSeconds": 12.8919973,
+      "smartSeconds": 16.660528,
+      "baselineDecisions": 20,
+      "smartDecisions": 20
+    },
+    {
+      "seed": 19000030,
+      "baseline": 886243,
+      "smart": 804395,
+      "baselineSeconds": 17.609386399999998,
+      "smartSeconds": 19.9673293,
+      "baselineDecisions": 19,
+      "smartDecisions": 19
+    },
+    {
+      "seed": 19000031,
+      "baseline": 781044,
+      "smart": 781044,
+      "baselineSeconds": 9.5456351,
+      "smartSeconds": 12.4980625,
+      "baselineDecisions": 16,
+      "smartDecisions": 16
+    },
+    {
+      "seed": 19000032,
+      "baseline": 988551,
+      "smart": 988551,
+      "baselineSeconds": 11.2552831,
+      "smartSeconds": 11.2385966,
+      "baselineDecisions": 16,
+      "smartDecisions": 16
+    },
+    {
+      "seed": 19000033,
+      "baseline": 1110186,
+      "smart": 683073,
+      "baselineSeconds": 13.3035545,
+      "smartSeconds": 18.3399257,
+      "baselineDecisions": 16,
+      "smartDecisions": 18
+    },
+    {
+      "seed": 19000034,
+      "baseline": 838812,
+      "smart": 865314,
+      "baselineSeconds": 16.1043915,
+      "smartSeconds": 18.0695016,
+      "baselineDecisions": 15,
+      "smartDecisions": 14
+    },
+    {
+      "seed": 19000035,
+      "baseline": 1093635,
+      "smart": 1093635,
+      "baselineSeconds": 16.8075551,
+      "smartSeconds": 19.3004293,
+      "baselineDecisions": 19,
+      "smartDecisions": 19
+    },
+    {
+      "seed": 19000036,
+      "baseline": 1326176,
+      "smart": 1773422,
+      "baselineSeconds": 15.6626142,
+      "smartSeconds": 20.7811085,
+      "baselineDecisions": 15,
+      "smartDecisions": 16
+    },
+    {
+      "seed": 19000037,
+      "baseline": 1571343,
+      "smart": 1571343,
+      "baselineSeconds": 18.8567602,
+      "smartSeconds": 19.8634117,
+      "baselineDecisions": 17,
+      "smartDecisions": 17
+    },
+    {
+      "seed": 19000038,
+      "baseline": 807530,
+      "smart": 1033009,
+      "baselineSeconds": 15.3870935,
+      "smartSeconds": 11.6251447,
+      "baselineDecisions": 17,
+      "smartDecisions": 15
+    },
+    {
+      "seed": 19000039,
+      "baseline": 713932,
+      "smart": 305043,
+      "baselineSeconds": 11.506295099999999,
+      "smartSeconds": 15.7319427,
+      "baselineDecisions": 16,
+      "smartDecisions": 20
+    },
+    {
+      "seed": 19000040,
+      "baseline": 1242927,
+      "smart": 1242927,
+      "baselineSeconds": 12.7261022,
+      "smartSeconds": 14.0212538,
+      "baselineDecisions": 15,
+      "smartDecisions": 15
+    },
+    {
+      "seed": 19000041,
+      "baseline": 1729064,
+      "smart": 1143261,
+      "baselineSeconds": 12.1364437,
+      "smartSeconds": 14.1231847,
+      "baselineDecisions": 14,
+      "smartDecisions": 19
+    },
+    {
+      "seed": 19000042,
+      "baseline": 942796,
+      "smart": 889382,
+      "baselineSeconds": 8.5025647,
+      "smartSeconds": 10.3642067,
+      "baselineDecisions": 17,
+      "smartDecisions": 16
+    },
+    {
+      "seed": 19000043,
+      "baseline": 921279,
+      "smart": 1060903,
+      "baselineSeconds": 9.5959173,
+      "smartSeconds": 10.5647095,
+      "baselineDecisions": 18,
+      "smartDecisions": 15
+    },
+    {
+      "seed": 19000044,
+      "baseline": 947786,
+      "smart": 1027520,
+      "baselineSeconds": 6.9017801,
+      "smartSeconds": 7.7685081,
+      "baselineDecisions": 17,
+      "smartDecisions": 16
+    },
+    {
+      "seed": 19000045,
+      "baseline": 628591,
+      "smart": 628591,
+      "baselineSeconds": 7.9949428000000005,
+      "smartSeconds": 9.3525091,
+      "baselineDecisions": 16,
+      "smartDecisions": 16
+    },
+    {
+      "seed": 19000046,
+      "baseline": 1200098,
+      "smart": 1200098,
+      "baselineSeconds": 10.7719457,
+      "smartSeconds": 11.8193938,
+      "baselineDecisions": 14,
+      "smartDecisions": 14
+    },
+    {
+      "seed": 19000047,
+      "baseline": 877987,
+      "smart": 877987,
+      "baselineSeconds": 19.4344944,
+      "smartSeconds": 18.92136,
+      "baselineDecisions": 17,
+      "smartDecisions": 17
+    },
+    {
+      "seed": 19000048,
+      "baseline": 1055194,
+      "smart": 1146970,
+      "baselineSeconds": 10.5001712,
+      "smartSeconds": 9.4031931,
+      "baselineDecisions": 14,
+      "smartDecisions": 15
+    },
+    {
+      "seed": 19000049,
+      "baseline": 1366772,
+      "smart": 1366772,
+      "baselineSeconds": 12.6325302,
+      "smartSeconds": 12.3932436,
+      "baselineDecisions": 16,
+      "smartDecisions": 16
+    },
+    {
+      "seed": 19000050,
+      "baseline": 1023315,
+      "smart": 1089272,
+      "baselineSeconds": 12.9511598,
+      "smartSeconds": 18.8727469,
+      "baselineDecisions": 16,
+      "smartDecisions": 16
+    },
+    {
+      "seed": 19000051,
+      "baseline": 816240,
+      "smart": 816240,
+      "baselineSeconds": 11.3947934,
+      "smartSeconds": 13.0868804,
+      "baselineDecisions": 18,
+      "smartDecisions": 18
+    },
+    {
+      "seed": 19000052,
+      "baseline": 279955,
+      "smart": 279955,
+      "baselineSeconds": 8.4796765,
+      "smartSeconds": 8.3880659,
+      "baselineDecisions": 19,
+      "smartDecisions": 19
+    },
+    {
+      "seed": 19000053,
+      "baseline": 2719060,
+      "smart": 1916270,
+      "baselineSeconds": 18.4577724,
+      "smartSeconds": 13.2152786,
+      "baselineDecisions": 18,
+      "smartDecisions": 17
+    },
+    {
+      "seed": 19000054,
+      "baseline": 434437,
+      "smart": 876000,
+      "baselineSeconds": 17.2858212,
+      "smartSeconds": 16.4715196,
+      "baselineDecisions": 18,
+      "smartDecisions": 16
+    },
+    {
+      "seed": 19000055,
+      "baseline": 1250624,
+      "smart": 1070701,
+      "baselineSeconds": 29.2061769,
+      "smartSeconds": 24.9902201,
+      "baselineDecisions": 15,
+      "smartDecisions": 15
+    },
+    {
+      "seed": 19000056,
+      "baseline": 860945,
+      "smart": 1295753,
+      "baselineSeconds": 19.682626,
+      "smartSeconds": 19.8932034,
+      "baselineDecisions": 18,
+      "smartDecisions": 14
+    },
+    {
+      "seed": 19000057,
+      "baseline": 3269034,
+      "smart": 1585367,
+      "baselineSeconds": 12.2063454,
+      "smartSeconds": 11.2609619,
+      "baselineDecisions": 16,
+      "smartDecisions": 15
+    },
+    {
+      "seed": 19000058,
+      "baseline": 861318,
+      "smart": 1116693,
+      "baselineSeconds": 9.6184642,
+      "smartSeconds": 10.7169921,
+      "baselineDecisions": 17,
+      "smartDecisions": 16
+    },
+    {
+      "seed": 19000059,
+      "baseline": 823342,
+      "smart": 797096,
+      "baselineSeconds": 13.060445,
+      "smartSeconds": 19.3081568,
+      "baselineDecisions": 19,
+      "smartDecisions": 19
+    },
+    {
+      "seed": 19000060,
+      "baseline": 1517487,
+      "smart": 1517487,
+      "baselineSeconds": 8.5599764,
+      "smartSeconds": 11.9753236,
+      "baselineDecisions": 19,
+      "smartDecisions": 19
+    },
+    {
+      "seed": 19000061,
+      "baseline": 1277198,
+      "smart": 1277198,
+      "baselineSeconds": 12.0659038,
+      "smartSeconds": 15.0891407,
+      "baselineDecisions": 19,
+      "smartDecisions": 19
+    },
+    {
+      "seed": 19000062,
+      "baseline": 471439,
+      "smart": 785118,
+      "baselineSeconds": 8.2326126,
+      "smartSeconds": 8.6188308,
+      "baselineDecisions": 19,
+      "smartDecisions": 18
+    },
+    {
+      "seed": 19000063,
+      "baseline": 1310660,
+      "smart": 903388,
+      "baselineSeconds": 11.728238,
+      "smartSeconds": 18.38187,
+      "baselineDecisions": 19,
+      "smartDecisions": 15
+    },
+    {
+      "seed": 19000064,
+      "baseline": 824033,
+      "smart": 861689,
+      "baselineSeconds": 17.4456414,
+      "smartSeconds": 20.9973422,
+      "baselineDecisions": 16,
+      "smartDecisions": 17
+    },
+    {
+      "seed": 19000065,
+      "baseline": 906634,
+      "smart": 906634,
+      "baselineSeconds": 21.8412829,
+      "smartSeconds": 26.6159812,
+      "baselineDecisions": 17,
+      "smartDecisions": 17
+    },
+    {
+      "seed": 19000066,
+      "baseline": 963676,
+      "smart": 1034994,
+      "baselineSeconds": 18.5253335,
+      "smartSeconds": 22.2477808,
+      "baselineDecisions": 16,
+      "smartDecisions": 17
+    },
+    {
+      "seed": 19000067,
+      "baseline": 1139363,
+      "smart": 874966,
+      "baselineSeconds": 28.3954464,
+      "smartSeconds": 20.0331834,
+      "baselineDecisions": 19,
+      "smartDecisions": 18
+    },
+    {
+      "seed": 19000068,
+      "baseline": 600761,
+      "smart": 600761,
+      "baselineSeconds": 23.8938197,
+      "smartSeconds": 19.100179,
+      "baselineDecisions": 19,
+      "smartDecisions": 19
+    },
+    {
+      "seed": 19000069,
+      "baseline": 1077968,
+      "smart": 1036529,
+      "baselineSeconds": 9.8897654,
+      "smartSeconds": 9.4818647,
+      "baselineDecisions": 19,
+      "smartDecisions": 17
+    },
+    {
+      "seed": 19000070,
+      "baseline": 1053653,
+      "smart": 741060,
+      "baselineSeconds": 11.0696449,
+      "smartSeconds": 13.7414814,
+      "baselineDecisions": 19,
+      "smartDecisions": 20
+    },
+    {
+      "seed": 19000071,
+      "baseline": 1998289,
+      "smart": 1350792,
+      "baselineSeconds": 9.1535348,
+      "smartSeconds": 10.228848,
+      "baselineDecisions": 15,
+      "smartDecisions": 15
+    },
+    {
+      "seed": 19000072,
+      "baseline": 511297,
+      "smart": 549584,
+      "baselineSeconds": 10.7267985,
+      "smartSeconds": 12.4718585,
+      "baselineDecisions": 19,
+      "smartDecisions": 17
+    },
+    {
+      "seed": 19000073,
+      "baseline": 1023258,
+      "smart": 1023258,
+      "baselineSeconds": 9.0243322,
+      "smartSeconds": 8.5821053,
+      "baselineDecisions": 15,
+      "smartDecisions": 15
+    },
+    {
+      "seed": 19000074,
+      "baseline": 1026411,
+      "smart": 1026411,
+      "baselineSeconds": 15.8143872,
+      "smartSeconds": 22.2928939,
+      "baselineDecisions": 16,
+      "smartDecisions": 16
+    },
+    {
+      "seed": 19000075,
+      "baseline": 1388311,
+      "smart": 1130225,
+      "baselineSeconds": 8.3094334,
+      "smartSeconds": 10.3154078,
+      "baselineDecisions": 17,
+      "smartDecisions": 15
+    },
+    {
+      "seed": 19000076,
+      "baseline": 758685,
+      "smart": 723542,
+      "baselineSeconds": 9.9287912,
+      "smartSeconds": 9.9279461,
+      "baselineDecisions": 19,
+      "smartDecisions": 17
+    },
+    {
+      "seed": 19000077,
+      "baseline": 1567899,
+      "smart": 1567899,
+      "baselineSeconds": 9.5979065,
+      "smartSeconds": 10.9342842,
+      "baselineDecisions": 14,
+      "smartDecisions": 14
+    },
+    {
+      "seed": 19000078,
+      "baseline": 813930,
+      "smart": 813930,
+      "baselineSeconds": 21.2850937,
+      "smartSeconds": 21.7041731,
+      "baselineDecisions": 21,
+      "smartDecisions": 21
+    },
+    {
+      "seed": 19000079,
+      "baseline": 1053775,
+      "smart": 1053775,
+      "baselineSeconds": 9.8300695,
+      "smartSeconds": 11.2222485,
+      "baselineDecisions": 16,
+      "smartDecisions": 16
+    },
+    {
+      "seed": 19000080,
+      "baseline": 509796,
+      "smart": 509796,
+      "baselineSeconds": 8.2555682,
+      "smartSeconds": 9.617098,
+      "baselineDecisions": 18,
+      "smartDecisions": 18
+    },
+    {
+      "seed": 19000081,
+      "baseline": 810087,
+      "smart": 2094710,
+      "baselineSeconds": 13.5775344,
+      "smartSeconds": 17.818911,
+      "baselineDecisions": 16,
+      "smartDecisions": 16
+    },
+    {
+      "seed": 19000082,
+      "baseline": 918080,
+      "smart": 944401,
+      "baselineSeconds": 17.4901616,
+      "smartSeconds": 19.4153078,
+      "baselineDecisions": 14,
+      "smartDecisions": 14
+    },
+    {
+      "seed": 19000083,
+      "baseline": 1649154,
+      "smart": 1649154,
+      "baselineSeconds": 22.2188352,
+      "smartSeconds": 20.0491774,
+      "baselineDecisions": 14,
+      "smartDecisions": 14
+    },
+    {
+      "seed": 19000084,
+      "baseline": 1097847,
+      "smart": 1097847,
+      "baselineSeconds": 21.7455287,
+      "smartSeconds": 19.8061019,
+      "baselineDecisions": 16,
+      "smartDecisions": 16
+    },
+    {
+      "seed": 19000085,
+      "baseline": 869226,
+      "smart": 869226,
+      "baselineSeconds": 17.3571836,
+      "smartSeconds": 16.5435955,
+      "baselineDecisions": 16,
+      "smartDecisions": 16
+    },
+    {
+      "seed": 19000086,
+      "baseline": 898448,
+      "smart": 2132000,
+      "baselineSeconds": 13.5350823,
+      "smartSeconds": 11.8948235,
+      "baselineDecisions": 18,
+      "smartDecisions": 16
+    },
+    {
+      "seed": 19000087,
+      "baseline": 1389569,
+      "smart": 1472823,
+      "baselineSeconds": 11.594189,
+      "smartSeconds": 13.5439259,
+      "baselineDecisions": 14,
+      "smartDecisions": 14
+    },
+    {
+      "seed": 19000088,
+      "baseline": 1160999,
+      "smart": 1160999,
+      "baselineSeconds": 13.0500211,
+      "smartSeconds": 15.8327157,
+      "baselineDecisions": 15,
+      "smartDecisions": 15
+    },
+    {
+      "seed": 19000089,
+      "baseline": 1803380,
+      "smart": 215192,
+      "baselineSeconds": 6.9003289,
+      "smartSeconds": 8.2109343,
+      "baselineDecisions": 19,
+      "smartDecisions": 17
+    },
+    {
+      "seed": 19000090,
+      "baseline": 2415364,
+      "smart": 902625,
+      "baselineSeconds": 7.6746954,
+      "smartSeconds": 10.844445499999999,
+      "baselineDecisions": 14,
+      "smartDecisions": 18
+    },
+    {
+      "seed": 19000091,
+      "baseline": 893371,
+      "smart": 751730,
+      "baselineSeconds": 15.2471456,
+      "smartSeconds": 18.812268,
+      "baselineDecisions": 15,
+      "smartDecisions": 19
+    },
+    {
+      "seed": 19000092,
+      "baseline": 1491078,
+      "smart": 1573458,
+      "baselineSeconds": 9.2199703,
+      "smartSeconds": 10.9123659,
+      "baselineDecisions": 18,
+      "smartDecisions": 18
+    },
+    {
+      "seed": 19000093,
+      "baseline": 527613,
+      "smart": 527613,
+      "baselineSeconds": 15.2134633,
+      "smartSeconds": 15.3867913,
+      "baselineDecisions": 19,
+      "smartDecisions": 19
+    },
+    {
+      "seed": 19000094,
+      "baseline": 952437,
+      "smart": 870840,
+      "baselineSeconds": 10.2808664,
+      "smartSeconds": 11.7048611,
+      "baselineDecisions": 18,
+      "smartDecisions": 17
+    },
+    {
+      "seed": 19000095,
+      "baseline": 730967,
+      "smart": 1160647,
+      "baselineSeconds": 7.4608114,
+      "smartSeconds": 10.8758017,
+      "baselineDecisions": 20,
+      "smartDecisions": 17
+    },
+    {
+      "seed": 19000096,
+      "baseline": 1117194,
+      "smart": 888216,
+      "baselineSeconds": 16.5621457,
+      "smartSeconds": 21.4453054,
+      "baselineDecisions": 15,
+      "smartDecisions": 15
+    },
+    {
+      "seed": 19000097,
+      "baseline": 933664,
+      "smart": 886681,
+      "baselineSeconds": 9.5539719,
+      "smartSeconds": 11.1115843,
+      "baselineDecisions": 17,
+      "smartDecisions": 21
+    },
+    {
+      "seed": 19000098,
+      "baseline": 1407775,
+      "smart": 1407775,
+      "baselineSeconds": 9.4330005,
+      "smartSeconds": 10.9742258,
+      "baselineDecisions": 18,
+      "smartDecisions": 18
+    },
+    {
+      "seed": 19000099,
+      "baseline": 1835406,
+      "smart": 1722561,
+      "baselineSeconds": 9.7861004,
+      "smartSeconds": 12.4426214,
+      "baselineDecisions": 17,
+      "smartDecisions": 14
+    },
+    {
+      "seed": 19000100,
+      "baseline": 962535,
+      "smart": 962535,
+      "baselineSeconds": 6.4596169,
+      "smartSeconds": 7.7645198,
+      "baselineDecisions": 18,
+      "smartDecisions": 18
+    },
+    {
+      "seed": 19000101,
+      "baseline": 752097,
+      "smart": 752097,
+      "baselineSeconds": 11.0194286,
+      "smartSeconds": 11.1166241,
+      "baselineDecisions": 17,
+      "smartDecisions": 17
+    },
+    {
+      "seed": 19000102,
+      "baseline": 1109181,
+      "smart": 1275614,
+      "baselineSeconds": 8.2104229,
+      "smartSeconds": 9.2931444,
+      "baselineDecisions": 17,
+      "smartDecisions": 16
+    },
+    {
+      "seed": 19000103,
+      "baseline": 1110245,
+      "smart": 1170632,
+      "baselineSeconds": 10.4397494,
+      "smartSeconds": 13.7040729,
+      "baselineDecisions": 17,
+      "smartDecisions": 20
+    },
+    {
+      "seed": 19000104,
+      "baseline": 926400,
+      "smart": 926400,
+      "baselineSeconds": 7.8709264,
+      "smartSeconds": 10.1754894,
+      "baselineDecisions": 15,
+      "smartDecisions": 15
+    },
+    {
+      "seed": 19000105,
+      "baseline": 1056556,
+      "smart": 1004025,
+      "baselineSeconds": 7.4153008,
+      "smartSeconds": 9.138175,
+      "baselineDecisions": 16,
+      "smartDecisions": 16
+    },
+    {
+      "seed": 19000106,
+      "baseline": 827113,
+      "smart": 827113,
+      "baselineSeconds": 11.1989072,
+      "smartSeconds": 17.8427289,
+      "baselineDecisions": 17,
+      "smartDecisions": 17
+    },
+    {
+      "seed": 19000107,
+      "baseline": 676463,
+      "smart": 676463,
+      "baselineSeconds": 8.5089963,
+      "smartSeconds": 9.5964723,
+      "baselineDecisions": 16,
+      "smartDecisions": 16
+    },
+    {
+      "seed": 19000108,
+      "baseline": 1790828,
+      "smart": 1790828,
+      "baselineSeconds": 7.0318659,
+      "smartSeconds": 8.5702234,
+      "baselineDecisions": 15,
+      "smartDecisions": 15
+    },
+    {
+      "seed": 19000109,
+      "baseline": 892210,
+      "smart": 892210,
+      "baselineSeconds": 9.692007,
+      "smartSeconds": 12.1005391,
+      "baselineDecisions": 16,
+      "smartDecisions": 16
+    },
+    {
+      "seed": 19000110,
+      "baseline": 932589,
+      "smart": 944937,
+      "baselineSeconds": 11.1864719,
+      "smartSeconds": 17.6314316,
+      "baselineDecisions": 16,
+      "smartDecisions": 16
+    },
+    {
+      "seed": 19000111,
+      "baseline": 682035,
+      "smart": 682035,
+      "baselineSeconds": 9.381961,
+      "smartSeconds": 10.4711715,
+      "baselineDecisions": 19,
+      "smartDecisions": 19
+    },
+    {
+      "seed": 19000112,
+      "baseline": 1332800,
+      "smart": 1332800,
+      "baselineSeconds": 7.9996184,
+      "smartSeconds": 10.2730188,
+      "baselineDecisions": 17,
+      "smartDecisions": 17
+    },
+    {
+      "seed": 19000113,
+      "baseline": 831119,
+      "smart": 831119,
+      "baselineSeconds": 9.840685,
+      "smartSeconds": 12.5349153,
+      "baselineDecisions": 17,
+      "smartDecisions": 17
+    },
+    {
+      "seed": 19000114,
+      "baseline": 2409935,
+      "smart": 1538635,
+      "baselineSeconds": 11.5619279,
+      "smartSeconds": 13.5142921,
+      "baselineDecisions": 17,
+      "smartDecisions": 15
+    },
+    {
+      "seed": 19000115,
+      "baseline": 1279775,
+      "smart": 1003646,
+      "baselineSeconds": 12.3789599,
+      "smartSeconds": 13.4568568,
+      "baselineDecisions": 16,
+      "smartDecisions": 16
+    },
+    {
+      "seed": 19000116,
+      "baseline": 1791036,
+      "smart": 2490627,
+      "baselineSeconds": 12.468498,
+      "smartSeconds": 11.9602769,
+      "baselineDecisions": 17,
+      "smartDecisions": 19
+    },
+    {
+      "seed": 19000117,
+      "baseline": 415047,
+      "smart": 415047,
+      "baselineSeconds": 8.4717323,
+      "smartSeconds": 11.0331946,
+      "baselineDecisions": 19,
+      "smartDecisions": 19
+    },
+    {
+      "seed": 19000118,
+      "baseline": 1618042,
+      "smart": 1174843,
+      "baselineSeconds": 12.1408357,
+      "smartSeconds": 12.1561202,
+      "baselineDecisions": 17,
+      "smartDecisions": 15
+    },
+    {
+      "seed": 19000119,
+      "baseline": 974380,
+      "smart": 2587277,
+      "baselineSeconds": 6.2416374,
+      "smartSeconds": 6.9009405,
+      "baselineDecisions": 14,
+      "smartDecisions": 14
+    },
+    {
+      "seed": 19000120,
+      "baseline": 1548479,
+      "smart": 762795,
+      "baselineSeconds": 7.3224263,
+      "smartSeconds": 8.4423494,
+      "baselineDecisions": 18,
+      "smartDecisions": 19
+    },
+    {
+      "seed": 19000121,
+      "baseline": 305474,
+      "smart": 305474,
+      "baselineSeconds": 7.4251433,
+      "smartSeconds": 8.8995789,
+      "baselineDecisions": 18,
+      "smartDecisions": 18
+    },
+    {
+      "seed": 19000122,
+      "baseline": 953060,
+      "smart": 890759,
+      "baselineSeconds": 12.3860141,
+      "smartSeconds": 19.6331133,
+      "baselineDecisions": 18,
+      "smartDecisions": 20
+    },
+    {
+      "seed": 19000123,
+      "baseline": 1020054,
+      "smart": 1020054,
+      "baselineSeconds": 11.7889082,
+      "smartSeconds": 14.0333133,
+      "baselineDecisions": 20,
+      "smartDecisions": 20
+    },
+    {
+      "seed": 19000124,
+      "baseline": 689359,
+      "smart": 864383,
+      "baselineSeconds": 7.5262424,
+      "smartSeconds": 9.3997734,
+      "baselineDecisions": 17,
+      "smartDecisions": 17
+    },
+    {
+      "seed": 19000125,
+      "baseline": 876470,
+      "smart": 694597,
+      "baselineSeconds": 8.1941352,
+      "smartSeconds": 11.9974086,
+      "baselineDecisions": 20,
+      "smartDecisions": 19
+    },
+    {
+      "seed": 19000126,
+      "baseline": 597743,
+      "smart": 597743,
+      "baselineSeconds": 8.239349,
+      "smartSeconds": 9.7258855,
+      "baselineDecisions": 18,
+      "smartDecisions": 18
+    },
+    {
+      "seed": 19000127,
+      "baseline": 725508,
+      "smart": 1042945,
+      "baselineSeconds": 11.4271054,
+      "smartSeconds": 15.8584115,
+      "baselineDecisions": 18,
+      "smartDecisions": 19
+    }
+  ],
+  "checkedAt": "2026-11-02T05:44:31.548Z",
+  "scope": "Candidate versus Balanced advisers on seeded full local-rule games. Not live profit or calibrated server performance.",
+  "code": {
+    "vorax/crates/vorax/src/smart.rs": "581557300396961df2f194a8628704b3de00ba3fb2ece962590009bc69b91c02",
+    "vorax/crates/vorax-cli/src/quality.rs": "a7bf0abbd57c98d65a30b565e82e9fcb9d7026dc188bb728658435376d57f8d1",
+    "vorax/crates/vorax/src/bot.rs": "96a32b5753be972342e10edca30417883a4eee2348acb91e4618b5c1ab808b58",
+    "vorax/crates/vorax/src/advisor.rs": "240b594128b2c9f4469d19091951136df9c362a8a47ce38dba4e93acc9cdafe1",
+    "vorax/crates/vorax/src/session.rs": "fe53bca8f0addad12bbf6a2c1d07e88490f04c6215d7979597618bf72e2525d5",
+    "vorax/crates/vorax/src/continuation.rs": "d69c65c6cd58fc386b58777aba731faeedaf5bf73d622bfb0f4f622dec1bea56",
+    "vorax/crates/vorax/src/value.rs": "5258b1131f14d1bd0bd478c0ea4a1b9c8477842771dc4784181f804c5b21e2b7"
+  },
+  "binarySha256": "632554471ddb14a5cb1825c392161b31e8c46ee58bd28ae26722bc3143b52b1e",
+  "baselineBinarySha256": "ce55a872ff2561fc3484060ec61c53425efa301b87d1ea25720f55fd40ff23e7",
+  "pairedCappedDifference": -4776.1328125,
+  "approx95CI": [
+    -21560.138677852017,
+    12007.873052852017
+  ],
+  "baselineSeconds": 12.782687296874995,
+  "candidateSeconds": 14.016615239843752,
+  "terminalSamples": 2,
+  "terminalTies": false,
+  "releaseSelection": "rejected full terminal-model replacement; mixed full-game results"
+}

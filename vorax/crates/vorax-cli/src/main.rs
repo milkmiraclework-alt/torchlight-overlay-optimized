@@ -24,6 +24,11 @@ fn arg<T: std::str::FromStr>(args: &[String], name: &str) -> Option<T> {
 fn main() {
     let args: Vec<String> = std::env::args().skip(1).collect();
     let cmd = args.first().map(String::as_str).unwrap_or("help");
+    if args.iter().any(|a|a=="--terminal-ties"){std::env::set_var("VORAX_TERMINAL_TIES","1");}
+    if let Some(n)=arg::<u32>(&args,"--terminal-samples"){
+        if !matches!(n,0|2|8|16){fail("terminal samples must be 0, 2, 8 or 16")}
+        std::env::set_var("VORAX_TERMINAL_SAMPLES",n.to_string());
+    }
     if let Some(n) = arg::<usize>(&args, "--threads") {
         rayon::ThreadPoolBuilder::new().num_threads(n).build_global().ok();
     }

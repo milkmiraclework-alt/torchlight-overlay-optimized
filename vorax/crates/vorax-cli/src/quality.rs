@@ -20,7 +20,7 @@ fn screen(s: &GameState) -> ScreenState {
         instruments: s.instruments.iter().map(|e| d.instrument(e.id).unwrap().name.clone()).collect(),
         instrument_rounds: Some(s.instruments.iter().map(|e| e.acquired_round).collect()),
         phase: if s.phase == Phase::PotionSelect { ScreenPhase::Potion } else { ScreenPhase::Instrument },
-        round: Some(s.round), potion_refreshes: Some(s.potion_refreshes), instrument_refreshes: Some(s.instrument_refreshes), shelley: Some(6),
+        round: Some(s.round), potion_refreshes: Some(s.potion_refreshes), instrument_refreshes: Some(s.instrument_refreshes), shelley: Some(6),context:Some(advisor::RunContext::from_state(s)),
     }
 }
 fn play(s: &GameState, best: &Best) -> GameState {
@@ -39,7 +39,16 @@ fn as_opt(best: &Best) -> Opt {
 }
 fn same_choice(a: &Best, b: &Best) -> bool { as_opt(a) == as_opt(b) }
 
-fn position_audit(count: usize, futures: u32, seed: u32, profile: smart::Profile, baseline_smart: bool) {
+fn frozen_choice(x:&ScreenState,exe:&str)->Best{
+    use std::io::Write;
+    use std::process::{Command,Stdio};
+    let mut child=Command::new(exe).args(["advise","--smart","--single"]).stdin(Stdio::piped()).stdout(Stdio::piped()).stderr(Stdio::piped()).spawn().expect("Baseline CLI");
+    let mut input=child.stdin.take().unwrap();input.write_all(&serde_json::to_vec(x).unwrap()).unwrap();drop(input);
+    let output=child.wait_with_output().unwrap();assert!(output.status.success(),"Baseline CLI failed");let value:serde_json::Value=serde_json::from_slice(&output.stdout).unwrap();let choice=&value["advice"]["best"];
+    if choice.as_str()==Some("refresh"){Best::Refresh}else if choice.is_null(){Best::Nothing}else{Best::Card(serde_json::from_value(choice.clone()).unwrap())}
+}
+
+fn position_audit(count: usize, futures: u32, seed: u32, profile: smart::Profile, baseline_smart: bool,baseline_exe:Option<&str>) {
     // One position per independent game, not many correlated positions from a
     // handful of runs. Include basic/advanced instruments and early/late potions.
     let positions: Vec<_> = (0..count as u32).into_par_iter().map(|game| {
@@ -63,12 +72,12 @@ fn position_audit(count: usize, futures: u32, seed: u32, profile: smart::Profile
     let done = AtomicUsize::new(0);
     let results: Vec<_> = positions.par_iter().enumerate().map(|(i, (game, x))| {
         let before = Instant::now();
-        let baseline = if baseline_smart { smart::calculate_profile(x,false,smart::Profile::Balanced).advice } else { advisor::advise_plan(x, None, false) };
+        let baseline = if let Some(exe)=baseline_exe{frozen_choice(x,exe)}else if baseline_smart { smart::calculate_profile(x,false,smart::Profile::Balanced).advice.best } else { advisor::advise_plan(x, None, false).best };
         let baseline_ms = before.elapsed().as_secs_f64() * 1000.0;
         let before = Instant::now();
         let improved = smart::calculate_profile(x, false, profile);
         let smart_ms = before.elapsed().as_secs_f64() * 1000.0;
-        let actions = [as_opt(&baseline.best), as_opt(&improved.advice.best)];
+        let actions = [as_opt(&baseline), as_opt(&improved.advice.best)];
         let mut unknown = Vec::new();
         let s = advisor::to_state(x, &mut unknown);
         // New seed domain and future range, disjoint from search. Both choices
@@ -84,7 +93,7 @@ fn position_audit(count: usize, futures: u32, seed: u32, profile: smart::Profile
         let reach = |k: usize| evaluated[k].reached as f64 / evaluated[k].n as f64;
         let n = done.fetch_add(1, Ordering::Relaxed) + 1;
         if n % 8 == 0 { eprintln!("positions {n}/{}", positions.len()); }
-        json!({"game":game,"round":x.round,"phase":x.phase,"changed":!same_choice(&baseline.best,&improved.advice.best),"baseline":baseline.best,"smart":improved.advice.best,"baselineValue":avg(0),"smartValue":avg(1),"baselineReach":reach(0),"smartReach":reach(1),"baselineMs":baseline_ms,"smartMs":smart_ms,"diagnostics":improved.diagnostics})
+        json!({"game":game,"round":x.round,"phase":x.phase,"changed":!same_choice(&baseline,&improved.advice.best),"baseline":baseline,"smart":improved.advice.best,"baselineValue":avg(0),"smartValue":avg(1),"baselineReach":reach(0),"smartReach":reach(1),"baselineMs":baseline_ms,"smartMs":smart_ms,"diagnostics":improved.diagnostics})
     }).collect();
     let n = results.len() as f64;
     let sum = |key: &str| results.iter().map(|r| r[key].as_f64().unwrap()).sum::<f64>() / n;
@@ -100,12 +109,7 @@ fn one_game(seed: u32, improved: bool, profile: smart::Profile, baseline_smart: 
         if s.phase == Phase::RoundEnd { s = dispatch(&s, Action::Confirm); continue }
         let x = screen(&s);
         let best = if !improved && baseline_exe.is_some() {
-            use std::io::Write;
-            use std::process::{Command,Stdio};
-            let mut child=Command::new(baseline_exe.unwrap()).args(["advise","--smart","--single"]).stdin(Stdio::piped()).stdout(Stdio::piped()).stderr(Stdio::piped()).spawn().expect("Baseline CLI");
-            let mut input=child.stdin.take().unwrap();input.write_all(&serde_json::to_vec(&x).unwrap()).unwrap();drop(input);
-            let output=child.wait_with_output().unwrap();assert!(output.status.success(),"Baseline CLI failed");let value:serde_json::Value=serde_json::from_slice(&output.stdout).unwrap();let choice=&value["advice"]["best"];
-            if choice.as_str()==Some("refresh"){Best::Refresh}else if choice.is_null(){Best::Nothing}else{Best::Card(serde_json::from_value(choice.clone()).unwrap())}
+            frozen_choice(&x,baseline_exe.unwrap())
         } else {let a = if improved { smart::calculate_profile(&x, false, profile).advice } else if baseline_smart { smart::calculate_profile(&x, false, smart::Profile::Balanced).advice } else { advisor::advise_plan(&x, futures, false) };a.best};
         decisions += 1;
         s = play(&s, &best);
@@ -136,6 +140,6 @@ pub fn run(args: &[String]) {
     if args.iter().any(|a|a=="--wide"){super::fail("Wide was not promoted; replay that experiment with its frozen executable.");}
     let profile = if args.iter().any(|a| a == "--deep") { smart::Profile::Deep } else { smart::Profile::Balanced };
     if args.iter().any(|a| a == "--games") { let baseline_exe=super::arg::<String>(args,"--baseline-exe");games_audit(count, seed, profile, args.iter().any(|a|a=="--baseline-smart"), super::arg(args,"--baseline-futures"),baseline_exe.as_deref()) } else {
-        position_audit(count, super::arg(args, "--futures").unwrap_or(1024u32).max(1), seed, profile, args.iter().any(|a|a=="--baseline-smart"))
+        let baseline_exe=super::arg::<String>(args,"--baseline-exe");position_audit(count, super::arg(args, "--futures").unwrap_or(1024u32).max(1), seed, profile, args.iter().any(|a|a=="--baseline-smart"),baseline_exe.as_deref())
     }
 }
