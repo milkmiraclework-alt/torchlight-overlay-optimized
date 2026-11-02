@@ -1,6 +1,6 @@
 {
-  "version": "1.3.10",
-  "checkedAt": "2026-11-01T22:04:51.343Z",
+  "version": "1.3.11",
+  "checkedAt": "2026-11-02T04:33:11.889Z",
   "checks": [
     "arcana",
     "arcana-terminal",
@@ -48,7 +48,8 @@
     "arcana-vision",
     "arcana-capture-fallback",
     "arcana-hand",
-    "arcana-popup"
+    "arcana-popup",
+    "arcana-refill"
   ],
   "gameCapture": false,
   "gameInput": false

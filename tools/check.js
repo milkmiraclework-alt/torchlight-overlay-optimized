@@ -34,6 +34,7 @@ const frameAt=process.argv.indexOf('--arcana-frame');if(frameAt>=0)jobs.push(['a
 if(frameAt>=0)jobs.push(['arcana-capture-fallback',['tools/arcana-capture-fallback-check.js','--frame',path.resolve(process.argv[frameAt+1])]]);
 const handFrames=process.argv.flatMap((arg,i)=>arg==='--arcana-hand-frame'?['--frame',path.resolve(process.argv[i+1])]:[]);if(handFrames.length)jobs.push(['arcana-hand',['tools/arcana-hand-check.js',...handFrames]]);
 const textureAt=process.argv.indexOf('--arcana-textures');if(textureAt>=0)jobs.push(['arcana-popup',['tools/arcana-popup-check.js','--textures',path.resolve(process.argv[textureAt+1])]]);
+if(textureAt>=0&&handFrames.length)jobs.push(['arcana-refill',['tools/arcana-refill-check.js','--frame',handFrames[1],'--textures',path.resolve(process.argv[textureAt+1])]]);
 fs.mkdirSync(path.join(root,'sandbox/checks'),{recursive:true});
 for(const [name,args]of jobs){const r=cp.spawnSync(process.execPath,args,{cwd:root,encoding:'utf8',windowsHide:true});fs.writeFileSync(path.join(root,'sandbox/checks',name+'.log'),(r.stdout||'')+(r.stderr||''));console.log(name,r.status);if(r.status!==0){console.error(r.stdout,r.stderr);process.exit(1);}}
 fs.mkdirSync(path.join(root,'tools/results'),{recursive:true});fs.writeFileSync(path.join(root,'tools/results/checks.json'),JSON.stringify({version:require('../desktop/package.json').version,checkedAt:new Date().toISOString(),checks:jobs.map(([name])=>name),gameCapture:false,gameInput:false},null,2)+'\n');

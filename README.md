@@ -1,5 +1,11 @@
 # Torchlight Overlay
 
+В **1.3.11 preview** исправлено разделение руки и отдельного кубика добора Arcana. При некоторых положениях пиксельной сетки кубики с 1, 3 или 5 точками пропускались первым поиском и попадали в руку; журнал показывал неверное число карт и блокировал совет. Повторно используется уверенно прочитанная грань только в отдельном правом слоте, с проверкой расстояния, размера и точек. Проверки покрывают все шесть значений при трёх размерах; отсутствующий кубик и закрытая карта не принимаются за корректное чтение. Правила симуляций Tartarus и Vorax в этом исправлении не менялись.
+
+Также исправлено чтение синей цифры жизни при смене масштаба: нужны минимум две уверенные и согласующиеся маски яркости, вместо обязательного чтения самой яркой маской, которая иногда стирала цифру.
+
+Скачать: **[1.3.11 preview — Portable и Setup EXE](https://github.com/milkmiraclework-alt/torchlight-overlay-optimized/releases/tag/v1.3.11)**. Отчёт: [распознавание кубиков и жизни](tools/results/arcana-refill.json). Подтверждение начального положения и общей длины пути Arcana по-прежнему требуется.
+
 Одна программа с оверлеями **Tartarus и Vorax**, а также экспериментальным режимом
 **Arcana**, для Torchlight: Infinite.
 
@@ -18,7 +24,7 @@
 
 Arcana остаётся экспериментальной: тип/длина пути и неуверенные показания требуют подтверждения. Проверки выполняются на сохранённых кадрах, собственных тестовых окнах и локальных симуляциях; работа на любых игровых экранах и общий прирост прибыли не заявляются.
 
-Для 1.3.10 прошли **47 групп проверок исходников и 11 проверок собранного приложения**, включая пользовательскую руку через GPU и получение совета: [итоговая проверка](tools/results/release-audit.json). Контрольные примеры: [Arcana](tools/results/arcana-endgame.json), [Tartarus](tools/results/tartarus-terminal-reward.json), [Vorax](tools/results/vorax-objective-counterexample.json).
+Для 1.3.11 прошли **48 групп проверок исходников и 12 проверок собранного приложения**, включая пользовательскую руку, воспроизведённый нечётный кубик через GPU и получение совета после начального подтверждения пути: [итоговая проверка](tools/results/release-audit.json). Контрольные примеры: [Arcana](tools/results/arcana-endgame.json), [Tartarus](tools/results/tartarus-terminal-reward.json), [Vorax](tools/results/vorax-objective-counterexample.json).
 
 В **1.3.9 preview** Arcana пробует резервный захват также после технически успешного нативного снимка, если на нём одновременно отсутствуют карты, кость и маркер жизни. До резервного чтения восстанавливается прежняя модель; пороги распознавания не снижены. Если резервный способ прочитал руку, кость и жизнь, он используется до конца текущей сессии Арканы. Повторные попытки на пустом экране ограничены тремя; в диагностике указан способ захвата. Проверены сохранённые кадры и тестовые окна, но причина отсутствующих элементов на текущем игровом экране пользователя пока не подтверждена.
 
@@ -321,7 +327,7 @@ Confirm instruments подтверждает отредактированный 
 
 ## Запуск
 
-Версия с Arcana: **[1.3.10 preview — Portable EXE и Setup EXE](https://github.com/milkmiraclework-alt/torchlight-overlay-optimized/releases/tag/v1.3.10)**. [Стабильный выпуск](https://github.com/milkmiraclework-alt/torchlight-overlay-optimized/releases/latest) обновляется отдельно. Node.js, Rust и прежние оверлеи для запуска не нужны.
+Версия с Arcana: **[1.3.11 preview — Portable EXE и Setup EXE](https://github.com/milkmiraclework-alt/torchlight-overlay-optimized/releases/tag/v1.3.11)**. [Стабильный выпуск](https://github.com/milkmiraclework-alt/torchlight-overlay-optimized/releases/latest) обновляется отдельно. Node.js, Rust и прежние оверлеи для запуска не нужны.
 
 С **1.0.3** оба EXE проверяют новые стабильные версии в нашем GitHub Releases:
 через 45 секунд после запуска, затем раз в 6 часов. Загрузка начинается, когда
@@ -367,7 +373,7 @@ Check now, Download update и переключатель автоматичес�
 .\Start-Overlay.cmd
 ```
 
-Результат текущей сборки: `desktop/dist/builds/1.3.10/`. Изменения Vorax требуют Rust и Windows build tools: `powershell -File tools/build-vorax-backend.ps1`. Изменения ядра Tartarus: `powershell -File tools/build-rust-solver.ps1`. Нативный захват/пиксельный читатель: `powershell -File tools/build-native-reader.ps1`; WASM-резерв: `powershell -File tools/build-scan-kernels.ps1`. Скрипты проверяют соответствие бинарников исходникам.
+Результат текущей сборки: `desktop/dist/builds/1.3.11/`. Изменения Vorax требуют Rust и Windows build tools: `powershell -File tools/build-vorax-backend.ps1`. Изменения ядра Tartarus: `powershell -File tools/build-rust-solver.ps1`. Нативный захват/пиксельный читатель: `powershell -File tools/build-native-reader.ps1`; WASM-резерв: `powershell -File tools/build-scan-kernels.ps1`. Скрипты проверяют соответствие бинарников исходникам.
 
 ```powershell
 node tools/unified-runtime-check.js

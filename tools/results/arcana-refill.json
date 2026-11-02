@@ -1,0 +1,246 @@
+{
+  "version": "1.3.11",
+  "checkedAt": "2026-11-02T04:33:11.769Z",
+  "source": "Existing saved hand and full local-game refill textures, composited offline; not a new live game capture.",
+  "gameCapture": false,
+  "gameInput": false,
+  "cases": [
+    {
+      "die": 1,
+      "width": 2560,
+      "height": 1440,
+      "hand": [
+        22,
+        13,
+        4,
+        21
+      ],
+      "confident": true,
+      "life": 2
+    },
+    {
+      "die": 1,
+      "width": 1920,
+      "height": 1080,
+      "hand": [
+        22,
+        13,
+        4,
+        21
+      ],
+      "confident": true,
+      "life": 2
+    },
+    {
+      "die": 1,
+      "width": 1600,
+      "height": 900,
+      "hand": [
+        22,
+        13,
+        4,
+        21
+      ],
+      "confident": true,
+      "life": 2
+    },
+    {
+      "die": 2,
+      "width": 2560,
+      "height": 1440,
+      "hand": [
+        22,
+        13,
+        4,
+        21
+      ],
+      "confident": true,
+      "life": 2
+    },
+    {
+      "die": 2,
+      "width": 1920,
+      "height": 1080,
+      "hand": [
+        22,
+        13,
+        4,
+        21
+      ],
+      "confident": true,
+      "life": 2
+    },
+    {
+      "die": 2,
+      "width": 1600,
+      "height": 900,
+      "hand": [
+        22,
+        13,
+        4,
+        21
+      ],
+      "confident": true,
+      "life": 2
+    },
+    {
+      "die": 3,
+      "width": 2560,
+      "height": 1440,
+      "hand": [
+        22,
+        13,
+        4,
+        21
+      ],
+      "confident": true,
+      "life": 2
+    },
+    {
+      "die": 3,
+      "width": 1920,
+      "height": 1080,
+      "hand": [
+        22,
+        13,
+        4,
+        21
+      ],
+      "confident": true,
+      "life": 2
+    },
+    {
+      "die": 3,
+      "width": 1600,
+      "height": 900,
+      "hand": [
+        22,
+        13,
+        4,
+        21
+      ],
+      "confident": true,
+      "life": 2
+    },
+    {
+      "die": 4,
+      "width": 2560,
+      "height": 1440,
+      "hand": [
+        22,
+        13,
+        4,
+        21
+      ],
+      "confident": true,
+      "life": 2
+    },
+    {
+      "die": 4,
+      "width": 1920,
+      "height": 1080,
+      "hand": [
+        22,
+        13,
+        4,
+        21
+      ],
+      "confident": true,
+      "life": 2
+    },
+    {
+      "die": 4,
+      "width": 1600,
+      "height": 900,
+      "hand": [
+        22,
+        13,
+        4,
+        21
+      ],
+      "confident": true,
+      "life": 2
+    },
+    {
+      "die": 5,
+      "width": 2560,
+      "height": 1440,
+      "hand": [
+        22,
+        13,
+        4,
+        21
+      ],
+      "confident": true,
+      "life": 2
+    },
+    {
+      "die": 5,
+      "width": 1920,
+      "height": 1080,
+      "hand": [
+        22,
+        13,
+        4,
+        21
+      ],
+      "confident": true,
+      "life": 2
+    },
+    {
+      "die": 5,
+      "width": 1600,
+      "height": 900,
+      "hand": [
+        22,
+        13,
+        4,
+        21
+      ],
+      "confident": true,
+      "life": 2
+    },
+    {
+      "die": 6,
+      "width": 2560,
+      "height": 1440,
+      "hand": [
+        22,
+        13,
+        4,
+        21
+      ],
+      "confident": true,
+      "life": 2
+    },
+    {
+      "die": 6,
+      "width": 1920,
+      "height": 1080,
+      "hand": [
+        22,
+        13,
+        4,
+        21
+      ],
+      "confident": true,
+      "life": 2
+    },
+    {
+      "die": 6,
+      "width": 1600,
+      "height": 900,
+      "hand": [
+        22,
+        13,
+        4,
+        21
+      ],
+      "confident": true,
+      "life": 2
+    }
+  ],
+  "missingRefillRejected": true,
+  "lastMovementCardPreserved": true,
+  "coveredCardRejected": true
+}

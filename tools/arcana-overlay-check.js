@@ -17,7 +17,8 @@ async function connect(url){
  let output='',page,overlay,arcana;
  const env={...process.env};delete env.ELECTRON_RUN_AS_NODE;
  const forcedFallback=process.argv.includes('--fallback');
- const gameFrameAt=process.argv.indexOf('--game-frame'),handOnly=process.argv.includes('--hand-only');let gameFrame=null;
+ const gameFrameAt=process.argv.indexOf('--game-frame'),handOnly=process.argv.includes('--hand-only'),dieAt=process.argv.indexOf('--refill-die'),refillDie=dieAt<0?6:Number(process.argv[dieAt+1]);let gameFrame=null;
+ assert(Number.isInteger(refillDie)&&refillDie>=1&&refillDie<=6,'Invalid test refill die');
  if(gameFrameAt>=0){const prefix=path.resolve(process.argv[gameFrameAt+1]),meta=JSON.parse(fs.readFileSync(prefix+'.json','utf8').replace(/^\uFEFF/,'')),pixels=fs.readFileSync(prefix+'.rgba');gameFrame=meta;
   fs.writeFileSync(html,`<!doctype html><title>ArcanaOverlayCheckOnly</title><style>html,body{margin:0;width:100%;height:100%;overflow:hidden}canvas{width:100%;height:100%}</style><canvas width="${meta.width}" height="${meta.height}"></canvas><script>const bytes=Uint8ClampedArray.from(atob('${pixels.toString('base64')}'),c=>c.charCodeAt(0));document.querySelector('canvas').getContext('2d').putImageData(new ImageData(bytes,${meta.width},${meta.height}),0,0);</script>`);
  }
@@ -41,14 +42,14 @@ async function connect(url){
   const state=await arcana.evaluate("TartarusDesktop.arcana('get')");assert.equal(state.active,true);assert.equal(state.state.model.confirmed,false);assert.ok(state.state.model.frameKey);
   if(gameFrame){
    assert.equal(state.state.recognition.capture,'windows-graphics-capture','Actual GPU capture was bypassed');
-   const expectedHand=handOnly?[22,13,4,21]:[1,204,213,201],expectedDie=handOnly?6:1;
+   const expectedHand=handOnly?[22,13,4,21]:[1,204,213,201],expectedDie=handOnly?refillDie:1;
    assert.deepEqual(state.state.model.hand,expectedHand);assert.equal(state.state.model.die,expectedDie);assert.equal(state.state.model.life,2);
    assert(!state.state.issues.some(reason=>/Check the hand|refill die|remaining life|life marker/.test(reason)),'Complete GPU reading still requested hand/die/life confirmation: '+state.state.issues.join(' '));
    if(!handOnly){await arcana.evaluate(`TartarusDesktop.arcana('correct',${JSON.stringify({...state.state.model,position:41,lengthConfirmed:true,confirmed:true})})`);
    await wait(()=>arcana.evaluate("TartarusDesktop.arcana('get').then(s=>s.state.phase==='advice')"),'Captured game pixels did not produce advice');}
    await page.evaluate("TartarusDesktop.setConsent({withdrawn:true,at:new Date().toISOString()})");
    await wait(()=>page.evaluate("TartarusDesktop.suiteInfo().then(s=>!s.arcana.running&&s.arcana.retiring===0&&s.arcana.captureChildren===0)"),'GPU capture child survived stop');
-   fs.writeFileSync(path.join(root,handOnly?'tools/results/arcana-gpu-hand-e2e.json':'tools/results/arcana-gpu-e2e.json'),JSON.stringify({version,checkedAt:new Date().toISOString(),gameCapture:false,gameInput:false,source:'Saved game frame painted inside an owned window',actualWindowsGraphicsCapture:true,hand:expectedHand,die:expectedDie,life:2,handDieLifeChecksCleared:true,adviceAfterInitialConfirmation:!handOnly,zeroCaptureChildrenAfterStop:true},null,2)+'\n');
+   fs.writeFileSync(path.join(root,handOnly?(dieAt<0?'tools/results/arcana-gpu-hand-e2e.json':'tools/results/arcana-gpu-refill-e2e.json'):'tools/results/arcana-gpu-e2e.json'),JSON.stringify({version,checkedAt:new Date().toISOString(),gameCapture:false,gameInput:false,source:dieAt<0?'Saved game frame painted inside an owned window':'Saved game frame with independent refill texture painted inside an owned window',actualWindowsGraphicsCapture:true,hand:expectedHand,die:expectedDie,life:2,handDieLifeChecksCleared:true,adviceAfterInitialConfirmation:!handOnly,zeroCaptureChildrenAfterStop:true},null,2)+'\n');
    console.log(handOnly?'PASS: user hand frame through owned window and actual GPU capture: all four cards/die/life read, no hand/die/life uncertainty remains, initial board guards preserved; stop leaves no capture child.':'PASS: saved game pixels through an owned window and actual GPU capture, complete confident hand/die/life and actual solver advice after initial path confirmation; stop leaves no capture child.');return;
   }
   const model={...state.state.model,position:7,life:3,die:2,chests:[5],hand:[204],path:Array.from({length:8},()=>({kind:'empty'})),confirmed:true,lengthConfirmed:true};

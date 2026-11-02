@@ -34,10 +34,11 @@ function life(img,rect){
  }
  const ranked=[...votes.values()].sort((a,b)=>b.count-a.count||b.confidence-a.confidence),a=ranked[0],b=ranked[1];
  if(a&&a.count>=2&&a.count>(b?.count||0))return {value:a.value,confidence:a.confidence/a.count};
- // Blue-tinted life digits can lose strokes under the neutral-colour mask.
- // A brighter mask excludes the badge outline; require both readings to agree.
- const bright=[550,600].map(brightness=>read(img,rect,{brightness,saturation:130,minMargin:.025,lastDigit:true}));
- return bright.every(v=>v&&v.value<=6)&&bright[0].value===bright[1].value?{value:bright[0].value,confidence:Math.min(...bright.map(v=>v.confidence))}:null;
+ // Blue-tinted life digits lose neutral-colour strokes. At smaller pixel
+ // sizes a fixed brightest mask can also erase the digit. Require at least
+ // two confident tinted masks, with unanimous values among readable masks.
+ const bright=[450,510,550,600].map(brightness=>read(img,rect,{brightness,saturation:130,minMargin:.025,lastDigit:true})).filter(v=>v&&v.value<=6);
+ return bright.length>=2&&bright.every(v=>v.value===bright[0].value)?{value:bright[0].value,confidence:Math.min(...bright.map(v=>v.confidence))}:null;
 }
 function handCount(img,rect){
  // Read the complete numerator / 10 layout. This excludes cropped strokes

@@ -117,6 +117,17 @@ function cards(img){
   const dice=topMatches(img,refillTemplates,{x:img.width*.60,y:band.y,w:img.width*.37,h:band.h},fine,{stride:3,coarseThreshold:.64,threshold:.89,limit:6});
   candidateDie=dice.filter(m=>m.margin>=.025).sort((a,b)=>b.box.x-a.box.x)[0]||candidateDie;
  }
+ // Odd-pip refill cards have a narrower full-face correlation peak. At some
+ // pixel phases the coarse full-face pass misses them even though the visible
+ // face and all distinguishing pips were read confidently in the hand pass.
+ // Recover only a separate right-hand slot: a normal last hand card must not
+ // become a refill merely because its icon is also a movement card.
+ if(!candidateDie&&hand.length>=2){
+  const right=hand.at(-1),previous=hand.at(-2);
+  if(/^UI_S9Gameplay_Card_2[0-5]$/.test(right.name)&&right.score>=.89&&right.margin>=.025&&right.pipScore>=.90&&
+   right.box.x>img.width*.68&&right.box.x-previous.box.x>Math.max(right.box.w,previous.box.w)*1.8&&
+   Math.abs(right.box.y-previous.box.y)<right.box.w*.12&&Math.abs(right.box.w/previous.box.w-1)<.2)candidateDie=right;
+ }
  if(candidateDie)hand=hand.filter(m=>m.box.x<candidateDie.box.x-candidateDie.box.w*.3);
  const ids=[];let confident=true;
  for(const got of hand){
