@@ -4,6 +4,7 @@
 const fs=require('node:fs'),path=require('node:path'),cp=require('node:child_process'),assert=require('node:assert/strict');
 if(!process.versions.electron){const env={...process.env};delete env.ELECTRON_RUN_AS_NODE;const r=cp.spawnSync(path.resolve(__dirname,'../desktop/node_modules/electron/dist/electron.exe'),[__filename,...process.argv.slice(2)],{env,encoding:'utf8',windowsHide:true});process.stdout.write(r.stdout||'');process.stderr.write(r.stderr||'');process.exit(r.status??1);}
 const {app,nativeImage}=require('electron');
+const ownedProfile=path.resolve(__dirname,'../sandbox/arcana-popup-profile-'+process.pid);fs.mkdirSync(ownedProfile,{recursive:true});app.setPath('userData',ownedProfile);
 app.whenReady().then(()=>{
  const at=process.argv.indexOf('--textures');if(at<0)throw Error('Supply --textures <extracted game PNG directory>');
  const input=path.resolve(process.argv[at+1]),files=[];function visit(p){for(const d of fs.readdirSync(p,{withFileTypes:true})){const f=path.join(p,d.name);if(d.isDirectory())visit(f);else files.push(f);}}visit(input);
@@ -15,7 +16,7 @@ app.whenReady().then(()=>{
  }
  const V=require('../desktop/lib/arcana/vision'),Reader=require('../desktop/lib/arcana/reader'),E=require('../desktop/lib/arcana/engine'),S=require('../desktop/lib/arcana/solver'),img={width,height,data};
  const offers=V.offers(img);assert.equal(offers.confident,true,JSON.stringify(offers));assert.deepEqual(offers.cards,[1,3,5]);
- const reader=Reader.create();reader.setPopup('choose');const reading=reader.read(img);assert.deepEqual(reading.model.pending,{kind:'choose',cards:[1,3,5]});assert.equal(reading.model.confirmed,false,'A popup cannot invent life/position from an occluded board');
+ const reader=Reader.create();reader.setPopup('choose');const reading=reader.read(img);assert.deepEqual(reading.model.pending,{kind:'choose',cards:[1,3,5]});assert.equal(reading.model.confirmed,false,'A popup cannot invent life/position from an occluded board');assert(reading.waiting,'The occluded board asked for manual reconstruction instead of waiting for a real picture');
  const model={...E.blank(8),position:6,life:2,die:2,hand:[21],chests:[5],path:Array.from({length:8},()=>({kind:'empty'})),pending:{kind:'choose',cards:[1,3,5],source:0},confirmed:true,lengthConfirmed:true};
  const known=Reader.create();known.correct({...model,pending:null,hand:[21,24]});known.setPopup('choose');const automatic=known.read(img);assert.equal(automatic.model.confirmed,true,automatic.issues.join(' '));assert.deepEqual(automatic.model.hand,[21,24]);assert.deepEqual(automatic.model.pending,{kind:'choose',cards:[1,3,5],source:0});assert.deepEqual(known.marks(),[],'Tile marks obscure the offered-note page');
  const j=S.createJob(model,{samples:32});while(!j.step(8)){}assert.equal(j.result().best.action.kind,'choose');

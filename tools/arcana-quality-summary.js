@@ -1,9 +1,9 @@
 'use strict';
 // Declare the final stratified check before reading either control report.
-const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto'),assert=require('node:assert/strict');
+const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
 const arg=(n,d)=>{const i=process.argv.indexOf(n);return i<0?d:process.argv[i+1];},root=path.resolve(__dirname,'..');
 const planFile=path.resolve(arg('--plan','sandbox/arcana-final-plan.json')),output=path.resolve(arg('--output','tools/results/arcana-comparison.json'));
-const sources=Object.fromEntries(['solver.js','engine.js','game-data.json'].map(n=>[n,crypto.createHash('sha256').update(fs.readFileSync(path.join(root,'desktop/lib/arcana',n))).digest('hex')]));
+const sources=require('./arcana-policy-sources')();
 if(process.argv.includes('--declare')){
  const stratumBoards=Number(arg('--boards-per-stratum',64)),normalOffset=Number(arg('--normal-offset',65536)),questionOffset=Number(arg('--question-offset',32768)),environmentRng=arg('--rng-mode','step'),productionSeed=process.argv.includes('--production-seed');
  const normal=arg('--normal'),questions=arg('--questions');if(!normal||!questions)throw Error('Supply --normal and --questions report destinations');
@@ -15,6 +15,7 @@ const plan=JSON.parse(fs.readFileSync(planFile));assert.deepEqual(sources,plan.s
 const reports=plan.strata.map(spec=>{
  const r=JSON.parse(fs.readFileSync(spec.file));assert.equal(r.boards,spec.boards);assert.equal(r.boardOffset,spec.offset);assert.equal(r.questionRate||0,spec.questionRate);assert.equal(r.ownSamples,plan.samples);assert.equal(r.pathLength,plan.pathLength);assert.equal(r.environmentRng||'step',plan.environmentRng||'step');assert.equal(r.environmentVersion||1,plan.environmentVersion||1);assert.equal(r.ownDecisionSeed==='production default',!!plan.productionSeed);assert.equal(r.diagnostic.solverSha256,sources['solver.js']);assert.equal(r.diagnostic.observeAll,false);assert.equal(r.diagnostic.policyOnly,false);return r;
 });
+for(const report of reports)assert.deepEqual(report.candidateSources,sources,'A dependent policy module changed during the comparison');
 assert.equal(reports[0].referenceSha256,reports[1].referenceSha256,'Different reference solvers');
 const metrics=value=>Object.fromEntries(['points','rainbows','chests','died','steps','calculationMs','cutoff'].map(key=>[key,value[key]]));
 const pairs=reports.flatMap((r,i)=>r.pairs.map(p=>({seed:p.seed,ours:metrics(p.ours),reference:metrics(p.reference),stratum:plan.strata[i].name}))),count=pairs.length;assert.equal(new Set(pairs.map(p=>p.seed)).size,count,'Repeated seeds');

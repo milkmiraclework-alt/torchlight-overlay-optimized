@@ -1,0 +1,12 @@
+{
+  "author": "Timer",
+  "source": "Arcana Helper 1.1.19, solver.weightsFor('rarity') public values",
+  "sourceSha256": "21bbad7601a08a7c68a70817aafffdbeb143763048576aeaf59f1d721cfee8f8",
+  "scope": "Continuation heuristic only. Final reward remains local-game rarity points.",
+  "chest": 0.6252,
+  "ticket": 0.8089,
+  "question": 4.3685,
+  "card": 2.0873,
+  "upgrade_tile": 3.0439,
+  "values": [0, 1.421, 4.915, 2.64, 8.265, 10, 17.969]
+}

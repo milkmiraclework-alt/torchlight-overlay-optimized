@@ -286,14 +286,18 @@ function collected(img){
   const iconTier=Number(m.name.slice(-2)),stripeTier=a?Number(a.name.slice(-2)):0;
   const stripeSure=a?.score>.86&&a.score-(second?.score||0)>.055;
   const levelSure=level&&level.value>=1&&level.value<=6&&(level.value===iconTier||stripeSure&&level.value===stripeTier);
-  const sure=m.score>.82&&(m.margin>.05||levelSure||stripeSure&&stripeTier===iconTier);
-  const got={...m,slot:near.i,tier:levelSure?level.value:iconTier,sure,level:level||null,stripe:a?{tier:stripeTier,score:a.score,margin:a.score-(second?.score||0),sure:stripeSure}:null};
+  // The level can update before the chest art finishes its upgrade animation.
+  // A clear contradictory digit is evidence to wait, not permission to report
+  // the old rarity just because its shell still matches strongly.
+  const conflict=!!level&&level.confidence>=.8&&level.value!==iconTier&&(!stripeSure||level.value!==stripeTier);
+  const sure=!conflict&&m.score>.82&&(m.margin>.05||levelSure||stripeSure&&stripeTier===iconTier);
+  const got={...m,slot:near.i,tier:levelSure?level.value:iconTier,sure,conflict,level:level||null,stripe:a?{tier:stripeTier,score:a.score,margin:a.score-(second?.score||0),sure:stripeSure}:null};
   const previous=aligned.findIndex(v=>v.slot===near.i);if(previous<0)aligned.push(got);else if(got.score>aligned[previous].score)aligned[previous]=got;
  }
  aligned.sort((a,b)=>a.slot-b.slot);
  const found=aligned.filter(m=>m.sure&&m.tier>=1&&m.tier<=6),contiguous=found.every((m,i)=>m.slot===i);
  const caption=found.length===0?Captions.read(img):null,emptyEvidence=aligned.length===0&&caption?.text==='Abandon Contest'?{kind:'game_give_up_caption',...caption}:null;
- return {tiers:found.map(m=>m.tier),confident:!!emptyEvidence||aligned.length===found.length&&found.length>0&&found.length<=7&&contiguous,matches:aligned,rawMatches:matches,emptyEvidence};
+ return {tiers:found.map(m=>m.tier),confident:!!emptyEvidence||aligned.length===found.length&&found.length>0&&found.length<=7&&contiguous,conflicting:aligned.some(m=>m.conflict),matches:aligned,rawMatches:matches,emptyEvidence};
 }
 const offerTemplates=RAW.signatures.filter(t=>t.kind==='card'&&activeIcons.has(t.name)).map(t=>features({...t,fullFace:true}));
 function offers(img){

@@ -17,6 +17,8 @@ async function connect(url){
  let output='',page,overlay,arcana,marks;
  const env={...process.env};delete env.ELECTRON_RUN_AS_NODE;
  const forcedFallback=process.argv.includes('--fallback');
+ const historyAt=process.argv.indexOf('--history-log'),coldStart=historyAt>=0;
+ if(coldStart)fs.writeFileSync(log,fs.readFileSync(path.resolve(process.argv[historyAt+1]),'utf8')+'unrelated owned log padding\n'.repeat(20000));
  const gameFrameAt=process.argv.indexOf('--game-frame'),handOnly=process.argv.includes('--hand-only'),singleHand=process.argv.includes('--single-hand'),dieAt=process.argv.indexOf('--refill-die'),refillDie=dieAt<0?6:Number(process.argv[dieAt+1]);let gameFrame=null;
  assert(Number.isInteger(refillDie)&&refillDie>=1&&refillDie<=6,'Invalid test refill die');
  if(gameFrameAt>=0){const prefix=path.resolve(process.argv[gameFrameAt+1]),meta=JSON.parse(fs.readFileSync(prefix+'.json','utf8').replace(/^\uFEFF/,'')),pixels=fs.readFileSync(prefix+'.rgba');gameFrame=meta;
@@ -26,13 +28,13 @@ async function connect(url){
  child.stdout.on('data',b=>output+=b);child.stderr.on('data',b=>output+=b);
  const wait=async(fn,label,limit=400)=>{for(let i=0;i<limit;i++){const result=await fn();if(result)return result;if(child.exitCode!==null)throw Error(output);await pause(50);}throw Error(label+'\n'+output);};
  try{
-  const endpoint=path.join(profile,'DevToolsActivePort');await wait(()=>fs.existsSync(endpoint),'No test CDP');const port=fs.readFileSync(endpoint,'utf8').split('\n')[0];
+  const endpoint=path.join(profile,'DevToolsActivePort'),{port}=await wait(()=>require('./devtools-port')(endpoint),'No readable test CDP');
   const targets=()=>fetch('http://127.0.0.1:'+port+'/json/list').then(r=>r.json());
   const ts=await wait(async()=>{const t=await targets();return t.some(x=>x.url.endsWith('/analyze.html'))&&t.some(x=>x.url.endsWith('/overlay.html'))?t:null;},'Missing main pages');
   page=await connect(ts.find(t=>t.url.endsWith('/analyze.html')).webSocketDebuggerUrl);overlay=await connect(ts.find(t=>t.url.endsWith('/overlay.html')).webSocketDebuggerUrl);
   await wait(()=>page.evaluate("typeof window.TartarusDesktop!=='undefined'&&TartarusDesktop.game().then(g=>g.running)"),'Owned game window not found');
   await wait(()=>overlay.evaluate("typeof window.Overlay!=='undefined'"),'Overlay preload missing');
-  fs.appendFileSync(log,'S9Taro Run\n');
+  if(!coldStart)fs.appendFileSync(log,'S9Taro Run\n');
   await wait(()=>page.evaluate("TartarusDesktop.suiteInfo().then(s=>s.mode==='arcana'&&s.arcana?.running&&"+(gameFrame?"s.arcana.phase==='advice'":"s.arcana.phase==='check'")+")"),'Arcana did not read the owned window',1200);
   if(forcedFallback){await wait(()=>page.evaluate('TartarusDesktop.suiteInfo().then(s=>s.arcana.fallbackReads>=3)'),'Owned fallback captures did not complete');const reads=await page.evaluate('TartarusDesktop.suiteInfo().then(s=>s.arcana.fallbackReads)');assert.equal(reads,3,'Packaged fallback retries did not stop at three captures');await pause(700);assert.equal(await page.evaluate('TartarusDesktop.suiteInfo().then(s=>s.arcana.fallbackReads)'),reads,'Packaged fallback kept capturing an unrecognised screen');}
   assert.equal(await page.evaluate('TartarusCapture.state.window'),'off','Tartarus kept capturing in Arcana mode');
@@ -43,17 +45,24 @@ async function connect(url){
   const state=await arcana.evaluate("TartarusDesktop.arcana('get')");assert.equal(state.active,true);assert.equal(state.state.model.confirmed,!!gameFrame);assert.ok(state.state.model.frameKey);
   if(gameFrame){
    assert.equal(state.state.recognition.capture,'windows-graphics-capture','Actual GPU capture was bypassed');
-   const expectedHand=singleHand?[13]:handOnly?[22,13,4,21]:[1,204,213,201],expectedDie=singleHand?6:handOnly?refillDie:1,expectedLife=singleHand?1:2;
+   const expectedHand=coldStart?[12,12,21,4,24]:singleHand?[13]:handOnly?[22,13,4,21]:[1,204,213,201],expectedDie=coldStart?5:singleHand?6:handOnly?refillDie:1,expectedLife=singleHand?1:2;
    if(process.argv.includes('--save-owned')){const ownedPicture=await arcana.evaluate("TartarusDesktop.arcana('picture').then(p=>({width:p.width,height:p.height,data:Array.from(p.data)}))");fs.writeFileSync(path.join(profile,'owned-capture.json'),JSON.stringify({width:ownedPicture.width,height:ownedPicture.height}));fs.writeFileSync(path.join(profile,'owned-capture.rgba'),Buffer.from(ownedPicture.data));}
    assert.deepEqual(state.state.model.hand,expectedHand);assert.equal(state.state.model.die,expectedDie);assert.equal(state.state.model.life,expectedLife);
    if(singleHand)assert.deepEqual(state.state.model.chests,[6,6,4,4]);
    assert(!(state.state.issues||[]).some(reason=>/Check the hand|refill die|remaining life|life marker/.test(reason)),'Complete GPU reading still requested hand/die/life confirmation: '+(state.state.issues||[]).join(' '));
    const markTarget=await wait(async()=>{const ts=await targets();return ts.find(t=>t.url.endsWith('/arcana-marks.html'));},'No packaged tile annotation window');marks=await connect(markTarget.webSocketDebuggerUrl);
-   await wait(()=>marks.evaluate("document.querySelectorAll('.tile').length>=5&&document.querySelector('.current')?.textContent.includes('YOU')"),'Packaged cell labels are missing or use an unproved global position');
-   assert.equal(state.state.model.localHorizon,true);assert.equal(state.state.model.lengthConfirmed,false);
+   await wait(()=>marks.evaluate("document.querySelectorAll('.tile').length>=5&&document.querySelector('.current')?.textContent.includes('"+(coldStart?'1':'YOU')+"')"),'Packaged cell labels are missing or use an unproved global position');
+   if(coldStart){
+    assert(!state.state.model.localHorizon);assert(state.state.model.positionConfirmed&&state.state.model.lengthConfirmed);assert.equal(state.state.model.position,0);assert.equal(state.state.model.path.length,80);assert.equal(state.state.model.pathMode.type,'normal');assert.deepEqual(state.state.model.chests,[]);
+    const history=await page.evaluate('TartarusDesktop.suiteInfo().then(s=>s.arcana.history)');assert(history.bytes>262144);assert.equal(history.moves,0);
+   }else{assert.equal(state.state.model.localHorizon,true);assert.equal(state.state.model.lengthConfirmed,false);}
    await page.evaluate("TartarusDesktop.setConsent({withdrawn:true,at:new Date().toISOString()})");
    await wait(()=>page.evaluate("TartarusDesktop.suiteInfo().then(s=>!s.arcana.running&&s.arcana.retiring===0&&s.arcana.captureChildren===0)"),'GPU capture child survived stop');
    await wait(async()=>!(await targets()).some(t=>t.url.endsWith('/arcana-marks.html')),'Cell annotations survived capture stop');
+   if(coldStart){
+    fs.writeFileSync(path.join(root,'tools/results/arcana-gpu-history-e2e.json'),JSON.stringify({version,checkedAt:new Date().toISOString(),actualWindowsGraphicsCapture:true,startupLogHistoryOutsideLiveTail:true,automaticPositionAnchor:true,absolutePosition:1,inferredLength:80,pathType:'normal',hand:expectedHand,die:expectedDie,life:expectedLife,automaticAdvice:true,manualCorrectionRequired:false,absoluteLabelsVerified:true,zeroCaptureChildrenAfterStop:true,annotationsDestroyedAfterStop:true,gameCapture:false,gameInput:false,scope:'The recorded first JPEG painted in an owned GPU window, with its recorded opening events placed outside the initial256KB tail.'},null,2)+'\n');
+    console.log('PASS: packaged cold startup, opening outside256KB, real GPU capture of the owned saved frame, automatic position/80-cell route/advice and absolute labels; no surviving worker/capture/annotations.');return;
+   }
    fs.writeFileSync(path.join(root,singleHand?'tools/results/arcana-gpu-single-e2e.json':handOnly?(dieAt<0?'tools/results/arcana-gpu-hand-e2e.json':'tools/results/arcana-gpu-refill-e2e.json'):'tools/results/arcana-gpu-e2e.json'),JSON.stringify({version,checkedAt:new Date().toISOString(),gameCapture:false,gameInput:false,source:dieAt<0?'Saved game frame painted inside an owned window':'Saved game frame with independent refill texture painted inside an owned window',actualWindowsGraphicsCapture:true,hand:expectedHand,die:expectedDie,life:expectedLife,chests:state.state.model.chests,handDieLifeChecksCleared:true,automaticAdvice:true,manualCorrectionRequired:false,relativeLabelsVerified:true,zeroCaptureChildrenAfterStop:true,annotationsDestroyedAfterStop:true},null,2)+'\n');
    console.log('PASS: saved frame through owned window and actual GPU capture; automatic hand/die/life/chests, solver advice and relative cell labels; stop leaves no capture child or annotation window.');return;
   }
@@ -65,6 +74,8 @@ async function connect(url){
   await wait(()=>arcana.evaluate("document.getElementById('position').value==='8'"),'Arcana position UI must use game tile numbers starting at 1');
   await arcana.evaluate("document.querySelector('#tiles button').click();document.getElementById('tile-kind').value='effect';document.getElementById('tile-kind').dispatchEvent(new Event('change'));document.getElementById('tile-effect').value='1021';document.querySelector('#editor button[type=submit]').click();document.getElementById('confirmed').checked=true;document.getElementById('apply').click()");
   await wait(()=>arcana.evaluate("TartarusDesktop.arcana('get').then(s=>s.state.model.path[0].kind==='effect'&&s.state.model.path[0].id===1021)"),'Note tile correction did not reach the worker');
+  await arcana.evaluate("document.querySelector('#tiles button').click();document.getElementById('tile-kind').value='grant';document.getElementById('tile-kind').dispatchEvent(new Event('change'));document.getElementById('tile-card').value='3';document.querySelector('#editor button[type=submit]').click();document.getElementById('confirmed').checked=true;document.getElementById('apply').click()");
+  await wait(()=>arcana.evaluate("TartarusDesktop.arcana('get').then(s=>s.state.model.path[0].kind==='grant'&&s.state.model.path[0].id===3)"),'Fixed movement-note tile did not survive the actual editor/worker chain');
   await correct({...model,hand:[21,204]});
   await wait(()=>arcana.evaluate("document.getElementById('hand').textContent.includes('1/3/5')"),'Choice note was not rendered');
   await arcana.evaluate("document.getElementById('pending-kind').value='choose';document.getElementById('pending-kind').dispatchEvent(new Event('change'));for(const id of [1,3,5]){document.getElementById('card').value=String(id);document.getElementById('add-offer').click();}document.getElementById('pending-source').value='0';document.getElementById('pending-source').dispatchEvent(new Event('change'));document.getElementById('confirmed').checked=true;document.getElementById('apply').click()");

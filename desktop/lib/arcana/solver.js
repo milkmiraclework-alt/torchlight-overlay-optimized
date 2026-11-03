@@ -1,9 +1,11 @@
 'use strict';
 const E=require('./engine');
 const Endgame=require('./endgame');
-// Independent maximum-entropy prior over the 25 question effects in local game
-// data. Server odds are unknown; these are not Arcana Helper's fitted weights.
-const questionEvents=Object.keys(E.DATA.events).map(Number).filter(id=>id>=9201&&id<=9225);
+const WorldSampler=require('./world-sampler');
+const CapacityPlan=require('./capacity-plan');
+const Questions=require('./question-model');
+const FixedReward=require('./fixed-reward');
+const RolloutValues=require('./rollout-values.json');
 const deltas=new Map(E.DATA.cards.flatMap(c=>{const e=c.events.map(id=>E.DATA.events[id]).find(e=>e.fn===100);return e?.a.length===2&&e.a[0]===e.a[1]?[[c.id,e.a[0]]]:[];}));
 const movementChoices=new Map(E.DATA.cards.map(c=>[c.id,(c.choices.length?c.choices:[c.id]).map(id=>deltas.get(id)).filter(n=>n!==undefined)]));
 const movementMasks=new Map([...movementChoices].map(([id,ns])=>[id,ns.reduce((mask,n)=>mask|1<<(n+6),0)]));
@@ -102,20 +104,32 @@ function effectValue(s,t){
 function visible(s,i){return i<=s.revealed||!s.path[i]?.sampled;}
 function valueOf(s,i){
  const t=s.path[i];if(!t||!visible(s,i)||t.used||i===s.justVisited)return 0;
+ const fitted=WorldSampler.available(s);
  if(t.kind==='chest'){
   if(s.chests.length>=7)return 0;
   const early=s.position<s.path.length-16&&s.life>1;
   // A weak chest irreversibly occupies a reward slot. Leave room for future
   // red/rainbow chests rather than relying on a nonexistent replacement.
-  const potential=chestPotential(s,t.tier),opportunity=early&&potential<=2?[0,.15,.35,.65,1,1.6,2.5][s.chests.length]:0;
-  return potential-opportunity;
+  // The author-fitted continuation values account for future upgrade-note
+  // opportunities (notably blue chests). Keep owned upgrade-chain gains and
+  // the final Monte Carlo objective separate from these rollout priorities.
+  const ownedPotential=chestPotential(s,t.tier),potential=fitted?RolloutValues.chest*RolloutValues.values[t.tier]+RolloutValues.ticket+Math.max(0,ownedPotential-E.POINTS[t.tier]):ownedPotential,opportunity=early&&potential<=2?[0,.15,.35,.65,1,1.6,2.5][s.chests.length]:0;
+  const reservation=CapacityPlan.cost(s);
+  // CapacityPlan returns rarity points, not rollout-priority units. A
+  // reservation must never make a rainbow undesirable because its fitted
+  // priority happens to be numerically smaller than its actual reward.
+  return ownedPotential<reservation?ownedPotential-reservation:potential-opportunity;
  }
  if(t.kind==='heal')return Math.min(t.amount||1,Math.max(0,4-s.life))*1.8;
  if(t.kind==='trap')return s.life<2?-35:-2.5/(s.life-0.5);
- if(t.kind==='draw')return s.hand.length<10?1.2*(t.amount||1):0;
+ if(t.kind==='draw')return s.hand.length<10?(fitted?RolloutValues.card:1.2)*(t.amount||1):0;
+ if(t.kind==='grant')return s.hand.length<10?(fitted&&E.CARDS.get(t.id)?.tag!==6?RolloutValues.card:notePotential(s,t.id)):0;
  if(t.kind==='copy')return s.hand.length<10?3:0;
- if(t.kind==='random'||t.kind==='scenario-event')return 1.2;
- if(t.kind==='effect')return effectValue(s,t);
+ if(t.kind==='random'||t.kind==='scenario-event')return fitted?RolloutValues.question:1.2;
+ if(t.kind==='effect'){
+  if(fitted&&s.hand.length<10){if(t.id>=1021&&t.id<=1023)return RolloutValues.card*(t.id-1020);if(t.id>=1101&&t.id<=1104)return RolloutValues.upgrade_tile+[.6,.8,1.2,2.1][t.id-1101];}
+  return effectValue(s,t);
+ }
  return 0;
 }
 function immediate(s,a,getValue=valueOf){
@@ -210,9 +224,11 @@ function knownDistribution(s){
 }
 function sampleState(base,r,distribution){
  const s=E.clone(base,true);s.revealed=Math.max(...s.path.flatMap((t,i)=>t.kind!=='unknown'?[i]:[]),0,Math.min(s.path.length-1,(Math.floor(s.position/4)+5)*4-1));
- for(let i=0;i<s.path.length;i++)if(s.path[i].kind==='unknown'&&distribution){let t=E.pick(distribution,r);if(t.kind==='prior-chest'||t.kind==='chest')t=E.tileFromId(2010,r);else if(t.kind==='prior-upgrade')t={kind:'effect',id:1101+Math.floor(r()*4)};else if(t.kind==='prior-event')t={kind:'effect',id:4001+Math.floor(r()*11)};s.path[i]={...t,used:false,sampled:true};}
+ const fitted=WorldSampler.sample(s,r);
+ if(fitted)s.path=fitted;
+ else for(let i=0;i<s.path.length;i++)if(s.path[i].kind==='unknown'&&distribution){const old=s.path[i];let t=old.used?{kind:'empty'}:E.pick(distribution,r);if(t.kind==='prior-chest'||t.kind==='chest')t=E.tileFromId(2010,r);else if(t.kind==='prior-upgrade')t={kind:'effect',id:1101+Math.floor(r()*4)};else if(t.kind==='prior-event')t={kind:'effect',id:4001+Math.floor(r()*11)};s.path[i]={...t,used:!!old.used,sampled:true};}
  // Sample the hidden outcome, while the rollout policy sees only a question.
- for(let i=0;i<s.path.length;i++)if(s.path[i].kind==='random'&&!s.path[i].used)s.path[i]={...s.path[i],kind:'scenario-event',event:E.pick(questionEvents,r)};
+ for(let i=0;i<s.path.length;i++)if(s.path[i].kind==='random'&&!s.path[i].used)s.path[i]={...s.path[i],kind:'scenario-event',event:Questions.sample(s,r)};
  return s;
 }
 function rollout(base,action,seed,distribution){
@@ -222,6 +238,7 @@ function rolloutPrepared(world,action,seed,tree=null,learn=false){
  const r=E.rng(seed),s=E.clone(world,true);E.apply(s,action,r);
  let lastRoll=action.kind==='reroll',search=!!tree;const trace=[];
  for(let n=0;n<160&&!s.ended&&s.life>0&&!s.frontier;n++){
+  if(FixedReward.fixed(s))break;
   s.revealed=Math.max(s.revealed,Math.min(s.path.length-1,(Math.floor(s.position/4)+5)*4-1));
   let choice=null;if(search&&n<3)choice=treeAction(tree,s,r,lastRoll,learn);
   if(choice?.fresh)search=false;
@@ -298,7 +315,7 @@ function createPolicyJob(model,{samples=128,seed=0x41524341,verify=3,verifySampl
    options.sort((a,b)=>b.mean-a.mean||(emptyCanContinue?(a.action.kind==='end')-(b.action.kind==='end'):0)||tie(a.action)-tie(b.action));
    upgradeBeforeExit(s,options);
    const best=options[0]||{action:{kind:'end'},label:'Start Fateful Contest',mean:E.score(s),rainbows:s.chests.filter(t=>t===6).length};
-   return {options,best,target:target(s,best.action),samples:round,totalRollouts:rows.reduce((n,row)=>n+row.n,0),verifiedCandidates,estimatedHidden:!!distribution&&s.path.some(t=>t.kind==='unknown'),unknownEvents:s.path.some(t=>t.kind==='random'),model:s};
+   return {options,best,target:target(s,best.action),samples:round,totalRollouts:rows.reduce((n,row)=>n+row.n,0),verifiedCandidates,estimatedHidden:!!distribution&&s.path.some(t=>t.kind==='unknown'&&!t.used),hiddenModel:WorldSampler.available(s)?'route-layout':'observed-prior',unknownEvents:s.path.some(t=>t.kind==='random'),model:s};
   }
  };
 }
@@ -342,7 +359,7 @@ function createSampledJob(model,{samples=128,seed=0x41524341,verify=3,verifySamp
    options.sort((a,b)=>b.mean-a.mean||(emptyCanContinue?(a.action.kind==='end')-(b.action.kind==='end'):0)||tie(a.action)-tie(b.action));
    upgradeBeforeExit(s,options);
    const best=options[0]||{action:{kind:'end'},label:'Start Fateful Contest',mean:E.score(s),rainbows:s.chests.filter(t=>t===6).length};
-   return {options,best,target:target(s,best.action),samples:round,totalRollouts:learningRollouts+rows.reduce((n,row)=>n+row.n,0),learningRollouts,screenSamples:screenRound,continuationStates:tree.size,verifiedCandidates,estimatedHidden:s.path.some(t=>t.kind==='unknown'),unknownEvents:s.path.some(t=>t.kind==='random'),model:s};
+   return {options,best,target:target(s,best.action),samples:round,totalRollouts:learningRollouts+rows.reduce((n,row)=>n+row.n,0),learningRollouts,screenSamples:screenRound,continuationStates:tree.size,verifiedCandidates,estimatedHidden:s.path.some(t=>t.kind==='unknown'&&!t.used),hiddenModel:WorldSampler.available(s)?'route-layout':'observed-prior',unknownEvents:s.path.some(t=>t.kind==='random'),model:s};
   }
  };
 }

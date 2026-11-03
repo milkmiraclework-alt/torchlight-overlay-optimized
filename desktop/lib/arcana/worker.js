@@ -40,7 +40,7 @@ function solve(){
     cycleCounted=false;lastAdvice={phase:'advice',action:result.best.action,cycleAttempts,move:result.best.label,target:result.target,summary:`${model.localHorizon?'Visible path':'Tile '+(model.position+1)} · ${model.life} life · ${model.chests.length}/7 chests`,
      why:result.best.guaranteedExit?'Use the remaining chest upgrades before finishing; ending now would leave rarity points unused.':result.exactEndgame?'Compares every remaining card play and refill result on the known final tiles.':result.exact?'Uses the best order of the remaining chest upgrades.':'Compares alternative continuations, chest rarity, available notes and remaining life.',
      expected:`${result.best.guaranteedExit?'After upgrades then finish:':result.exactEndgame?'Expected':result.exact?'Final':'Estimated'} ${result.best.mean.toFixed(2)} rarity points · ${result.best.rainbows.toFixed(2)} rainbow chests · ${Math.round(result.best.deathRisk*100)}% life-depletion risk`,
-     notice:result.best.guaranteedExit?'This chest total assumes you apply the remaining upgrades, then finish.':result.exactEndgame?'The known final section is calculated exactly, including refill dice. Read again after each move.':result.exact?'The remaining upgrades are calculated exactly.':result.unknownEvents?'Preview: question outcomes use equally weighted effects from local game data; server odds are unknown. Read again after the event.':result.estimatedHidden?'Preview: hidden tiles use the observed board plus a small independent prior. Server layout odds are not calibrated.':'Preview: strategy needs live-game validation.',
+     notice:result.best.guaranteedExit?'This chest total assumes you apply the remaining upgrades, then finish.':result.exactEndgame?'The known final section is calculated exactly, including refill dice. Read again after each move.':result.exact?'The remaining upgrades are calculated exactly.':result.unknownEvents?(result.hiddenModel==='route-layout'?'Question outcomes use local-game effects with fitted probabilities from the route model. Server odds are not verified. Read again after the event.':'Preview: question outcomes use equally weighted effects from local game data; server odds are unknown. Read again after the event.'):result.estimatedHidden?(result.hiddenModel==='route-layout'?'Some cells are hidden. Their effects are estimated from the detected route pattern and logged appearances.':'Preview: hidden tiles use the observed board plus a small independent prior. Server layout odds are not calibrated.'):'Preview: strategy needs live-game validation.',
      options:result.options,calculationMs:performance.now()-start,samples:result.samples,totalRollouts:result.totalRollouts,verifiedCandidates:result.verifiedCandidates,learningRollouts:result.learningRollouts||0,screenSamples:result.screenSamples||0,continuationStates:result.continuationStates||0,exact:!!result.exact,exactEndgame:!!result.exactEndgame,localHorizon:!!result.localHorizon};
     if(result.localHorizon){lastAdvice.why='Compares the visible path and the next three decisions. The total path length is not assumed.';lastAdvice.expected=`Local outlook: ${result.best.mean.toFixed(2)} rarity points · ${Math.round(result.best.deathRisk*100)}% near-term life-depletion risk`;lastAdvice.notice=model.positionConfirmed?'Cell labels use game tile numbers. The route type is still being identified automatically.':'Automatic local advice. Labels show distance from YOU while the route is being identified.';}
     lastSolvedKey=modelKey;status(lastAdvice);
@@ -61,6 +61,8 @@ function processFrame(img,attempt=0,source='native'){
  if(source!=='native'&&reading.model.handFresh&&reading.model.dieFresh&&reading.model.lifeFresh)preferFallback=true;
  lastReadingMs=reading.ms;
  lastRecognition={capture:source,bases:reading.bases,width:img.width,height:img.height,hand:reading.model.hand,count:reading.handCount,regular:reading.rowRegular,centered:reading.rowCentered,die:reading.model.die,faces:reading.cardMatches?.map(m=>({icon:m.name,score:+m.score.toFixed(4),margin:+m.margin.toFixed(4),box:m.box}))};
+ const anchor=reader.positionAnchor();
+ if(anchor){status({phase:'reading',reason:'Aligning the visible path with the game log.'});parentPort.postMessage({event:'position-anchor',value:anchor});return;}
  if(reading.model.confirmed){solve();return;}
  status({phase:reading.waiting?'waiting':'check',reason:reading.issues.slice(0,3).join(' ')+(reading.issues.length>3?` ${reading.issues.length-3} more checks in Board.`:''),issues:reading.issues});
  // A fixed, bounded retry waits for entering animations; unclear recognition
@@ -78,6 +80,10 @@ parentPort.on('message',message=>{
   let result=true;
   if(cmd==='read')read();
   else if(cmd==='log-state'){if(reader.setLogBoard(value))invalidate();}
+  else if(cmd==='position-accepted'){
+   invalidate();reader.setLogBoard(value);const model=reader.state();
+   if(value.anchored&&value.epoch===model.routeEpoch&&value.position===model.position+1&&model.confirmed)solve();else read();
+  }
   else if(cmd==='frame'){if(message.requestRevision!==revision||!fallbackPending)return;fallbackPending=false;processFrame(message.frame,fallbackAttempt,message.frame.captureSource||'fallback');}
   else if(cmd==='invalidate'){if(message.changed&&!cycleCounted&&cycleContext&&lastAdvice?.action?.kind==='reroll'){cycleAttempts++;cycleCounted=true;}invalidate();if(message.changed)reader.expectChange();}
   else if(cmd==='settled'){if(value?.refillOnly&&cycleCounted&&cycleContext&&lastAdvice?.action?.kind==='reroll')reader.settleCycle();}

@@ -56,7 +56,7 @@ function renderModel(){
  // positions and can be aligned independently of this correction grid.
  for(let i=low;i<high;i++){
   const tile=model.path[i]||{kind:'unknown'},b=document.createElement('button');
-  b.textContent=`${model.localHorizon?(i===center?'YOU':`${i>center?'+':''}${i-center}`):i+1}: ${tile.kind==='chest'?tierNames[tile.tier]:tile.kind==='note'?'Notes ×'+tile.amount:tile.kind}`;
+  b.textContent=`${model.localHorizon&&!model.positionConfirmed?(i===center?'YOU':`${i>center?'+':''}${i-center}`):i+1}: ${tile.kind==='chest'?tierNames[tile.tier]:tile.kind==='note'?'Notes ×'+tile.amount:tile.kind==='grant'?'Obtain '+(definitions.find(c=>c.id===tile.id)?.name||'note'):tile.kind}`;
   b.className=(tile.kind==='chest'?`tier${tile.tier}`:'')+(i===center?' current':'')+(snapshot?.target===i?' best':'');
   b.onclick=()=>edit(i);nodes.push(b);
  }
@@ -65,14 +65,16 @@ function renderModel(){
 function edit(index){
  model=current();editing=index;const tile=model.path[index]||{kind:'unknown'};
  $('tile-title').textContent='Tile '+(index+1);
- $('tile-kind').replaceChildren(...['unknown','empty','chest','trap','heal','draw','effect','copy','random','end'].map(x=>new Option(x,x)));
+ $('tile-kind').replaceChildren(...['unknown','empty','chest','trap','heal','draw','effect','grant','copy','random','end'].map(x=>new Option(x,x)));
+ if(tile.kind==='note')$('tile-kind').add(new Option('Unclear note (keep reading)','note'));
+ $('tile-card').replaceChildren(...definitions.map(c=>new Option(c.name,String(c.id))));$('tile-card').value=String(tile.kind==='grant'?tile.id:definitions[0]?.id);
  $('tile-effect').replaceChildren(...effects.map(t=>new Option(t.name,String(t.id))));
  if(tile.kind==='effect'&&!effects.some(t=>t.id===tile.id))$('tile-effect').add(new Option('Current effect',String(tile.id)));
  $('tile-effect').value=String(tile.id||effects[0]?.id||'');
- $('tile-kind').value=tile.kind;$('effect-label').hidden=tile.kind!=='effect';$('tile-tier').value=tile.tier||1;$('tile-amount').value=tile.amount||1;$('editor').hidden=false;
+ $('tile-kind').value=tile.kind;$('effect-label').hidden=tile.kind!=='effect';$('grant-label').hidden=tile.kind!=='grant';$('tile-tier').value=tile.tier||1;$('tile-amount').value=tile.amount||1;$('editor').hidden=false;
 }
-$('tile-kind').onchange=()=>{$('effect-label').hidden=$('tile-kind').value!=='effect';};
-$('editor').querySelector('form').onsubmit=e=>{e.preventDefault();model.path[editing]={kind:$('tile-kind').value,tier:Number($('tile-tier').value),amount:Number($('tile-amount').value),id:Number($('tile-effect').value)};model.confirmed=false;dirty=true;$('editor').hidden=true;renderModel();};
+$('tile-kind').onchange=()=>{$('effect-label').hidden=$('tile-kind').value!=='effect';$('grant-label').hidden=$('tile-kind').value!=='grant';};
+$('editor').querySelector('form').onsubmit=e=>{e.preventDefault();const kind=$('tile-kind').value,previous=model.path[editing];model.path[editing]=kind==='note'?previous:{kind,tier:Number($('tile-tier').value),amount:Number($('tile-amount').value),id:Number($(kind==='grant'?'tile-card':'tile-effect').value),...(previous?.used?{used:true}:{})};model.confirmed=false;dirty=true;$('editor').hidden=true;renderModel();};
 $('cancel-tile').onclick=()=>{$('editor').hidden=true;};
 $('read').onclick=()=>{dirty=false;void command('read').catch(()=>{});};
 $('new').onclick=()=>{dirty=false;void command('reset').catch(()=>{});};

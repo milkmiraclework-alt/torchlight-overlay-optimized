@@ -34,6 +34,14 @@ const pause=ms=>new Promise(r=>setTimeout(r,ms));
   switched.sync(true);switched.read();const old=workers.at(-1);assert.equal(old.options.workerData.captureFirst,true);
   allowedGame={window:789};switched.sync(true);assert.equal(old.stopped,true,'Active window change retained old capture worker');assert(cancelled>0);
   switched.read();assert.equal(workers.at(-1).options.workerData.hwnd,789);assert.equal(workers.at(-1).options.workerData.resume,null);switched.close();
+  const recover=create({game:()=>allowedGame,library:'owned.dll',WorkerClass:Fake,notify(){}});
+  try{
+   recover.feed(['S9Taro Run',...Array.from({length:24},(_,i)=>`[Game] ${1000+i*10}_S9TileIcon Anim_Loop Start`)]);recover.sync(true);recover.read();const current=workers.at(-1),opened=current.options.workerData.logBoard;
+   assert(opened.prefixAnchored&&!opened.anchored);current.emit('message',{event:'position-anchor',value:{epoch:opened.epoch,revision:opened.revision,position:12}});
+   const accepted=current.messages.find(m=>m.cmd==='position-accepted');assert(accepted&&accepted.value.anchored);assert.equal(accepted.value.position,12);
+   current.emit('message',{event:'position-anchor',value:{epoch:opened.epoch,revision:opened.revision,position:1}});assert.equal(current.messages.filter(m=>m.cmd==='position-accepted').length,1,'A stale proposal replaced the accepted position');
+   recover.feed(['S9Taro HandleOrderAni Start Step=1 Type=Move','[Game] 900_S9LineShort Anim_D Start','[Game] 901_S9LineShort Anim_Light Start','S9Taro HandleOrderAni All done']);assert.equal(current.messages.filter(m=>m.cmd==='log-state').at(-1).value.position,13);
+  }finally{recover.close();}
   console.log('PASS: Arcana shared capture consent, stopped/stale workers, fallback isolation, state retention per game window, immediate advice invalidation and pending request cleanup.');
  }finally{app.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});

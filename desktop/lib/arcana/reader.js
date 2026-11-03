@@ -30,13 +30,18 @@ function create({automatic=true}={}){
  let settledCycle=false;
  let lifeExamples=[],lifeRect=null,lastReliableLife=null,lastReliableChests=null,lastRecognition=null,lastReliableHand=null,lastReliableDie=null,chestAnchor=null;
  let editKey=null,editSignature=null,moveRevision=0;
- let logBoard=null;
+ let logBoard=null,visualAnchor=null;
  let recentPopup=false;
  let pathHistory=[],historyEpoch=null,historyRevision=0;
+ function activeLogBoard(){
+  if(!logBoard||logBoard.anchored)return logBoard;
+  if(visualAnchor&&logBoard.prefixAnchored&&visualAnchor.epoch===logBoard.epoch&&visualAnchor.moves===(logBoard.moves||0)&&visualAnchor.worldRevision===(logBoard.worldRevision||0))return {...logBoard,anchored:true,position:visualAnchor.position,positionSource:'visual-log-patterns'};
+  return logBoard;
+ }
  function setPopup(value){value=value||null;if(value===popup)return;recentPopup=!!popup&&!value;popup=value;confirmedKey=null;model.confirmed=false;settledCycle=false;moveRevision++;editKey=null;if(!popup)model.pending=null;}
- const signature=s=>JSON.stringify([moveRevision,s.position,s.life,s.die,s.hand,s.chests,s.path.map(t=>t&&({kind:t.kind,tier:t.tier,amount:t.amount,id:t.id,used:!!t.used,candidates:t.candidates?.slice().sort((a,b)=>a-b)})),s.pending,!!s.localHorizon,!!s.positionConfirmed]);
+ const signature=s=>JSON.stringify([moveRevision,s.position,s.life,s.die,s.hand,s.chests,s.path.map(t=>t&&({kind:t.kind,tier:t.tier,amount:t.amount,id:t.id,look:t.look,used:!!t.used,candidates:t.candidates?.slice().sort((a,b)=>a-b)})),s.pending,!!s.localHorizon,!!s.positionConfirmed]);
  function updateEditKey(s){const value=signature(s);if(value!==editSignature||!editKey){editSignature=value;editKey=crypto.createHash('sha256').update(value).digest('hex');}}
- function reset(fresh=false){model=E.blank();grid=null;key=null;confirmedKey=null;lastFrame=null;newBoard=fresh;expectedKey=null;expectedState=null;currentPoint=null;observations=[];provisional=[];established=false;popup=null;recentPopup=false;pathHistory=[];historyEpoch=null;historyRevision=0;alignmentNeedsRead=false;settledCycle=false;lifeRect=null;lastReliableLife=null;lastReliableChests=null;lastReliableHand=null;lastReliableDie=null;chestAnchor=null;lastRecognition=null;editKey=null;editSignature=null;moveRevision++;}
+ function reset(fresh=false){model=E.blank();grid=null;key=null;confirmedKey=null;lastFrame=null;newBoard=fresh;expectedKey=null;expectedState=null;currentPoint=null;observations=[];provisional=[];established=false;popup=null;recentPopup=false;pathHistory=[];historyEpoch=null;historyRevision=0;alignmentNeedsRead=false;settledCycle=false;lifeRect=null;lastReliableLife=null;lastReliableChests=null;lastReliableHand=null;lastReliableDie=null;chestAnchor=null;lastRecognition=null;editKey=null;editSignature=null;visualAnchor=null;moveRevision++;}
  function read(img){
   const started=performance.now(),nextKey=imageKey(img);lastFrame=img;
   if(logBoard?.animating&&!popup&&!recentPopup){model.confirmed=false;return {model:clone(model),issues:['Waiting for the game animation to finish.'],waiting:true,ms:performance.now()-started};}
@@ -46,7 +51,8 @@ function create({automatic=true}={}){
   }
   expectedKey=null;
   if(!expectedState&&nextKey===key&&nextKey===confirmedKey)return {model:clone(model),issues:[],unchanged:true,ms:performance.now()-started,grid};
-  if((popup||recentPopup)&&model.lifeFresh&&model.handFresh&&model.chestsFresh&&model.die!==null&&(!logBoard?.anchored||!model.positionConfirmed||logBoard.position===model.position+1)){
+  const priorBoard=activeLogBoard();
+  if((popup||recentPopup)&&model.lifeFresh&&model.handFresh&&model.chestsFresh&&model.die!==null&&(!priorBoard?.anchored||!model.positionConfirmed||priorBoard.position===model.position+1)){
    // Choosing a note blurs the board and hand. Read the offer itself while
    // preserving the last observed board; never OCR the blurred background.
    const offered=V.offers(img),next=clone(model),issues=[];
@@ -58,17 +64,26 @@ function create({automatic=true}={}){
    else{
     const sorted=xs=>xs.slice().sort((a,b)=>a-b).join(','),offer=sorted(offered.cards);
     const sources=next.hand.flatMap((id,i)=>{const choices=E.CARDS.get(id).choices;return choices.length&&sorted(choices)===offer?[i]:[];});
-    const partial=sources.length?[]:next.hand.flatMap((id,i)=>{const choices=E.CARDS.get(id).choices;return offered.cards.length>=3&&choices.length>offered.cards.length&&offered.cards.every(id=>choices.includes(id))?[i]:[];});
+    const partial=sources.length?[]:next.hand.flatMap((id,i)=>{const choices=E.CARDS.get(id).choices;return offered.cards.length>=2&&choices.length>offered.cards.length&&offered.cards.every(id=>choices.includes(id))?[i]:[];});
     if(sources.length)next.pending={kind:'choose',cards:offered.cards,source:sources[0]};
     else if(partial.length===1)next.pending={kind:'choose',cards:E.CARDS.get(next.hand[partial[0]]).choices.slice(),source:partial[0]};
     else if(offer===sorted(next.hand))next.pending={kind:'copy',cards:next.hand.slice()};
-    else next.pending={kind:'choose',cards:offered.cards};
+    else if([3,6].includes(offered.cards.length))next.pending={kind:'choose',cards:offered.cards};
+    else issues.push('Waiting for the complete card offer.');
    }
    next.confirmed=issues.length===0;model=next;key=nextKey;if(next.confirmed){confirmedKey=nextKey;expectedState=null;}
-   updateEditKey(next);return {model:clone(next),issues,ms:performance.now()-started,grid,popup:true};
+   updateEditKey(next);return {model:clone(next),issues,waiting:issues.length>0,ms:performance.now()-started,grid,popup:true};
    }
   }
   const bases=V.findBases(img),auto=G.grid(bases),card=fastHand.read(img,auto)||V.cards(img),life=V.findLife(img,bases),issues=[];
+  if((!card.handConfident||card.die===null||!life)&&(!model.lifeFresh||!model.handFresh||!model.chestsFresh)){
+   const offered=V.offers(img);
+   if(offered.confident&&(popup||offered.cards.length>=3)){
+    model.confirmed=false;model.lifeFresh=false;model.handFresh=false;model.dieFresh=false;model.chestsFresh=false;model.pending={kind:'choose',cards:offered.cards};confirmedKey=null;editKey=null;
+    lastRecognition={lifeFresh:false,chestsFresh:false,cardReader:card.source||'templates',popupHidesBoard:true};
+    return {model:clone(model),issues:['Waiting for the choice to close: the hand behind it has not been read.'],waiting:true,popup:true,bases:bases.length,ms:performance.now()-started,grid};
+   }
+  }
   observations=[];
   let localMode=automatic&&(!model.lengthConfirmed||model.pathMode?.source==='game-log-patterns');
   if(auto){
@@ -118,19 +133,24 @@ function create({automatic=true}={}){
    if(number)lastReliableLife=number.value;else issues.push('Check remaining life.');
   }else{lifeRect=null;next.lifeFresh=false;next.life=lastReliableLife;issues.push('The current tile / life marker is not clear.');}
   currentPoint=null;
+  let board=activeLogBoard();
   if(grid&&life){
    const badge=G.center(life),candidates=observations.filter(({p})=>Math.abs(p.x-badge.x)<grid.width*.5&&p.y-badge.y>grid.width*.55&&p.y-badge.y<grid.width*1.6).sort((a,b)=>(Math.abs(a.p.x-badge.x)+Math.abs(a.p.y-badge.y-grid.width*.85)*.3)-(Math.abs(b.p.x-badge.x)+Math.abs(b.p.y-badge.y-grid.width*.85)*.3));
    currentPoint=candidates[0]?.p||null;
-   if(automatic&&!model.manualPath&&logBoard?.anchored&&currentPoint&&grid.trusted){
-    const relative=G.cell(grid,currentPoint),target=logBoard.position-1;
+   if(automatic&&!model.manualPath&&!board?.anchored&&currentPoint&&grid.trusted){
+    const recovered=Route.align(logBoard,grid,currentPoint,observations);
+    if(recovered){visualAnchor={...recovered,epoch:logBoard.epoch,moves:logBoard.moves||0,worldRevision:logBoard.worldRevision||0};board=activeLogBoard();}
+   }
+   if(automatic&&!model.manualPath&&board?.anchored&&currentPoint&&grid.trusted){
+    const relative=G.cell(grid,currentPoint),target=board.position-1;
     const first=relative===null?null:(Math.floor(target/4)-Math.floor((relative-grid.first)/4))*4;
     const anchored=first===null?null:{...grid,first,relative:false,source:'game-log',trusted:true};
     if(anchored&&first>=0&&G.cell(anchored,currentPoint)===target){
-     grid=anchored;next.positionConfirmed=true;next.routeEpoch=logBoard.epoch;
+     grid=anchored;next.positionConfirmed=true;next.routeEpoch=board.epoch;next.positionSource=board.positionSource||'game-log';
      if(historyEpoch!==logBoard.epoch){pathHistory=[];historyEpoch=logBoard.epoch;historyRevision=logBoard.worldRevision||0;}
      if(historyRevision!==(logBoard.worldRevision||0)){pathHistory=pathHistory.map((t,i)=>i>target||t?.kind==='chest'&&!t.used?{kind:'unknown'}:t);historyRevision=logBoard.worldRevision||0;}
      const chests=observations.filter(o=>o.tile?.kind==='chest').map(o=>[G.cell(grid,o.p)+1,o.tile.tier]);
-     const mode=Route.infer(logBoard,chests);next.pathMode=mode;
+     const mode=Route.infer(board,chests);next.pathMode=mode;
      if(mode.confirmed){
       next.path=Array.from({length:mode.length},(_,i)=>clone(pathHistory[i]||{kind:'unknown'}));
       next.lengthConfirmed=true;delete next.localHorizon;localMode=false;
@@ -147,36 +167,52 @@ function create({automatic=true}={}){
    const position=currentPoint?G.cell(grid,currentPoint):null;
    if(position!==null&&position<next.path.length&&grid.trusted)next.position=position;else issues.push('Check the current tile / path alignment.');
   }else issues.push('Check the current tile / path alignment.');
+  if(next.positionConfirmed&&board?.anchored){
+   for(const [position,look]of board.looks||[]){const i=position-1;if(i>=0&&i<next.path.length&&next.path[i]?.kind==='unknown'&&['plain','icon','chest'].includes(look))next.path[i]={...next.path[i],look};}
+   for(const position of board.used||[]){const i=position-1;if(i>=0&&i<next.path.length){const previous=next.path[i],look=previous?.look||board.looks.find(([p])=>p===position)?.[1];next.path[i]=previous?.kind==='unknown'?{kind:'empty',used:true,...(look?{look}:{})}:{...previous,used:true};pathHistory[i]=clone(next.path[i]);}}
+  }
   provisional=[];
   if(grid){
    for(const o of observations){const i=G.cell(grid,o.p);if(i===null||i>=next.path.length)continue;
-    if(!o.tile&&logBoard?.anchored&&grid.source==='game-log'){
-     const look=logBoard.used?.includes(i+1)?'plain':logBoard.looks.find(v=>v[0]===i+1)?.[1],hint=fastHand.tileHint(img,o.p,look,o.emptyEvidence);
+    const isCurrent=currentPoint&&Math.hypot(currentPoint.x-o.p.x,currentPoint.y-o.p.y)<grid.width*.1;
+    const consumed=board?.anchored&&grid.source==='game-log'&&board.used?.includes(i+1);
+    // Confirmed one-shot activations beat an old visible icon. In particular,
+    // a retreat must not make an already collected chest collectible again.
+    // Nor does a consumed/current tile need another expensive fallback OCR.
+    if(consumed||isCurrent)o.tile={...(next.path[i]?.kind!=='unknown'?next.path[i]:{kind:'empty'}),used:true};
+    else if(!o.tile&&board?.anchored&&grid.source==='game-log'){
+     const look=logBoard.looks.find(v=>v[0]===i+1)?.[1],hint=fastHand.tileHint(img,o.p,look,o.emptyEvidence);
      if(hint)o.tile=hint.tile;
     }
-    const isCurrent=currentPoint&&Math.hypot(currentPoint.x-o.p.x,currentPoint.y-o.p.y)<grid.width*.1;
-    let tile=isCurrent?{kind:'empty',used:true}:o.tile||next.path[i]||{kind:'unknown'};
+    let tile=o.tile||next.path[i]||{kind:'unknown'};
     if(tile.kind==='empty'&&next.path[i]?.kind!=='unknown'&&next.path[i]?.kind!=='empty')tile={...next.path[i],...(isCurrent||logBoard?.used?.includes(i+1)?{used:true}:{})};
     next.path[i]=clone(tile);if(next.positionConfirmed&&grid.source==='game-log'&&tile.kind!=='unknown')pathHistory[i]=clone(tile);provisional.push({index:i,p:o.p,tile:clone(tile)});
    }
   }else issues.push('Align the visible path in Check board.');
   // The left reward chain uses fixed screen anchors. Read each of seven
   // slots independently; unrecognised decoration is not a green chest.
-  const collected=V.collected(img);let chests=collected.tiers,chestConfidence=collected.confident,rewardPending=false,chestsSource='picture';
+  const collected=V.collected(img);let chests=collected.tiers,chestConfidence=collected.confident,rewardPending=!!collected.conflicting,chestsSource='picture';
   const observedChests=chests.slice(),events=logBoard?.chestEvents?.filter(e=>e.sequence>(chestAnchor?.sequence??Infinity))||[];
+  const minimumTiers=(logBoard?.rewardMinTiers||[]).slice().sort((a,b)=>b-a);
   if(chestAnchor?.epoch===logBoard?.epoch&&events.length&&events[0].sequence===chestAnchor.sequence+1&&events.at(-1).sequence===logBoard.chestSequence){
    const expected=chestAnchor.chests.slice();let upgrades=0,valid=true;
    for(const event of events){if(event.kind==='collect'&&event.tier>=1&&event.tier<=6){if(expected.length<7)expected.push(event.tier);}else if(event.kind==='upgrade')upgrades+=event.count;else valid=false;}
    if(valid){
-    if(!upgrades&&chests.length<expected.length&&chests.every((tier,i)=>tier===expected[i])){chests=expected;chestConfidence=true;chestsSource='game-log';}
+    if(!upgrades&&chests.length<expected.length&&chests.every((tier,i)=>tier===expected[i])){chests=expected;chestConfidence=true;rewardPending=false;chestsSource='game-log';}
     else if(chests.length!==expected.length||upgrades&&chests.reduce((a,b)=>a+b,0)<expected.reduce((a,b)=>a+b,0)+upgrades){chestConfidence=false;rewardPending=true;}
    }
   }
+  const observedOrder=chests.slice().sort((a,b)=>b-a);
+  if(Number.isInteger(logBoard?.rewardCountMin)&&chests.length<logBoard.rewardCountMin||minimumTiers.some((tier,i)=>!observedOrder[i]||observedOrder[i]<tier)){chestConfidence=false;rewardPending=true;}
+  if(collected.conflicting){chestConfidence=false;rewardPending=true;}
   const lost=lastReliableChests!==null&&chests.length<lastReliableChests.length;
+  // Reward slots never disappear during a run. A temporarily hidden icon
+  // needs another automatic read, not a request to rebuild the inventory.
+  if(lost){chestConfidence=false;rewardPending=true;}
   next.chestsFresh=!!chestConfidence&&!lost;next.observedChests=observedChests;
   if(next.chestsFresh){next.chests=chests;lastReliableChests=chests.slice();if(logBoard)chestAnchor={epoch:logBoard.epoch,sequence:logBoard.chestSequence||0,chests:chests.slice()};}
   else{next.chests=lastReliableChests?.slice()||model.chests.slice();issues.push(rewardPending?'Waiting for the chest update to finish.':'Check collected chests.');}
-  if(lost)issues.push('A collected chest disappeared from the reading. Check the reward chain.');
+  if(lost)issues.push('Waiting for all collected chests to become visible.');
   if(grid?.trusted&&next.position!==model.position&&model.path[next.position]?.kind==='chest'&&!model.path[next.position].used&&model.chests.length<7&&chests.length<=model.chests.length){rewardPending=true;issues.push('Waiting for the new chest to reach the reward chain.');}
   if(!next.lengthConfirmed&&!next.localHorizon)issues.push('Confirm the total path length in Check board.');
   if(popup){
@@ -192,7 +228,7 @@ function create({automatic=true}={}){
     }
    }
   }else if(next.pending&&semanticKey({...next,pending:null})!==semanticKey({...model,pending:null}))next.pending=null;
-  if(!next.localHorizon&&grid?.trusted&&next.life!==null&&next.die!==null){
+  if(!next.localHorizon&&!require('./world-sampler').available(next)&&grid?.trusted&&next.life!==null&&next.die!==null){
    for(const a of E.actions(next)){
     let target=null;if(a.kind==='die')target=Math.min(next.path.length-1,next.position+next.die);
     else if(a.kind==='card'){const c=E.CARDS.get(a.selected??a.id),e=c.events.map(id=>E.DATA.events[id]).find(e=>e.fn===100&&e.a[0]===e.a[1]);if(e)target=Math.max(0,Math.min(next.path.length-1,next.position+e.a[0]));}
@@ -259,7 +295,8 @@ function create({automatic=true}={}){
    const changed=JSON.stringify(logBoard)!==JSON.stringify(value);
    if(!changed)return false;
    const physical=logBoard&&(logBoard.epoch!==value.epoch||logBoard.moves!==value.moves||logBoard.worldRevision!==value.worldRevision);
-   if(logBoard&&logBoard.epoch!==value.epoch&&value.anchored)reset(true);
+   if(logBoard&&logBoard.epoch!==value.epoch)reset(true);
+   if(physical)visualAnchor=null;
    confirmedKey=null;
    if(physical&&key){if(!expectedState){expectedState=semanticKey(model);expectedKey=key;}model.confirmed=false;editKey=null;moveRevision++;}
    logBoard=clone(value);
@@ -267,10 +304,11 @@ function create({automatic=true}={}){
    return true;
   },
   state:()=>({...clone(model),frameKey:editKey}),grid:()=>grid,frame:()=>lastFrame,
+  positionAnchor:()=>!logBoard?.anchored&&activeLogBoard()?.anchored?{...clone(visualAnchor),revision:logBoard.revision}:null,
   marks:()=>!lastFrame||popup||recentPopup?[]:provisional.filter(o=>o.p.x>0&&o.p.x<lastFrame.width&&o.p.y>0&&o.p.y<lastFrame.height).map(o=>({index:o.index,label:model.localHorizon&&!model.positionConfirmed?(o.index===model.position?'YOU':`${o.index>model.position?'+':''}${o.index-model.position}`):String(o.index+1),x:o.p.x/lastFrame.width,y:(o.p.y-(grid?.width||0)*.14)/lastFrame.height,unknown:o.tile.kind==='unknown',current:o.index===model.position})),
   recognition:()=>lastRecognition,
-  checkpoint:()=>({model:clone(model),grid,previousSize,key,confirmedKey,corrections,established,expectedState,expectedKey,popup,recentPopup,alignmentNeedsRead,lifeExamples,lastReliableLife,lastReliableChests,editKey,editSignature,moveRevision,logBoard,pathHistory,historyEpoch,historyRevision,lastReliableHand,lastReliableDie,chestAnchor}),
-  restore(value){if(!value)return;model=clone(value.model);grid=value.grid;previousSize=value.previousSize;key=value.key;confirmedKey=value.confirmedKey;corrections=value.corrections||[];established=!!value.established;expectedState=value.expectedState||null;expectedKey=value.expectedKey||null;popup=value.popup||null;alignmentNeedsRead=!!value.alignmentNeedsRead;lifeExamples=Array.isArray(value.lifeExamples)?value.lifeExamples.slice(-24):[];lastReliableLife=value.lastReliableLife??model.life??null;lastReliableChests=value.lastReliableChests?.slice()??(model.confirmed?model.chests.slice():null);editKey=value.editKey??null;editSignature=value.editSignature??null;moveRevision=value.moveRevision||0;logBoard=value.logBoard||null;pathHistory=clone(value.pathHistory||[]);historyEpoch=value.historyEpoch??null;historyRevision=value.historyRevision||0;recentPopup=!!value.recentPopup;lastReliableHand=value.lastReliableHand?.slice()??(model.handFresh?model.hand.slice():null);lastReliableDie=value.lastReliableDie??(model.dieFresh?model.die:null);chestAnchor=value.chestAnchor?clone(value.chestAnchor):null;},
+  checkpoint:()=>({model:clone(model),grid,previousSize,key,confirmedKey,corrections,established,expectedState,expectedKey,popup,recentPopup,alignmentNeedsRead,lifeExamples,lastReliableLife,lastReliableChests,editKey,editSignature,moveRevision,logBoard,pathHistory,historyEpoch,historyRevision,lastReliableHand,lastReliableDie,chestAnchor,visualAnchor}),
+  restore(value){if(!value)return;model=clone(value.model);grid=value.grid;previousSize=value.previousSize;key=value.key;confirmedKey=value.confirmedKey;corrections=value.corrections||[];established=!!value.established;expectedState=value.expectedState||null;expectedKey=value.expectedKey||null;popup=value.popup||null;alignmentNeedsRead=!!value.alignmentNeedsRead;lifeExamples=Array.isArray(value.lifeExamples)?value.lifeExamples.slice(-24):[];lastReliableLife=value.lastReliableLife??model.life??null;lastReliableChests=value.lastReliableChests?.slice()??(model.confirmed?model.chests.slice():null);editKey=value.editKey??null;editSignature=value.editSignature??null;moveRevision=value.moveRevision||0;logBoard=value.logBoard||null;pathHistory=clone(value.pathHistory||[]);historyEpoch=value.historyEpoch??null;historyRevision=value.historyRevision||0;recentPopup=!!value.recentPopup;lastReliableHand=value.lastReliableHand?.slice()??(model.handFresh?model.hand.slice():null);lastReliableDie=value.lastReliableDie??(model.dieFresh?model.die:null);chestAnchor=value.chestAnchor?clone(value.chestAnchor):null;visualAnchor=value.visualAnchor?clone(value.visualAnchor):null;},
   info:()=>({confirmed:!!model.confirmed,learned:corrections.length,key})
  };
 }

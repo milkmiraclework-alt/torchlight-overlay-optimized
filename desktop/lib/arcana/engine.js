@@ -16,13 +16,17 @@ function normalize(value){
  s.hand=value.hand.map(id=>{if(!CARDS.has(id)||CARDS.get(id).tag===99)throw Error('Check the hand: unknown card.');return id;});
  if(!Array.isArray(value.chests)||value.chests.length>7)throw Error('Check collected chests (at most 7).');
  s.chests=value.chests.map(t=>integer(t,1,6,'chest rarity'));
+ const mode=value.pathMode;
+ if(s.lengthConfirmed&&mode?.confirmed&&mode.source==='game-log-patterns'&&['normal','special1','special2','special3','special4'].includes(mode.type)&&mode.length===value.path.length&&mode.confidence>=.97)s.pathMode={type:mode.type,length:mode.length,source:mode.source,confirmed:true,confidence:1};
  s.path=value.path.map((t,i)=>{
-  if(!t||t.kind==='unknown')return {kind:'unknown'};
-  if(!['empty','chest','trap','heal','draw','random','end','effect','copy','note'].includes(t.kind))throw Error(`Check tile ${i}.`);
+  if(!t||t.kind==='unknown'){const out={kind:'unknown'};if(['plain','icon','chest'].includes(t?.look))out.look=t.look;if(t?.used)out.used=true;return out;}
+  if(!['empty','chest','trap','heal','draw','random','end','effect','copy','note','grant'].includes(t.kind))throw Error(`Check tile ${i}.`);
   const out={kind:t.kind};
+  if(t.kind==='empty'&&t.used&&['plain','icon','chest'].includes(t.look))out.look=t.look;
   if(t.kind==='chest')out.tier=integer(t.tier,1,6,`tile ${i} rarity`);
   if(['trap','heal','draw'].includes(t.kind))out.amount=integer(t.amount||1,1,10,`tile ${i} amount`);
   if(t.kind==='effect'){if(!DATA.tiles[t.id])throw Error(`Unknown tile ${i} effect.`);out.id=t.id;}
+  if(t.kind==='grant'){if(!CARDS.has(t.id)||CARDS.get(t.id).tag===99)throw Error(`Unknown tile ${i} note.`);out.id=t.id;}
   if(t.kind==='note'){
    out.amount=integer(t.amount,1,3,`tile ${i} note count`);
    if(!Array.isArray(t.candidates)||!t.candidates.length||t.candidates.length>4||t.candidates.some(id=>!DATA.tiles[id]))throw Error(`Check tile ${i} note alternatives.`);
@@ -32,7 +36,7 @@ function normalize(value){
  });
  // The current tile has already settled in a confirmed board. A manual
  // correction must not make its chest/effect collectible a second time.
- s.path[s.position]=s.path[s.position].kind==='unknown'?{kind:'empty',used:true}:{...s.path[s.position],used:true};
+ s.path[s.position]=s.path[s.position].kind==='unknown'?{kind:'empty',used:true,...(s.path[s.position].look?{look:s.path[s.position].look}:{})}:{...s.path[s.position],used:true};
  if(value.pending){
   if(!['choose','copy'].includes(value.pending.kind)||!Array.isArray(value.pending.cards)||value.pending.cards.length<1||value.pending.cards.length>12)throw Error('Check the card choice.');
   s.pending={kind:value.pending.kind,cards:value.pending.cards.map(id=>{if(!CARDS.has(id))throw Error('Unknown offered card.');return id;})};
@@ -128,6 +132,7 @@ function land(s,r,depth=0){
  else if(t.kind==='scenario-event')effect(s,t.event,r,depth+1);
  else if(t.kind==='random'){s.frontier=true;s.uncertain=true;}
  else if(t.kind==='note'){s.frontier=true;s.uncertain=true;}
+ else if(t.kind==='grant'&&s.hand.length<10)s.hand.push(t.id);
  else if(t.kind==='copy')s.pending={kind:'copy',cards:s.hand.slice()};
 }
 function move(s,delta,r,depth=0){if(s.life<=0)return;s.position=clamp(s.position+delta,0,s.path.length-1);land(s,r,depth);}

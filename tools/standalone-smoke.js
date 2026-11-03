@@ -53,12 +53,13 @@ async function connect(url) {
   child.on('error', (e) => { output += e.message; });
   try {
     const devtools = path.join(profile, 'DevToolsActivePort');
-    for (let i = 0; !fs.existsSync(devtools) && i < 600; i++) {
+    let endpointInfo;
+    for (let i = 0; !(endpointInfo=require('./devtools-port')(devtools)) && i < 600; i++) {
       if (child.exitCode !== null) throw new Error('Portable launcher exited before startup: ' + output);
       await pause(100);
     }
-    assert.ok(fs.existsSync(devtools), 'Portable app did not create its isolated DevTools endpoint: ' + output);
-    const [port, endpoint] = fs.readFileSync(devtools, 'utf8').trim().split('\n');
+    assert.ok(endpointInfo, 'Portable app did not create its readable isolated DevTools endpoint: ' + output);
+    const {port,route:endpoint} = endpointInfo;
     browser = await connect(`ws://127.0.0.1:${port}${endpoint}`);
     let targets;
     for (let i = 0; i < 200; i++) {

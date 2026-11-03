@@ -1,5 +1,6 @@
 'use strict';
 const fs=require('node:fs'),{StringDecoder}=require('node:string_decoder');
+const {detectEncoding}=require('./arcana/timer-reader/log');
 function classify(line){
   if(/LogLoad: LoadMap:/.test(line))return 'idle';
   if(/S13GamePlayMain Hide|ProtoId = 5621\b|S13GamePlayReward_C_(?:Fight|GiveUp)Btn/.test(line))return 'idle';
@@ -11,7 +12,7 @@ function classify(line){
   return null;
 }
 class LogTail{
-  constructor(feed){this.feed=feed;this.path=null;this.offset=0;this.identity='';this.rest='';this.decoder=new StringDecoder('utf8');}
+  constructor(feed){this.feed=feed;this.path=null;this.offset=0;this.identity='';this.rest='';this.encoding='utf8';this.decoder=new StringDecoder(this.encoding);}
   setPath(file){if(file===this.path)return;this.path=file;this.offset=0;this.identity='';this.rest='';this.decoder=new StringDecoder('utf8');this.poll(true);}
   poll(initial=false){
     if(!this.path)return;
@@ -19,14 +20,15 @@ class LogTail{
     try{
       const stat=fs.statSync(this.path),identity=stat.ino+':'+stat.birthtimeMs;
       const reset=identity!==this.identity||stat.size<this.offset;
-      if(reset){this.identity=identity;this.offset=Math.max(0,stat.size-262144);this.rest='';this.decoder=new StringDecoder('utf8');}
+      if(reset){this.identity=identity;this.encoding=detectEncoding(this.path);this.offset=Math.max(0,stat.size-262144);if(this.encoding==='utf16le')this.offset-=this.offset%2;this.rest='';this.decoder=new StringDecoder(this.encoding);}
       if(stat.size===this.offset)return;
       const start=this.offset,bytes=Buffer.alloc(Math.min(262144,stat.size-start));
       fd=fs.openSync(this.path,'r');const n=fs.readSync(fd,bytes,0,bytes.length,start);this.offset+=n;
       let text=this.rest+this.decoder.write(bytes.subarray(0,n));
+      if(reset&&!start)text=text.replace(/^\uFEFF/,'');
       if(reset&&start>0)text=text.slice(text.indexOf('\n')+1);
       const lines=text.split(/\r?\n/);this.rest=(lines.pop()||'').slice(-8192);
-      this.feed(lines,{initial:initial||reset});
+      this.feed(lines,{initial:initial||reset,file:this.path,end:this.offset,identity:this.identity,encoding:this.encoding});
     }catch{/* Missing/rotated logs are retried by the common watcher. */}finally{if(fd!==undefined)fs.closeSync(fd);}
   }
 }

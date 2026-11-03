@@ -57,11 +57,13 @@ function create({executable,config,game,notify,note,userData,test=false,spawnWor
   const revision=epoch,kind=settleKind;
   timer=setTimeout(()=>{timer=0;if(revision===epoch&&mode==='vorax')read(kind);},Math.min(delay,Math.max(0,settleStarted+3000-Date.now())));
  }
- const tail=new LogTail((lines,{initial})=>{
+ const tail=new LogTail((lines,meta)=>{
+  const {initial}=meta,restored=initial?arcana?.primeLog?.(meta):null;
+  if(restored?.mode)detected=restored.mode;
   if(enabled())journal.feed(lines,{initial});
   for(const line of lines){const next=classify(line);if(next){detected=next;}}
   sync();
-  arcana?.feed(lines,{initial});
+  arcana?.feed(lines,{initial,primed:!!restored?.primed});
   if(mode!=='vorax')return;
   if(initial){if(detected==='vorax')schedule('screen');return;}
   for(const line of lines){

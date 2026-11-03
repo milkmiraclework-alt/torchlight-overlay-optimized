@@ -9,6 +9,7 @@ function create({game,library,notify,note=()=>{},WorkerClass=Worker,fixture=null
  let animationTypes=[];
  let lastCheck='',lastCheckAt=0;
  let routeLog=require('./arcana/route-log').create(),routeKey='';
+ let history=null;
  function publish(value){last=value;notify(value);}
  function stop(){
   cancelCapture();
@@ -25,6 +26,12 @@ function create({game,library,notify,note=()=>{},WorkerClass=Worker,fixture=null
    if(current!==worker)return;
    if(message.id){const p=pending.get(message.id);if(p){pending.delete(message.id);clearTimeout(p.timer);message.error?p.reject(Error(message.error)):p.resolve(message.result);}return;}
    if(message.event==='checkpoint'){resume=message.value;return;}
+   if(message.event==='position-anchor'){
+    if(routeLog.anchor(message.value)){
+     const value=routeLog.snapshot();routeKey=JSON.stringify(value);clearTimeout(timer);timer=null;current.postMessage({cmd:'position-accepted',value});
+    }else{current.postMessage({cmd:'log-state',value:routeLog.snapshot()});if(!timer)schedule(40);}
+    return;
+   }
    if(message.event==='fallback'&&fallback){
     if(!message.reason?.startsWith('Using the capture path'))note('Arcana capture fallback:',message.reason);
     fallbackReads++;
@@ -48,10 +55,19 @@ function create({game,library,notify,note=()=>{},WorkerClass=Worker,fixture=null
   return new Promise((resolve,reject)=>{const t=setTimeout(()=>{pending.delete(id);reject(Error('Arcana request timed out'));},8000);pending.set(id,{resolve,reject,timer:t});worker.postMessage({id,cmd,...args});});
  }
  return {
+  primeLog(meta){
+   if(closed||!meta?.file)return null;
+   try{
+    const saved=require('./arcana/log-history').read(meta.file,meta);if(!saved)return null;
+    stop();resume=null;routeLog=require('./arcana/route-log').create();routeLog.feed(saved.lines);routeKey=JSON.stringify(routeLog.snapshot());
+    const board=routeLog.snapshot();history={bytes:saved.bytes,lines:saved.lines.length,moves:board.moves,position:board.anchored?board.position:null};
+    return {primed:true,mode:saved.mode};
+   }catch(error){note('Arcana history:',error.message);return null;}
+  },
   sync(on){on=!!on&&!closed;if(on===active){if(on&&worker&&Number(game().window)!==lastHwnd){stop();resume=null;publish({phase:'waiting'});schedule();}return;}active=on;if(!on){stop();last=null;notify(null);}else{publish({phase:'waiting'});schedule();}},
-  feed(lines,{initial=false}={}){
+  feed(lines,{initial=false,primed=false}={}){
    if(closed)return;
-   const routeChanged=routeLog.feed(lines);
+   const routeChanged=primed||routeLog.feed(lines);
    if(!active)return;
    // Exact game UI triggers are supplied by the Arcana event parser. Asset
    // loading and unrelated gameplay must never start a screenshot loop.
@@ -68,7 +84,7 @@ function create({game,library,notify,note=()=>{},WorkerClass=Worker,fixture=null
     else{worker?.postMessage({cmd:'invalidate',changed:event.kind==='move'});publish({phase:'reading'});schedule(event.kind==='move'?380:220);}
    }
    if(routeChanged){const value=routeLog.snapshot(),key=JSON.stringify(value);if(key!==routeKey){routeKey=key;worker?.postMessage({cmd:'log-state',value});if(!timer&&value.anchored)schedule(120);}}
-   if(initial&&events.length)schedule();
+   if(initial&&(events.length||primed&&routeLog.snapshot().prefixAnchored))schedule();
   },
   read,
   async command(cmd,args){
@@ -78,7 +94,7 @@ function create({game,library,notify,note=()=>{},WorkerClass=Worker,fixture=null
    if(!['correct','calibrate','reset'].includes(cmd))throw Error('Unsupported Arcana command');
    return call(cmd,{value:args});
   },
-  info:()=>({active,running:!!worker,pending:pending.size,retiring:retiring.size,phase:last?.phase||'off',revision,fallbackReads,captureChildren:captureInfo().children}),
+  info:()=>({active,running:!!worker,pending:pending.size,retiring:retiring.size,phase:last?.phase||'off',revision,fallbackReads,captureChildren:captureInfo().children,history}),
   close(){closed=true;active=false;stop();}
  };
 }

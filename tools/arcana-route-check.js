@@ -23,7 +23,7 @@ for(let i=0;i<16;i++){
  if(i%4===0)lines.push(`[Game] ${id+1}_S9TileIcon Anim_Loop Start`);
  if(i%8===0)lines.push(`Animation not found! Name = Anim_Loop, Id = ${id+1}_S9TileIcon`);
 }
-assert(log.feed(lines));const initial=log.snapshot();assert(initial.anchored);assert.equal(initial.total,16);assert.equal(initial.position,1);assert.equal(initial.looks[0][1],'chest');assert.equal(initial.looks[4][1],'icon');assert.equal(initial.looks[1][1],'plain');
+assert(log.feed(lines));const initial=log.snapshot();assert(initial.prefixAnchored);assert.equal(initial.anchored,false,'Opening the path claimed tile1 before seeing the marker');assert.equal(initial.total,16);assert.equal(initial.looks[0][1],'chest');assert.equal(initial.looks[4][1],'icon');assert.equal(initial.looks[1][1],'plain');
 log.feed(['S9Taro HandleOrderAni Start Step=1 Type=Move','[Game] 900_S9LineShort Anim_D Start','[Game] 901_S9LineShort Anim_D Start','[Game] 902_S9LineShort Anim_Light Start','[Game] 1020_S9TileIcon Anim_Show02 Start','S9Taro HandleOrderAni All done']);
 assert.equal(log.snapshot().position,3);assert(log.snapshot().used.includes(3));assert.equal(log.snapshot().moves,1);
 const reopened=Route.create();reopened.feed(['S9Taro Run',...Array.from({length:24},(_,i)=>`[Game] ${2000+i*10}_S9TileIcon Anim_Loop Start`)]);assert.equal(reopened.snapshot().anchored,false,'A reopened viewport was silently assumed to start at tile1');

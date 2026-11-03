@@ -1,0 +1,12 @@
+'use strict';
+// A saved real frame deliberately precedes the supplied collection event.
+// Its old chest art must not undo a positively recorded one-shot activation.
+const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
+const R=require('../desktop/lib/arcana/reader'),E=require('../desktop/lib/arcana/engine'),S=require('../desktop/lib/arcana/solver');
+const at=process.argv.indexOf('--frame');if(at<0)throw Error('Supply --frame <reference-play RGBA prefix>');const prefix=path.resolve(process.argv[at+1]),img={...JSON.parse(fs.readFileSync(prefix+'.json')),data:fs.readFileSync(prefix+'.rgba')};
+const board={epoch:1,revision:1,anchored:true,position:42,total:56,moves:1,worldRevision:0,used:[46],looks:[[37,'icon'],[38,'icon'],[39,'icon'],[40,'plain'],[42,'plain'],[43,'plain'],[44,'icon'],[45,'plain'],[46,'chest'],[47,'plain'],[48,'icon'],[49,'icon'],[50,'plain'],[52,'icon'],[53,'plain']]};
+const reader=R.create();reader.setLogBoard(board);const parsed=reader.read(img);assert(parsed.model.confirmed,parsed.issues.join(' '));assert(parsed.model.path[45].used,'An old visible chest erased its confirmed collection');
+const model=E.normalize(parsed.model),before=model.chests.slice();E.move(model,4,E.rng(7));assert.deepEqual(model.chests,before,'Returning to a consumed cell added a duplicate chest');assert.equal(S.valueOf({...model,revealed:79,position:41},45),0);
+const animation={...img,data:Buffer.from(img.data)};animation.data[0]^=1;const reread=reader.read(animation);assert(reread.model.confirmed);assert(reread.model.path[45].used,'Background animation revived a consumed reward');
+const restored=R.create();restored.restore(reader.checkpoint());assert(restored.read(animation).model.path[45].used,'Restoring a reader checkpoint revived the chest');
+const report={version:require('../desktop/package.json').version,checkedAt:new Date().toISOString(),frame:path.basename(prefix),oldVisibleChestCannotUndoObservedCollection:true,retreatCannotDuplicateReward:true,rolloutValueZeroForConsumedChest:true,backgroundAnimationAndCheckpointPreserveConsumption:true,gameCapture:false,gameInput:false};fs.writeFileSync(path.join(__dirname,'results/arcana-consumed.json'),JSON.stringify(report,null,2)+'\n');console.log('PASS: a stale visible chest cannot undo its log-confirmed collection or gain value again after retreat, animation or checkpoint restore.');

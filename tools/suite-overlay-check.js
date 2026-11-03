@@ -18,7 +18,7 @@ async function connect(url){const ws=new WebSocket(url),pending=new Map();let id
  child.stdout.on('data',b=>output+=b);child.stderr.on('data',b=>output+=b);
  const wait=async(fn,message,limit=300)=>{for(let i=0;i<limit;i++){const v=await fn();if(v)return v;if(child.exitCode!==null)throw new Error('App exited: '+output);await pause(100);}throw new Error(message+'\n'+output);};
  try{
-  const endpoint=path.join(profile,'DevToolsActivePort');await wait(()=>fs.existsSync(endpoint),'No CDP');const [port,route]=fs.readFileSync(endpoint,'utf8').trim().split('\n');browser=await connect('ws://127.0.0.1:'+port+route);
+  const endpoint=path.join(profile,'DevToolsActivePort'),{port,route}=await wait(()=>require('./devtools-port')(endpoint),'No readable CDP');browser=await connect('ws://127.0.0.1:'+port+route);
   const targets=await wait(async()=>{const ts=await(await fetch('http://127.0.0.1:'+port+'/json/list')).json();return ts.some(t=>t.url.endsWith('/analyze.html'))&&ts.some(t=>t.title==='TorchlightSuiteCheckOnly')?ts:null},'Missing targets');
   const target=targets.find(t=>t.url.endsWith('/analyze.html')),fake=targets.find(t=>t.title==='TorchlightSuiteCheckOnly');page=await connect(target.webSocketDebuggerUrl);const game=await connect(fake.webSocketDebuggerUrl);
   await game.evaluate('window.resizeTo(outerWidth+1280-innerWidth,outerHeight+720-innerHeight)');await pause(300);game.ws.close();

@@ -7,6 +7,11 @@ const root=path.resolve(__dirname,'..'),jobs=[
  ['arcana-endgame',['tools/arcana-endgame-check.js']],
  ['arcana-upgrade-value',['tools/arcana-upgrade-value-check.js']],
  ['arcana-runtime',['tools/arcana-runtime-check.js']],
+ ['arcana-history',['tools/arcana-history-check.js']],
+ ['arcana-position',['tools/arcana-position-check.js']],
+ ['arcana-worlds',['tools/arcana-world-check.js']],
+ ['arcana-models',['tools/arcana-model-check.js']],
+ ['arcana-fixed-reward',['tools/arcana-fixed-reward-check.js']],
  ['arcana-marks',['tools/arcana-marks-check.js']],
  ['native-capture',['tools/native-capture-check.js']],
  ['window-capture',['tools/window-capture-check.js']],
@@ -33,6 +38,13 @@ const root=path.resolve(__dirname,'..'),jobs=[
  ['worker-lifecycle',['tools/worker-lifecycle-check.js']],['bundled-site',['tools/bundled-site-check.js']],
 ];
 const frameAt=process.argv.indexOf('--arcana-frame');if(frameAt>=0)jobs.push(['arcana-vision',['tools/arcana-vision-check.js','--frame',path.resolve(process.argv[frameAt+1])]]);
+if(frameAt>=0)jobs.push(['arcana-consumed',['tools/arcana-consumed-check.js','--frame',path.resolve(process.argv[frameAt+1])]]);
+const sessionAt=process.argv.indexOf('--arcana-session');if(sessionAt>=0){
+ const session=path.resolve(process.argv[sessionAt+1]);
+ jobs.push(['arcana-position-worker',['tools/arcana-position-worker-check.js','--session',session,'--fixture-out','sandbox/arcana-session-first']]);
+ jobs.push(['arcana-replay',['tools/arcana-replay-check.js','--session',session,'--verify','--output','tools/results/arcana-replay.json']]);
+ jobs.push(['arcana-cold-replay',['tools/arcana-replay-check.js','--session',session,'--cold-open','--verify','--output','tools/results/arcana-cold-replay.json']]);
+}
 if(frameAt>=0)jobs.push(['arcana-route',['tools/arcana-route-check.js','--frame',path.resolve(process.argv[frameAt+1])]]);
 if(frameAt>=0)jobs.push(['arcana-capture-fallback',['tools/arcana-capture-fallback-check.js','--frame',path.resolve(process.argv[frameAt+1])]]);
 const handFrames=process.argv.flatMap((arg,i)=>arg==='--arcana-hand-frame'?['--frame',path.resolve(process.argv[i+1])]:[]);if(handFrames.length)jobs.push(['arcana-hand',['tools/arcana-hand-check.js',...handFrames]]);
