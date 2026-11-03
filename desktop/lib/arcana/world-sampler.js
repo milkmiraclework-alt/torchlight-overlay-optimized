@@ -3,6 +3,7 @@
 // scoring and observed cells stay in our engine; sampled cells never become
 // confirmed observations. A logged appearance overrides a regional prior.
 const Reference=require('./timer-reader/route-engine');
+const FieldMods=require('./field-mods');
 const lengths=Object.fromEntries(['normal','special1','special2','special3','special4'].map(type=>[type,Reference.makeBoard(type,Reference.makeRng(1)).length]));
 const colours=['','green','blue','purple','orange','red','rainbow'];
 function available(s){const m=s.pathMode;return !!s.lengthConfirmed&&!s.localHorizon&&m?.confirmed&&m.source==='game-log-patterns'&&m.confidence>=.97&&m.length===s.path.length&&lengths[m.type]===s.path.length;}
@@ -39,17 +40,16 @@ function tile(t){
  if(t.type==='empty'||t.type==='start')return {kind:'empty'};
  throw Error('Unsupported hidden-world tile: '+t.type);
 }
-function fits(t,look){if(!look)return true;if(look==='chest')return t.type==='chest';if(look==='plain')return ['empty','start','movement','upgrade'].includes(t.type);return ['trap','life','question','movement'].includes(t.type);}
 function sample(s,r){
  if(!available(s))return null;
- const tiles=s.path.map(input),seed=Math.floor(r()*0x100000000),random=Reference.makeRng(seed),world={total:tiles.length,tiles,boardType:s.pathMode.type,futureUpgrade:0};Reference.determinize(world,random);
- const mismatched=s.path.flatMap((t,i)=>t.kind==='unknown'&&!t.used&&!fits(world.tiles[i],t.look)?[i]:[]);
+ const mods=FieldMods.normalize(s.fieldMods,s.path.length),tiles=s.path.map(input),seed=Math.floor(r()*0x100000000),random=Reference.makeRng(seed),world={total:tiles.length,tiles,boardType:s.pathMode.type,futureUpgrade:0,mods};Reference.determinize(world,random);
+ const mismatched=s.path.flatMap((t,i)=>t.kind==='unknown'&&!t.used&&!FieldMods.fits(world.tiles[i],t.look,i,mods)?[i]:[]);
  if(mismatched.length){
   // Special layouts can have consumed/mutated cells inconsistent with their
   // original stage. Use the reference's appearance-conditioned general model
   // for those cells, rather than inventing a chest behind a logged plain cell.
-  const fallback={total:tiles.length,tiles:s.path.map((t,i)=>mismatched.includes(i)?input(t,i):{type:'empty'}),boardType:'normal',futureUpgrade:0};Reference.determinize(fallback,random);
-  for(const i of mismatched){if(!fits(fallback.tiles[i],s.path[i].look))throw Error('Sampled world contradicts a logged appearance');world.tiles[i]=fallback.tiles[i];}
+  const fallback={total:tiles.length,tiles:s.path.map((t,i)=>mismatched.includes(i)?input(t,i):{type:'empty'}),boardType:'normal',futureUpgrade:0,mods};Reference.determinize(fallback,random);
+  for(const i of mismatched){if(!FieldMods.fits(fallback.tiles[i],s.path[i].look,i,mods))throw Error('Sampled world contradicts a logged appearance');world.tiles[i]=fallback.tiles[i];}
  }
  return s.path.map((t,i)=>t.kind==='unknown'?(t.used?{kind:'empty',used:true,sampled:true}:{...tile(world.tiles[i]),used:false,sampled:true}):t);
 }

@@ -19,6 +19,8 @@ function valuable(s,a){
  if(a.kind==='end'||a.kind==='die'||a.kind==='reroll'||a.kind==='copy'||a.kind==='choose')return true;
  if(a.kind==='discard')return s.hand.length===10;
  const c=E.CARDS.get(a.id),effects=cardEffects.get(a.id);
+ const played=cardEffects.get(a.selected??a.id);
+ if(played?.length===1&&played[0].fn===100&&target(s,a)===s.position)return false;
  if(c.choices.length)return true;
  if(effects.every(e=>e.fn===130)){
   return effects.some(e=>{const eligible=t=>t<6&&(!e.c.length||e.c.includes(t+1));return e.b.includes(1)&&s.chests.some(eligible)||e.b.includes(2)&&s.path.some((t,i)=>i>s.position&&(!visible(s,i)||t.kind==='unknown'||t.kind==='chest'&&eligible(t.tier)));});
@@ -52,6 +54,7 @@ function usefulActions(s){
 }
 const potentialCache=new WeakMap();
 const terminalCache=new Map();
+const ownedExitCache=new Map();
 const same=(a,b)=>a.length===b.length&&a.every((n,i)=>n===b[i]);
 function potentialEntry(s){
  let entry=potentialCache.get(s);
@@ -195,6 +198,11 @@ function policy(s,r,lastRoll=false){
  const actions=usefulActions(s);let best=actions[0],v=-Infinity;
  const cache=new WeakMap(),getValue=(s,i)=>{let values=cache.get(s);if(!values){values=new Map();cache.set(s,values);}if(!values.has(i))values.set(i,valueOf(s,i));return values.get(i);};
  for(const a of actions){const score=immediate(s,a,getValue)+(a.kind==='end'?0:r()*0.002);if(score>v){v=score;best=a;}}
+ // A continuation may finish before reaching an upgrade note's preferred
+ // cap/count. Do not simulate throwing away upgrades already in the hand.
+ if(best?.kind==='end'&&potentialEntry(s).base>E.score(s)){
+  const plan=ownedExitPlan(s);if(plan?.id&&plan.mean>E.score(s))best={kind:'card',index:s.hand.indexOf(plan.id),id:plan.id};
+ }
  // Ending keeps the chests, and so does a later death. A negative note
  // opportunity cost must not make a rollout stop in front of a trap when a
  // movement note can safely bypass it and reveal more of the path.
@@ -263,6 +271,7 @@ function treeAction(tree,s,r,lastRoll,learn){
  if(!node){
   if(!learn||tree.size>=8192)return null;
   const best=policy(s,r,lastRoll),list=usefulActions(s),keyOf=a=>JSON.stringify(a),bestKey=best?keyOf(best):'';
+  if(best&&!list.some(a=>keyOf(a)===bestKey))list.push(best);
   const cache=new WeakMap(),getValue=(state,i)=>{let values=cache.get(state);if(!values){values=new Map();cache.set(state,values);}if(!values.has(i))values.set(i,valueOf(state,i));return values.get(i);};
   const ranked=list.map(action=>({action,prior:immediate(s,action,getValue)})).sort((a,b)=>b.prior-a.prior);
   const selected=new Map(ranked.slice(0,4).map(v=>[keyOf(v.action),v]));
@@ -280,7 +289,7 @@ function createPolicyJob(model,{samples=128,seed=0x41524341,verify=3,verifySampl
  const s=E.normalize(model);if(!s.confirmed)throw Error('Check the Arcana reading before calculating.');
  if(!s.lengthConfirmed)throw Error('Confirm the total path length.');
  s.rerollBudget=Math.min(s.rerollBudget,allowReroll?rerollBudget:0);
- const actions=usefulActions(s).filter(a=>allowReroll||a.kind!=='reroll'),distribution=knownDistribution(s),rows=actions.map(action=>({action,sum:0,square:0,rainbows:0,deaths:0,frontiers:0,n:0,verified:action.kind==='end'||actions.length===1,extra:0}));
+ const actions=rootActions(s).filter(a=>allowReroll||a.kind!=='reroll'),distribution=knownDistribution(s),rows=actions.map(action=>({action,sum:0,square:0,rainbows:0,deaths:0,frontiers:0,n:0,verified:action.kind==='end'||actions.length===1,extra:0}));
  let round=0,phase='screen',active=[],verifyRound=0,verifiedCandidates=0;
  const tie=a=>a.kind==='end'?0:a.kind==='die'?1:a.kind==='reroll'?3:2,emptyCanContinue=s.chests.length===0&&s.position<s.path.length-1;
  const compare=(a,b)=>b.sum/Math.max(1,b.n)-a.sum/Math.max(1,a.n)||(emptyCanContinue?(a.action.kind==='end')-(b.action.kind==='end'):0)||tie(a.action)-tie(b.action);
@@ -324,7 +333,7 @@ function createSampledJob(model,{samples=128,seed=0x41524341,verify=3,verifySamp
  const s=E.normalize(model);if(!s.confirmed)throw Error('Check the Arcana reading before calculating.');if(!s.lengthConfirmed)throw Error('Confirm the total path length.');
  s.rerollBudget=Math.min(s.rerollBudget,allowReroll?rerollBudget:0);
  const exact=terminalJob(s);if(exact)return exact;
- const actions=usefulActions(s).filter(a=>allowReroll||a.kind!=='reroll'),distribution=knownDistribution(s),tree=new Map(),screenSamples=Math.min(32,samples);
+ const actions=rootActions(s).filter(a=>allowReroll||a.kind!=='reroll'),distribution=knownDistribution(s),tree=new Map(),screenSamples=Math.min(32,samples);
  const rows=actions.map(action=>({action,sum:0,square:0,rainbows:0,deaths:0,frontiers:0,n:0,extra:0,verified:action.kind==='end'||actions.length===1}));
  let phase='learn',round=0,screenRound=0,verifyRound=0,active=[],verifiedCandidates=0,learningRollouts=0;
  const emptyCanContinue=s.chests.length===0&&s.position<s.path.length-1,tie=a=>a.kind==='end'?0:a.kind==='die'?1:a.kind==='reroll'?3:2;
@@ -363,18 +372,34 @@ function createSampledJob(model,{samples=128,seed=0x41524341,verify=3,verifySamp
   }
  };
 }
-function upgradeBeforeExit(s,options){
- if(s.pending||s.life<=0||options[0]?.action.kind!=='end')return;
+function ownedExitPlan(s){
+ if(s.pending||s.life<=0||!s.chests.length)return null;
  const hand=s.hand.filter(id=>{const q=upgradeSpecs.get(id);return q&&q.e.p[2]!==2&&q.e.a[0]===q.e.a[1];});
- if(!hand.length)return;
- // Only compare with finishing now. Deterministic upgrades followed by End
- // strictly dominate End; no hidden tile or future event is used here.
- const solved=terminalJob({...s,position:s.path.length-1,hand}).result().best;
- if(solved.action.kind!=='card'||solved.mean<=E.score(s))return;
- const action={...solved.action,index:s.hand.indexOf(solved.action.id)};
+ if(!hand.length)return null;
+ const key=s.chests.slice().sort((a,b)=>a-b).join(',')+'|'+hand.slice().sort((a,b)=>a-b).join(',');let plan=ownedExitCache.get(key);
+ if(!plan){
+  const solved=terminalJob({...s,position:s.path.length-1,hand}).result().best;
+  plan={id:solved.action.kind==='card'?solved.action.id:null,mean:solved.mean,rainbows:solved.rainbows};
+  if(ownedExitCache.size>=4096)ownedExitCache.clear();ownedExitCache.set(key,plan);
+ }
+ return plan;
+}
+function rootActions(s){
+ const list=usefulActions(s),plan=ownedExitPlan(s);
+ if(plan?.id&&plan.mean>E.score(s)&&!list.some(a=>a.kind==='card'&&a.id===plan.id))list.push({kind:'card',index:s.hand.indexOf(plan.id),id:plan.id});
+ return list;
+}
+function upgradeBeforeExit(s,options){
+ if(!options[0])return;const plan=ownedExitPlan(s);
+ // Compare every proposed continuation with a genuine achievable cash-out,
+ // not just End. The lower bound uses only the observed owned inventory.
+ if(!plan?.id||plan.mean<=E.score(s)||plan.mean<options[0].mean-1e-9)return;
+ const sameUpgrade=options[0].action.kind==='card'&&options[0].action.id===plan.id;
+ if(Math.abs(plan.mean-options[0].mean)<=1e-9&&!sameUpgrade&&options[0].action.kind!=='end')return;
+ const action={kind:'card',index:s.hand.indexOf(plan.id),id:plan.id};
  const previous=options.findIndex(v=>v.action.kind==='card'&&v.action.index===action.index&&v.action.id===action.id);
  if(previous>=0)options.splice(previous,1);
- options.unshift({...solved,action,label:E.label(action,s),guaranteedExit:true});
+ options.unshift({action,label:E.label(action,s),mean:plan.mean,rainbows:plan.rainbows,se:0,deathRisk:0,frontierRate:0,samples:0,verified:true,verificationSamples:0,guaranteedExit:true});
 }
 function terminalJob(s){
  if(s.pending||s.position!==s.path.length-1)return null;
@@ -397,11 +422,11 @@ function terminalJob(s){
  return {step:()=>true,result:()=>result};
 }
 function createJob(model,options={}){
- if(model.localHorizon)return require('./local-solver').createJob(model,{...options,helpers:{usefulActions,policy,potential:s=>potentialEntry(s).base,target}});
+ if(model.localHorizon)return require('./local-solver').createJob(model,{...options,helpers:{usefulActions:rootActions,policy,potential:s=>potentialEntry(s).base,target,protectExit:upgradeBeforeExit}});
  if(options.verify<=0)return createSampledJob(model,options);
  const s=E.normalize(model);if(!s.confirmed)throw Error('Check the Arcana reading before calculating.');if(!s.lengthConfirmed)throw Error('Confirm the total path length.');
  const terminal=terminalJob(s);if(terminal)return terminal;
- const exact=Endgame.createJob(s,options);if(!exact)return createSampledJob(model,options);
+ const exact=Endgame.createJob(s,options);if(!exact)return require('./author-solver').createJob(s,options,{target,protectExit:upgradeBeforeExit})||createSampledJob(model,options);
  let fallback=null;
  return {step(batch=4){if(fallback)return fallback.step(batch);const done=exact.step(batch);if(done&&!exact.result()){fallback=createSampledJob(model,options);return fallback.step(batch);}return done;},result(){if(fallback)return fallback.result();const result=exact.result();return result?{...result,target:target(s,result.best.action)}:null;}};
 }

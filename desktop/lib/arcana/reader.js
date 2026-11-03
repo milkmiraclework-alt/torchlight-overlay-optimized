@@ -1,6 +1,7 @@
 'use strict';
 const E=require('./engine'),V=require('./vision'),G=require('./geometry'),Digits=require('./digits'),FastHand=require('./fast-hand'),Route=require('./route-log');
 const crypto=require('node:crypto');
+const PopupContext=require('./popup-context');
 const clone=v=>JSON.parse(JSON.stringify(v));
 function imageKey(img){
  return `${img.width}x${img.height}:`+crypto.createHash('sha256').update(img.data).digest('hex');
@@ -51,11 +52,16 @@ function create({automatic=true}={}){
   }
   expectedKey=null;
   if(!expectedState&&nextKey===key&&nextKey===confirmedKey)return {model:clone(model),issues:[],unchanged:true,ms:performance.now()-started,grid};
-  const priorBoard=activeLogBoard();
+  const priorBoard=activeLogBoard();let currentOffer=null;
+  if(popup&&priorBoard?.anchored&&model.positionConfirmed&&priorBoard.position!==model.position+1){
+   currentOffer=V.offers(img);const advanced=PopupContext.copyAfterHandMove(model,priorBoard,currentOffer);
+   if(advanced){model=advanced;lastReliableHand=model.hand.slice();pathHistory[model.position]=clone(model.path[model.position]);}
+   else if(currentOffer.confident){model.confirmed=false;key=nextKey;editKey=null;return {model:clone(model),issues:['Waiting for the observed move and card offer to agree.'],waiting:true,popup:true,ms:performance.now()-started,grid};}
+  }
   if((popup||recentPopup)&&model.lifeFresh&&model.handFresh&&model.chestsFresh&&model.die!==null&&(!priorBoard?.anchored||!model.positionConfirmed||priorBoard.position===model.position+1)){
    // Choosing a note blurs the board and hand. Read the offer itself while
    // preserving the last observed board; never OCR the blurred background.
-   const offered=V.offers(img),next=clone(model),issues=[];
+   const offered=currentOffer||V.offers(img),next=clone(model),issues=[];
    if(!popup&&recentPopup){
     if(offered.confident){model.confirmed=false;key=nextKey;updateEditKey(model);return {model:clone(model),issues:['Waiting for the closed choice to disappear from the picture.'],waiting:true,ms:performance.now()-started,grid};}
     recentPopup=false;
@@ -65,7 +71,8 @@ function create({automatic=true}={}){
     const sorted=xs=>xs.slice().sort((a,b)=>a-b).join(','),offer=sorted(offered.cards);
     const sources=next.hand.flatMap((id,i)=>{const choices=E.CARDS.get(id).choices;return choices.length&&sorted(choices)===offer?[i]:[];});
     const partial=sources.length?[]:next.hand.flatMap((id,i)=>{const choices=E.CARDS.get(id).choices;return offered.cards.length>=2&&choices.length>offered.cards.length&&offered.cards.every(id=>choices.includes(id))?[i]:[];});
-    if(sources.length)next.pending={kind:'choose',cards:offered.cards,source:sources[0]};
+    if(next.pending?.kind==='copy'&&PopupContext.subset(offered.cards,next.hand))next.pending={kind:'copy',cards:next.hand.slice()};
+    else if(sources.length)next.pending={kind:'choose',cards:offered.cards,source:sources[0]};
     else if(partial.length===1)next.pending={kind:'choose',cards:E.CARDS.get(next.hand[partial[0]]).choices.slice(),source:partial[0]};
     else if(offer===sorted(next.hand))next.pending={kind:'copy',cards:next.hand.slice()};
     else if([3,6].includes(offered.cards.length))next.pending={kind:'choose',cards:offered.cards};
@@ -146,7 +153,9 @@ function create({automatic=true}={}){
     const first=relative===null?null:(Math.floor(target/4)-Math.floor((relative-grid.first)/4))*4;
     const anchored=first===null?null:{...grid,first,relative:false,source:'game-log',trusted:true};
     if(anchored&&first>=0&&G.cell(anchored,currentPoint)===target){
-     grid=anchored;next.positionConfirmed=true;next.routeEpoch=board.epoch;next.positionSource=board.positionSource||'game-log';
+     grid=anchored;next.positionConfirmed=true;next.routeEpoch=board.epoch;next.routeMoves=board.moves;next.positionSource=board.positionSource||'game-log';
+     next.maxPosition=Math.max(target,model.routeEpoch===board.epoch?model.maxPosition??model.position:target);
+     next.turns=board.orderCount||0;
      if(historyEpoch!==logBoard.epoch){pathHistory=[];historyEpoch=logBoard.epoch;historyRevision=logBoard.worldRevision||0;}
      if(historyRevision!==(logBoard.worldRevision||0)){pathHistory=pathHistory.map((t,i)=>i>target||t?.kind==='chest'&&!t.used?{kind:'unknown'}:t);historyRevision=logBoard.worldRevision||0;}
      const chests=observations.filter(o=>o.tile?.kind==='chest').map(o=>[G.cell(grid,o.p)+1,o.tile.tier]);
@@ -156,6 +165,7 @@ function create({automatic=true}={}){
       next.lengthConfirmed=true;delete next.localHorizon;localMode=false;
      }else{next.path=Array.from({length:96},(_,i)=>clone(pathHistory[i]||{kind:'unknown'}));next.lengthConfirmed=false;next.localHorizon=true;localMode=true;}
      next.worldRevision=logBoard.worldRevision||0;
+     next.fieldMods=clone(board.fieldMods||[]);
     }else{
      // A new log position with the old on-screen column is an animation or
      // stale capture, not a new relative board to advise on.
@@ -252,7 +262,7 @@ function create({automatic=true}={}){
   const local=!!model.localHorizon&&!value.lengthConfirmed;
   const next=E.normalize(local?{...value,lengthConfirmed:true}:value);
   if(local){next.localHorizon=true;next.lengthConfirmed=false;}
-  if(model.positionConfirmed&&next.position===model.position&&next.path.length===model.path.length){next.positionConfirmed=true;next.pathMode=clone(model.pathMode);next.routeEpoch=model.routeEpoch;next.worldRevision=model.worldRevision||0;}
+  if(model.positionConfirmed&&next.position===model.position&&next.path.length===model.path.length){next.positionConfirmed=true;next.pathMode=clone(model.pathMode);next.routeEpoch=model.routeEpoch;next.routeMoves=model.routeMoves;next.worldRevision=model.worldRevision||0;next.fieldMods=clone(model.fieldMods||[]);}
   else if(next.lengthConfirmed)next.manualPath=true;
   if(!next.confirmed)throw Error('Check the confirmation box after correcting the reading.');
   const edited=next.path.flatMap((tile,i)=>tile.kind!=='unknown'&&JSON.stringify(tile)!==JSON.stringify(model.path[i])?[i]:[]);

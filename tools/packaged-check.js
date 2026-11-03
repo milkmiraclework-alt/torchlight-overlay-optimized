@@ -2,6 +2,7 @@
 const cp=require('node:child_process'),fs=require('node:fs'),path=require('node:path'),root=path.resolve(__dirname,'..'),version=require('../desktop/package.json').version;
 const exe=path.join(root,'desktop/dist/builds',version,'win-unpacked/Torchlight Overlay.exe');
 const jobs=[['arcana',['tools/arcana-overlay-check.js',exe]],['arcana-fallback',['tools/arcana-overlay-check.js',exe,'--fallback']],['suite',['tools/suite-overlay-check.js',exe]],['overlay',['tools/overlay-check.js','--standalone',exe,'--forecast']],['lifecycle',['tools/overlay-check.js','--standalone',exe,'--worker-lifecycle-only']],['instruments',['tools/overlay-check.js','--standalone',exe,'--instruments-only']],['updates',['tools/updates-overlay-check.js',exe]],['portable',['tools/standalone-smoke.js']]];
+jobs.unshift(['arcana-author-core',['tools/arcana-author-core-check.js','--package',path.join(path.dirname(exe),'resources/app.asar')]]);
 const at=process.argv.indexOf('--frames');if(at>=0)for(const [,args]of jobs)if(args[0]==='tools/overlay-check.js')args.push('--frames',path.resolve(process.argv[at+1]));
 const arcanaAt=process.argv.indexOf('--arcana-frame');if(arcanaAt>=0)jobs.unshift(['arcana-game',['tools/arcana-overlay-check.js',exe,'--game-frame',path.resolve(process.argv[arcanaAt+1])]]);
 const sessionFrameAt=process.argv.indexOf('--arcana-session-frame');if(sessionFrameAt>=0){const prefix=path.resolve(process.argv[sessionFrameAt+1]);jobs.unshift(['arcana-cold-start',['tools/arcana-overlay-check.js',exe,'--game-frame',prefix,'--history-log',prefix+'.log']]);}

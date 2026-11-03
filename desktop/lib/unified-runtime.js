@@ -87,7 +87,7 @@ function create({executable,config,game,notify,note,userData,test=false,spawnWor
   },
   reconfigure(){if(child)stop('settings_changed');sync();if(mode==='vorax')schedule('board',0);},
   info:()=>({mode,detected,enabled:enabled(),voraxPid:child?.pid||0,ready,threads:threads(),children:children.size,lastStatus,voraxJournal:journal.info(),arcana:arcana?.info()||null}),
-  close(){closed=true;clearInterval(backup);stop('application_exit');for(const c of children)c.kill();arcana?.close();return journal.close();}
+  close(){closed=true;clearInterval(backup);stop('application_exit');for(const c of children)c.kill();return Promise.all([arcana?.close(),journal.close()]);}
  };
 }
 module.exports={create};

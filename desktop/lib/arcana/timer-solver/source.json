@@ -1,0 +1,13 @@
+{
+  "source": "Arcana Helper 1.1.19",
+  "author": "Timer",
+  "integration": "Authorised original strategy core for qualified normal and special4 routes; local game observations and action legality remain authoritative.",
+  "electron": "44.5.1",
+  "node": "24.21.0",
+  "files": {
+    "core/engine.jsc": "d10c48e90412b1afcf5da21427000ca95c5750bfe822a1cec29a91102a2e3b3e",
+    "core/solver.jsc": "21bbad7601a08a7c68a70817aafffdbeb143763048576aeaf59f1d721cfee8f8",
+    "jsc-loader.js": "23ae6d693a1ce49ae3e2e165dc696a8508d3545502a74d123a1d8284176fa74c",
+    "LICENSE": "f0ad1c4a3a170dd547267e1016a7b43edae8002d050ecb889bf5d5af3006a3b8"
+  }
+}

@@ -41,6 +41,7 @@ function createJob(model,{samples=128,seed=0x4c4f4341,helpers}={}){
   step(batch=4){for(let n=0;n<batch&&done<samples;n++,done++)for(const row of rows)one(row,done);return done>=samples;},
   result(){const options=rows.map(row=>({action:row.action,label:label(row.action),mean:row.sum/row.n,se:Math.sqrt(Math.max(0,row.square/row.n-(row.sum/row.n)**2)/row.n),rainbows:row.rainbows/row.n,deathRisk:row.deaths/row.n,frontierRate:row.frontiers/row.n,samples:row.n,verified:false,verificationSamples:0}));
    options.sort((a,b)=>b.mean-a.mean||b.rainbows-a.rainbows||a.deathRisk-b.deathRisk||(a.action.kind==='die'?0:1)-(b.action.kind==='die'?0:1));
+   helpers.protectExit?.(s,options);
    return {options,best:options[0],target:helpers.target(s,options[0].action),samples,totalRollouts:done*rows.length,localHorizon:true,estimatedHidden:false,unknownEvents:s.path.some(t=>t.kind==='random'||t.kind==='note'),exact:false,exactEndgame:false,verifiedCandidates:0,continuationStates:0};
   }
  };

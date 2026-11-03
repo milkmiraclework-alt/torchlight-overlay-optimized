@@ -5,3 +5,4 @@
 *.webp binary
 *.ico binary
 desktop/lib/arcana/timer-reader/** -text
+desktop/lib/arcana/timer-solver/** -text

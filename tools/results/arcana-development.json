@@ -1,0 +1,137 @@
+{
+  "version": "1.3.15",
+  "updatedAt": "2026-11-03T21:21:33.756Z",
+  "releasedVersion": "1.3.14",
+  "newExecutableReady": false,
+  "qualityPlan": {
+    "version": "1.3.15",
+    "declaredAt": "2026-11-03T21:12:50.126Z",
+    "candidateSources": {
+      "solver.js": "542b539f026ad4028008d1227e3930a70cb469dd344442981770cbff86779f7e",
+      "author-solver.js": "650eab4e39655674b5ae8526b4a2d1df196e663a44e948c6b9f16bc23fc9a571",
+      "timer-solver/core/engine.jsc": "d10c48e90412b1afcf5da21427000ca95c5750bfe822a1cec29a91102a2e3b3e",
+      "timer-solver/core/solver.jsc": "21bbad7601a08a7c68a70817aafffdbeb143763048576aeaf59f1d721cfee8f8",
+      "timer-solver/jsc-loader.js": "23ae6d693a1ce49ae3e2e165dc696a8508d3545502a74d123a1d8284176fa74c",
+      "engine.js": "2dd6d6edb6cf8d4fd14bb5cefe530aea0aa436ffef66b4ef82b951b3022ab6b9",
+      "endgame.js": "d1f30efcf6b50aebf540a611ebb727b56a6668cd8fc5f74910875b5e8299b964",
+      "world-sampler.js": "9dd67eb5b20255445a099210e05a906e0599e7d350eed34a14701edefe57913d",
+      "field-mods.js": "7480c6cbcd75f90aafe292834ae491a34e6a3e19a383b664488a1ad93be06ec2",
+      "capacity-plan.js": "5364f306d2ff4b95a54be39fa515e71eeb1a559ae96159c152426671f95a15f3",
+      "question-model.js": "84dd5b2b514553da17ccb5e964807d19b537ec8a51c6653103fe17e7922a8a5a",
+      "fixed-reward.js": "c43e8a0af1e0bfcdd1a72114d3820360198150af6d806bd1771a8f30dad82d40",
+      "rollout-values.json": "97c7013c8fe8bac933db0ac3799371c2c539f0e2f5a7ead2c209563b2fb6cd10",
+      "game-data.json": "a3be07f5dd7381c842f1d13510a6a2f001bda3f38fbeb012b70f0358fa6989a6",
+      "timer-reader/route-engine.js": "d9a09740fcdf003f11cba2d1b6d7625f9df59522edef75469a03c796950203c7"
+    },
+    "samples": 128,
+    "environmentRng": "cell",
+    "environmentVersion": 2,
+    "productionSeed": true,
+    "boardsPerMode": 64,
+    "strata": [
+      {
+        "mode": "normal",
+        "boards": 256,
+        "offset": 230000,
+        "output": "D:\\1\\unified-overlay\\sandbox\\arcana-15-author-heldout\\normal.json"
+      },
+      {
+        "mode": "special1",
+        "boards": 64,
+        "offset": 231000,
+        "output": "D:\\1\\unified-overlay\\sandbox\\arcana-15-author-heldout\\special1.json"
+      },
+      {
+        "mode": "special2",
+        "boards": 64,
+        "offset": 232000,
+        "output": "D:\\1\\unified-overlay\\sandbox\\arcana-15-author-heldout\\special2.json"
+      },
+      {
+        "mode": "special3",
+        "boards": 64,
+        "offset": 233000,
+        "output": "D:\\1\\unified-overlay\\sandbox\\arcana-15-author-heldout\\special3.json"
+      },
+      {
+        "mode": "special4",
+        "boards": 128,
+        "offset": 234000,
+        "output": "D:\\1\\unified-overlay\\sandbox\\arcana-15-author-heldout\\special4.json"
+      }
+    ],
+    "criterion": {
+      "aggregateMeanAtLeastReference": true,
+      "eachModeMeanLossAtMost": 0.05,
+      "eachModeApprox95LowerBoundLossAtMost": 0.05,
+      "zeroCutoffs": true
+    },
+    "scope": "Author-fitted layout generator and unmodified reference simulator only. No measured server or live-reader quality parity."
+  },
+  "knownRemaining": [
+    {
+      "requirement": "Five-mode strategy quality",
+      "state": "running fresh predeclared 230000-series; 256 normal,128 special4,64 each other mode",
+      "evidence": "sandbox/arcana-15-author-heldout/plan.json",
+      "scope": "Earlier 320-board gate failed for normal/special4. The16-game local floor/modification development candidate also did not pass. Original authorised core is now used on qualified normal/special4 supported observations; other three modes retain local strategy. No quality claim until this new gate completes."
+    },
+    {
+      "requirement": "Complete source regression suite",
+      "state": "passed 70 current groups",
+      "evidence": "sandbox/checks"
+    },
+    {
+      "requirement": "Packaged app and new EXE",
+      "state": "rebuilt current1.3.15, manifest verified; packaged runtime/UI checks still pending",
+      "scope": "Released1.3.14 remains the runnable release",
+      "evidence": "desktop/dist/builds/1.3.15/standalone-build.json"
+    },
+    {
+      "requirement": "Observed field mutations",
+      "state": "implemented and1000 conditional-world checks passed",
+      "evidence": "tools/results/arcana-field-mods.json"
+    },
+    {
+      "requirement": "Owned-upgrade floor",
+      "state": "implemented and exact counterexamples/receding-action checks passed",
+      "evidence": "tools/results/arcana-exit.json"
+    },
+    {
+      "requirement": "Cold restart inside a popup",
+      "state": "matching observed state persisted; source runtime guard and actual saved-pixel reader test passed",
+      "evidence": "tools/results/arcana-state-cache.json",
+      "scope": "A first-ever popup without previously observed hidden hand/life/chests still waits automatically; no values invented."
+    },
+    {
+      "requirement": "Copy offer after hand movement",
+      "state": "passed actual reader/solver worker with original strategy and deliberately different player action",
+      "evidence": "tools/results/arcana-copy-context.json",
+      "scope": "Actual completed observed player hand move, not assumption of following advice; new die after a free-die move is never invented."
+    },
+    {
+      "requirement": "Isolated reader performance, final release audit and publication",
+      "state": "pending; no release until current quality and packaging gates pass"
+    }
+  ],
+  "sourceGroupsPassed": 70,
+  "packagedGroupsPassedBeforeConsumedCellFix": 14,
+  "validationAfterLatestFix": {
+    "focused": [
+      "arcana-state-cache",
+      "arcana-field-mods",
+      "arcana-exit",
+      "arcana-worlds",
+      "arcana-author-core"
+    ],
+    "fullSourceSession": 53399,
+    "qualitySession": 84791,
+    "fullSource": "passed 70 groups",
+    "packaged": "requires rebuild",
+    "build": "current source rebuilt and manifest verified"
+  },
+  "copyAfterHandMove": {
+    "state": "source implemented and focused saved-frame/texture test passed",
+    "evidence": "tools/results/arcana-copy-context.json",
+    "scope": "Complete observed hand-card movement, unchanged held refill, known life/rewards and a corroborating copy offer. A free-die move still requires reading its new refill."
+  }
+}

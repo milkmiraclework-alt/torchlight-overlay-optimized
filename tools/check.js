@@ -8,8 +8,11 @@ const root=path.resolve(__dirname,'..'),jobs=[
  ['arcana-upgrade-value',['tools/arcana-upgrade-value-check.js']],
  ['arcana-runtime',['tools/arcana-runtime-check.js']],
  ['arcana-history',['tools/arcana-history-check.js']],
+ ['arcana-state-cache',['tools/arcana-state-cache-check.js']],
  ['arcana-position',['tools/arcana-position-check.js']],
  ['arcana-worlds',['tools/arcana-world-check.js']],
+ ['arcana-field-mods',['tools/arcana-field-mods-check.js']],
+ ['arcana-author-core',['tools/arcana-author-core-check.js']],
  ['arcana-models',['tools/arcana-model-check.js']],
  ['arcana-fixed-reward',['tools/arcana-fixed-reward-check.js']],
  ['arcana-marks',['tools/arcana-marks-check.js']],
@@ -49,6 +52,7 @@ if(frameAt>=0)jobs.push(['arcana-route',['tools/arcana-route-check.js','--frame'
 if(frameAt>=0)jobs.push(['arcana-capture-fallback',['tools/arcana-capture-fallback-check.js','--frame',path.resolve(process.argv[frameAt+1])]]);
 const handFrames=process.argv.flatMap((arg,i)=>arg==='--arcana-hand-frame'?['--frame',path.resolve(process.argv[i+1])]:[]);if(handFrames.length)jobs.push(['arcana-hand',['tools/arcana-hand-check.js',...handFrames]]);
 const textureAt=process.argv.indexOf('--arcana-textures');if(textureAt>=0)jobs.push(['arcana-popup',['tools/arcana-popup-check.js','--textures',path.resolve(process.argv[textureAt+1])]]);
+if(textureAt>=0&&sessionAt>=0)jobs.push(['arcana-copy-context',['tools/arcana-copy-context-check.js','--frame',path.join(root,'sandbox/arcana-session-first'),'--textures',path.resolve(process.argv[textureAt+1])]]);
 if(textureAt>=0&&handFrames.length)jobs.push(['arcana-refill',['tools/arcana-refill-check.js','--frame',handFrames[1],'--textures',path.resolve(process.argv[textureAt+1])]]);
 if(handFrames.length)jobs.push(['arcana-life',['tools/arcana-life-check.js',...handFrames]]);
 const singleAt=process.argv.indexOf('--arcana-single-frame');if(singleAt>=0)jobs.push(['arcana-single-hand',['tools/arcana-single-hand-check.js','--frame',path.resolve(process.argv[singleAt+1])]]);

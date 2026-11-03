@@ -2,11 +2,17 @@
 const {createParser,RE}=require('./timer-reader/arcana-events');
 const Reference=require('./timer-reader/route-engine');
 const Geometry=require('./geometry');
+const ObservedMove=require('./observed-move');
+const FieldMods=require('./field-mods');
+const crypto=require('node:crypto');
+const {logTime}=require('./timer-reader/log');
 const lengths=Object.fromEntries(['normal','special1','special2','special3','special4'].map(type=>[type,Reference.makeBoard(type,Reference.makeRng(1)).length]));
 const colours=['','green','blue','purple','orange','red','rainbow'];
 function infer(board,chests=[]){
  if(!board?.anchored||!Number.isInteger(board.position)||board.position<1||!Number.isInteger(board.total)||board.total<board.position||board.total>400)return {confirmed:false,source:'unanchored-log',candidates:[]};
- const rarities=new Map(chests.map(([position,tier])=>[position,colours[tier]]));
+ // Current chest colours after a global change are not evidence of the
+ // original route pattern. Keep its original coarse appearances instead.
+ const rarities=new Map(chests.filter(([position])=>!(board.fieldMods||[]).some(m=>m.kind==='map_chests'&&position-1>m.from)).map(([position,tier])=>[position,colours[tier]]));
  const observations=(board.looks||[]).filter(o=>Array.isArray(o)&&Number.isInteger(o[0])&&o[0]>1&&o[0]<=400&&['plain','icon','chest'].includes(o[1])).map(([p,look])=>[p,look,rarities.get(p)||null]);
  if(observations.length<8)return {confirmed:false,source:'game-log-patterns',observations:observations.length,candidates:[]};
  const candidates=Reference.guessBoardType(observations).map(({type,p})=>({type,confidence:p,length:lengths[type]}));
@@ -39,20 +45,31 @@ function align(board,grid,point,observations=[]){
  return {...best,source:bounded?'prefix-bounds':'visual-log-patterns',visible:observations.length,candidates:candidates.length};
 }
 function create(){
+ const observed=ObservedMove.create();
+ let fieldMods=[],completedOrder=false,currentLine='',runKey=null,stateStamp=null,orderCount=0;
+ const digest=value=>crypto.createHash('sha256').update(value).digest('hex');
  let epoch=0,dirty=false,popup=null,worldRevision=0,revision=0,pendingFresh=false,fresh=false,listing=false,listed=0,recovered=false,recoveredSource=null,chestSequence=0,chestEvents=[],animating=false,verifiedUsed=new Set(),rewardActors=new Map(),rewardActorsAmbiguous=false;
  const parser=createParser(event=>{
-  if(event.kind==='board-open'){epoch++;popup=null;worldRevision=0;fresh=pendingFresh;pendingFresh=false;listing=!event.unseen;listed=0;recovered=false;recoveredSource=null;verifiedUsed.clear();rewardActors.clear();rewardActorsAmbiguous=false;chestSequence=0;chestEvents=[];animating=false;}
+  if(event.kind==='board-open')orderCount=0;
+  if(event.kind==='move-done')orderCount++;
+  if(event.kind==='board-open'){epoch++;popup=null;worldRevision=0;fieldMods=[];runKey=logTime(currentLine)!==null?digest(currentLine):null;stateStamp=runKey;fresh=pendingFresh;pendingFresh=false;listing=!event.unseen;listed=0;recovered=false;recoveredSource=null;verifiedUsed.clear();rewardActors.clear();rewardActorsAmbiguous=false;chestSequence=0;chestEvents=[];animating=false;}
   if(event.kind==='board-close')popup=null;
   if(event.kind==='tiles-seen'&&listing)listed=Math.max(listed,event.count||0);
   if(event.kind==='move'&&Number.isInteger(event.readerPos)){recovered=true;recoveredSource='landed-icon';}
-  if(event.kind==='landed'&&(fresh||recovered)&&Number.isInteger(event.pos))verifiedUsed.add(event.pos);
+  if(event.kind==='landed'&&(fresh||recovered)&&Number.isInteger(event.pos)){
+   const mod=event.tile?.type==='event'&&completedOrder&&!verifiedUsed.has(event.pos)?FieldMods.fromText(event.text,event.pos-1):null;
+   if(mod&&fieldMods.length<400){fieldMods.push(mod);worldRevision++;}
+   verifiedUsed.add(event.pos);
+  }
   if(event.kind==='chest-collected'){const tier=['','green','blue','purple','orange','red','rainbow'].indexOf(event.engineRarity);chestEvents.push({sequence:++chestSequence,kind:'collect',tier,time:event.time});}
   if(event.kind==='chest-upgraded')chestEvents.push({sequence:++chestSequence,kind:'upgrade',count:event.count,time:event.time});
   if(event.kind==='chest-skipped'&&event.correction)chestEvents.push({sequence:++chestSequence,kind:'correction',time:event.time});
   if(chestEvents.length>128)chestEvents=chestEvents.slice(-128);
   if(event.kind==='tiles-changed'||event.kind==='map-chests-changed')worldRevision++;dirty=true;
+  observed.event(event,context());
  });
- function snapshot(){const b=parser.board(),initial=listing?Math.max(listed,b.total):listed,positionKnown=fresh||recovered;return {epoch,revision,prefixAnchored:b.anchored,anchored:b.anchored&&positionKnown&&Number.isInteger(b.pos)&&b.pos>=1&&b.pos<=400,position:b.pos,total:b.total,looks:[...b.looks].slice(0,400),used:[...verifiedUsed].slice(0,400),moves:b.moves,popup,worldRevision,initialListed:initial,positionSource:fresh?'new-run':recovered?recoveredSource:'unanchored-open',chestSequence,chestEvents,animating,rewardCountMin:rewardActorsAmbiguous?null:rewardActors.size,rewardMinTiers:rewardActorsAmbiguous?[]:[...rewardActors.values()].filter(t=>t>0)};}
+ function context(){const b=parser.board();return {epoch,position:b.pos,moves:b.moves,hand:b.hand,anchored:b.anchored&&(fresh||recovered),worldRevision};}
+ function snapshot(){const b=parser.board(),initial=listing?Math.max(listed,b.total):listed,positionKnown=fresh||recovered;return {epoch,revision,runKey,stateStamp,orderCount,prefixAnchored:b.anchored,anchored:b.anchored&&positionKnown&&Number.isInteger(b.pos)&&b.pos>=1&&b.pos<=400,position:b.pos,total:b.total,looks:[...b.looks].slice(0,400),used:[...verifiedUsed].slice(0,400),moves:b.moves,popup,worldRevision,fieldMods:fieldMods.map(m=>({...m})),initialListed:initial,positionSource:fresh?'new-run':recovered?recoveredSource:'unanchored-open',chestSequence,chestEvents,animating,lastMove:observed.snapshot(),rewardCountMin:rewardActorsAmbiguous?null:rewardActors.size,rewardMinTiers:rewardActorsAmbiguous?[]:[...rewardActors.values()].filter(t=>t>0)};}
  return {feed(lines){
   const before=JSON.stringify(snapshot());dirty=false;
   for(const line of lines){
@@ -60,7 +77,10 @@ function create(){
    if(/\bS9CardPlayStart\b|ProtoId = 5551\b/.test(line))pendingFresh=true;
    if(!(line.includes('S9')||line.includes('TaroView')||line.includes('CloseTraoView')||line.includes('MsgMgr@:Show MsgValue')))continue;
    if(RE.step.test(line)){if(listing)listed=Math.max(listed,parser.board().total);listing=false;animating=true;}
-   parser.feed(line);
+   currentLine=line;
+   const causal=RE.step.test(line)||RE.done.test(line)||RE.timeout.test(line)||/\b\d+_(?:S9HandCard|S9PreCard|S9Reward) Anim\w* Start\s*$/.test(line)||animating&&RE.msg.test(line);
+   if(stateStamp&&causal)stateStamp=digest(stateStamp+'\n'+line);
+   completedOrder=RE.done.test(line);observed.before(line);parser.feed(line);observed.after(line,context());completedOrder=false;currentLine='';
    const animation=RE.anim.exec(line);
    if(animation&&animation[2]==='S9Reward'&&animation[4]===' Start'&&parser.board().anchored&&!rewardActorsAmbiguous){
     const id=Number(animation[1]),colour=/^Anim_(Bai|Green|Blue|Zi|Jin|Red|Hong|Cai)$/.exec(animation[3]),tier=colour?({Bai:1,Green:1,Blue:2,Zi:3,Jin:4,Red:5,Hong:5,Cai:6})[colour[1]]:null;

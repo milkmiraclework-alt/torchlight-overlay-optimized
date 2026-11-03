@@ -1,0 +1,40 @@
+{
+  "version": "1.3.15",
+  "checkedAt": "2026-11-03T21:18:17.887Z",
+  "actualSavedBoard": true,
+  "independentGameTextureOffer": true,
+  "actualParserAndReader": true,
+  "actualReaderSolverWorker": true,
+  "authorCoreThroughActualWorker": true,
+  "playerIgnoredInitialAdvice": true,
+  "workerPlayedIndex": 4,
+  "workerRemainingHand": [
+    12,
+    12,
+    21,
+    4
+  ],
+  "workerStopped": true,
+  "observedPlayerMove": {
+    "playedHandIndex": 4,
+    "sourceCard": 24,
+    "from": 1,
+    "to": 4,
+    "remaining": [
+      12,
+      12,
+      21,
+      4
+    ]
+  },
+  "remainingHandReconstructedOnce": true,
+  "lifeAndHeldDiePreserved": true,
+  "clippedOfferSupported": true,
+  "persistedPopupRestoredWithActualReader": true,
+  "contradictoryAndUnfinishedOrdersRejected": true,
+  "unknownRefillNeverAssumed": true,
+  "noManualCorrection": true,
+  "scope": "One recorded starting board and synthetic completed movement/copy offer through the actual parser/reader/solver worker; not a real recorded copy-popup session.",
+  "gameCapture": false,
+  "gameInput": false
+}

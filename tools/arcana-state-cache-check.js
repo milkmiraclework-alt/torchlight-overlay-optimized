@@ -1,0 +1,32 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict'),{EventEmitter}=require('node:events');
+const E=require('../desktop/lib/arcana/engine'),Route=require('../desktop/lib/arcana/route-log'),Cache=require('../desktop/lib/arcana/state-cache'),Runtime=require('../desktop/lib/arcana-runtime');
+const dir=path.resolve(__dirname,'../sandbox/arcana-state-cache-'+process.pid),file=path.join(dir,'observed.json');fs.mkdirSync(dir,{recursive:true});
+const at=(n,body)=>`[2026.11.03-22.00.${String(Math.floor(n/1000)).padStart(2,'0')}:${String(n%1000).padStart(3,'0')}][ 30]TLLua: Display: [Game] ${body}`;
+const opening=[at(0,'ProtoId = 5551'),at(1,'OpenView S9Taro'),...Array.from({length:16},(_,i)=>at(10+i,`${1000+i*10}_S9TileIcon Anim_Loop Start`)),at(100,'3000_S9HandCard Anim_Putong_Jinpai Start'),at(101,'3010_S9HandCard Anim_Putong_Jinpai Start')];
+const route=Route.create();route.feed(opening);const board=route.snapshot();assert(board.anchored&&board.runKey&&board.stateStamp);
+const model={...E.blank(80),position:0,life:2,die:5,hand:[21,2],chests:[6,4],confirmed:true,lengthConfirmed:true,positionConfirmed:true,routeEpoch:board.epoch,routeMoves:board.moves,worldRevision:0,lifeFresh:true,handFresh:true,dieFresh:true,chestsFresh:true,pathMode:{type:'normal',length:80,source:'game-log-patterns',confirmed:true,confidence:1}};
+const checkpoint={model,logBoard:board,key:'not persisted',corrections:[{vector:[1,2,3]}],lifeExamples:[{pixels:[4,5,6]}]};
+(async()=>{
+ const cache=Cache.create({file});assert(cache.save(checkpoint,board,123));await cache.close();
+ const raw=fs.readFileSync(file,'utf8');assert(!raw.includes('pixels')&&!raw.includes('vector')&&!raw.includes('not persisted'),'Image samples or old frame keys reached disk');assert(Buffer.byteLength(raw)<Cache.LIMIT);
+ const restored=Cache.create({file}),same=Route.create();same.feed(opening);same.feed([at(150,'S9ChooseCard Run'),at(151,'S9HandCard_C_OnMouseEnter')]);
+ assert.equal(same.snapshot().stateStamp,board.stateStamp,'Opening a choice or hovering changed the underlying board identity');
+ const loaded=restored.load(same.snapshot(),123);assert(loaded);assert.equal(loaded.checkpoint.model.confirmed,false,'Old data became advice before a current picture was read');assert.deepEqual(loaded.checkpoint.model.hand,[21,2]);assert.deepEqual(loaded.checkpoint.model.chests,[6,4]);assert.equal(loaded.checkpoint.popup,'choose');
+ assert.equal(restored.load(same.snapshot(),456),null,'Another game window inherited an inventory');
+ for(const changed of [{stateStamp:'f'.repeat(64)},{runKey:'e'.repeat(64)},{animating:true},{worldRevision:1},{position:2},{total:20},{looks:[]},{fieldMods:[{from:0,kind:'no_traps'}]}])assert.equal(restored.load({...same.snapshot(),...changed},123),null,JSON.stringify(changed));
+ const moved=Route.create();moved.feed(opening);moved.feed([at(200,'S9Taro HandleOrderAni Start Step=1 Type=Move'),at(201,'900_S9LineShort Anim_D Start'),at(202,'901_S9LineShort Anim_Light Start'),at(203,'S9Taro HandleOrderAni All done')]);assert.equal(restored.load(moved.snapshot(),123),null,'A move reused an older hand');
+ const refilled=Route.create();refilled.feed(opening);refilled.feed([at(210,'S9Taro HandleOrderAni Start Step=1 Type=CardGroupAdd'),at(211,'3020_S9HandCard Anim_Xipai Start'),at(212,'S9Taro HandleOrderAni All done')]);assert.equal(restored.load(refilled.snapshot(),123),null,'A zero-step refill reused an older die');assert(refilled.snapshot().lastMove.refill,'The completed zero-step refill was not recorded');
+ const newRun=Route.create();newRun.feed(opening.map(s=>s.replace('22.00.','23.00.')));assert.equal(restored.load(newRun.snapshot(),123),null,'A new run with the same objects reused old data');
+ const untimed=Route.create();untimed.feed(['ProtoId = 5551','S9Taro Run']);assert.equal(restored.load(untimed.snapshot(),123),null);assert.equal(restored.save({...checkpoint,model:{...model,confirmed:false}},board,123),false);
+ const remapped=restored.load({...same.snapshot(),epoch:9,moves:27},123);assert(remapped);assert.equal(remapped.checkpoint.model.routeEpoch,9);assert.equal(remapped.checkpoint.model.routeMoves,27,'A different bounded-history counter offset prevented valid recovery');
+ await restored.close();
+ const workers=[];class Fake extends EventEmitter{constructor(_file,options){super();this.options=options;workers.push(this);}postMessage(){}terminate(){return Promise.resolve(0);}}
+ const options={game:()=>({window:123}),library:'owned-missing.dll',WorkerClass:Fake,notify(){},stateFile:file};
+ const runtime=Runtime.create(options);runtime.feed(opening);runtime.feed([at(150,'S9ChooseCard Run')]);runtime.sync(true);runtime.read();assert.deepEqual(workers.at(-1).options.workerData.resume.model.hand,[21,2]);assert.equal(workers.at(-1).options.workerData.resume.popup,'choose');await runtime.close();
+ const invalid=Runtime.create(options);invalid.feed(opening);invalid.feed([at(210,'S9Taro HandleOrderAni Start Step=1 Type=CardGroupAdd'),at(211,'3020_S9HandCard Anim_Xipai Start'),at(212,'S9Taro HandleOrderAni All done')]);invalid.sync(true);invalid.read();assert.equal(workers.at(-1).options.workerData.resume,null);await invalid.close();
+ const corrupt=path.join(dir,'corrupt.json');fs.writeFileSync(corrupt,'{');assert.equal(Cache.create({file:corrupt}).load(board,123),null);fs.writeFileSync(corrupt,' '.repeat(Cache.LIMIT+1));assert.equal(Cache.create({file:corrupt}).load(board,123),null);
+ const errors=[],bad=Cache.create({file:dir,note:(...args)=>errors.push(args)});assert.equal(bad.load(board,123),null);assert(bad.save(checkpoint,board,123));await bad.close();assert(errors.length>0,'Disk failure was silently mistaken for persistence');
+ fs.writeFileSync(path.join(__dirname,'results/arcana-state-cache.json'),JSON.stringify({version:require('../desktop/package.json').version,checkedAt:new Date().toISOString(),exactRunAndPhysicalStateRequired:true,hoverAndPopupPreserveObservation:true,movesRefillsAndNewRunsRejected:true,changedWindowAndFieldRejected:true,noPicturesOrRawLogsPersisted:true,currentPictureStillRequired:true,actualRuntimeRestartsWithMatchingCheckpoint:true,corruptionSizeAndDiskFailuresIsolated:true,gameCapture:false,gameInput:false},null,2)+'\n');
+ console.log('PASS: bounded observed-state recovery across app restarts; no stale move/refill/window/run, screenshot or unverified advice.');
+})().catch(e=>{console.error(e);process.exitCode=1;});

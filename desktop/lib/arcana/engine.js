@@ -2,6 +2,7 @@
 // Independent S9 state transitions. Data is extracted from the player's game,
 // not from Arcana Helper. Rarities here are 1..6 (game values minus one).
 const DATA=require('./game-data.json');
+const FieldMods=require('./field-mods');
 const CARDS=new Map(DATA.cards.map(c=>[c.id,c]));
 const POINTS=[0,1,1,3,5,10,25],TIERS=['Unknown','Green','Blue','Purple','Gold','Red','Rainbow'];
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
@@ -16,6 +17,9 @@ function normalize(value){
  s.hand=value.hand.map(id=>{if(!CARDS.has(id)||CARDS.get(id).tag===99)throw Error('Check the hand: unknown card.');return id;});
  if(!Array.isArray(value.chests)||value.chests.length>7)throw Error('Check collected chests (at most 7).');
  s.chests=value.chests.map(t=>integer(t,1,6,'chest rarity'));
+ if(value.maxPosition!==undefined)s.maxPosition=Math.max(s.position,integer(value.maxPosition,0,value.path.length-1,'furthest observed position'));
+ if(value.turns!==undefined)s.turns=integer(value.turns,0,10000,'observed turn count');
+ const fieldMods=FieldMods.normalize(value.fieldMods,value.path.length);if(fieldMods.length)s.fieldMods=fieldMods;
  const mode=value.pathMode;
  if(s.lengthConfirmed&&mode?.confirmed&&mode.source==='game-log-patterns'&&['normal','special1','special2','special3','special4'].includes(mode.type)&&mode.length===value.path.length&&mode.confidence>=.97)s.pathMode={type:mode.type,length:mode.length,source:mode.source,confirmed:true,confidence:1};
  s.path=value.path.map((t,i)=>{

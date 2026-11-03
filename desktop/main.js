@@ -1246,6 +1246,7 @@ function registerHotkeys() {
       visible:()=>TEST||!!win32&&win32.foreground()===game.hwnd&&!win32.minimized(game.hwnd),
       bounds:()=>{const rect=game.hwnd&&win32?.clientRect(game.hwnd);return rect&&rect.width>100&&rect.height>100?screen.screenToDipRect(null,rect):null;}});
     arcana = require('./lib/arcana-runtime').create({
+      stateFile:path.join(app.getPath('userData'),'arcana-observed-state.json'),
       captureFirst:true,cancelCapture:()=>arcanaCapture.cancel(),captureInfo:()=>arcanaCapture.info(),
       game:()=>gameInfo(),library:TEST&&flag('arcana-test-fallback')?path.join(__dirname,'owned-test-missing.dll'):path.join(STANDALONE ? process.resourcesPath : __dirname,'native','tartarus-reader.dll'),
       fixture:TEST ? arg('arcana-fixture') : null,note,

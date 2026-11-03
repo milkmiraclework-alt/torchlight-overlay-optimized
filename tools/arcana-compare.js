@@ -39,7 +39,7 @@ function tile(t){let out;
  else throw Error('Unsupported reference tile in benchmark: '+t.type);
  if(t.used)out.used=true;return out;
 }
-function model(s){const end=observeAll?s.total-1:Math.min(s.total-1,(Math.floor(s.maxPos/4)+5)*4-1);return {...E.blank(s.total),position:s.pos,life:s.life,die:s.currentMove,hand:s.hand.map(c=>{const id=cardId(c);if(!E.CARDS.has(id))throw Error('Unsupported card: '+JSON.stringify(c));return id;}),chests:s.collected.map(t=>tiers.indexOf(t)),path:s.tiles.map((t,i)=>i<=end?tile(t):{kind:'unknown'}),confirmed:true,lengthConfirmed:true,...(boardMode?{pathMode:{type:boardMode,length:s.total,source:'game-log-patterns',confirmed:true,confidence:1}}:{})};}
+function model(s){const end=observeAll?s.total-1:Math.min(s.total-1,(Math.floor(s.maxPos/4)+5)*4-1);return {...E.blank(s.total),position:s.pos,maxPosition:s.maxPos??s.pos,turns:s.steps||0,life:s.life,die:s.currentMove,hand:s.hand.map(c=>{const id=cardId(c);if(!E.CARDS.has(id))throw Error('Unsupported card: '+JSON.stringify(c));return id;}),chests:s.collected.map(t=>tiers.indexOf(t)),fieldMods:s.mods||[],path:s.tiles.map((t,i)=>i<=end?tile(t):{kind:'unknown'}),confirmed:true,lengthConfirmed:true,...(boardMode?{pathMode:{type:boardMode,length:s.total,source:'game-log-patterns',confirmed:true,confidence:1}}:{})};}
 function referenceAction(a,s){const legal=R.actions(s);
  if(a.kind==='end')return legal.find(x=>x.kind==='end');
  if(a.kind==='die')return legal.find(x=>x.kind==='current'&&!x.cycle);
@@ -134,5 +134,5 @@ if(questionRate>0){report.limitations[1]='Synthetic question frequency; the unmo
 if(observeAll)report.limitations.push('DIAGNOSTIC ONLY: our policy sees the full board; this is not a fair quality comparison.');
 if(JSON.stringify(candidateSources)!==JSON.stringify(policySources(solverPath)))throw Error('Policy sources changed during comparison');
 if(boardMode){report.method='Both policies play the same '+boardMode+' layouts from the authorised reference generator through its unmodified simulator, with identical initial hands, mode and visibility. This is a fitted-model test, not independent server data.';report.chestRarity='Reference layout generator';delete report.tileMixture;report.limitations[0]='Layouts and event frequencies come from the reference model, not held-out server observations.';report.limitations[1]='This mode only; gameplay reader and actual server frequencies are not validated.';}
-report.method=report.method.replace('No reference code or odds copied into product.','Layout-model code is integrated with author permission.');
+report.method=report.method.replace('No reference code or odds copied into product.','Authorised layout code and a separately attributed strategy core for qualified normal/special4 routes are integrated in the product.');
 fs.writeFileSync(output,JSON.stringify(report,null,2)+'\n');fs.unlinkSync(output+'.partial.json');console.log(JSON.stringify({ours:report.ours,reference:report.reference,delta:report.pairedPointDifference}));

@@ -3,7 +3,8 @@
 // Nothing runs outside Arcana or after the player's capture consent is withdrawn.
 const {Worker}=require('node:worker_threads');
 const path=require('node:path');
-function create({game,library,notify,note=()=>{},WorkerClass=Worker,fixture=null,fallback=null,captureFirst=false,cancelCapture=()=>{},captureInfo=()=>({children:0})}){
+function create({game,library,notify,note=()=>{},WorkerClass=Worker,fixture=null,fallback=null,captureFirst=false,cancelCapture=()=>{},captureInfo=()=>({children:0}),stateFile=null}){
+ const stateCache=require('./arcana/state-cache').create({file:stateFile,note});
  let worker=null,active=false,closed=false,revision=0,request=0,timer=null,last=null,resume=null,lastHwnd=0,fallbackReads=0;
  const pending=new Map(),retiring=new Set();
  let animationTypes=[];
@@ -21,11 +22,15 @@ function create({game,library,notify,note=()=>{},WorkerClass=Worker,fixture=null
  function start(){
   if(worker||!active||closed)return;
   const hwnd=Number(game().window);if(hwnd!==lastHwnd){resume=null;if(lastHwnd){routeLog=require('./arcana/route-log').create();routeKey='';}}lastHwnd=hwnd;
+  if(!resume){
+   const board=routeLog.snapshot(),saved=stateCache.load(board,hwnd);
+   if(saved&&(board.anchored||routeLog.anchor({epoch:board.epoch,revision:board.revision,position:saved.position}))){resume=saved.checkpoint;resume.logBoard=routeLog.snapshot();routeKey=JSON.stringify(resume.logBoard);}
+  }
   const current=new WorkerClass(path.join(__dirname,'arcana/worker.js'),{workerData:{library,hwnd,fixture,resume,captureFirst,logBoard:routeLog.snapshot()}});worker=current;
   current.on('message',message=>{
    if(current!==worker)return;
    if(message.id){const p=pending.get(message.id);if(p){pending.delete(message.id);clearTimeout(p.timer);message.error?p.reject(Error(message.error)):p.resolve(message.result);}return;}
-   if(message.event==='checkpoint'){resume=message.value;return;}
+   if(message.event==='checkpoint'){resume=message.value;stateCache.save(resume,routeLog.snapshot(),hwnd);return;}
    if(message.event==='position-anchor'){
     if(routeLog.anchor(message.value)){
      const value=routeLog.snapshot();routeKey=JSON.stringify(value);clearTimeout(timer);timer=null;current.postMessage({cmd:'position-accepted',value});
@@ -94,8 +99,8 @@ function create({game,library,notify,note=()=>{},WorkerClass=Worker,fixture=null
    if(!['correct','calibrate','reset'].includes(cmd))throw Error('Unsupported Arcana command');
    return call(cmd,{value:args});
   },
-  info:()=>({active,running:!!worker,pending:pending.size,retiring:retiring.size,phase:last?.phase||'off',revision,fallbackReads,captureChildren:captureInfo().children,history}),
-  close(){closed=true;active=false;stop();}
+  info:()=>({active,running:!!worker,pending:pending.size,retiring:retiring.size,phase:last?.phase||'off',revision,fallbackReads,captureChildren:captureInfo().children,history,stateCache:stateCache.info()}),
+  close(){closed=true;active=false;stop();return stateCache.close();}
  };
 }
 module.exports={create};

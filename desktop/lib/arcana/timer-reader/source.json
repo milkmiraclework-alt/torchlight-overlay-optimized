@@ -1,7 +1,7 @@
 {
   "source": "Arcana Helper 1.1.19",
   "author": "Timer",
-  "integration": "Authorised recognition, log tracking and route inference. Original source/model files preserved; compiled solver is not included.",
+  "integration": "Authorised recognition, log tracking and route inference. Original source/model files preserved. The separately attributed strategy core is in ../timer-solver.",
   "files": {
     "LICENSE": "f0ad1c4a3a170dd547267e1016a7b43edae8002d050ecb889bf5d5af3006a3b8",
     "arcana-events.js": "b6059ec708626a0e9ecfeb72b3c17a6ddc9858467eb7b83fe5dbcfc66f8d45bf",
