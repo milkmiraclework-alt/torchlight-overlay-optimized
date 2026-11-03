@@ -1,8 +1,8 @@
 {
-  "version": "1.3.14",
-  "checkedAt": "2026-11-03T18:35:07.693Z",
-  "sourceGroups": 57,
-  "packagedGroups": 13,
+  "version": "1.3.15",
+  "checkedAt": "2026-11-03T22:32:39.283Z",
+  "sourceGroups": 70,
+  "packagedGroups": 15,
   "arcana": {
     "freshGpuCapture": true,
     "updatesBehindBlackCover": true,
@@ -39,23 +39,260 @@
     "warmHandAndDieBenchmarks": [
       {
         "frame": "user-193821",
-        "trainedMedianMs": 163.1884,
-        "templateMedianMs": 601.1061,
-        "ratio": 3.6835099798760202
+        "trainedMedianMs": 155.29380000000015,
+        "templateMedianMs": 574.1243000000004,
+        "ratio": 3.6970200999653553
       },
       {
         "frame": "user-222112",
-        "trainedMedianMs": 172.51469999999972,
-        "templateMedianMs": 611.2945,
-        "ratio": 3.5434342696593446
+        "trainedMedianMs": 167.21140000000014,
+        "templateMedianMs": 567.6401999999998,
+        "ratio": 3.394745812785488
       },
       {
         "frame": "reference-play",
-        "trainedMedianMs": 96.27469999999994,
-        "templateMedianMs": 161.9362999999994,
-        "ratio": 1.6820234184058687
+        "trainedMedianMs": 107.68209999999999,
+        "templateMedianMs": 172.83899999999994,
+        "ratio": 1.6050857106241423
       }
-    ]
+    ],
+    "authorStrategy": {
+      "version": "Arcana Helper 1.1.19",
+      "electron": "44.5.1",
+      "qualifiedModes": [
+        "normal",
+        "special4"
+      ],
+      "originalByteHashesVerified": true,
+      "sourceCases": 23,
+      "packagedCases": 23,
+      "legalMappings": 191,
+      "externalOriginalInstallationRequired": false,
+      "heuristicSeparatedFromRarity": true
+    },
+    "strategyComparison": {
+      "checkedAt": "2026-11-03T22:32:19.297Z",
+      "boards": 576,
+      "criterion": {
+        "aggregateMeanAtLeastReference": true,
+        "eachModeMeanLossAtMost": 0.05,
+        "eachModeApprox95LowerBoundLossAtMost": 0.05,
+        "zeroCutoffs": true
+      },
+      "passed": true,
+      "ours": {
+        "points": 65.57986111111111,
+        "rainbows": 1.9652777777777777,
+        "chests": 5.336805555555555,
+        "steps": 28.17013888888889,
+        "calculationMs": 10211.91511128471,
+        "cutoffs": 0
+      },
+      "reference": {
+        "points": 59.375,
+        "rainbows": 1.7604166666666667,
+        "chests": 5.161458333333333,
+        "steps": 27.552083333333332,
+        "calculationMs": 8404.411700520852,
+        "cutoffs": 0
+      },
+      "modes": [
+        {
+          "mode": "normal",
+          "boards": 256,
+          "ours": {
+            "points": 53.22265625,
+            "rainbows": 1.0859375,
+            "chests": 5.984375,
+            "steps": 36.93359375,
+            "calculationMs": 17842.69620195309,
+            "deathRate": 0,
+            "cutoffs": 0
+          },
+          "reference": {
+            "points": 51.44140625,
+            "rainbows": 1.05078125,
+            "chests": 5.8359375,
+            "steps": 37.10546875,
+            "calculationMs": 17449.684991796923,
+            "deathRate": 0.015625,
+            "cutoffs": 0
+          },
+          "pairedPointDifference": {
+            "mean": 1.78125,
+            "approx95CI": [
+              -0.5594957844041675,
+              4.1219957844041675
+            ]
+          },
+          "passed": true
+        },
+        {
+          "mode": "special1",
+          "boards": 64,
+          "ours": {
+            "points": 51.28125,
+            "rainbows": 1.703125,
+            "chests": 3.609375,
+            "steps": 20.46875,
+            "calculationMs": 3644.9588171875,
+            "deathRate": 0,
+            "cutoffs": 0
+          },
+          "reference": {
+            "points": 48.40625,
+            "rainbows": 1.59375,
+            "chests": 3.796875,
+            "steps": 19.859375,
+            "calculationMs": 1178.1115687499966,
+            "deathRate": 0,
+            "cutoffs": 0
+          },
+          "pairedPointDifference": {
+            "mean": 2.875,
+            "approx95CI": [
+              -1.5461125422353943,
+              7.296112542235394
+            ]
+          },
+          "passed": true
+        },
+        {
+          "mode": "special2",
+          "boards": 64,
+          "ours": {
+            "points": 47.234375,
+            "rainbows": 1.515625,
+            "chests": 4.546875,
+            "steps": 25.71875,
+            "calculationMs": 4084.0159812499996,
+            "deathRate": 0.046875,
+            "cutoffs": 0
+          },
+          "reference": {
+            "points": 29.25,
+            "rainbows": 0.90625,
+            "chests": 3.5,
+            "steps": 21.765625,
+            "calculationMs": 1535.9299468749975,
+            "deathRate": 0,
+            "cutoffs": 0
+          },
+          "pairedPointDifference": {
+            "mean": 17.984375,
+            "approx95CI": [
+              10.043728573643845,
+              25.925021426356153
+            ]
+          },
+          "passed": true
+        },
+        {
+          "mode": "special3",
+          "boards": 64,
+          "ours": {
+            "points": 52.25,
+            "rainbows": 1.0625,
+            "chests": 6.875,
+            "steps": 26.328125,
+            "calculationMs": 10774.633285937507,
+            "deathRate": 0,
+            "cutoffs": 0
+          },
+          "reference": {
+            "points": 30.25,
+            "rainbows": 0.3125,
+            "chests": 6.984375,
+            "steps": 24.390625,
+            "calculationMs": 1273.3555656249955,
+            "deathRate": 0,
+            "cutoffs": 0
+          },
+          "pairedPointDifference": {
+            "mean": 22,
+            "approx95CI": [
+              16.00335603117136,
+              27.99664396882864
+            ]
+          },
+          "passed": true
+        },
+        {
+          "mode": "special4",
+          "boards": 128,
+          "ours": {
+            "points": 113.28125,
+            "rainbows": 4.53125,
+            "chests": 4.53125,
+            "steps": 16.640625,
+            "calculationMs": 1016.4215546874989,
+            "deathRate": 0.0078125,
+            "cutoffs": 0
+          },
+          "reference": {
+            "points": 110.3515625,
+            "rainbows": 4.4140625,
+            "chests": 4.4140625,
+            "steps": 16.765625,
+            "calculationMs": 926.7841281249989,
+            "deathRate": 0.03125,
+            "cutoffs": 0
+          },
+          "pairedPointDifference": {
+            "mean": 2.9296875,
+            "approx95CI": [
+              -0.6599658239219148,
+              6.519340823921915
+            ]
+          },
+          "passed": true
+        }
+      ],
+      "candidateSources": {
+        "solver.js": "b76180d49622998b9410c0c65d582a023dcacfe8bd0a35347d3f820090f0b598",
+        "author-solver.js": "acdfab8c2ab95b12e80ba04f989810f1a2aeb7b81f885f5ee72c4f2a7409d982",
+        "timer-solver/core/engine.jsc": "d10c48e90412b1afcf5da21427000ca95c5750bfe822a1cec29a91102a2e3b3e",
+        "timer-solver/core/solver.jsc": "21bbad7601a08a7c68a70817aafffdbeb143763048576aeaf59f1d721cfee8f8",
+        "timer-solver/jsc-loader.js": "23ae6d693a1ce49ae3e2e165dc696a8508d3545502a74d123a1d8284176fa74c",
+        "engine.js": "6ee99277019477c3d79e8dcd10054dd69dc955c4d50589251c97c6b3cf36dac3",
+        "endgame.js": "d1f30efcf6b50aebf540a611ebb727b56a6668cd8fc5f74910875b5e8299b964",
+        "world-sampler.js": "9dd67eb5b20255445a099210e05a906e0599e7d350eed34a14701edefe57913d",
+        "field-mods.js": "7480c6cbcd75f90aafe292834ae491a34e6a3e19a383b664488a1ad93be06ec2",
+        "capacity-plan.js": "5364f306d2ff4b95a54be39fa515e71eeb1a559ae96159c152426671f95a15f3",
+        "question-model.js": "84dd5b2b514553da17ccb5e964807d19b537ec8a51c6653103fe17e7922a8a5a",
+        "fixed-reward.js": "c43e8a0af1e0bfcdd1a72114d3820360198150af6d806bd1771a8f30dad82d40",
+        "rollout-values.json": "97c7013c8fe8bac933db0ac3799371c2c539f0e2f5a7ead2c209563b2fb6cd10",
+        "game-data.json": "a3be07f5dd7381c842f1d13510a6a2f001bda3f38fbeb012b70f0358fa6989a6",
+        "timer-reader/route-engine.js": "d9a09740fcdf003f11cba2d1b6d7625f9df59522edef75469a03c796950203c7"
+      },
+      "timingScope": "Concurrent process shards; calculation time is not an isolated latency benchmark.",
+      "scope": "Author-fitted layout generator and unmodified reference simulator only. No measured server or live-reader quality parity."
+    },
+    "observedStateRecovery": {
+      "exactRunAndPhysicalStateRequired": true,
+      "noPicturesOrRawLogsPersisted": true,
+      "currentPictureStillRequired": true,
+      "matchingPopupAfterRestartVerified": true,
+      "coldUnobservedPopupWaitsAutomatically": true,
+      "handMoveCopyWorkerVerified": true,
+      "freeDieCopyWorkerVerified": true,
+      "independentRefillFaces": 6,
+      "unreadNewRefillWaitsAutomatically": true
+    },
+    "fieldChanges": {
+      "observedEffects": 5,
+      "conditionalWorlds": 1000,
+      "knownAndConsumedCellsPreserved": true,
+      "chronologicalEffectsPreserved": true,
+      "consumedQuotaTrials": 100,
+      "meanRemainingChestsAfterEightConsumed": 0.96
+    },
+    "endgameGuards": {
+      "targetlessUpgradeCannotResetRefillBudget": true,
+      "ownedUpgradeCashOutCompetesWithEveryContinuation": true,
+      "greenUpgradeChainsPreserved": true,
+      "exhaustedExactSearchKeepsQualifiedAuthorStrategy": true
+    }
   },
   "tartarus": {
     "terminalRewardCorrected": true,
@@ -100,17 +337,17 @@
   },
   "artifacts": [
     {
-      "file": "Torchlight-Overlay-Portable-1.3.14-x64.exe",
-      "bytes": 132570660,
-      "sha256": "224f3316662903e0bc79daf66432be6c9527fa6bd302c4bf0cc6c71d077fd06d"
+      "file": "Torchlight-Overlay-Portable-1.3.15-x64.exe",
+      "bytes": 132647309,
+      "sha256": "e52b07e3495c3179cd8d55ea3aefc5ec57cf99a0784395006767c59921d22484"
     },
     {
-      "file": "Torchlight-Overlay-Setup-1.3.14-x64.exe",
-      "bytes": 132736531,
-      "sha256": "61c42a6148fb0ba42a1d0cbe946ff2c285062318087eb02187a8a2064cfe76ad"
+      "file": "Torchlight-Overlay-Setup-1.3.15-x64.exe",
+      "bytes": 132813165,
+      "sha256": "292457ef05ccc8ae5422dc74841300d9cde99c3d0a00c20cd0d5709c53661cde"
     }
   ],
-  "appAsarSha256": "80ebef11ebd4a523e512b8e04db4098329fb123bfe34db81144e3f7bc60ce45b",
+  "appAsarSha256": "ebcdcb1e3029f311ff59397c67bc318411b2cc268fd66a5bc9b8e5d839fa0da4",
   "portableDoubleLaunchVerified": true,
   "scope": "Saved frames, owned GPU test windows and local-rule simulations. Automatic local advice while absolute route is ambiguous; inferred length only with evidence. Replay verifies position/life/chest counts, not every card/tile. No live-game capture/input, universal hardware/screen support or verified profit claim."
 }

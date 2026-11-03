@@ -1,8 +1,7 @@
 {
   "version": "1.3.15",
-  "updatedAt": "2026-11-03T21:59:17.183Z",
-  "releasedVersion": "1.3.14",
-  "newExecutableReady": false,
+  "updatedAt": "2026-11-03T22:38:51.962Z",
+  "newExecutableReady": true,
   "qualityPlan": {
     "version": "1.3.15",
     "declaredAt": "2026-11-03T21:46:10.075Z",
@@ -68,22 +67,49 @@
     },
     "scope": "Author-fitted layout generator and unmodified reference simulator only. No measured server or live-reader quality parity."
   },
-  "knownRemaining": [
+  "sourceGroupsPassed": 70,
+  "validationAfterLatestFix": {
+    "focused": [
+      "arcana-state-cache",
+      "arcana-field-mods",
+      "arcana-exit",
+      "arcana-worlds",
+      "arcana-author-core"
+    ],
+    "fullSourceSession": 61104,
+    "qualitySession": 56638,
+    "fullSource": "passed 70 current groups",
+    "packaged": "passed 15 current groups",
+    "build": "current source rebuilt and manifest verified",
+    "packagedSession": 55221,
+    "originalInstallationIsolation": "passed source and packaged core with original D:/Arcana reads denied",
+    "quality": "passed 576 paired games; every predefined mode gate passed",
+    "releaseAudit": "passed current source and artifact fingerprints"
+  },
+  "copyAfterHandMove": {
+    "state": "passed actual worker after ignored advice and observed hand move; also free-die copy with independently read new refill",
+    "evidence": "tools/results/arcana-copy-context.json",
+    "scope": "Recorded initial board plus independent full game textures and observed synthetic completed orders. All six new refill faces, actual worker, unknown/covered die automatic waiting, no manual Board."
+  },
+  "packagedGroupsPassed": 15,
+  "lastReleasedVersionAtValidationStart": "1.3.14",
+  "validationComplete": true,
+  "completedValidation": [
     {
       "requirement": "Five-mode strategy quality",
-      "state": "running predeclared240000-series576 paired games; candidate fixed after targetless-upgrade counterexample",
-      "evidence": "sandbox/arcana-15-author-heldout/plan.json",
-      "scope": "Earlier 320-board gate failed for normal/special4. The16-game local floor/modification development candidate also did not pass. Original authorised core is now used on qualified normal/special4 supported observations; other three modes retain local strategy. No quality claim until this new gate completes."
+      "state": "passed 576 predeclared paired games across all five modes",
+      "evidence": "tools/results/arcana-modes-comparison.json",
+      "scope": "Author-fitted layout generator and unmodified reference simulator only. No measured server or live-reader quality parity."
     },
     {
       "requirement": "Complete source regression suite",
       "state": "passed 70 current groups",
-      "evidence": "sandbox/checks"
+      "evidence": "tools/results/checks.json"
     },
     {
       "requirement": "Packaged app and new EXE",
-      "state": "current candidate rebuilt,15 actual packaged groups passed",
-      "scope": "Released1.3.14 remains the runnable release",
+      "state": "passed 15 current packaged groups; portable and setup validated",
+      "scope": "Self-contained version 1.3.15, exact artifact hashes recorded in the build manifest",
       "evidence": "desktop/dist/builds/1.3.15/standalone-build.json"
     },
     {
@@ -109,33 +135,126 @@
       "scope": "Actual completed observed player hand move, not assumption of following advice; new die after a free-die move is never invented."
     },
     {
-      "requirement": "Isolated reader performance, final release audit and publication",
-      "state": "pending; no release until current quality and packaging gates pass"
+      "requirement": "Isolated reader performance and final release audit",
+      "state": "passed",
+      "evidence": [
+        "tools/results/arcana-performance.json",
+        "tools/results/release-audit.json"
+      ]
     }
   ],
-  "sourceGroupsPassed": 70,
-  "packagedGroupsPassedBeforeConsumedCellFix": 14,
-  "validationAfterLatestFix": {
-    "focused": [
-      "arcana-state-cache",
-      "arcana-field-mods",
-      "arcana-exit",
-      "arcana-worlds",
-      "arcana-author-core"
+  "distribution": {
+    "version": "1.3.15",
+    "releaseUrl": "https://github.com/milkmiraclework-alt/torchlight-overlay-optimized/releases/tag/v1.3.15",
+    "artifacts": [
+      {
+        "file": "Torchlight-Overlay-Portable-1.3.15-x64.exe",
+        "bytes": 132647309,
+        "sha256": "e52b07e3495c3179cd8d55ea3aefc5ec57cf99a0784395006767c59921d22484"
+      },
+      {
+        "file": "Torchlight-Overlay-Setup-1.3.15-x64.exe",
+        "bytes": 132813165,
+        "sha256": "292457ef05ccc8ae5422dc74841300d9cde99c3d0a00c20cd0d5709c53661cde"
+      }
     ],
-    "fullSourceSession": 61104,
-    "qualitySession": 56638,
-    "fullSource": "passed 70 current groups",
-    "packaged": "passed 15 current groups",
-    "build": "current source rebuilt and manifest verified",
-    "packagedSession": 55221,
-    "originalInstallationIsolation": "passed source and packaged core with original D:/Arcana reads denied",
-    "quality": "running; native math frozen by new five-mode plan"
+    "publicationEvidence": "GitHub release asset digests and target commit; this report records pre-publication validation"
   },
-  "copyAfterHandMove": {
-    "state": "passed actual worker after ignored advice and observed hand move; also free-die copy with independently read new refill",
-    "evidence": "tools/results/arcana-copy-context.json",
-    "scope": "Recorded initial board plus independent full game textures and observed synthetic completed orders. All six new refill faces, actual worker, unknown/covered die automatic waiting, no manual Board."
-  },
-  "packagedGroupsPassed": 15
+  "completionAudit": {
+    "reportedRecognitionFailures": {
+      "evidence": [
+        "tools/results/arcana-fast-hand.json",
+        "tools/results/arcana-single-hand.json",
+        "tools/results/arcana-refill.json",
+        "tools/results/arcana-life.json",
+        "tools/results/arcana-visuals.json",
+        "tools/results/arcana-state.json"
+      ],
+      "checked": [
+        "question-mark movement cards",
+        "single remaining backward die",
+        "life read fresh after moves",
+        "life/healing tiles",
+        "triple-question tiles",
+        "rainbow inventory retention",
+        "chest-upgrade count and animation reconciliation"
+      ]
+    },
+    "routeAndTileLabels": {
+      "evidence": [
+        "tools/results/arcana-route.json",
+        "tools/results/arcana-position.json",
+        "tools/results/arcana-gpu-history-e2e.json"
+      ],
+      "checked": [
+        "bounded historical event anchoring",
+        "five route types and lengths",
+        "absolute click-through tile labels when anchored",
+        "automatic visible-path advice otherwise"
+      ]
+    },
+    "staleCaptureAndEdits": {
+      "evidence": [
+        "tools/results/wgc-capture.json",
+        "tools/results/arcana-gpu-e2e.json",
+        "tools/results/arcana-state-cache.json"
+      ],
+      "checked": [
+        "fresh owned-window frames behind cover",
+        "minimized rejection",
+        "physical move invalidates prior frame",
+        "background-only changes preserve current edits",
+        "cached hidden fields require exact causal state and a fresh image"
+      ]
+    },
+    "actualPlayerActions": {
+      "evidence": [
+        "tools/results/arcana-copy-context.json",
+        "tools/results/arcana-consumed.json",
+        "tools/results/arcana-field-mods.json"
+      ],
+      "checked": [
+        "ignored advice handled",
+        "six independently read new copy-refill faces",
+        "no repeated spending",
+        "consumed reward cannot be revived",
+        "observed global effects preserved"
+      ]
+    },
+    "strategy": {
+      "evidence": [
+        "tools/results/arcana-author-core.json",
+        "tools/results/arcana-author-core-packaged.json",
+        "tools/results/arcana-endgame.json",
+        "tools/results/arcana-exit.json",
+        "tools/results/arcana-modes-comparison.json"
+      ],
+      "checked": [
+        "authorised original core loaded without original installation",
+        "endgame independent oracle agreement",
+        "productive upgrade chains preserved",
+        "targetless upgrade retry-budget counterexample fixed",
+        "all five paired quality gates passed"
+      ]
+    },
+    "otherModesAndLifecycle": {
+      "evidence": [
+        "tools/results/checks.json",
+        "tools/results/packaged-checks.json",
+        "tools/results/release-audit.json"
+      ],
+      "checked": [
+        "Tartarus reference assessment and reader preserved",
+        "Vorax tested policy and rule hashes preserved",
+        "capture stop and mode switch retire workers",
+        "portable relaunch resolves its own resources"
+      ]
+    },
+    "remainingLimits": [
+      "First-ever startup inside a popup can wait until hidden life/hand/inventory become observable; no invented values.",
+      "Confirmed route inference requires evidence; ambiguous routes use automatic local advice.",
+      "Tests use saved frames, synthetic states and owned windows, not live play.",
+      "Windows x64, English UI and enabled game logging are prerequisites; arbitrary hardware, scaling and server distributions are not proven."
+    ]
+  }
 }
