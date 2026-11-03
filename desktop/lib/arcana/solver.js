@@ -428,6 +428,6 @@ function createJob(model,options={}){
  const terminal=terminalJob(s);if(terminal)return terminal;
  const exact=Endgame.createJob(s,options);if(!exact)return require('./author-solver').createJob(s,options,{target,protectExit:upgradeBeforeExit})||createSampledJob(model,options);
  let fallback=null;
- return {step(batch=4){if(fallback)return fallback.step(batch);const done=exact.step(batch);if(done&&!exact.result()){fallback=createSampledJob(model,options);return fallback.step(batch);}return done;},result(){if(fallback)return fallback.result();const result=exact.result();return result?{...result,target:target(s,result.best.action)}:null;}};
+ return {step(batch=4){if(fallback)return fallback.step(batch);const done=exact.step(batch);if(done&&!exact.result()){fallback=require('./author-solver').createJob(s,options,{target,protectExit:upgradeBeforeExit})||createSampledJob(model,options);return fallback.step(batch);}return done;},result(){if(fallback)return fallback.result();const result=exact.result();return result?{...result,target:target(s,result.best.action)}:null;}};
 }
 module.exports={createJob,rollout,policy,target,immediate,valueOf,knownDistribution,informationKey:observationKey};

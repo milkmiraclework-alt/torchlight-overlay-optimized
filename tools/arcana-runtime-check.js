@@ -13,7 +13,7 @@ const pause=ms=>new Promise(r=>setTimeout(r,ms));
   app.sync(true);app.read();const second=workers[1];assert.equal(second.options.workerData.resume.model.position,5,'Mode switching lost the known board');
   second.emit('message',{event:'status',state:{phase:'advice',move:'synthetic'}});assert.equal(states.at(-1).move,'synthetic');
   const hoverStates=states.length,hoverMessages=second.messages.length;
-  app.feed(['S9HandCard_C_OnMouseEnter','S9PreCard_C_OnMouseEnter','S9ChooseCard_C_OnMouseEnter']);
+  app.feed(['S9HandCard_C_OnMouseEnter','S9PreCard_C_OnMouseEnter','S9ChooseCard_C_OnMouseEnter','[Game] 3000_S9HandCard Anim_Hover Start','[Game] 3000_S9HandCard Anim_Loop Start','[Game] 2998_S9PreCard Anim_HuanLoop Start','[Game] 4000_S9Reward Anim_Loop Start']);
   assert.equal(states.length,hoverStates,'Card hover removed a valid advice');assert.equal(second.messages.length,hoverMessages,'Card hover restarted recognition');
   const check={phase:'check',reason:'Check the hand',recognition:{hand:[13,4,21],count:4}};
   second.emit('message',{event:'status',state:check});second.emit('message',{event:'status',state:check});

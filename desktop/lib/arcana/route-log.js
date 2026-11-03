@@ -78,7 +78,7 @@ function create(){
    if(!(line.includes('S9')||line.includes('TaroView')||line.includes('CloseTraoView')||line.includes('MsgMgr@:Show MsgValue')))continue;
    if(RE.step.test(line)){if(listing)listed=Math.max(listed,parser.board().total);listing=false;animating=true;}
    currentLine=line;
-   const causal=RE.step.test(line)||RE.done.test(line)||RE.timeout.test(line)||/\b\d+_(?:S9HandCard|S9PreCard|S9Reward) Anim\w* Start\s*$/.test(line)||animating&&RE.msg.test(line);
+   const causal=RE.step.test(line)||animating&&(RE.done.test(line)||RE.timeout.test(line)||RE.msg.test(line))||/\b\d+_S9HandCard Anim_(?:Putong_Jinpai|SaijiChongwu_Jinpai|Dachu|Xipai) Start\s*$/.test(line)||/\b\d+_S9Reward Anim_(?:Bai|Green|Blue|Zi|Jin|Red|Hong|Cai|Taro_RewardUpgrade) Start\s*$/.test(line);
    if(stateStamp&&causal)stateStamp=digest(stateStamp+'\n'+line);
    completedOrder=RE.done.test(line);observed.before(line);parser.feed(line);observed.after(line,context());completedOrder=false;currentLine='';
    const animation=RE.anim.exec(line);

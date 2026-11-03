@@ -4,6 +4,7 @@
 const DATA=require('./game-data.json');
 const FieldMods=require('./field-mods');
 const CARDS=new Map(DATA.cards.map(c=>[c.id,c]));
+const ownedUpgradeEffects=new Map(DATA.cards.flatMap(c=>{const effects=c.events.map(id=>DATA.events[id]);return !c.choices.length&&effects.length&&effects.every(e=>e.fn===130&&e.p[0]>0&&e.b.length===1&&e.b[0]===1)?[[c.id,effects]]:[];}));
 const POINTS=[0,1,1,3,5,10,25],TIERS=['Unknown','Green','Blue','Purple','Gold','Red','Rainbow'];
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const integer=(v,a,b,name)=>{if(!Number.isInteger(v)||v<a||v>b)throw Error(`Check ${name}.`);return v;};
@@ -153,8 +154,11 @@ function actions(s){
  const seen=new Set();
  for(let i=0;i<s.hand.length;i++){
   const id=s.hand[i];if(seen.has(id))continue;seen.add(id);const c=CARDS.get(id);
-  if(c.choices.length){for(const selected of c.choices)out.push({kind:'card',index:i,id,selected});}
-  else out.push({kind:'card',index:i,id});
+  const upgrades=ownedUpgradeEffects.get(id),hasTarget=!upgrades||upgrades.some(e=>s.chests.some(t=>t<6&&(!e.c.length||e.c.includes(t+1))));
+  // A targetless upgrade must not manufacture another batch of free refill
+  // retries in the planner. Green-to-blue remains useful for upgrade chains,
+  // even though those two chest colours have equal immediate rarity points.
+  if(hasTarget){if(c.choices.length){for(const selected of c.choices)out.push({kind:'card',index:i,id,selected});}else out.push({kind:'card',index:i,id});}
   // Discard is relevant only at the hand limit: incoming notes would be lost.
   if(s.hand.length===10)out.push({kind:'discard',index:i,id});
  }

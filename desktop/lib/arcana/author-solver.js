@@ -53,7 +53,7 @@ function createJob(s,{seed=0x41524341,allowReroll=true,rerollBudget=3}={},helper
  return {step(){
   if(result)return true;
   const native=S.evaluate(observed,{objective:'rarity',points:{green:1,blue:1,purple:3,orange:5,red:10,rainbow:25},target:10,rollouts:150,deathLosesLoot:false,search:'halving',verify:3,verifyTimes:1.5,seed,weights:{...S.weightsFor('rarity'),upgrade_gate:1}});
-  const options=native.filter(o=>!(o.action.kind==='current'&&o.action.cycle&&(!allowReroll||rerollBudget<=0))).map(o=>{
+  const options=native.filter(o=>!(o.action.kind==='current'&&o.action.cycle&&(!allowReroll||Math.min(s.rerollBudget??3,rerollBudget)<=0))).map(o=>{
    const local=action(o.action,s),indexed=['card','discard'].includes(local.kind);
    if(indexed&&(!Number.isInteger(local.index)||s.hand[local.index]!==local.id)||!legal.some(a=>key(a)===key(local)))throw Error('The Arcana strategy core proposed an action inconsistent with the observed hand: '+JSON.stringify({action:o.action,mapped:local,hand:s.hand}));
    // Timer ranks rarity points with a 0.001 heuristic tie-break. Keep that

@@ -52,11 +52,22 @@ function create({automatic=true}={}){
   }
   expectedKey=null;
   if(!expectedState&&nextKey===key&&nextKey===confirmedKey)return {model:clone(model),issues:[],unchanged:true,ms:performance.now()-started,grid};
+  if(popup&&(!model.lifeFresh||!model.handFresh||!model.chestsFresh||!model.dieFresh)){
+   // A logged choice can hide every underlying field. An unclear offer must
+   // still wait automatically, rather than send blurred pixels to Board.
+   const offered=V.offers(img);model.confirmed=false;model.pending=offered.confident?{kind:'choose',cards:offered.cards}:null;confirmedKey=null;editKey=null;key=nextKey;
+   lastRecognition={lifeFresh:false,chestsFresh:false,popupHidesBoard:true};
+   return {model:clone(model),issues:['Waiting for the choice to close: the hand behind it has not been read.'],waiting:true,popup:true,ms:performance.now()-started,grid};
+  }
   const priorBoard=activeLogBoard();let currentOffer=null;
   if(popup&&priorBoard?.anchored&&model.positionConfirmed&&priorBoard.position!==model.position+1){
-   currentOffer=V.offers(img);const advanced=PopupContext.copyAfterHandMove(model,priorBoard,currentOffer);
-   if(advanced){model=advanced;lastReliableHand=model.hand.slice();pathHistory[model.position]=clone(model.path[model.position]);}
-   else if(currentOffer.confident){model.confirmed=false;key=nextKey;editKey=null;return {model:clone(model),issues:['Waiting for the observed move and card offer to agree.'],waiting:true,popup:true,ms:performance.now()-started,grid};}
+   currentOffer=V.offers(img);let advanced=PopupContext.copyAfterHandMove(model,priorBoard,currentOffer);
+   if(!advanced&&currentOffer.confident&&priorBoard.lastMove?.complete&&priorBoard.lastMove.refill&&!priorBoard.lastMove.plays?.length){
+    const refill=V.cards(img),match=refill.dieMatch;
+    if(match?.score>=.91&&match.margin>=.035&&match.pipScore>=.8&&match.box.x>=img.width*.65&&match.box.y>=img.height*.85)advanced=PopupContext.copyAfterDieMove(model,priorBoard,currentOffer,refill.die);
+   }
+   if(advanced){model=advanced;lastReliableHand=model.hand.slice();lastReliableDie=model.die;pathHistory[model.position]=clone(model.path[model.position]);}
+   else{model.confirmed=false;key=nextKey;editKey=null;return {model:clone(model),issues:['Waiting for the observed move and card offer to agree.'],waiting:true,popup:true,ms:performance.now()-started,grid};}
   }
   if((popup||recentPopup)&&model.lifeFresh&&model.handFresh&&model.chestsFresh&&model.die!==null&&(!priorBoard?.anchored||!model.positionConfirmed||priorBoard.position===model.position+1)){
    // Choosing a note blurs the board and hand. Read the offer itself while

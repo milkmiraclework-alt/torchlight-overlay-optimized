@@ -91,7 +91,7 @@ function play(initial,seed,which){const s=R.clone(initial),clock=[],decisions=[]
    const m=model(s);let chosen;
    if(policyOnly){const visible=E.normalize(m);visible.revealed=Math.max(0,...visible.path.flatMap((t,i)=>t.kind!=='unknown'?[i]:[]));chosen=S.policy(visible,E.rng(seed+n),lastCycle);}
    else{const j=S.createJob(m,{samples,allowReroll:cycles<3,rerollBudget:Math.max(0,3-cycles),...(productionSeed?{}:{seed:seed+n})});while(!j.step(16)){}chosen=j.result().best.action;}
-   action=referenceAction(chosen,s);if(!action)throw Error('Our advice is not legal in the reference: '+JSON.stringify({chosen,position:s.pos,hand:s.hand,legal:R.actions(s)}));
+   action=referenceAction(chosen,s);if(!action)throw Error('Our advice is not legal in the reference: '+JSON.stringify({chosen,position:s.pos,hand:s.hand,chests:s.collected,legal:R.actions(s),model:model(s)}));
    if(s.pos===s.total-1&&action.cycle)cycles++;else cycles=0;
   }
   clock.push(performance.now()-start);if(!action)throw Error('No action');if(decisions.length<5)decisions.push({...action});

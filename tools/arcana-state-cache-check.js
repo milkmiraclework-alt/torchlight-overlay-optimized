@@ -10,7 +10,7 @@ const checkpoint={model,logBoard:board,key:'not persisted',corrections:[{vector:
 (async()=>{
  const cache=Cache.create({file});assert(cache.save(checkpoint,board,123));await cache.close();
  const raw=fs.readFileSync(file,'utf8');assert(!raw.includes('pixels')&&!raw.includes('vector')&&!raw.includes('not persisted'),'Image samples or old frame keys reached disk');assert(Buffer.byteLength(raw)<Cache.LIMIT);
- const restored=Cache.create({file}),same=Route.create();same.feed(opening);same.feed([at(150,'S9ChooseCard Run'),at(151,'S9HandCard_C_OnMouseEnter')]);
+ const restored=Cache.create({file}),same=Route.create();same.feed(opening);same.feed([at(150,'S9ChooseCard Run'),at(151,'S9HandCard_C_OnMouseEnter'),at(152,'3000_S9HandCard Anim_Hover Start'),at(153,'3000_S9HandCard Anim_Loop Start'),at(154,'2998_S9PreCard Anim_HuanLoop Start'),at(155,'4000_S9Reward Anim_Loop Start')]);
  assert.equal(same.snapshot().stateStamp,board.stateStamp,'Opening a choice or hovering changed the underlying board identity');
  const loaded=restored.load(same.snapshot(),123);assert(loaded);assert.equal(loaded.checkpoint.model.confirmed,false,'Old data became advice before a current picture was read');assert.deepEqual(loaded.checkpoint.model.hand,[21,2]);assert.deepEqual(loaded.checkpoint.model.chests,[6,4]);assert.equal(loaded.checkpoint.popup,'choose');
  assert.equal(restored.load(same.snapshot(),456),null,'Another game window inherited an inventory');
