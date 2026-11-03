@@ -4,6 +4,12 @@
 
 **[1.3.14 preview — Portable и Setup EXE](https://github.com/milkmiraclework-alt/torchlight-overlay-optimized/releases/tag/v1.3.14)**. [Стабильные выпуски](https://github.com/milkmiraclework-alt/torchlight-overlay-optimized/releases/latest) обновляются отдельно.
 
+## В разработке: 1.3.15
+
+- Автоматическое восстановление позиции из журнала и прочитанных данных после перезапуска при совпадении прохода и всех игровых действий. На диск сохраняются данные поля, без изображений и сырых строк журнала.
+- Исправлены повторный учёт собранных клеток, забывание изменений скрытой части пути и потеря выгодных цепочек улучшений перед завершением.
+- Для подтверждённых обычного маршрута и маршрута с радужными сундуками подключено оригинальное ядро Timer. Остальные три типа сохраняют наш расчёт. Новый выпуск ещё проходит сравнение полных проходов и проверки EXE.
+
 ## Изменения 1.3.14
 
 - Arcana использует обученные распознаватели руки и кубика Timer с его разрешения. Число карт проверяется по полному счётчику `x/10`, точки обычных кубиков — дополнительно по текстурам. Исправлена найденная путаница «1»/«3» после масштабирования захвата.
@@ -59,10 +65,10 @@ Windows x64, Intel/AMD; проверено на Windows 11. Нужны Windows G
 .\Start-Overlay.cmd
 ```
 
-Результат: `desktop/dist/builds/1.3.14/`. Для изменения нативных ядер нужны Rust и Windows build tools; скрипты сборки и проверки находятся в `tools/`.
+Результат собираемой ветки: `desktop/dist/builds/1.3.15/`; опубликованный preview пока 1.3.14. Для изменения нативных ядер нужны Rust и Windows build tools; скрипты сборки и проверки находятся в `tools/`.
 
 ## Авторство
 
 Tartarus основан на [blahdot3h/tartarus-simulator](https://github.com/blahdot3h/tartarus-simulator), CoffeeBns. Vorax — на [DinoRaos/vorax-rs](https://github.com/DinoRaos/vorax-rs) и [tidewarden/tli-vorax-simulator](https://github.com/tidewarden/tli-vorax-simulator); [MIT-лицензия Vorax](vorax/LICENSE) сохранена.
 
-Распознаватели, модели, парсер событий и определение маршрута Arcana Helper 1.1.19 интегрированы с разрешения автора **Timer**. [Оригиналы и отпечатки](desktop/lib/arcana/timer-reader/source.json), [исходная лицензия](desktop/lib/arcana/timer-reader/LICENSE) сохранены. Скомпилированный решатель Helper не включён. Лицензии Electron, OCR и зависимостей поставляются в сборке.
+Распознаватели, модели, парсер событий и определение маршрута Arcana Helper 1.1.19 интегрированы с разрешения автора **Timer**. [Оригиналы и отпечатки](desktop/lib/arcana/timer-reader/source.json), [исходная лицензия](desktop/lib/arcana/timer-reader/LICENSE) сохранены. Оригинальное ядро стратегии Helper включено с разрешения автора для подтверждённых обычного и радужного маршрутов: [оригиналы, версия среды и отпечатки](desktop/lib/arcana/timer-solver/source.json). Лицензии Electron, OCR и зависимостей поставляются в сборке.
