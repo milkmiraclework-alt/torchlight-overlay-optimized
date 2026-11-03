@@ -1,0 +1,44 @@
+{
+  "version": "1.3.15",
+  "checkedAt": "2026-11-03T21:46:23.732Z",
+  "firstRowPositions": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "generatedCases": 4300,
+  "patterns": {
+    "normal": {
+      "recovered": 873,
+      "ambiguous": 127,
+      "wrong": 0
+    },
+    "special1": {
+      "recovered": 400,
+      "ambiguous": 300,
+      "wrong": 0
+    },
+    "special2": {
+      "recovered": 597,
+      "ambiguous": 103,
+      "wrong": 0
+    },
+    "special3": {
+      "recovered": 876,
+      "ambiguous": 324,
+      "wrong": 0
+    },
+    "special4": {
+      "recovered": 301,
+      "ambiguous": 399,
+      "wrong": 0
+    }
+  },
+  "ambiguousPrefixesRejected": true,
+  "partialPrefixRejected": true,
+  "staleEpochAndRevisionRejected": true,
+  "anchorSurvivesEmptyMove": true,
+  "gameCapture": false,
+  "gameInput": false
+}

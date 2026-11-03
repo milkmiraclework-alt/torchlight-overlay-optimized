@@ -1,0 +1,67 @@
+{
+  "version": "1.3.15",
+  "checkedAt": "2026-11-03T21:46:24.958Z",
+  "worlds": 500,
+  "observationsPreserved": true,
+  "appearanceConstraintsPreserved": true,
+  "consumedUnknownNotRecreated": true,
+  "consumedChestsConditionRemainingQuota": true,
+  "consumedQuotaTrials": 100,
+  "consumedAppearanceWithoutRarityPreserved": true,
+  "meanRemainingChestsAfterEightConsumed": 0.96,
+  "fixedNoteGrant": true,
+  "stageSpecificLayoutsPreserved": true,
+  "unconfirmedAndLocalModelsRejected": true,
+  "decisions": [
+    {
+      "type": "normal",
+      "mean": 62.083333333333336,
+      "action": {
+        "kind": "card",
+        "index": 2,
+        "id": 204
+      },
+      "hiddenModel": "route-layout"
+    },
+    {
+      "type": "special1",
+      "mean": 75.95833333333333,
+      "action": {
+        "kind": "die",
+        "delta": 2
+      },
+      "hiddenModel": "route-layout"
+    },
+    {
+      "type": "special2",
+      "mean": 68.75,
+      "action": {
+        "kind": "card",
+        "index": 1,
+        "id": 12
+      },
+      "hiddenModel": "route-layout"
+    },
+    {
+      "type": "special3",
+      "mean": 54.541666666666664,
+      "action": {
+        "kind": "card",
+        "index": 2,
+        "id": 204
+      },
+      "hiddenModel": "route-layout"
+    },
+    {
+      "type": "special4",
+      "mean": 129.04166666666666,
+      "action": {
+        "kind": "die",
+        "delta": 2
+      },
+      "hiddenModel": "route-layout"
+    }
+  ],
+  "gameCapture": false,
+  "gameInput": false
+}

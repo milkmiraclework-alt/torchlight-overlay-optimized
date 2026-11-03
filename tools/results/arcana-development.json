@@ -1,6 +1,6 @@
 {
   "version": "1.3.15",
-  "updatedAt": "2026-11-03T21:50:05.082Z",
+  "updatedAt": "2026-11-03T21:59:17.183Z",
   "releasedVersion": "1.3.14",
   "newExecutableReady": false,
   "qualityPlan": {
@@ -77,12 +77,12 @@
     },
     {
       "requirement": "Complete source regression suite",
-      "state": "rerunning70 current groups after copy-refill/targetless-upgrade fixes",
+      "state": "passed 70 current groups",
       "evidence": "sandbox/checks"
     },
     {
       "requirement": "Packaged app and new EXE",
-      "state": "rebuilding and retesting final targetless-upgrade/copy-refill candidate",
+      "state": "current candidate rebuilt,15 actual packaged groups passed",
       "scope": "Released1.3.14 remains the runnable release",
       "evidence": "desktop/dist/builds/1.3.15/standalone-build.json"
     },
@@ -125,16 +125,17 @@
     ],
     "fullSourceSession": 61104,
     "qualitySession": 56638,
-    "fullSource": "rerunning after physical-state fingerprint was narrowed to real actions, excluding card hover/glow",
-    "packaged": "rebuilding current candidate and rerunning15 groups",
+    "fullSource": "passed 70 current groups",
+    "packaged": "passed 15 current groups",
     "build": "current source rebuilt and manifest verified",
     "packagedSession": 55221,
     "originalInstallationIsolation": "passed source and packaged core with original D:/Arcana reads denied",
     "quality": "running; native math frozen by new five-mode plan"
   },
   "copyAfterHandMove": {
-    "state": "source implemented and focused saved-frame/texture test passed",
+    "state": "passed actual worker after ignored advice and observed hand move; also free-die copy with independently read new refill",
     "evidence": "tools/results/arcana-copy-context.json",
-    "scope": "Complete observed hand-card movement, unchanged held refill, known life/rewards and a corroborating copy offer. A free-die move still requires reading its new refill."
-  }
+    "scope": "Recorded initial board plus independent full game textures and observed synthetic completed orders. All six new refill faces, actual worker, unknown/covered die automatic waiting, no manual Board."
+  },
+  "packagedGroupsPassed": 15
 }

@@ -1,6 +1,6 @@
 {
-  "version": "1.3.14",
-  "checkedAt": "2026-11-03T18:33:10.193Z",
+  "version": "1.3.15",
+  "checkedAt": "2026-11-03T21:57:36.960Z",
   "cases": [
     {
       "frame": "user-193821",
@@ -490,32 +490,32 @@
     {
       "frame": "user-193821",
       "scope": "Hand and refill only; warm calibrated reader, same saved pixels",
-      "trainedMedianMs": 348.7551999999996,
-      "templateMedianMs": 938.1099999999997
+      "trainedMedianMs": 192.9949999999999,
+      "templateMedianMs": 727.3917999999994
     },
     {
       "frame": "user-222100",
       "scope": "Hand and refill only; warm calibrated reader, same saved pixels",
-      "trainedMedianMs": 179.83039999999892,
-      "templateMedianMs": 757.8611999999994
+      "trainedMedianMs": 185.94119999999748,
+      "templateMedianMs": 744.5419000000002
     },
     {
       "frame": "user-222106",
       "scope": "Hand and refill only; warm calibrated reader, same saved pixels",
-      "trainedMedianMs": 215.08629999999903,
-      "templateMedianMs": 757.0669000000016
+      "trainedMedianMs": 229.27980000000025,
+      "templateMedianMs": 715.6658000000025
     },
     {
       "frame": "user-222112",
       "scope": "Hand and refill only; warm calibrated reader, same saved pixels",
-      "trainedMedianMs": 182.84480000000622,
-      "templateMedianMs": 779.665700000005
+      "trainedMedianMs": 201.8087000000014,
+      "templateMedianMs": 781.0794000000024
     },
     {
       "frame": "reference-play",
       "scope": "Hand and refill only; warm calibrated reader, same saved pixels",
-      "trainedMedianMs": 240.90320000000065,
-      "templateMedianMs": 273.4105999999956
+      "trainedMedianMs": 147.51900000000023,
+      "templateMedianMs": 232.6461999999956
     }
   ],
   "coveredFaceRejected": true,

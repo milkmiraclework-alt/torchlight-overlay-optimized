@@ -1,0 +1,2092 @@
+{
+  "version": "1.3.15",
+  "checkedAt": "2026-11-03T21:52:12.049Z",
+  "session": "2026-11-02T15-42-06",
+  "frames": 49,
+  "confirmed": 35,
+  "wrongConfirmed": 0,
+  "automaticWaiting": 14,
+  "withChecks": 0,
+  "scope": "Previously recorded game pictures paired with recorded events; no live capture/input. Expected position/life/chest counts are reconstructed from those events. Automatic waits are counted separately and are not recognition successes. Cold-open diagnostic: each picture starts a new reader with a simulated coarse prefix,3 rows ahead as observed in this client. Recorded consumed cells become plain appearances as in S9TaroModel.TransTileMapToUIData. The used set, known position and previous reader history are removed.",
+  "cases": [
+    {
+      "file": "001-catch-up.jpg",
+      "stable": false,
+      "expected": {
+        "position": 1,
+        "life": 2,
+        "chests": 0
+      },
+      "parsed": {
+        "position": 1,
+        "life": 2,
+        "chests": [],
+        "hand": [
+          12,
+          12,
+          21,
+          4,
+          24
+        ],
+        "die": 5,
+        "pathType": "normal",
+        "length": 80
+      },
+      "logPosition": 1,
+      "positionAnchor": {
+        "first": 0,
+        "position": 1,
+        "compared": 6,
+        "matched": 6,
+        "mismatched": 0,
+        "distinctive": 3,
+        "source": "prefix-bounds",
+        "visible": 16,
+        "candidates": 1,
+        "epoch": 1,
+        "moves": 0,
+        "worldRevision": 0,
+        "revision": 1
+      },
+      "confirmed": true,
+      "waiting": false,
+      "issues": [],
+      "wrong": [],
+      "reader": "timer-trained",
+      "ms": 2273.8059
+    },
+    {
+      "file": "002-retake.jpg",
+      "stable": true,
+      "expected": {
+        "position": 1,
+        "life": 2,
+        "chests": 0
+      },
+      "parsed": {
+        "position": 1,
+        "life": 2,
+        "chests": [],
+        "hand": [
+          12,
+          12,
+          21,
+          4,
+          24
+        ],
+        "die": 5,
+        "pathType": "normal",
+        "length": 80
+      },
+      "logPosition": 1,
+      "positionAnchor": {
+        "first": 0,
+        "position": 1,
+        "compared": 6,
+        "matched": 6,
+        "mismatched": 0,
+        "distinctive": 3,
+        "source": "prefix-bounds",
+        "visible": 16,
+        "candidates": 1,
+        "epoch": 2,
+        "moves": 0,
+        "worldRevision": 0,
+        "revision": 1
+      },
+      "confirmed": true,
+      "waiting": false,
+      "issues": [],
+      "wrong": [],
+      "reader": "timer-trained",
+      "ms": 1054.0322999999999
+    },
+    {
+      "file": "003-position.jpg",
+      "stable": true,
+      "expected": {
+        "position": 1,
+        "life": 2,
+        "chests": 0
+      },
+      "parsed": {
+        "position": 1,
+        "life": 2,
+        "chests": [],
+        "hand": [
+          12,
+          12,
+          21,
+          4,
+          24
+        ],
+        "die": 5,
+        "pathType": "normal",
+        "length": 80
+      },
+      "logPosition": 1,
+      "positionAnchor": {
+        "first": 0,
+        "position": 1,
+        "compared": 6,
+        "matched": 6,
+        "mismatched": 0,
+        "distinctive": 3,
+        "source": "prefix-bounds",
+        "visible": 16,
+        "candidates": 1,
+        "epoch": 3,
+        "moves": 0,
+        "worldRevision": 0,
+        "revision": 1
+      },
+      "confirmed": true,
+      "waiting": false,
+      "issues": [],
+      "wrong": [],
+      "reader": "timer-trained",
+      "ms": 1089.0508000000004
+    },
+    {
+      "file": "004-move01.jpg",
+      "stable": true,
+      "expected": {
+        "position": 6,
+        "life": 2,
+        "chests": 0
+      },
+      "parsed": {
+        "position": 6,
+        "life": 2,
+        "chests": [],
+        "hand": [
+          12,
+          12,
+          21,
+          4,
+          24
+        ],
+        "die": 3,
+        "pathType": "normal",
+        "length": 80
+      },
+      "logPosition": 1,
+      "positionAnchor": {
+        "first": 0,
+        "position": 6,
+        "compared": 6,
+        "matched": 6,
+        "mismatched": 0,
+        "distinctive": 3,
+        "source": "prefix-bounds",
+        "visible": 20,
+        "candidates": 1,
+        "epoch": 4,
+        "moves": 0,
+        "worldRevision": 0,
+        "revision": 1
+      },
+      "confirmed": true,
+      "waiting": false,
+      "issues": [],
+      "wrong": [],
+      "reader": "timer-trained",
+      "ms": 1016.8948
+    },
+    {
+      "file": "005-move02.jpg",
+      "stable": true,
+      "expected": {
+        "position": 6,
+        "life": 2,
+        "chests": 0
+      },
+      "parsed": {
+        "position": null,
+        "life": null,
+        "chests": [],
+        "hand": [],
+        "die": null,
+        "pathType": null,
+        "length": null
+      },
+      "logPosition": 1,
+      "positionAnchor": null,
+      "confirmed": false,
+      "waiting": true,
+      "issues": [
+        "Waiting for the choice to close: the hand behind it has not been read."
+      ],
+      "wrong": [],
+      "reader": "templates",
+      "ms": 3315.5928000000004
+    },
+    {
+      "file": "006-move03.jpg",
+      "stable": true,
+      "expected": {
+        "position": 6,
+        "life": 2,
+        "chests": 0
+      },
+      "parsed": {
+        "position": 6,
+        "life": 2,
+        "chests": [],
+        "hand": [
+          12,
+          12,
+          4,
+          24,
+          1
+        ],
+        "die": 3,
+        "pathType": "normal",
+        "length": 80
+      },
+      "logPosition": 1,
+      "positionAnchor": {
+        "first": 0,
+        "position": 6,
+        "compared": 7,
+        "matched": 7,
+        "mismatched": 0,
+        "distinctive": 4,
+        "source": "prefix-bounds",
+        "visible": 20,
+        "candidates": 1,
+        "epoch": 6,
+        "moves": 0,
+        "worldRevision": 0,
+        "revision": 1
+      },
+      "confirmed": true,
+      "waiting": false,
+      "issues": [],
+      "wrong": [],
+      "reader": "timer-trained",
+      "ms": 1471.7403000000013
+    },
+    {
+      "file": "007-move04.jpg",
+      "stable": true,
+      "expected": {
+        "position": 7,
+        "life": 2,
+        "chests": 1
+      },
+      "parsed": {
+        "position": 7,
+        "life": 2,
+        "chests": [],
+        "hand": [
+          12,
+          12,
+          4,
+          24
+        ],
+        "die": 3,
+        "pathType": "normal",
+        "length": 80
+      },
+      "logPosition": 1,
+      "positionAnchor": {
+        "first": 0,
+        "position": 7,
+        "compared": 5,
+        "matched": 5,
+        "mismatched": 0,
+        "distinctive": 2,
+        "source": "prefix-bounds",
+        "visible": 20,
+        "candidates": 1,
+        "epoch": 7,
+        "moves": 0,
+        "worldRevision": 0,
+        "revision": 1
+      },
+      "confirmed": false,
+      "waiting": true,
+      "issues": [
+        "Waiting for the chest update to finish."
+      ],
+      "wrong": [],
+      "reader": "timer-trained",
+      "ms": 1543.7870000000003
+    },
+    {
+      "file": "008-move05.jpg",
+      "stable": true,
+      "expected": {
+        "position": 5,
+        "life": 3,
+        "chests": 1
+      },
+      "parsed": {
+        "position": 5,
+        "life": 3,
+        "chests": [
+          2
+        ],
+        "hand": [
+          12,
+          4,
+          24
+        ],
+        "die": 3,
+        "pathType": "normal",
+        "length": 80
+      },
+      "logPosition": 1,
+      "positionAnchor": {
+        "first": 0,
+        "position": 5,
+        "compared": 4,
+        "matched": 4,
+        "mismatched": 0,
+        "distinctive": 1,
+        "source": "prefix-bounds",
+        "visible": 20,
+        "candidates": 1,
+        "epoch": 8,
+        "moves": 0,
+        "worldRevision": 0,
+        "revision": 1
+      },
+      "confirmed": true,
+      "waiting": false,
+      "issues": [],
+      "wrong": [],
+      "reader": "timer-trained",
+      "ms": 1543.6767999999993
+    },
+    {
+      "file": "009-move06.jpg",
+      "stable": true,
+      "expected": {
+        "position": 8,
+        "life": 3,
+        "chests": 1
+      },
+      "parsed": {
+        "position": 8,
+        "life": 3,
+        "chests": [
+          2
+        ],
+        "hand": [
+          12,
+          4,
+          24,
+          202
+        ],
+        "die": 4,
+        "pathType": "normal",
+        "length": 80
+      },
+      "logPosition": 1,
+      "positionAnchor": {
+        "first": 0,
+        "position": 8,
+        "compared": 3,
+        "matched": 3,
+        "mismatched": 0,
+        "distinctive": 1,
+        "source": "prefix-bounds",
+        "visible": 20,
+        "candidates": 1,
+        "epoch": 9,
+        "moves": 0,
+        "worldRevision": 0,
+        "revision": 1
+      },
+      "confirmed": true,
+      "waiting": false,
+      "issues": [],
+      "wrong": [],
+      "reader": "timer-trained",
+      "ms": 1525.4364999999998
+    },
+    {
+      "file": "010-move07.jpg",
+      "stable": true,
+      "expected": {
+        "position": 12,
+        "life": 3,
+        "chests": 1
+      },
+      "parsed": {
+        "position": 12,
+        "life": 3,
+        "chests": [
+          2
+        ],
+        "hand": [
+          12,
+          4,
+          24,
+          202
+        ],
+        "die": 3,
+        "pathType": "normal",
+        "length": 80
+      },
+      "logPosition": 1,
+      "positionAnchor": {
+        "first": 4,
+        "position": 12,
+        "compared": 5,
+        "matched": 5,
+        "mismatched": 0,
+        "distinctive": 3,
+        "source": "prefix-bounds",
+        "visible": 20,
+        "candidates": 1,
+        "epoch": 10,
+        "moves": 0,
+        "worldRevision": 0,
+        "revision": 1
+      },
+      "confirmed": true,
+      "waiting": false,
+      "issues": [],
+      "wrong": [],
+      "reader": "timer-trained",
+      "ms": 1241.5133999999998
+    },
+    {
+      "file": "011-move08.jpg",
+      "stable": true,
+      "expected": {
+        "position": 12,
+        "life": 3,
+        "chests": 1
+      },
+      "parsed": {
+        "position": null,
+        "life": null,
+        "chests": [],
+        "hand": [],
+        "die": null,
+        "pathType": null,
+        "length": null
+      },
+      "logPosition": 1,
+      "positionAnchor": null,
+      "confirmed": false,
+      "waiting": true,
+      "issues": [
+        "Waiting for the choice to close: the hand behind it has not been read."
+      ],
+      "wrong": [],
+      "ms": 507.2846000000027
+    },
+    {
+      "file": "012-move09.jpg",
+      "stable": true,
+      "expected": {
+        "position": 12,
+        "life": 3,
+        "chests": 1
+      },
+      "parsed": {
+        "position": null,
+        "life": null,
+        "chests": [],
+        "hand": [],
+        "die": null,
+        "pathType": null,
+        "length": null
+      },
+      "logPosition": 1,
+      "positionAnchor": null,
+      "confirmed": false,
+      "waiting": true,
+      "issues": [
+        "Waiting for the game animation to finish."
+      ],
+      "wrong": [],
+      "ms": 6.38300000000163
+    },
+    {
+      "file": "013-move10.jpg",
+      "stable": true,
+      "expected": {
+        "position": 14,
+        "life": 3,
+        "chests": 1
+      },
+      "parsed": {
+        "position": 14,
+        "life": 3,
+        "chests": [
+          2
+        ],
+        "hand": [
+          12,
+          4,
+          202,
+          202
+        ],
+        "die": 3,
+        "pathType": "normal",
+        "length": 80
+      },
+      "logPosition": 1,
+      "positionAnchor": {
+        "first": 8,
+        "position": 14,
+        "compared": 6,
+        "matched": 6,
+        "mismatched": 0,
+        "distinctive": 4,
+        "source": "visual-log-patterns",
+        "visible": 20,
+        "candidates": 2,
+        "epoch": 13,
+        "moves": 0,
+        "worldRevision": 0,
+        "revision": 1
+      },
+      "confirmed": true,
+      "waiting": false,
+      "issues": [],
+      "wrong": [],
+      "reader": "timer-trained",
+      "ms": 2076.9166000000005
+    },
+    {
+      "file": "014-move11.jpg",
+      "stable": true,
+      "expected": {
+        "position": 14,
+        "life": 3,
+        "chests": 1
+      },
+      "parsed": {
+        "position": 14,
+        "life": 3,
+        "chests": [
+          3
+        ],
+        "hand": [
+          12,
+          4,
+          202
+        ],
+        "die": 3,
+        "pathType": "normal",
+        "length": 80
+      },
+      "logPosition": 1,
+      "positionAnchor": {
+        "first": 8,
+        "position": 14,
+        "compared": 6,
+        "matched": 6,
+        "mismatched": 0,
+        "distinctive": 4,
+        "source": "visual-log-patterns",
+        "visible": 20,
+        "candidates": 2,
+        "epoch": 14,
+        "moves": 0,
+        "worldRevision": 0,
+        "revision": 1
+      },
+      "confirmed": true,
+      "waiting": false,
+      "issues": [],
+      "wrong": [],
+      "reader": "timer-trained",
+      "ms": 1343.8126999999986
+    },
+    {
+      "file": "015-move12.jpg",
+      "stable": true,
+      "expected": {
+        "position": 17,
+        "life": 3,
+        "chests": 1
+      },
+      "parsed": {
+        "position": 17,
+        "life": 3,
+        "chests": [
+          3
+        ],
+        "hand": [
+          12,
+          4,
+          202
+        ],
+        "die": 2,
+        "pathType": "normal",
+        "length": 80
+      },
+      "logPosition": 1,
+      "positionAnchor": {
+        "first": 12,
+        "position": 17,
+        "compared": 7,
+        "matched": 7,
+        "mismatched": 0,
+        "distinctive": 5,
+        "source": "visual-log-patterns",
+        "visible": 20,
+        "candidates": 2,
+        "epoch": 15,
+        "moves": 0,
+        "worldRevision": 0,
+        "revision": 1
+      },
+      "confirmed": true,
+      "waiting": false,
+      "issues": [],
+      "wrong": [],
+      "reader": "timer-trained",
+      "ms": 1214.5829000000012
+    },
+    {
+      "file": "016-move13.jpg",
+      "stable": true,
+      "expected": {
+        "position": 17,
+        "life": 3,
+        "chests": 1
+      },
+      "parsed": {
+        "position": 17,
+        "life": 3,
+        "chests": [
+          4
+        ],
+        "hand": [
+          12,
+          4
+        ],
+        "die": 2,
+        "pathType": "normal",
+        "length": 80
+      },
+      "logPosition": 1,
+      "positionAnchor": {
+        "first": 12,
+        "position": 17,
+        "compared": 7,
+        "matched": 7,
+        "mismatched": 0,
+        "distinctive": 5,
+        "source": "visual-log-patterns",
+        "visible": 20,
+        "candidates": 2,
+        "epoch": 16,
+        "moves": 0,
+        "worldRevision": 0,
+        "revision": 1
+      },
+      "confirmed": true,
+      "waiting": false,
+      "issues": [],
+      "wrong": [],
+      "reader": "timer-trained",
+      "ms": 1324.5480000000025
+    },
+    {
+      "file": "017-move14.jpg",
+      "stable": true,
+      "expected": {
+        "position": 19,
+        "life": 3,
+        "chests": 1
+      },
+      "parsed": {
+        "position": 19,
+        "life": 3,
+        "chests": [
+          4
+        ],
+        "hand": [
+          12,
+          4,
+          15,
+          2
+        ],
+        "die": 3,
+        "pathType": "normal",
+        "length": 80
+      },
+      "logPosition": 1,
+      "positionAnchor": {
+        "first": 12,
+        "position": 19,
+        "compared": 7,
+        "matched": 7,
+        "mismatched": 0,
+        "distinctive": 6,
+        "source": "visual-log-patterns",
+        "visible": 20,
+        "candidates": 2,
+        "epoch": 17,
+        "moves": 0,
+        "worldRevision": 0,
+        "revision": 1
+      },
+      "confirmed": true,
+      "waiting": false,
+      "issues": [],
+      "wrong": [],
+      "reader": "timer-trained",
+      "ms": 1156.8513999999996
+    },
+    {
+      "file": "018-move15.jpg",
+      "stable": true,
+      "expected": {
+        "position": 23,
+        "life": 3,
+        "chests": 2
+      },
+      "parsed": {
+        "position": 23,
+        "life": 3,
+        "chests": [
+          4,
+          3
+        ],
+        "hand": [
+          12,
+          15,
+          2
+        ],
+        "die": 3,
+        "pathType": "normal",
+        "length": 80
+      },
+      "logPosition": 1,
+      "positionAnchor": {
+        "first": 16,
+        "position": 23,
+        "compared": 8,
+        "matched": 8,
+        "mismatched": 0,
+        "distinctive": 7,
+        "source": "visual-log-patterns",
+        "visible": 20,
+        "candidates": 3,
+        "epoch": 18,
+        "moves": 0,
+        "worldRevision": 0,
+        "revision": 1
+      },
+      "confirmed": true,
+      "waiting": false,
+      "issues": [],
+      "wrong": [],
+      "reader": "timer-trained",
+      "ms": 1435.6335
+    },
+    {
+      "file": "019-move16.jpg",
+      "stable": true,
+      "expected": {
+        "position": 26,
+        "life": 3,
+        "chests": 2
+      },
+      "parsed": {
+        "position": 26,
+        "life": 3,
+        "chests": [
+          4,
+          3
+        ],
+        "hand": [
+          12,
+          15,
+          2
+        ],
+        "die": 3,
+        "pathType": "normal",
+        "length": 80
+      },
+      "logPosition": 1,
+      "positionAnchor": {
+        "first": 20,
+        "position": 26,
+        "compared": 9,
+        "matched": 9,
+        "mismatched": 0,
+        "distinctive": 7,
+        "source": "visual-log-patterns",
+        "visible": 20,
+        "candidates": 3,
+        "epoch": 19,
+        "moves": 0,
+        "worldRevision": 0,
+        "revision": 1
+      },
+      "confirmed": true,
+      "waiting": false,
+      "issues": [],
+      "wrong": [],
+      "reader": "timer-trained",
+      "ms": 1232.4905000000035
+    },
+    {
+      "file": "020-move17.jpg",
+      "stable": true,
+      "expected": {
+        "position": 28,
+        "life": 4,
+        "chests": 2
+      },
+      "parsed": {
+        "position": null,
+        "life": null,
+        "chests": [],
+        "hand": [],
+        "die": null,
+        "pathType": null,
+        "length": null
+      },
+      "logPosition": 1,
+      "positionAnchor": null,
+      "confirmed": false,
+      "waiting": true,
+      "issues": [
+        "Waiting for the game animation to finish."
+      ],
+      "wrong": [],
+      "ms": 6.098100000002887
+    },
+    {
+      "file": "021-move18.jpg",
+      "stable": true,
+      "expected": {
+        "position": 31,
+        "life": 4,
+        "chests": 2
+      },
+      "parsed": {
+        "position": 31,
+        "life": 4,
+        "chests": [
+          4,
+          3
+        ],
+        "hand": [
+          12,
+          15,
+          22
+        ],
+        "die": 4,
+        "pathType": "normal",
+        "length": 80
+      },
+      "logPosition": 1,
+      "positionAnchor": {
+        "first": 24,
+        "position": 31,
+        "compared": 9,
+        "matched": 9,
+        "mismatched": 0,
+        "distinctive": 7,
+        "source": "visual-log-patterns",
+        "visible": 20,
+        "candidates": 4,
+        "epoch": 21,
+        "moves": 0,
+        "worldRevision": 0,
+        "revision": 1
+      },
+      "confirmed": true,
+      "waiting": false,
+      "issues": [],
+      "wrong": [],
+      "reader": "timer-trained",
+      "ms": 1231.0986000000012
+    },
+    {
+      "file": "022-move19.jpg",
+      "stable": true,
+      "expected": {
+        "position": 31,
+        "life": 4,
+        "chests": 2
+      },
+      "parsed": {
+        "position": null,
+        "life": null,
+        "chests": [],
+        "hand": [],
+        "die": null,
+        "pathType": null,
+        "length": null
+      },
+      "logPosition": 1,
+      "positionAnchor": null,
+      "confirmed": false,
+      "waiting": true,
+      "issues": [
+        "Waiting for the game animation to finish."
+      ],
+      "wrong": [],
+      "ms": 5.264699999999721
+    },
+    {
+      "file": "023-move20.jpg",
+      "stable": false,
+      "expected": {
+        "position": 33,
+        "life": 4,
+        "chests": 2
+      },
+      "parsed": {
+        "position": 33,
+        "life": 4,
+        "chests": [
+          4,
+          3
+        ],
+        "hand": [
+          12,
+          15,
+          2
+        ],
+        "die": 4,
+        "pathType": "normal",
+        "length": 80
+      },
+      "logPosition": 1,
+      "positionAnchor": {
+        "first": 28,
+        "position": 33,
+        "compared": 10,
+        "matched": 10,
+        "mismatched": 0,
+        "distinctive": 9,
+        "source": "visual-log-patterns",
+        "visible": 20,
+        "candidates": 4,
+        "epoch": 23,
+        "moves": 0,
+        "worldRevision": 0,
+        "revision": 1
+      },
+      "confirmed": true,
+      "waiting": false,
+      "issues": [],
+      "wrong": [],
+      "reader": "timer-trained",
+      "ms": 1185.3941000000013
+    },
+    {
+      "file": "024-move21.jpg",
+      "stable": true,
+      "expected": {
+        "position": 33,
+        "life": 4,
+        "chests": 2
+      },
+      "parsed": {
+        "position": 33,
+        "life": 4,
+        "chests": [
+          4,
+          3
+        ],
+        "hand": [
+          12,
+          15,
+          2
+        ],
+        "die": 4,
+        "pathType": "normal",
+        "length": 80
+      },
+      "logPosition": 1,
+      "positionAnchor": {
+        "first": 28,
+        "position": 33,
+        "compared": 10,
+        "matched": 10,
+        "mismatched": 0,
+        "distinctive": 9,
+        "source": "visual-log-patterns",
+        "visible": 20,
+        "candidates": 4,
+        "epoch": 24,
+        "moves": 0,
+        "worldRevision": 0,
+        "revision": 1
+      },
+      "confirmed": true,
+      "waiting": false,
+      "issues": [],
+      "wrong": [],
+      "reader": "timer-trained",
+      "ms": 1548.2665000000015
+    },
+    {
+      "file": "025-retake.jpg",
+      "stable": true,
+      "expected": {
+        "position": 33,
+        "life": 4,
+        "chests": 2
+      },
+      "parsed": {
+        "position": 33,
+        "life": 4,
+        "chests": [
+          4,
+          3
+        ],
+        "hand": [
+          12,
+          15,
+          2
+        ],
+        "die": 4,
+        "pathType": "normal",
+        "length": 80
+      },
+      "logPosition": 1,
+      "positionAnchor": {
+        "first": 28,
+        "position": 33,
+        "compared": 10,
+        "matched": 10,
+        "mismatched": 0,
+        "distinctive": 9,
+        "source": "visual-log-patterns",
+        "visible": 20,
+        "candidates": 4,
+        "epoch": 25,
+        "moves": 0,
+        "worldRevision": 0,
+        "revision": 1
+      },
+      "confirmed": true,
+      "waiting": false,
+      "issues": [],
+      "wrong": [],
+      "reader": "timer-trained",
+      "ms": 1514.6876999999986
+    },
+    {
+      "file": "026-move22.jpg",
+      "stable": true,
+      "expected": {
+        "position": 37,
+        "life": 3,
+        "chests": 2
+      },
+      "parsed": {
+        "position": 37,
+        "life": 3,
+        "chests": [
+          4,
+          3
+        ],
+        "hand": [
+          12,
+          15,
+          2
+        ],
+        "die": 5,
+        "pathType": "normal",
+        "length": 80
+      },
+      "logPosition": 1,
+      "positionAnchor": {
+        "first": 32,
+        "position": 37,
+        "compared": 10,
+        "matched": 10,
+        "mismatched": 0,
+        "distinctive": 9,
+        "source": "visual-log-patterns",
+        "visible": 20,
+        "candidates": 5,
+        "epoch": 26,
+        "moves": 0,
+        "worldRevision": 0,
+        "revision": 1
+      },
+      "confirmed": true,
+      "waiting": false,
+      "issues": [],
+      "wrong": [],
+      "reader": "timer-trained",
+      "ms": 1065.1008999999976
+    },
+    {
+      "file": "027-move23.jpg",
+      "stable": true,
+      "expected": {
+        "position": 42,
+        "life": 2,
+        "chests": 2
+      },
+      "parsed": {
+        "position": 42,
+        "life": 2,
+        "chests": [
+          4,
+          3
+        ],
+        "hand": [
+          12,
+          15,
+          2
+        ],
+        "die": 3,
+        "pathType": "normal",
+        "length": 80
+      },
+      "logPosition": 1,
+      "positionAnchor": {
+        "first": 36,
+        "position": 42,
+        "compared": 10,
+        "matched": 10,
+        "mismatched": 0,
+        "distinctive": 8,
+        "source": "visual-log-patterns",
+        "visible": 20,
+        "candidates": 5,
+        "epoch": 27,
+        "moves": 0,
+        "worldRevision": 0,
+        "revision": 1
+      },
+      "confirmed": true,
+      "waiting": false,
+      "issues": [],
+      "wrong": [],
+      "reader": "timer-trained",
+      "ms": 1192.544600000001
+    },
+    {
+      "file": "028-move24.jpg",
+      "stable": true,
+      "expected": {
+        "position": 44,
+        "life": 2,
+        "chests": 2
+      },
+      "parsed": {
+        "position": null,
+        "life": null,
+        "chests": [],
+        "hand": [],
+        "die": null,
+        "pathType": null,
+        "length": null
+      },
+      "logPosition": 1,
+      "positionAnchor": null,
+      "confirmed": false,
+      "waiting": true,
+      "issues": [
+        "Waiting for the game animation to finish."
+      ],
+      "wrong": [],
+      "ms": 4.947800000001735
+    },
+    {
+      "file": "029-move25.jpg",
+      "stable": true,
+      "expected": {
+        "position": 47,
+        "life": 2,
+        "chests": 2
+      },
+      "parsed": {
+        "position": 47,
+        "life": 2,
+        "chests": [
+          4,
+          3
+        ],
+        "hand": [
+          12,
+          15,
+          222
+        ],
+        "die": 5,
+        "pathType": "normal",
+        "length": 80
+      },
+      "logPosition": 1,
+      "positionAnchor": {
+        "first": 40,
+        "position": 47,
+        "compared": 10,
+        "matched": 10,
+        "mismatched": 0,
+        "distinctive": 8,
+        "source": "visual-log-patterns",
+        "visible": 20,
+        "candidates": 6,
+        "epoch": 29,
+        "moves": 0,
+        "worldRevision": 0,
+        "revision": 1
+      },
+      "confirmed": true,
+      "waiting": false,
+      "issues": [],
+      "wrong": [],
+      "reader": "timer-trained",
+      "ms": 1223.055600000007
+    },
+    {
+      "file": "030-move26.jpg",
+      "stable": true,
+      "expected": {
+        "position": 52,
+        "life": 1,
+        "chests": 2
+      },
+      "parsed": {
+        "position": 52,
+        "life": 1,
+        "chests": [
+          4,
+          3
+        ],
+        "hand": [
+          12,
+          15,
+          222
+        ],
+        "die": 4,
+        "pathType": "normal",
+        "length": 80
+      },
+      "logPosition": 1,
+      "positionAnchor": {
+        "first": 44,
+        "position": 52,
+        "compared": 11,
+        "matched": 11,
+        "mismatched": 0,
+        "distinctive": 9,
+        "source": "visual-log-patterns",
+        "visible": 20,
+        "candidates": 6,
+        "epoch": 30,
+        "moves": 0,
+        "worldRevision": 0,
+        "revision": 1
+      },
+      "confirmed": true,
+      "waiting": false,
+      "issues": [],
+      "wrong": [],
+      "reader": "timer-trained",
+      "ms": 1130.5308000000005
+    },
+    {
+      "file": "031-move27.jpg",
+      "stable": true,
+      "expected": {
+        "position": 50,
+        "life": 1,
+        "chests": 2
+      },
+      "parsed": {
+        "position": 50,
+        "life": 1,
+        "chests": [
+          4,
+          3
+        ],
+        "hand": [
+          15,
+          222,
+          24,
+          23,
+          22
+        ],
+        "die": 4,
+        "pathType": "normal",
+        "length": 80
+      },
+      "logPosition": 1,
+      "positionAnchor": {
+        "first": 44,
+        "position": 50,
+        "compared": 10,
+        "matched": 10,
+        "mismatched": 0,
+        "distinctive": 9,
+        "source": "visual-log-patterns",
+        "visible": 20,
+        "candidates": 6,
+        "epoch": 31,
+        "moves": 0,
+        "worldRevision": 0,
+        "revision": 1
+      },
+      "confirmed": true,
+      "waiting": false,
+      "issues": [],
+      "wrong": [],
+      "reader": "templates",
+      "ms": 1672.926800000001
+    },
+    {
+      "file": "032-move28.jpg",
+      "stable": true,
+      "expected": {
+        "position": 50,
+        "life": 1,
+        "chests": 2
+      },
+      "parsed": {
+        "position": null,
+        "life": null,
+        "chests": [],
+        "hand": [],
+        "die": null,
+        "pathType": null,
+        "length": null
+      },
+      "logPosition": 1,
+      "positionAnchor": null,
+      "confirmed": false,
+      "waiting": true,
+      "issues": [
+        "Waiting for the choice to close: the hand behind it has not been read."
+      ],
+      "wrong": [],
+      "reader": "templates",
+      "ms": 5453.136000000006
+    },
+    {
+      "file": "033-move29.jpg",
+      "stable": true,
+      "expected": {
+        "position": 50,
+        "life": 1,
+        "chests": 2
+      },
+      "parsed": {
+        "position": null,
+        "life": null,
+        "chests": [],
+        "hand": [],
+        "die": null,
+        "pathType": null,
+        "length": null
+      },
+      "logPosition": 1,
+      "positionAnchor": null,
+      "confirmed": false,
+      "waiting": true,
+      "issues": [
+        "Waiting for the game animation to finish."
+      ],
+      "wrong": [],
+      "ms": 5.188999999998487
+    },
+    {
+      "file": "034-move30.jpg",
+      "stable": true,
+      "expected": {
+        "position": 55,
+        "life": 1,
+        "chests": 3
+      },
+      "parsed": {
+        "position": 55,
+        "life": 1,
+        "chests": [],
+        "hand": [
+          15,
+          222,
+          23,
+          22
+        ],
+        "die": 4,
+        "pathType": "normal",
+        "length": 80
+      },
+      "logPosition": 1,
+      "positionAnchor": {
+        "first": 48,
+        "position": 55,
+        "compared": 10,
+        "matched": 10,
+        "mismatched": 0,
+        "distinctive": 9,
+        "source": "visual-log-patterns",
+        "visible": 20,
+        "candidates": 7,
+        "epoch": 34,
+        "moves": 0,
+        "worldRevision": 0,
+        "revision": 1
+      },
+      "confirmed": false,
+      "waiting": true,
+      "issues": [
+        "Waiting for the chest update to finish."
+      ],
+      "wrong": [],
+      "reader": "timer-trained",
+      "ms": 1275.7983000000022
+    },
+    {
+      "file": "035-move31.jpg",
+      "stable": true,
+      "expected": {
+        "position": 55,
+        "life": 1,
+        "chests": 3
+      },
+      "parsed": {
+        "position": 55,
+        "life": 1,
+        "chests": [
+          4,
+          4,
+          4
+        ],
+        "hand": [
+          15,
+          23,
+          22
+        ],
+        "die": 4,
+        "pathType": "normal",
+        "length": 80
+      },
+      "logPosition": 1,
+      "positionAnchor": {
+        "first": 48,
+        "position": 55,
+        "compared": 10,
+        "matched": 10,
+        "mismatched": 0,
+        "distinctive": 9,
+        "source": "visual-log-patterns",
+        "visible": 20,
+        "candidates": 7,
+        "epoch": 35,
+        "moves": 0,
+        "worldRevision": 0,
+        "revision": 1
+      },
+      "confirmed": true,
+      "waiting": false,
+      "issues": [],
+      "wrong": [],
+      "reader": "timer-trained",
+      "ms": 1328.2574999999997
+    },
+    {
+      "file": "036-move32.jpg",
+      "stable": true,
+      "expected": {
+        "position": 59,
+        "life": 1,
+        "chests": 3
+      },
+      "parsed": {
+        "position": 59,
+        "life": 1,
+        "chests": [
+          4,
+          4,
+          4
+        ],
+        "hand": [
+          15,
+          23,
+          22
+        ],
+        "die": 2,
+        "pathType": "normal",
+        "length": 80
+      },
+      "logPosition": 1,
+      "positionAnchor": {
+        "first": 52,
+        "position": 59,
+        "compared": 13,
+        "matched": 13,
+        "mismatched": 0,
+        "distinctive": 11,
+        "source": "visual-log-patterns",
+        "visible": 20,
+        "candidates": 7,
+        "epoch": 36,
+        "moves": 0,
+        "worldRevision": 0,
+        "revision": 1
+      },
+      "confirmed": true,
+      "waiting": false,
+      "issues": [],
+      "wrong": [],
+      "reader": "timer-trained",
+      "ms": 1202.7292000000016
+    },
+    {
+      "file": "037-move33.jpg",
+      "stable": true,
+      "expected": {
+        "position": 59,
+        "life": 1,
+        "chests": 3
+      },
+      "parsed": {
+        "position": null,
+        "life": null,
+        "chests": [],
+        "hand": [],
+        "die": null,
+        "pathType": null,
+        "length": null
+      },
+      "logPosition": 1,
+      "positionAnchor": null,
+      "confirmed": false,
+      "waiting": true,
+      "issues": [
+        "Waiting for the choice to close: the hand behind it has not been read."
+      ],
+      "wrong": [],
+      "reader": "templates",
+      "ms": 3141.1221000000005
+    },
+    {
+      "file": "038-move34.jpg",
+      "stable": true,
+      "expected": {
+        "position": 59,
+        "life": 1,
+        "chests": 3
+      },
+      "parsed": {
+        "position": 59,
+        "life": 1,
+        "chests": [
+          4,
+          4,
+          4
+        ],
+        "hand": [
+          15,
+          22,
+          11
+        ],
+        "die": 2,
+        "pathType": "normal",
+        "length": 80
+      },
+      "logPosition": 1,
+      "positionAnchor": {
+        "first": 52,
+        "position": 59,
+        "compared": 14,
+        "matched": 14,
+        "mismatched": 0,
+        "distinctive": 12,
+        "source": "visual-log-patterns",
+        "visible": 20,
+        "candidates": 7,
+        "epoch": 38,
+        "moves": 0,
+        "worldRevision": 0,
+        "revision": 1
+      },
+      "confirmed": true,
+      "waiting": false,
+      "issues": [],
+      "wrong": [],
+      "reader": "timer-trained",
+      "ms": 1366.7064000000028
+    },
+    {
+      "file": "039-move35.jpg",
+      "stable": true,
+      "expected": {
+        "position": 58,
+        "life": 2,
+        "chests": 3
+      },
+      "parsed": {
+        "position": 58,
+        "life": 2,
+        "chests": [
+          4,
+          4,
+          4
+        ],
+        "hand": [
+          15,
+          22
+        ],
+        "die": 2,
+        "pathType": "normal",
+        "length": 80
+      },
+      "logPosition": 1,
+      "positionAnchor": {
+        "first": 52,
+        "position": 58,
+        "compared": 13,
+        "matched": 13,
+        "mismatched": 0,
+        "distinctive": 11,
+        "source": "visual-log-patterns",
+        "visible": 20,
+        "candidates": 7,
+        "epoch": 39,
+        "moves": 0,
+        "worldRevision": 0,
+        "revision": 1
+      },
+      "confirmed": true,
+      "waiting": false,
+      "issues": [],
+      "wrong": [],
+      "reader": "timer-trained",
+      "ms": 1500.6972999999998
+    },
+    {
+      "file": "040-move36.jpg",
+      "stable": true,
+      "expected": {
+        "position": 58,
+        "life": 2,
+        "chests": 3
+      },
+      "parsed": {
+        "position": null,
+        "life": null,
+        "chests": [],
+        "hand": [],
+        "die": null,
+        "pathType": null,
+        "length": null
+      },
+      "logPosition": 1,
+      "positionAnchor": null,
+      "confirmed": false,
+      "waiting": true,
+      "issues": [
+        "Waiting for the game animation to finish."
+      ],
+      "wrong": [],
+      "ms": 4.8663999999989755
+    },
+    {
+      "file": "041-move37.jpg",
+      "stable": true,
+      "expected": {
+        "position": 58,
+        "life": 2,
+        "chests": 3
+      },
+      "parsed": {
+        "position": 58,
+        "life": 2,
+        "chests": [
+          4,
+          4,
+          4
+        ],
+        "hand": [
+          15,
+          6
+        ],
+        "die": 2,
+        "pathType": "normal",
+        "length": 80
+      },
+      "logPosition": 1,
+      "positionAnchor": {
+        "first": 52,
+        "position": 58,
+        "compared": 11,
+        "matched": 11,
+        "mismatched": 0,
+        "distinctive": 9,
+        "source": "visual-log-patterns",
+        "visible": 20,
+        "candidates": 7,
+        "epoch": 41,
+        "moves": 0,
+        "worldRevision": 0,
+        "revision": 1
+      },
+      "confirmed": true,
+      "waiting": false,
+      "issues": [],
+      "wrong": [],
+      "reader": "templates",
+      "ms": 2344.3327999999965
+    },
+    {
+      "file": "042-move38.jpg",
+      "stable": true,
+      "expected": {
+        "position": 64,
+        "life": 2,
+        "chests": 4
+      },
+      "parsed": {
+        "position": 64,
+        "life": 2,
+        "chests": [],
+        "hand": [
+          15
+        ],
+        "die": 2,
+        "pathType": "normal",
+        "length": 80
+      },
+      "logPosition": 1,
+      "positionAnchor": {
+        "first": 56,
+        "position": 64,
+        "compared": 13,
+        "matched": 13,
+        "mismatched": 0,
+        "distinctive": 10,
+        "source": "visual-log-patterns",
+        "visible": 20,
+        "candidates": 8,
+        "epoch": 42,
+        "moves": 0,
+        "worldRevision": 0,
+        "revision": 1
+      },
+      "confirmed": false,
+      "waiting": true,
+      "issues": [
+        "Waiting for the chest update to finish."
+      ],
+      "wrong": [],
+      "reader": "timer-trained",
+      "ms": 1646.717500000006
+    },
+    {
+      "file": "043-move39.jpg",
+      "stable": true,
+      "expected": {
+        "position": 66,
+        "life": 3,
+        "chests": 4
+      },
+      "parsed": {
+        "position": 66,
+        "life": 3,
+        "chests": [
+          4,
+          4,
+          4,
+          2
+        ],
+        "hand": [
+          15
+        ],
+        "die": 1,
+        "pathType": "normal",
+        "length": 80
+      },
+      "logPosition": 1,
+      "positionAnchor": {
+        "first": 60,
+        "position": 66,
+        "compared": 13,
+        "matched": 13,
+        "mismatched": 0,
+        "distinctive": 10,
+        "source": "visual-log-patterns",
+        "visible": 20,
+        "candidates": 8,
+        "epoch": 43,
+        "moves": 0,
+        "worldRevision": 0,
+        "revision": 1
+      },
+      "confirmed": true,
+      "waiting": false,
+      "issues": [],
+      "wrong": [],
+      "reader": "timer-trained",
+      "ms": 1636.946600000003
+    },
+    {
+      "file": "044-move40.jpg",
+      "stable": true,
+      "expected": {
+        "position": 61,
+        "life": 3,
+        "chests": 4
+      },
+      "parsed": {
+        "position": null,
+        "life": null,
+        "chests": [],
+        "hand": [],
+        "die": null,
+        "pathType": null,
+        "length": null
+      },
+      "logPosition": 1,
+      "positionAnchor": null,
+      "confirmed": false,
+      "waiting": true,
+      "issues": [
+        "Waiting for the game animation to finish."
+      ],
+      "wrong": [],
+      "ms": 5.213999999999942
+    },
+    {
+      "file": "045-move41.jpg",
+      "stable": true,
+      "expected": {
+        "position": 62,
+        "life": 3,
+        "chests": 4
+      },
+      "parsed": {
+        "position": 62,
+        "life": 3,
+        "chests": [
+          4,
+          4,
+          4,
+          2
+        ],
+        "hand": [
+          212
+        ],
+        "die": 1,
+        "pathType": "normal",
+        "length": 80
+      },
+      "logPosition": 1,
+      "positionAnchor": {
+        "first": 56,
+        "position": 62,
+        "compared": 10,
+        "matched": 10,
+        "mismatched": 0,
+        "distinctive": 8,
+        "source": "visual-log-patterns",
+        "visible": 20,
+        "candidates": 8,
+        "epoch": 45,
+        "moves": 0,
+        "worldRevision": 0,
+        "revision": 1
+      },
+      "confirmed": true,
+      "waiting": false,
+      "issues": [],
+      "wrong": [],
+      "reader": "timer-trained",
+      "ms": 1143.4616999999998
+    },
+    {
+      "file": "046-move42.jpg",
+      "stable": true,
+      "expected": {
+        "position": 63,
+        "life": 2,
+        "chests": 4
+      },
+      "parsed": {
+        "position": 63,
+        "life": 2,
+        "chests": [
+          4,
+          4,
+          4,
+          2
+        ],
+        "hand": [
+          212
+        ],
+        "die": 4,
+        "pathType": "normal",
+        "length": 80
+      },
+      "logPosition": 1,
+      "positionAnchor": {
+        "first": 56,
+        "position": 63,
+        "compared": 10,
+        "matched": 10,
+        "mismatched": 0,
+        "distinctive": 8,
+        "source": "visual-log-patterns",
+        "visible": 20,
+        "candidates": 8,
+        "epoch": 46,
+        "moves": 0,
+        "worldRevision": 0,
+        "revision": 1
+      },
+      "confirmed": true,
+      "waiting": false,
+      "issues": [],
+      "wrong": [],
+      "reader": "timer-trained",
+      "ms": 1173.1111999999994
+    },
+    {
+      "file": "047-move43.jpg",
+      "stable": true,
+      "expected": {
+        "position": 67,
+        "life": 1,
+        "chests": 4
+      },
+      "parsed": {
+        "position": 67,
+        "life": 1,
+        "chests": [
+          4,
+          4,
+          4,
+          2
+        ],
+        "hand": [
+          212
+        ],
+        "die": 5,
+        "pathType": "normal",
+        "length": 80
+      },
+      "logPosition": 1,
+      "positionAnchor": {
+        "first": 60,
+        "position": 67,
+        "compared": 12,
+        "matched": 12,
+        "mismatched": 0,
+        "distinctive": 10,
+        "source": "visual-log-patterns",
+        "visible": 20,
+        "candidates": 8,
+        "epoch": 47,
+        "moves": 0,
+        "worldRevision": 0,
+        "revision": 1
+      },
+      "confirmed": true,
+      "waiting": false,
+      "issues": [],
+      "wrong": [],
+      "reader": "timer-trained",
+      "ms": 1043.6540999999997
+    },
+    {
+      "file": "048-move44.jpg",
+      "stable": true,
+      "expected": {
+        "position": 67,
+        "life": 1,
+        "chests": 4
+      },
+      "parsed": {
+        "position": 67,
+        "life": 1,
+        "chests": [
+          4,
+          4,
+          4,
+          3
+        ],
+        "hand": [],
+        "die": 5,
+        "pathType": "normal",
+        "length": 80
+      },
+      "logPosition": 1,
+      "positionAnchor": {
+        "first": 60,
+        "position": 67,
+        "compared": 10,
+        "matched": 10,
+        "mismatched": 0,
+        "distinctive": 8,
+        "source": "visual-log-patterns",
+        "visible": 20,
+        "candidates": 8,
+        "epoch": 48,
+        "moves": 0,
+        "worldRevision": 0,
+        "revision": 1
+      },
+      "confirmed": true,
+      "waiting": false,
+      "issues": [],
+      "wrong": [],
+      "reader": "templates",
+      "ms": 2304.902000000002
+    },
+    {
+      "file": "049-move45.jpg",
+      "stable": true,
+      "expected": {
+        "position": 72,
+        "life": 1,
+        "chests": 4
+      },
+      "parsed": {
+        "position": 72,
+        "life": 1,
+        "chests": [
+          4,
+          4,
+          4,
+          3
+        ],
+        "hand": [
+          4
+        ],
+        "die": 6,
+        "pathType": "normal",
+        "length": 80
+      },
+      "logPosition": 1,
+      "positionAnchor": {
+        "first": 64,
+        "position": 72,
+        "compared": 12,
+        "matched": 12,
+        "mismatched": 0,
+        "distinctive": 11,
+        "source": "visual-log-patterns",
+        "visible": 16,
+        "candidates": 9,
+        "epoch": 49,
+        "moves": 0,
+        "worldRevision": 0,
+        "revision": 1
+      },
+      "confirmed": true,
+      "waiting": false,
+      "issues": [],
+      "wrong": [],
+      "reader": "timer-trained",
+      "ms": 892.4206000000122
+    }
+  ],
+  "gameCapture": false,
+  "gameInput": false,
+  "coldOpen": true
+}

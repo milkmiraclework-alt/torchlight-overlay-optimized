@@ -1,0 +1,11 @@
+{
+  "version": "1.3.15",
+  "checkedAt": "2026-11-03T21:49:48.398Z",
+  "frame": "reference-play",
+  "oldVisibleChestCannotUndoObservedCollection": true,
+  "retreatCannotDuplicateReward": true,
+  "rolloutValueZeroForConsumedChest": true,
+  "backgroundAnimationAndCheckpointPreserveConsumption": true,
+  "gameCapture": false,
+  "gameInput": false
+}

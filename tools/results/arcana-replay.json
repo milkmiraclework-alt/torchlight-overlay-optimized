@@ -1,6 +1,6 @@
 {
-  "version": "1.3.14",
-  "checkedAt": "2026-11-03T18:30:08.570Z",
+  "version": "1.3.15",
+  "checkedAt": "2026-11-03T21:51:04.366Z",
   "session": "2026-11-02T15-42-06",
   "frames": 49,
   "confirmed": 39,
@@ -33,12 +33,27 @@
         "length": 80
       },
       "logPosition": 1,
+      "positionAnchor": {
+        "first": 0,
+        "position": 1,
+        "compared": 6,
+        "matched": 6,
+        "mismatched": 0,
+        "distinctive": 3,
+        "source": "prefix-bounds",
+        "visible": 16,
+        "candidates": 1,
+        "epoch": 1,
+        "moves": 0,
+        "worldRevision": 0,
+        "revision": 1
+      },
       "confirmed": true,
       "waiting": false,
       "issues": [],
       "wrong": [],
       "reader": "timer-trained",
-      "ms": 2105.8902
+      "ms": 2203.2852
     },
     {
       "file": "002-retake.jpg",
@@ -64,12 +79,27 @@
         "length": 80
       },
       "logPosition": 1,
+      "positionAnchor": {
+        "first": 0,
+        "position": 1,
+        "compared": 6,
+        "matched": 6,
+        "mismatched": 0,
+        "distinctive": 3,
+        "source": "prefix-bounds",
+        "visible": 16,
+        "candidates": 1,
+        "epoch": 1,
+        "moves": 0,
+        "worldRevision": 0,
+        "revision": 1
+      },
       "confirmed": true,
       "waiting": false,
       "issues": [],
       "wrong": [],
       "reader": "timer-trained",
-      "ms": 810.4735000000001
+      "ms": 777.5579000000002
     },
     {
       "file": "003-position.jpg",
@@ -95,12 +125,27 @@
         "length": 80
       },
       "logPosition": 1,
+      "positionAnchor": {
+        "first": 0,
+        "position": 1,
+        "compared": 6,
+        "matched": 6,
+        "mismatched": 0,
+        "distinctive": 3,
+        "source": "prefix-bounds",
+        "visible": 16,
+        "candidates": 1,
+        "epoch": 1,
+        "moves": 0,
+        "worldRevision": 0,
+        "revision": 1
+      },
       "confirmed": true,
       "waiting": false,
       "issues": [],
       "wrong": [],
       "reader": "timer-trained",
-      "ms": 744.8944000000001
+      "ms": 736.2705000000001
     },
     {
       "file": "004-move01.jpg",
@@ -126,12 +171,13 @@
         "length": 80
       },
       "logPosition": 6,
+      "positionAnchor": null,
       "confirmed": true,
       "waiting": false,
       "issues": [],
       "wrong": [],
       "reader": "timer-trained",
-      "ms": 782.9987000000001
+      "ms": 705.6005000000005
     },
     {
       "file": "005-move02.jpg",
@@ -157,6 +203,7 @@
         "length": 80
       },
       "logPosition": 6,
+      "positionAnchor": null,
       "confirmed": false,
       "waiting": true,
       "issues": [
@@ -164,7 +211,7 @@
       ],
       "wrong": [],
       "reader": "timer-trained",
-      "ms": 236.3135000000002
+      "ms": 217.29849999999988
     },
     {
       "file": "006-move03.jpg",
@@ -190,12 +237,13 @@
         "length": 80
       },
       "logPosition": 6,
+      "positionAnchor": null,
       "confirmed": true,
       "waiting": false,
       "issues": [],
       "wrong": [],
       "reader": "timer-trained",
-      "ms": 3545.6793
+      "ms": 3794.6396000000004
     },
     {
       "file": "007-move04.jpg",
@@ -222,12 +270,13 @@
         "length": 80
       },
       "logPosition": 7,
+      "positionAnchor": null,
       "confirmed": true,
       "waiting": false,
       "issues": [],
       "wrong": [],
       "reader": "timer-trained",
-      "ms": 1363.3652999999995
+      "ms": 1486.7386999999999
     },
     {
       "file": "008-move05.jpg",
@@ -253,12 +302,13 @@
         "length": 80
       },
       "logPosition": 5,
+      "positionAnchor": null,
       "confirmed": true,
       "waiting": false,
       "issues": [],
       "wrong": [],
       "reader": "timer-trained",
-      "ms": 1302.6533999999992
+      "ms": 1304.5388000000003
     },
     {
       "file": "009-move06.jpg",
@@ -285,12 +335,13 @@
         "length": 80
       },
       "logPosition": 8,
+      "positionAnchor": null,
       "confirmed": true,
       "waiting": false,
       "issues": [],
       "wrong": [],
       "reader": "timer-trained",
-      "ms": 1264.8132999999998
+      "ms": 1266.071399999999
     },
     {
       "file": "010-move07.jpg",
@@ -317,12 +368,13 @@
         "length": 80
       },
       "logPosition": 12,
+      "positionAnchor": null,
       "confirmed": true,
       "waiting": false,
       "issues": [],
       "wrong": [],
       "reader": "timer-trained",
-      "ms": 1104.0918000000001
+      "ms": 1074.0584
     },
     {
       "file": "011-move08.jpg",
@@ -349,12 +401,13 @@
         "length": 80
       },
       "logPosition": 12,
+      "positionAnchor": null,
       "confirmed": true,
       "waiting": false,
       "issues": [],
       "wrong": [],
       "reader": "timer-trained",
-      "ms": 354.59029999999984
+      "ms": 414.91640000000007
     },
     {
       "file": "012-move09.jpg",
@@ -381,6 +434,7 @@
         "length": 80
       },
       "logPosition": 12,
+      "positionAnchor": null,
       "confirmed": false,
       "waiting": true,
       "issues": [
@@ -388,7 +442,7 @@
       ],
       "wrong": [],
       "reader": "timer-trained",
-      "ms": 2815.9708999999984
+      "ms": 2529.9277999999995
     },
     {
       "file": "013-move10.jpg",
@@ -415,12 +469,13 @@
         "length": 80
       },
       "logPosition": 14,
+      "positionAnchor": null,
       "confirmed": true,
       "waiting": false,
       "issues": [],
       "wrong": [],
       "reader": "timer-trained",
-      "ms": 1222.0247999999992
+      "ms": 1177.193800000001
     },
     {
       "file": "014-move11.jpg",
@@ -446,12 +501,13 @@
         "length": 80
       },
       "logPosition": 14,
+      "positionAnchor": null,
       "confirmed": true,
       "waiting": false,
       "issues": [],
       "wrong": [],
       "reader": "timer-trained",
-      "ms": 3900.3914000000004
+      "ms": 3660.5962
     },
     {
       "file": "015-move12.jpg",
@@ -477,12 +533,13 @@
         "length": 80
       },
       "logPosition": 17,
+      "positionAnchor": null,
       "confirmed": true,
       "waiting": false,
       "issues": [],
       "wrong": [],
       "reader": "timer-trained",
-      "ms": 1047.0960000000014
+      "ms": 1171.5606000000007
     },
     {
       "file": "016-move13.jpg",
@@ -507,12 +564,13 @@
         "length": 80
       },
       "logPosition": 17,
+      "positionAnchor": null,
       "confirmed": true,
       "waiting": false,
       "issues": [],
       "wrong": [],
       "reader": "timer-trained",
-      "ms": 1002.7301000000007
+      "ms": 1347.5299999999988
     },
     {
       "file": "017-move14.jpg",
@@ -539,12 +597,13 @@
         "length": 80
       },
       "logPosition": 19,
+      "positionAnchor": null,
       "confirmed": true,
       "waiting": false,
       "issues": [],
       "wrong": [],
       "reader": "timer-trained",
-      "ms": 1189.5341000000008
+      "ms": 960.8774000000012
     },
     {
       "file": "018-move15.jpg",
@@ -571,12 +630,13 @@
         "length": 80
       },
       "logPosition": 23,
+      "positionAnchor": null,
       "confirmed": true,
       "waiting": false,
       "issues": [],
       "wrong": [],
       "reader": "timer-trained",
-      "ms": 1317.020199999999
+      "ms": 1150.2057999999997
     },
     {
       "file": "019-move16.jpg",
@@ -603,12 +663,13 @@
         "length": 80
       },
       "logPosition": 26,
+      "positionAnchor": null,
       "confirmed": true,
       "waiting": false,
       "issues": [],
       "wrong": [],
       "reader": "timer-trained",
-      "ms": 965.7819000000018
+      "ms": 1176.8476999999984
     },
     {
       "file": "020-move17.jpg",
@@ -635,6 +696,7 @@
         "length": 80
       },
       "logPosition": 28,
+      "positionAnchor": null,
       "confirmed": false,
       "waiting": true,
       "issues": [
@@ -645,7 +707,7 @@
         "life"
       ],
       "reader": "timer-trained",
-      "ms": 6.321800000001531
+      "ms": 4.6270000000004075
     },
     {
       "file": "021-move18.jpg",
@@ -672,12 +734,13 @@
         "length": 80
       },
       "logPosition": 31,
+      "positionAnchor": null,
       "confirmed": true,
       "waiting": false,
       "issues": [],
       "wrong": [],
       "reader": "timer-trained",
-      "ms": 1029.7444000000032
+      "ms": 911.7111000000004
     },
     {
       "file": "022-move19.jpg",
@@ -704,6 +767,7 @@
         "length": 80
       },
       "logPosition": 31,
+      "positionAnchor": null,
       "confirmed": false,
       "waiting": true,
       "issues": [
@@ -711,7 +775,7 @@
       ],
       "wrong": [],
       "reader": "timer-trained",
-      "ms": 227.31370000000243
+      "ms": 178.21540000000095
     },
     {
       "file": "023-move20.jpg",
@@ -738,12 +802,13 @@
         "length": 80
       },
       "logPosition": 33,
+      "positionAnchor": null,
       "confirmed": true,
       "waiting": false,
       "issues": [],
       "wrong": [],
       "reader": "timer-trained",
-      "ms": 1060.850599999998
+      "ms": 950.315300000002
     },
     {
       "file": "024-move21.jpg",
@@ -770,12 +835,13 @@
         "length": 80
       },
       "logPosition": 33,
+      "positionAnchor": null,
       "confirmed": true,
       "waiting": false,
       "issues": [],
       "wrong": [],
       "reader": "timer-trained",
-      "ms": 3921.1486000000004
+      "ms": 3177.2092999999986
     },
     {
       "file": "025-retake.jpg",
@@ -802,12 +868,13 @@
         "length": 80
       },
       "logPosition": 33,
+      "positionAnchor": null,
       "confirmed": true,
       "waiting": false,
       "issues": [],
       "wrong": [],
       "reader": "timer-trained",
-      "ms": 994.9351999999999
+      "ms": 851.9921000000031
     },
     {
       "file": "026-move22.jpg",
@@ -834,12 +901,13 @@
         "length": 80
       },
       "logPosition": 37,
+      "positionAnchor": null,
       "confirmed": true,
       "waiting": false,
       "issues": [],
       "wrong": [],
       "reader": "timer-trained",
-      "ms": 988.1420999999973
+      "ms": 991.3690999999963
     },
     {
       "file": "027-move23.jpg",
@@ -866,12 +934,13 @@
         "length": 80
       },
       "logPosition": 42,
+      "positionAnchor": null,
       "confirmed": true,
       "waiting": false,
       "issues": [],
       "wrong": [],
       "reader": "timer-trained",
-      "ms": 951.7917999999991
+      "ms": 869.7917000000016
     },
     {
       "file": "028-move24.jpg",
@@ -898,6 +967,7 @@
         "length": 80
       },
       "logPosition": 44,
+      "positionAnchor": null,
       "confirmed": false,
       "waiting": true,
       "issues": [
@@ -907,7 +977,7 @@
         "position"
       ],
       "reader": "timer-trained",
-      "ms": 4.576000000000931
+      "ms": 4.601300000002084
     },
     {
       "file": "029-move25.jpg",
@@ -934,12 +1004,13 @@
         "length": 80
       },
       "logPosition": 47,
+      "positionAnchor": null,
       "confirmed": true,
       "waiting": false,
       "issues": [],
       "wrong": [],
       "reader": "timer-trained",
-      "ms": 1073.8467999999993
+      "ms": 907.511599999998
     },
     {
       "file": "030-move26.jpg",
@@ -966,12 +1037,13 @@
         "length": 80
       },
       "logPosition": 52,
+      "positionAnchor": null,
       "confirmed": true,
       "waiting": false,
       "issues": [],
       "wrong": [],
       "reader": "timer-trained",
-      "ms": 1205.8411999999953
+      "ms": 925.7987999999968
     },
     {
       "file": "031-move27.jpg",
@@ -1000,12 +1072,13 @@
         "length": 80
       },
       "logPosition": 50,
+      "positionAnchor": null,
       "confirmed": true,
       "waiting": false,
       "issues": [],
       "wrong": [],
       "reader": "timer-trained",
-      "ms": 1409.9812999999995
+      "ms": 988.4693000000043
     },
     {
       "file": "032-move28.jpg",
@@ -1034,6 +1107,7 @@
         "length": 80
       },
       "logPosition": 50,
+      "positionAnchor": null,
       "confirmed": false,
       "waiting": true,
       "issues": [
@@ -1041,7 +1115,7 @@
       ],
       "wrong": [],
       "reader": "timer-trained",
-      "ms": 3435.0570000000007
+      "ms": 2754.0674
     },
     {
       "file": "033-move29.jpg",
@@ -1070,6 +1144,7 @@
         "length": 80
       },
       "logPosition": 50,
+      "positionAnchor": null,
       "confirmed": false,
       "waiting": true,
       "issues": [
@@ -1077,7 +1152,7 @@
       ],
       "wrong": [],
       "reader": "timer-trained",
-      "ms": 3308.883299999994
+      "ms": 2597.0175000000017
     },
     {
       "file": "034-move30.jpg",
@@ -1106,12 +1181,13 @@
         "length": 80
       },
       "logPosition": 55,
+      "positionAnchor": null,
       "confirmed": true,
       "waiting": false,
       "issues": [],
       "wrong": [],
       "reader": "timer-trained",
-      "ms": 1195.2171999999991
+      "ms": 990.4670000000042
     },
     {
       "file": "035-move31.jpg",
@@ -1139,12 +1215,13 @@
         "length": 80
       },
       "logPosition": 55,
+      "positionAnchor": null,
       "confirmed": true,
       "waiting": false,
       "issues": [],
       "wrong": [],
       "reader": "timer-trained",
-      "ms": 4467.4725000000035
+      "ms": 3238.195099999997
     },
     {
       "file": "036-move32.jpg",
@@ -1172,12 +1249,13 @@
         "length": 80
       },
       "logPosition": 59,
+      "positionAnchor": null,
       "confirmed": true,
       "waiting": false,
       "issues": [],
       "wrong": [],
       "reader": "timer-trained",
-      "ms": 1252.3881000000038
+      "ms": 955.2968000000037
     },
     {
       "file": "037-move33.jpg",
@@ -1205,6 +1283,7 @@
         "length": 80
       },
       "logPosition": 59,
+      "positionAnchor": null,
       "confirmed": false,
       "waiting": true,
       "issues": [
@@ -1212,7 +1291,7 @@
       ],
       "wrong": [],
       "reader": "timer-trained",
-      "ms": 190.7980000000025
+      "ms": 174.5092999999979
     },
     {
       "file": "038-move34.jpg",
@@ -1240,12 +1319,13 @@
         "length": 80
       },
       "logPosition": 59,
+      "positionAnchor": null,
       "confirmed": true,
       "waiting": false,
       "issues": [],
       "wrong": [],
       "reader": "timer-trained",
-      "ms": 4025.8218999999954
+      "ms": 3584.039899999996
     },
     {
       "file": "039-move35.jpg",
@@ -1272,12 +1352,13 @@
         "length": 80
       },
       "logPosition": 58,
+      "positionAnchor": null,
       "confirmed": true,
       "waiting": false,
       "issues": [],
       "wrong": [],
       "reader": "timer-trained",
-      "ms": 1023.2067000000025
+      "ms": 858.3804000000018
     },
     {
       "file": "040-move36.jpg",
@@ -1304,6 +1385,7 @@
         "length": 80
       },
       "logPosition": 58,
+      "positionAnchor": null,
       "confirmed": false,
       "waiting": true,
       "issues": [
@@ -1311,7 +1393,7 @@
       ],
       "wrong": [],
       "reader": "timer-trained",
-      "ms": 268.62059999999474
+      "ms": 240.42299999999523
     },
     {
       "file": "041-move37.jpg",
@@ -1338,12 +1420,13 @@
         "length": 80
       },
       "logPosition": 58,
+      "positionAnchor": null,
       "confirmed": true,
       "waiting": false,
       "issues": [],
       "wrong": [],
       "reader": "templates",
-      "ms": 5162.505600000004
+      "ms": 5065.921300000002
     },
     {
       "file": "042-move38.jpg",
@@ -1370,12 +1453,13 @@
         "length": 80
       },
       "logPosition": 64,
+      "positionAnchor": null,
       "confirmed": true,
       "waiting": false,
       "issues": [],
       "wrong": [],
       "reader": "timer-trained",
-      "ms": 2014.7021000000095
+      "ms": 1723.9683000000005
     },
     {
       "file": "043-move39.jpg",
@@ -1402,12 +1486,13 @@
         "length": 80
       },
       "logPosition": 66,
+      "positionAnchor": null,
       "confirmed": true,
       "waiting": false,
       "issues": [],
       "wrong": [],
       "reader": "timer-trained",
-      "ms": 1136.9744000000064
+      "ms": 1102.3459999999977
     },
     {
       "file": "044-move40.jpg",
@@ -1434,6 +1519,7 @@
         "length": 80
       },
       "logPosition": 61,
+      "positionAnchor": null,
       "confirmed": false,
       "waiting": true,
       "issues": [
@@ -1443,7 +1529,7 @@
         "position"
       ],
       "reader": "timer-trained",
-      "ms": 5.611300000004121
+      "ms": 4.497899999994843
     },
     {
       "file": "045-move41.jpg",
@@ -1470,12 +1556,13 @@
         "length": 80
       },
       "logPosition": 62,
+      "positionAnchor": null,
       "confirmed": true,
       "waiting": false,
       "issues": [],
       "wrong": [],
       "reader": "timer-trained",
-      "ms": 1049.6882000000041
+      "ms": 1038.7338999999993
     },
     {
       "file": "046-move42.jpg",
@@ -1502,12 +1589,13 @@
         "length": 80
       },
       "logPosition": 63,
+      "positionAnchor": null,
       "confirmed": true,
       "waiting": false,
       "issues": [],
       "wrong": [],
       "reader": "timer-trained",
-      "ms": 1166.534599999999
+      "ms": 1147.8522999999986
     },
     {
       "file": "047-move43.jpg",
@@ -1534,12 +1622,13 @@
         "length": 80
       },
       "logPosition": 67,
+      "positionAnchor": null,
       "confirmed": true,
       "waiting": false,
       "issues": [],
       "wrong": [],
       "reader": "timer-trained",
-      "ms": 1239.9485000000132
+      "ms": 1069.6057999999903
     },
     {
       "file": "048-move44.jpg",
@@ -1564,12 +1653,13 @@
         "length": 80
       },
       "logPosition": 67,
+      "positionAnchor": null,
       "confirmed": true,
       "waiting": false,
       "issues": [],
       "wrong": [],
       "reader": "templates",
-      "ms": 1884.5782999999938
+      "ms": 1863.145199999999
     },
     {
       "file": "049-move45.jpg",
@@ -1596,12 +1686,13 @@
         "length": 80
       },
       "logPosition": 72,
+      "positionAnchor": null,
       "confirmed": true,
       "waiting": false,
       "issues": [],
       "wrong": [],
       "reader": "timer-trained",
-      "ms": 809.863599999997
+      "ms": 820.3046000000031
     }
   ],
   "gameCapture": false,

@@ -1,11 +1,13 @@
 {
-  "version": "1.3.14",
-  "checkedAt": "2026-11-03T18:35:07.938Z",
+  "version": "1.3.15",
+  "checkedAt": "2026-11-03T21:54:08.440Z",
   "checks": [
     "arcana-refill",
     "arcana-single",
     "arcana-hand",
+    "arcana-cold-start",
     "arcana-game",
+    "arcana-author-core",
     "arcana",
     "arcana-fallback",
     "suite",

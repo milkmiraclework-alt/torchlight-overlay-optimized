@@ -1,10 +1,11 @@
 {
   "version": "1.3.15",
-  "checkedAt": "2026-11-03T21:13:20.182Z",
+  "checkedAt": "2026-11-03T21:46:40.898Z",
   "packagedArchive": null,
   "electron": "44.5.1",
   "node": "24.21.0",
   "originalByteHashesVerified": true,
+  "externalOriginalInstallNotRequired": true,
   "cases": 23,
   "legalMappings": 191,
   "originalActionsRanksAndSamplesMatch": true,
@@ -12,6 +13,8 @@
   "goldCountNeverShownAsRainbow": true,
   "unknownRoutesAndLocalEffectsFallBack": true,
   "threeImprovedModesPreserved": true,
+  "exhaustedExactSearchUsesAuthorCore": true,
+  "observedRefillBudgetRespected": true,
   "inputUnchanged": true,
   "gameCapture": false,
   "gameInput": false

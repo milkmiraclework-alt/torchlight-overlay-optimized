@@ -1,0 +1,31 @@
+{
+  "checkedAt": "2026-11-03T21:56:34.157Z",
+  "scope": "Discovery of other public Torchlight Tarot Path helpers; no unmeasured quality or speed ranking.",
+  "repositories": [
+    {
+      "name": "Timer-Lol/Arcana-Helper",
+      "url": "https://github.com/Timer-Lol/Arcana-Helper",
+      "localVersion": "1.1.19",
+      "evidence": "Author-approved local package unpacked; original recognition and strategy modules tested independently and inside the packaged app.",
+      "selectedForComparison": true
+    },
+    {
+      "name": "unbilivebIi/arcana-advisor",
+      "url": "https://github.com/unbilivebIi/arcana-advisor",
+      "release": "v1.15.5",
+      "releaseUrl": "https://github.com/unbilivebIi/arcana-advisor/releases/tag/v1.15.5",
+      "releasePublishedAt": "2026-10-30T14:28:18Z",
+      "treeFiles": [
+        "README.md"
+      ],
+      "asset": {
+        "name": "ArcanaAdvisor_exe.zip",
+        "size": 164593179
+      },
+      "sourceForPolicyComparisonAvailable": false,
+      "qualityCompared": false
+    }
+  ],
+  "gameCapture": false,
+  "gameInput": false
+}
