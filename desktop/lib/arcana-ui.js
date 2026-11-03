@@ -1,13 +1,13 @@
 'use strict';
 const D=window.TartarusDesktop,$=id=>document.getElementById(id);
-let snapshot=null,model=null,definitions=[],effects=[],editing=-1,frame=null,aligning=false,points=[],saving=false,dirty=false;
+let snapshot=null,model=null,definitions=[],effects=[],editing=-1,frame=null,aligning=false,points=[],saving=false,dirty=false,exactEditing=false;
 const tierNames=['?','Green','Blue','Purple','Gold','Red','Rainbow'];
 function status(text,warn=false){$('status').textContent=text;$('status').classList.toggle('warn',warn);}
-async function command(cmd,value){try{return await D.arcana(cmd,value);}catch(error){status(error.message,true);throw error;}}
+async function command(cmd,value){try{return await D.arcana(cmd,value);}catch(error){status(error.message.replace(/^Error invoking remote method '[^']+': Error: /,''),true);throw error;}}
 function current(){
  const next=structuredClone(model);
  const number=id=>$(id).value.trim()===''?null:Number($(id).value);
- const position=number('position');next.position=position===null?null:position-1;next.life=number('life');next.die=number('die');
+ const position=number('position');if(!model.localHorizon||exactEditing)next.position=position===null?null:position-1;next.life=number('life');next.die=number('die');
  const length=number('length');if(Number.isInteger(length)&&length>=2&&length<=400)next.path=Array.from({length},(_,i)=>next.path[i]||{kind:'unknown'});
  next.lengthConfirmed=$('length-confirmed').checked;
  next.chests=$('chests').value.trim()?$('chests').value.trim().split(/[\s,;]+/).map(Number):[];
@@ -19,14 +19,16 @@ function current(){
 function render(s){
  if(!s){status('Arcana is inactive. Select Arcana in Settings.');return;}
  snapshot=s;definitions=s.cards||definitions;effects=s.tileEffects||effects;if(s.model&&!saving&&!dirty){model=structuredClone(s.model);renderModel();}
- const names={waiting:'Waiting for the Tarot Path screen.',reading:'Reading the Arcana picture…',thinking:'Comparing paths and card use…',advice:s.move,check:s.reason,error:s.reason};
+ const names={waiting:s.reason||'Waiting for the Tarot Path screen.',reading:'Reading the Arcana picture…',thinking:'Comparing paths and card use…',advice:s.move,check:s.reason,error:s.reason};
  status(names[s.phase]||s.phase,s.phase==='check'||s.phase==='error');
  $('move').textContent=s.move||'Advice';$('expected').textContent=s.expected||'';$('notice').textContent=s.notice||'';
  $('options').textContent=(s.options||[]).slice(0,8).map(o=>`${o.label}: ${o.mean.toFixed(2)} rarity points`).join('\n');
 }
 function renderModel(){
+ const local=!!model.localHorizon&&!exactEditing;$('position-label').hidden=local;$('path-setup').hidden=local;$('automatic-path').hidden=!model.localHorizon;
+ $('automatic-description').textContent=model.positionConfirmed?`Current tile: ${model.position+1}. Reading the route pattern automatically. Cell labels use game tile numbers.`:'YOU marks your current tile; +1, +2… are distances ahead. Reading the route pattern automatically.';
  $('position').value=model.position+1;$('life').value=model.life;$('die').value=model.die??'';
- $('length').value=model.path.length;$('length-confirmed').checked=!!model.lengthConfirmed;
+ $('length').value=local?'':model.path.length;$('length-confirmed').checked=!!model.lengthConfirmed;
  $('preset').value=[80,60,96,56].includes(model.path.length)?String(model.path.length):'custom';
  $('chests').value=model.chests.join(' ');$('confirmed').checked=!!model.confirmed;
  $('card').replaceChildren(...definitions.map(c=>new Option(c.name,String(c.id))));
@@ -54,11 +56,11 @@ function renderModel(){
  // positions and can be aligned independently of this correction grid.
  for(let i=low;i<high;i++){
   const tile=model.path[i]||{kind:'unknown'},b=document.createElement('button');
-  b.textContent=`${i+1}: ${tile.kind==='chest'?tierNames[tile.tier]:tile.kind}`;
+  b.textContent=`${model.localHorizon?(i===center?'YOU':`${i>center?'+':''}${i-center}`):i+1}: ${tile.kind==='chest'?tierNames[tile.tier]:tile.kind==='note'?'Notes ×'+tile.amount:tile.kind}`;
   b.className=(tile.kind==='chest'?`tier${tile.tier}`:'')+(i===center?' current':'')+(snapshot?.target===i?' best':'');
   b.onclick=()=>edit(i);nodes.push(b);
  }
- $('tiles').replaceChildren(...nodes);$('coverage').textContent=`${known.length} / ${model.path.length} tiles known. Hidden tiles are not treated as confirmed rewards.`;
+ $('tiles').replaceChildren(...nodes);$('coverage').textContent=model.localHorizon?`${known.length} visible tiles recognised. ${model.positionConfirmed?'Current tile: '+(model.position+1)+'.':'Labels show distances from YOU.'} Reading the route pattern…`:`${known.length} / ${model.path.length} tiles known. Current tile: ${model.position+1}.${model.pathMode?.confirmed?' Route: '+model.pathMode.type+'.':''}`;
 }
 function edit(index){
  model=current();editing=index;const tile=model.path[index]||{kind:'unknown'};
@@ -79,7 +81,8 @@ $('pending-kind').onchange=()=>{if(!model)return;model=current();dirty=true;rend
 $('pending-source').onchange=()=>{if(!model)return;model=current();dirty=true;};
 $('add-offer').onclick=()=>{if(!model)return;model=current();if(model.pending?.kind!=='choose')model.pending={kind:'choose',cards:[]};if(model.pending.cards.length>=10)return;model.pending.cards.push(Number($('card').value));dirty=true;renderModel();};
 $('preset').onchange=()=>{if($('preset').value!=='custom')$('length').value=$('preset').value;dirty=true;$('length-confirmed').checked=true;};
-$('apply').onclick=async()=>{if(!model)return;model=current();saving=true;try{await command('correct',model);dirty=false;}catch{}finally{saving=false;}};
+$('apply').onclick=async()=>{if(!model)return;model=current();saving=true;try{await command('correct',model);dirty=false;}catch{}finally{saving=false;if(!dirty){const latest=await D.arcana('get').catch(()=>null);if(latest?.state)render(latest.state);}}};
+$('exact-path').onclick=()=>{exactEditing=true;renderModel();$('length').value='';$('length-confirmed').checked=false;};
 async function picture(){const p=await command('picture');if(!p?.data){status('No picture yet. Read the screen first.',true);return;}frame=p;const canvas=$('canvas');canvas.width=p.width;canvas.height=p.height;canvas.hidden=false;canvas.getContext('2d').putImageData(new ImageData(new Uint8ClampedArray(p.data),p.width,p.height),0,0);}
 $('picture').onclick=()=>{void picture().catch(()=>{});};
 $('align').onclick=async()=>{try{await picture();aligning=true;points=[];$('calibration').textContent='Click the leftmost tile, its neighbour down/right, then the tile up/right from the first. Set First visible tile to the index of the first click.';}catch{}};

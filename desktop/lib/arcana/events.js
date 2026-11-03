@@ -8,11 +8,11 @@ function parse(lines){
   const animation=/\bS9Taro HandleOrderAni Start Step=(\d+) Type=(\w+)/.exec(line);
   if(animation)out.push({kind:'animation',step:Number(animation[1]),type:animation[2]});
   else if(/\bS9Taro HandleOrderAni All done\b/.test(line))out.push({kind:'settled'});
-  else if(/\bS9ChooseCard Run\b/.test(line))out.push({kind:'choice'});
-  else if(/\bS9ChooseCard Hide\b/.test(line))out.push({kind:'choice-close'});
+  else if(/\bS9ChooseCard Run\b|\d+_S9ChooseCard Anim_Show(?: Start|End)\b/.test(line))out.push({kind:'choice'});
+  else if(/\bS9ChooseCard Hide\b|\d+_S9ChooseCard Anim_Hide(?: Start|End)\b/.test(line))out.push({kind:'choice-close'});
   else if(/\bS9CardPlayStart\b|ProtoId = 5551\b/.test(line))out.push({kind:'new'});
-  else if(/\bS9Taro Run\b/.test(line))out.push({kind:'open'});
-  else if(/\bS9Taro Hide\b|S9Taro_C_BtnClose\b|\bS9FinalPlayStart\b|\bS9AbandonPlay\b|ProtoId = 555[56]\b/.test(line))out.push({kind:'close'});
+  else if(/\bS9Taro Run\b|\bOpenView S9Taro\b/.test(line))out.push({kind:'open'});
+  else if(/\bS9Taro Hide\b|\bCloseTraoView\b|S9Taro_C_BtnClose\b|\bS9FinalPlayStart\b|\bS9AbandonPlay\b|ProtoId = 555[56]\b/.test(line))out.push({kind:'close'});
   else if(/S9Taro_C_BtnLocation\b|S9Taro_C_BtnLook\b/.test(line))out.push({kind:'open'});
   else if(/\bS9DrawCard\b|\bS9ThrowCard\b|\bS9Action\b|ProtoId = 555[234]\b/.test(line))out.push({kind:'move'});
  }

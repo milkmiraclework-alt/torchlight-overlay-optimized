@@ -1,6 +1,6 @@
 {
-  "version": "1.3.12",
-  "checkedAt": "2026-11-02T15:46:47.837Z",
+  "version": "1.3.14",
+  "checkedAt": "2026-11-03T18:33:27.991Z",
   "checks": [
     "arcana",
     "arcana-terminal",
@@ -8,6 +8,7 @@
     "arcana-endgame",
     "arcana-upgrade-value",
     "arcana-runtime",
+    "arcana-marks",
     "native-capture",
     "window-capture",
     "gpu-capture",
@@ -24,6 +25,7 @@
     "pick-box",
     "picture-retry",
     "profile-import",
+    "vorax-journal",
     "window-position",
     "instrument-reader",
     "app-updates",
@@ -46,10 +48,17 @@
     "worker-lifecycle",
     "bundled-site",
     "arcana-vision",
+    "arcana-route",
     "arcana-capture-fallback",
     "arcana-hand",
     "arcana-popup",
-    "arcana-refill"
+    "arcana-refill",
+    "arcana-life",
+    "arcana-single-hand",
+    "arcana-state",
+    "arcana-fast-hand",
+    "arcana-visuals",
+    "arcana-local"
   ],
   "gameCapture": false,
   "gameInput": false

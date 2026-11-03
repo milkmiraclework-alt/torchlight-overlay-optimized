@@ -1,0 +1,25 @@
+{
+  "version": "1.3.14",
+  "checkedAt": "2026-11-03T18:31:19.539Z",
+  "gameCapture": false,
+  "gameInput": false,
+  "source": "Saved game frame painted inside an owned window",
+  "actualWindowsGraphicsCapture": true,
+  "hand": [
+    13
+  ],
+  "die": 6,
+  "life": 1,
+  "chests": [
+    6,
+    6,
+    4,
+    4
+  ],
+  "handDieLifeChecksCleared": true,
+  "automaticAdvice": true,
+  "manualCorrectionRequired": false,
+  "relativeLabelsVerified": true,
+  "zeroCaptureChildrenAfterStop": true,
+  "annotationsDestroyedAfterStop": true
+}

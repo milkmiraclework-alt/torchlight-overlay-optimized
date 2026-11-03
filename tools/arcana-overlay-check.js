@@ -14,10 +14,10 @@ async function connect(url){
  const profile=path.join(root,'sandbox','arcana-e2e-'+Date.now());fs.mkdirSync(profile,{recursive:true});
  const log=path.join(profile,'UE_game.log'),html=path.join(profile,'fake-game.html');fs.writeFileSync(log,'');fs.writeFileSync(path.join(profile,'settings.json'),JSON.stringify({consent:{version:4},mode:'auto',record:false,autoUpdates:false}));
  fs.writeFileSync(html,'<!doctype html><title>ArcanaOverlayCheckOnly</title><style>html,body{margin:0;background:#201431;color:white}h1{padding:40px}div{width:90px;height:60px;margin:20px;background:#826232}</style><h1>OWNED ARCANA CAPTURE CHECK</h1><div></div><div></div>');
- let output='',page,overlay,arcana;
+ let output='',page,overlay,arcana,marks;
  const env={...process.env};delete env.ELECTRON_RUN_AS_NODE;
  const forcedFallback=process.argv.includes('--fallback');
- const gameFrameAt=process.argv.indexOf('--game-frame'),handOnly=process.argv.includes('--hand-only'),dieAt=process.argv.indexOf('--refill-die'),refillDie=dieAt<0?6:Number(process.argv[dieAt+1]);let gameFrame=null;
+ const gameFrameAt=process.argv.indexOf('--game-frame'),handOnly=process.argv.includes('--hand-only'),singleHand=process.argv.includes('--single-hand'),dieAt=process.argv.indexOf('--refill-die'),refillDie=dieAt<0?6:Number(process.argv[dieAt+1]);let gameFrame=null;
  assert(Number.isInteger(refillDie)&&refillDie>=1&&refillDie<=6,'Invalid test refill die');
  if(gameFrameAt>=0){const prefix=path.resolve(process.argv[gameFrameAt+1]),meta=JSON.parse(fs.readFileSync(prefix+'.json','utf8').replace(/^\uFEFF/,'')),pixels=fs.readFileSync(prefix+'.rgba');gameFrame=meta;
   fs.writeFileSync(html,`<!doctype html><title>ArcanaOverlayCheckOnly</title><style>html,body{margin:0;width:100%;height:100%;overflow:hidden}canvas{width:100%;height:100%}</style><canvas width="${meta.width}" height="${meta.height}"></canvas><script>const bytes=Uint8ClampedArray.from(atob('${pixels.toString('base64')}'),c=>c.charCodeAt(0));document.querySelector('canvas').getContext('2d').putImageData(new ImageData(bytes,${meta.width},${meta.height}),0,0);</script>`);
@@ -33,34 +33,39 @@ async function connect(url){
   await wait(()=>page.evaluate("typeof window.TartarusDesktop!=='undefined'&&TartarusDesktop.game().then(g=>g.running)"),'Owned game window not found');
   await wait(()=>overlay.evaluate("typeof window.Overlay!=='undefined'"),'Overlay preload missing');
   fs.appendFileSync(log,'S9Taro Run\n');
-  await wait(()=>page.evaluate("TartarusDesktop.suiteInfo().then(s=>s.mode==='arcana'&&s.arcana?.running&&s.arcana.phase==='check')"),'Arcana did not read the synthetic window');
+  await wait(()=>page.evaluate("TartarusDesktop.suiteInfo().then(s=>s.mode==='arcana'&&s.arcana?.running&&"+(gameFrame?"s.arcana.phase==='advice'":"s.arcana.phase==='check'")+")"),'Arcana did not read the owned window',1200);
   if(forcedFallback){await wait(()=>page.evaluate('TartarusDesktop.suiteInfo().then(s=>s.arcana.fallbackReads>=3)'),'Owned fallback captures did not complete');const reads=await page.evaluate('TartarusDesktop.suiteInfo().then(s=>s.arcana.fallbackReads)');assert.equal(reads,3,'Packaged fallback retries did not stop at three captures');await pause(700);assert.equal(await page.evaluate('TartarusDesktop.suiteInfo().then(s=>s.arcana.fallbackReads)'),reads,'Packaged fallback kept capturing an unrecognised screen');}
   assert.equal(await page.evaluate('TartarusCapture.state.window'),'off','Tartarus kept capturing in Arcana mode');
   await overlay.evaluate("Overlay.command('board')");
   const target=await wait(async()=>{const ts=await targets();return ts.find(t=>t.url.endsWith('/desktop/lib/arcana.html'));},'No Arcana correction page');arcana=await connect(target.webSocketDebuggerUrl);
   await wait(()=>arcana.evaluate("typeof window.TartarusDesktop!=='undefined'&&document.readyState==='complete'"),'Arcana page did not finish loading');
-  const state=await arcana.evaluate("TartarusDesktop.arcana('get')");assert.equal(state.active,true);assert.equal(state.state.model.confirmed,false);assert.ok(state.state.model.frameKey);
+  const correct=async value=>{const current=await arcana.evaluate("TartarusDesktop.arcana('get')");return arcana.evaluate(`TartarusDesktop.arcana('correct',${JSON.stringify({...value,frameKey:current.state.model.frameKey})})`);};
+  const state=await arcana.evaluate("TartarusDesktop.arcana('get')");assert.equal(state.active,true);assert.equal(state.state.model.confirmed,!!gameFrame);assert.ok(state.state.model.frameKey);
   if(gameFrame){
    assert.equal(state.state.recognition.capture,'windows-graphics-capture','Actual GPU capture was bypassed');
-   const expectedHand=handOnly?[22,13,4,21]:[1,204,213,201],expectedDie=handOnly?refillDie:1;
-   assert.deepEqual(state.state.model.hand,expectedHand);assert.equal(state.state.model.die,expectedDie);assert.equal(state.state.model.life,2);
-   assert(!state.state.issues.some(reason=>/Check the hand|refill die|remaining life|life marker/.test(reason)),'Complete GPU reading still requested hand/die/life confirmation: '+state.state.issues.join(' '));
-   if(!handOnly){await arcana.evaluate(`TartarusDesktop.arcana('correct',${JSON.stringify({...state.state.model,position:41,lengthConfirmed:true,confirmed:true})})`);
-   await wait(()=>arcana.evaluate("TartarusDesktop.arcana('get').then(s=>s.state.phase==='advice')"),'Captured game pixels did not produce advice');}
+   const expectedHand=singleHand?[13]:handOnly?[22,13,4,21]:[1,204,213,201],expectedDie=singleHand?6:handOnly?refillDie:1,expectedLife=singleHand?1:2;
+   if(process.argv.includes('--save-owned')){const ownedPicture=await arcana.evaluate("TartarusDesktop.arcana('picture').then(p=>({width:p.width,height:p.height,data:Array.from(p.data)}))");fs.writeFileSync(path.join(profile,'owned-capture.json'),JSON.stringify({width:ownedPicture.width,height:ownedPicture.height}));fs.writeFileSync(path.join(profile,'owned-capture.rgba'),Buffer.from(ownedPicture.data));}
+   assert.deepEqual(state.state.model.hand,expectedHand);assert.equal(state.state.model.die,expectedDie);assert.equal(state.state.model.life,expectedLife);
+   if(singleHand)assert.deepEqual(state.state.model.chests,[6,6,4,4]);
+   assert(!(state.state.issues||[]).some(reason=>/Check the hand|refill die|remaining life|life marker/.test(reason)),'Complete GPU reading still requested hand/die/life confirmation: '+(state.state.issues||[]).join(' '));
+   const markTarget=await wait(async()=>{const ts=await targets();return ts.find(t=>t.url.endsWith('/arcana-marks.html'));},'No packaged tile annotation window');marks=await connect(markTarget.webSocketDebuggerUrl);
+   await wait(()=>marks.evaluate("document.querySelectorAll('.tile').length>=5&&document.querySelector('.current')?.textContent.includes('YOU')"),'Packaged cell labels are missing or use an unproved global position');
+   assert.equal(state.state.model.localHorizon,true);assert.equal(state.state.model.lengthConfirmed,false);
    await page.evaluate("TartarusDesktop.setConsent({withdrawn:true,at:new Date().toISOString()})");
    await wait(()=>page.evaluate("TartarusDesktop.suiteInfo().then(s=>!s.arcana.running&&s.arcana.retiring===0&&s.arcana.captureChildren===0)"),'GPU capture child survived stop');
-   fs.writeFileSync(path.join(root,handOnly?(dieAt<0?'tools/results/arcana-gpu-hand-e2e.json':'tools/results/arcana-gpu-refill-e2e.json'):'tools/results/arcana-gpu-e2e.json'),JSON.stringify({version,checkedAt:new Date().toISOString(),gameCapture:false,gameInput:false,source:dieAt<0?'Saved game frame painted inside an owned window':'Saved game frame with independent refill texture painted inside an owned window',actualWindowsGraphicsCapture:true,hand:expectedHand,die:expectedDie,life:2,handDieLifeChecksCleared:true,adviceAfterInitialConfirmation:!handOnly,zeroCaptureChildrenAfterStop:true},null,2)+'\n');
-   console.log(handOnly?'PASS: user hand frame through owned window and actual GPU capture: all four cards/die/life read, no hand/die/life uncertainty remains, initial board guards preserved; stop leaves no capture child.':'PASS: saved game pixels through an owned window and actual GPU capture, complete confident hand/die/life and actual solver advice after initial path confirmation; stop leaves no capture child.');return;
+   await wait(async()=>!(await targets()).some(t=>t.url.endsWith('/arcana-marks.html')),'Cell annotations survived capture stop');
+   fs.writeFileSync(path.join(root,singleHand?'tools/results/arcana-gpu-single-e2e.json':handOnly?(dieAt<0?'tools/results/arcana-gpu-hand-e2e.json':'tools/results/arcana-gpu-refill-e2e.json'):'tools/results/arcana-gpu-e2e.json'),JSON.stringify({version,checkedAt:new Date().toISOString(),gameCapture:false,gameInput:false,source:dieAt<0?'Saved game frame painted inside an owned window':'Saved game frame with independent refill texture painted inside an owned window',actualWindowsGraphicsCapture:true,hand:expectedHand,die:expectedDie,life:expectedLife,chests:state.state.model.chests,handDieLifeChecksCleared:true,automaticAdvice:true,manualCorrectionRequired:false,relativeLabelsVerified:true,zeroCaptureChildrenAfterStop:true,annotationsDestroyedAfterStop:true},null,2)+'\n');
+   console.log('PASS: saved frame through owned window and actual GPU capture; automatic hand/die/life/chests, solver advice and relative cell labels; stop leaves no capture child or annotation window.');return;
   }
   const model={...state.state.model,position:7,life:3,die:2,chests:[5],hand:[204],path:Array.from({length:8},()=>({kind:'empty'})),confirmed:true,lengthConfirmed:true};
-  await arcana.evaluate(`TartarusDesktop.arcana('correct',${JSON.stringify(model)})`);
+  await correct(model);
   await wait(()=>overlay.evaluate("document.getElementById('body').textContent.includes('25.00 rarity points')"),'Packaged Arcana did not show the final rainbow upgrade');
   await overlay.evaluate('setTimeout(()=>location.reload(),10)');await pause(1000);
   await wait(()=>overlay.evaluate("document.getElementById('body')?.textContent.includes('25.00 rarity points')").catch(()=>false),'Reloading the overlay lost the current Arcana advice');
   await wait(()=>arcana.evaluate("document.getElementById('position').value==='8'"),'Arcana position UI must use game tile numbers starting at 1');
   await arcana.evaluate("document.querySelector('#tiles button').click();document.getElementById('tile-kind').value='effect';document.getElementById('tile-kind').dispatchEvent(new Event('change'));document.getElementById('tile-effect').value='1021';document.querySelector('#editor button[type=submit]').click();document.getElementById('confirmed').checked=true;document.getElementById('apply').click()");
   await wait(()=>arcana.evaluate("TartarusDesktop.arcana('get').then(s=>s.state.model.path[0].kind==='effect'&&s.state.model.path[0].id===1021)"),'Note tile correction did not reach the worker');
-  await arcana.evaluate(`TartarusDesktop.arcana('correct',${JSON.stringify({...model,hand:[21,204]})})`);
+  await correct({...model,hand:[21,204]});
   await wait(()=>arcana.evaluate("document.getElementById('hand').textContent.includes('1/3/5')"),'Choice note was not rendered');
   await arcana.evaluate("document.getElementById('pending-kind').value='choose';document.getElementById('pending-kind').dispatchEvent(new Event('change'));for(const id of [1,3,5]){document.getElementById('card').value=String(id);document.getElementById('add-offer').click();}document.getElementById('pending-source').value='0';document.getElementById('pending-source').dispatchEvent(new Event('change'));document.getElementById('confirmed').checked=true;document.getElementById('apply').click()");
   await wait(()=>overlay.evaluate("document.getElementById('body').textContent.includes('Choose')&&document.getElementById('body').textContent.includes('25.00 rarity points')"),'Offered-card choice was not evaluated');
@@ -68,7 +73,7 @@ async function connect(url){
   const picture=await arcana.evaluate("TartarusDesktop.arcana('picture').then(p=>({width:p.width,height:p.height,n:p.data.length}))");assert.ok(picture.width>200&&picture.height>200);assert.equal(picture.n,picture.width*picture.height*4);
   const rejected=await arcana.evaluate(`TartarusDesktop.arcana('correct',${JSON.stringify({...model,frameKey:'stale'})}).then(()=>false,()=>true)`);assert.equal(rejected,true);
   fs.appendFileSync(log,'S9ChooseCard Run\n');
-  await wait(()=>arcana.evaluate("TartarusDesktop.arcana('get').then(s=>s.state.phase==='check'&&s.state.issues?.some(t=>t.includes('offered cards')))"),'A game choice did not invoke the popup reader');
+  await wait(()=>arcana.evaluate("TartarusDesktop.arcana('get').then(s=>['check','waiting'].includes(s.state.phase)&&s.state.issues?.some(t=>/offered cards|offered notes/.test(t)))"),'A game choice did not invoke the popup reader');
   fs.appendFileSync(log,'S9ChooseCard Hide\n');
   fs.appendFileSync(log,'ProtoId = 5552\n');
   await wait(()=>overlay.evaluate("!document.getElementById('body').textContent.includes('25.00 rarity points')"),'Old advice survived a game move');
@@ -80,5 +85,5 @@ async function connect(url){
   const report={version,checkedAt:new Date().toISOString(),gameCapture:false,gameInput:false,ownedWindowCapture:true,forcedOwnedFallback:forcedFallback,boundedFallbackRetries:forcedFallback,automaticArcanaRouting:true,automaticPopupRouting:true,actualWorkerAdvice:true,packagedFinalUpgrade:25,adviceRestoredAfterOverlayReload:true,oneBasedPositionUI:true,noteEffectCorrectionUI:true,offeredCardChoiceUI:true,staleCorrectionRejected:true,sharedCaptureStop:true,zeroInactiveWorkers:true,noScreenshotRecording:true};
   fs.writeFileSync(path.join(root,forcedFallback?'tools/results/arcana-fallback-e2e.json':'tools/results/arcana-e2e.json'),JSON.stringify(report,null,2)+'\n');
   console.log('PASS: packaged Arcana auto-routing, native/fallback capture of owned fake window, actual solver and overlay, final upgrade, current-frame edit guard and shared worker/capture stop.');
- }finally{child.stdin.write('quit\n');for(const c of [page,overlay,arcana])c?.ws.close();for(let i=0;i<100&&child.exitCode===null;i++)await pause(50);if(child.exitCode===null)child.kill();fs.writeFileSync(path.join(profile,'check.log'),output);}
+ }finally{child.stdin.write('quit\n');for(const c of [page,overlay,arcana,marks])c?.ws.close();for(let i=0;i<100&&child.exitCode===null;i++)await pause(50);if(child.exitCode===null)child.kill();fs.writeFileSync(path.join(profile,'check.log'),output);}
 })().catch(e=>{console.error(e);process.exitCode=1;});

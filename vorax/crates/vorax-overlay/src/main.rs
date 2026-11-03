@@ -9,6 +9,7 @@
 
 mod draw;
 mod pipeline;
+mod telemetry;
 #[cfg(windows)]
 mod app;
 
@@ -66,7 +67,7 @@ fn preview(input: &std::path::Path, output: &std::path::Path, shelley: i32, acce
     };
     let reader: pipeline::TextReader = if use_ocr { Some(&mut read_text) } else { None };
     let plan = match p.run(&frame, None, reader) {
-        pipeline::Outcome::Advice { reading, advice, plan, read_ms } => {
+        pipeline::Outcome::Advice { reading, advice, plan, read_ms, .. } => {
             eprintln!("read in {read_ms:.0} ms, advised in {} ms: {}", advice.ms, plan.pill.as_ref().map_or(String::new(), |p| format!("{} · {}", p.main, p.sub)));
             eprintln!("board: {}", serde_json::to_string(&reading.state).unwrap());
             eprintln!("reading: {}", serde_json::to_string(&reading).unwrap());

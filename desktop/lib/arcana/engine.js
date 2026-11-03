@@ -18,11 +18,16 @@ function normalize(value){
  s.chests=value.chests.map(t=>integer(t,1,6,'chest rarity'));
  s.path=value.path.map((t,i)=>{
   if(!t||t.kind==='unknown')return {kind:'unknown'};
-  if(!['empty','chest','trap','heal','draw','random','end','effect','copy'].includes(t.kind))throw Error(`Check tile ${i}.`);
+  if(!['empty','chest','trap','heal','draw','random','end','effect','copy','note'].includes(t.kind))throw Error(`Check tile ${i}.`);
   const out={kind:t.kind};
   if(t.kind==='chest')out.tier=integer(t.tier,1,6,`tile ${i} rarity`);
   if(['trap','heal','draw'].includes(t.kind))out.amount=integer(t.amount||1,1,10,`tile ${i} amount`);
   if(t.kind==='effect'){if(!DATA.tiles[t.id])throw Error(`Unknown tile ${i} effect.`);out.id=t.id;}
+  if(t.kind==='note'){
+   out.amount=integer(t.amount,1,3,`tile ${i} note count`);
+   if(!Array.isArray(t.candidates)||!t.candidates.length||t.candidates.length>4||t.candidates.some(id=>!DATA.tiles[id]))throw Error(`Check tile ${i} note alternatives.`);
+   out.candidates=t.candidates.slice();
+  }
   if(t.used)out.used=true;return out;
  });
  // The current tile has already settled in a confirmed board. A manual
@@ -122,6 +127,7 @@ function land(s,r,depth=0){
  // Scenario events exist only inside a sampled world, never in confirmed input.
  else if(t.kind==='scenario-event')effect(s,t.event,r,depth+1);
  else if(t.kind==='random'){s.frontier=true;s.uncertain=true;}
+ else if(t.kind==='note'){s.frontier=true;s.uncertain=true;}
  else if(t.kind==='copy')s.pending={kind:'copy',cards:s.hand.slice()};
 }
 function move(s,delta,r,depth=0){if(s.life<=0)return;s.position=clamp(s.position+delta,0,s.path.length-1);land(s,r,depth);}

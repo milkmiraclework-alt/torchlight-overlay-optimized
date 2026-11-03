@@ -1,0 +1,96 @@
+{
+  "version": "1.3.14",
+  "checkedAt": "2026-11-03T18:32:01.267Z",
+  "cases": [
+    {
+      "frame": "user-222100",
+      "width": 2559,
+      "height": 1439,
+      "life": 2,
+      "source": "glyphs",
+      "learnable": true
+    },
+    {
+      "frame": "user-222100",
+      "width": 1919,
+      "height": 1079,
+      "life": 2,
+      "source": "glyphs",
+      "learnable": true
+    },
+    {
+      "frame": "user-222100",
+      "width": 1599,
+      "height": 899,
+      "life": 2,
+      "source": "glyphs",
+      "learnable": false
+    },
+    {
+      "frame": "user-222106",
+      "width": 2556,
+      "height": 1439,
+      "life": 2,
+      "source": "glyphs",
+      "learnable": true
+    },
+    {
+      "frame": "user-222106",
+      "width": 1917,
+      "height": 1079,
+      "life": 2,
+      "source": "glyphs",
+      "learnable": true
+    },
+    {
+      "frame": "user-222106",
+      "width": 1598,
+      "height": 899,
+      "life": 2,
+      "source": "glyphs",
+      "learnable": false
+    },
+    {
+      "frame": "user-222112",
+      "width": 2559,
+      "height": 1439,
+      "life": 2,
+      "source": "glyphs",
+      "learnable": true
+    },
+    {
+      "frame": "user-222112",
+      "width": 1919,
+      "height": 1079,
+      "life": 2,
+      "source": "glyphs",
+      "learnable": true
+    },
+    {
+      "frame": "user-222112",
+      "width": 1599,
+      "height": 899,
+      "life": 2,
+      "source": "glyphs",
+      "learnable": false
+    }
+  ],
+  "independentFontValues": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "manualGlyphRecoversUnknownZero": true,
+  "changedDigitsReadFresh": true,
+  "emptyCropRejected": true,
+  "conflictingLabelsRejected": true,
+  "singleMaskRejected": true,
+  "multiDigitRejected": true,
+  "ornamentsExcluded": true,
+  "gameCapture": false,
+  "gameInput": false
+}

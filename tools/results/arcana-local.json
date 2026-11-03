@@ -1,0 +1,221 @@
+{
+  "version": "1.3.14",
+  "checkedAt": "2026-11-03T18:33:27.959Z",
+  "geometry": [
+    {
+      "frame": "reference-play",
+      "width": 1600,
+      "height": 859,
+      "first": 36,
+      "connectorPairs": 4
+    },
+    {
+      "frame": "reference-play",
+      "width": 1200,
+      "height": 644,
+      "first": 36,
+      "connectorPairs": 3
+    },
+    {
+      "frame": "reference-play",
+      "width": 1000,
+      "height": 537,
+      "rejected": "insufficient visible bases",
+      "bases": 2
+    },
+    {
+      "frame": "reference-play border2",
+      "width": 1604,
+      "height": 863,
+      "first": 36,
+      "connectorPairs": 4
+    },
+    {
+      "frame": "user-222100",
+      "width": 2559,
+      "height": 1439,
+      "first": 32,
+      "connectorPairs": 3
+    },
+    {
+      "frame": "user-222100",
+      "width": 1919,
+      "height": 1079,
+      "first": 32,
+      "connectorPairs": 3
+    },
+    {
+      "frame": "user-222100",
+      "width": 1599,
+      "height": 899,
+      "first": 32,
+      "connectorPairs": 3
+    },
+    {
+      "frame": "user-222100 border2",
+      "width": 2563,
+      "height": 1443,
+      "first": 32,
+      "connectorPairs": 3
+    },
+    {
+      "frame": "user-193821",
+      "width": 2551,
+      "height": 1439,
+      "first": 36,
+      "connectorPairs": 3
+    },
+    {
+      "frame": "user-193821",
+      "width": 1913,
+      "height": 1079,
+      "first": 36,
+      "connectorPairs": 3
+    },
+    {
+      "frame": "user-193821",
+      "width": 1594,
+      "height": 899,
+      "first": 36,
+      "connectorPairs": 3
+    },
+    {
+      "frame": "user-193821 border2",
+      "width": 2555,
+      "height": 1443,
+      "first": 36,
+      "connectorPairs": 3
+    }
+  ],
+  "automatic": [
+    {
+      "frame": "reference-play",
+      "life": 2,
+      "hand": [
+        1,
+        204,
+        213,
+        201
+      ],
+      "chests": [
+        3,
+        2,
+        2,
+        1
+      ],
+      "relativePosition": 41,
+      "move": "Play hand card 4: 1 Chest of Destiny of the highest rarity among the collected ones (up to LV.2-Blue): rarity +1",
+      "issues": 0,
+      "marks": 20
+    },
+    {
+      "frame": "user-222100",
+      "life": 2,
+      "hand": [
+        22,
+        13,
+        4,
+        21
+      ],
+      "chests": [],
+      "relativePosition": 32,
+      "move": "Play hand card 1: Select any 1 Note of Arcana:  Advance 2/4/6 cells → choose Advance 2 cells → +2 cells",
+      "issues": 0,
+      "marks": 16
+    },
+    {
+      "frame": "user-193821",
+      "life": 1,
+      "hand": [
+        13
+      ],
+      "chests": [
+        6,
+        6,
+        4,
+        4
+      ],
+      "relativePosition": 42,
+      "move": "Use refill die 6 → +6 cells",
+      "issues": 0,
+      "marks": 20
+    }
+  ],
+  "blankConnectorsRejected": true,
+  "mismatchedConnectorsRejected": true,
+  "relativeCoordinates": true,
+  "totalPathLengthClaimed": false,
+  "exactTerminalSolverExcluded": true,
+  "unknownRootLandingsExcluded": true,
+  "virtualEndAndRerollExcluded": true,
+  "unchangedFrameDoesNotCompleteMove": true,
+  "decisions": [
+    {
+      "kind": "bypass_deadly_trap_for_rainbow",
+      "best": {
+        "kind": "card",
+        "index": 0,
+        "id": 2
+      },
+      "value": 25
+    },
+    {
+      "kind": "heal_before_deadly_landing",
+      "best": {
+        "kind": "card",
+        "index": 0,
+        "id": 2
+      },
+      "value": 0
+    },
+    {
+      "kind": "blue_then_held_die_to_rainbow",
+      "best": {
+        "kind": "card",
+        "index": 0,
+        "id": 2
+      },
+      "value": 26
+    },
+    {
+      "kind": "unseen_root_landing_excluded",
+      "best": {
+        "kind": "card",
+        "index": 0,
+        "id": 2
+      },
+      "value": 5
+    },
+    {
+      "kind": "planning_window_is_not_the_finish",
+      "best": {
+        "kind": "card",
+        "index": 0,
+        "id": 11
+      }
+    },
+    {
+      "kind": "depleted_life_finishes_with_actual_inventory",
+      "best": {
+        "kind": "end"
+      },
+      "value": 30
+    },
+    {
+      "kind": "actual_reward_ceiling_finishes",
+      "best": {
+        "kind": "end"
+      },
+      "value": 175
+    },
+    {
+      "kind": "random_note_requires_every_possible_landing",
+      "best": {
+        "kind": "die",
+        "delta": 1
+      }
+    }
+  ],
+  "gameCapture": false,
+  "gameInput": false
+}

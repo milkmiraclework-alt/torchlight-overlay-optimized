@@ -5,6 +5,7 @@ const jobs=[['arcana',['tools/arcana-overlay-check.js',exe]],['arcana-fallback',
 const at=process.argv.indexOf('--frames');if(at>=0)for(const [,args]of jobs)if(args[0]==='tools/overlay-check.js')args.push('--frames',path.resolve(process.argv[at+1]));
 const arcanaAt=process.argv.indexOf('--arcana-frame');if(arcanaAt>=0)jobs.unshift(['arcana-game',['tools/arcana-overlay-check.js',exe,'--game-frame',path.resolve(process.argv[arcanaAt+1])]]);
 const handAt=process.argv.indexOf('--arcana-hand-frame');if(handAt>=0)jobs.unshift(['arcana-hand',['tools/arcana-overlay-check.js',exe,'--game-frame',path.resolve(process.argv[handAt+1]),'--hand-only']]);
+const singleAt=process.argv.indexOf('--arcana-single-frame');if(singleAt>=0)jobs.unshift(['arcana-single',['tools/arcana-overlay-check.js',exe,'--game-frame',path.resolve(process.argv[singleAt+1]),'--single-hand']]);
 const refillAt=process.argv.indexOf('--arcana-refill-frame');if(refillAt>=0)jobs.unshift(['arcana-refill',['tools/arcana-overlay-check.js',exe,'--game-frame',path.resolve(process.argv[refillAt+1]),'--hand-only','--refill-die','1']]);
 if(at>=0){const folder=path.resolve(process.argv[at+1]),frame=fs.readdirSync(folder).find(f=>f.endsWith('.webp')&&fs.existsSync(path.join(folder,f+'.rgba')));if(!frame)throw Error('Native integration needs a saved RGBA frame');jobs.push(['native-reader',['tools/overlay-check.js','--standalone',exe,'--native-reader-only','--native-fixture',path.join(folder,frame)]]);}
 else if(process.argv.includes('--verify-only'))jobs.push(['native-reader',[]]);

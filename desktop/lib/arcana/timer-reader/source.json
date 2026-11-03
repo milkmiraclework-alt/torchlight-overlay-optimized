@@ -1,0 +1,17 @@
+{
+  "source": "Arcana Helper 1.1.19",
+  "author": "Timer",
+  "integration": "Authorised recognition, log tracking and route inference. Original source/model files preserved; compiled solver is not included.",
+  "files": {
+    "LICENSE": "f0ad1c4a3a170dd547267e1016a7b43edae8002d050ecb889bf5d5af3006a3b8",
+    "arcana-events.js": "b6059ec708626a0e9ecfeb72b3c17a6ddc9858467eb7b83fe5dbcfc66f8d45bf",
+    "die-model.json": "781f3c04441fe8d9f1a19e72040bd91945d2d83f7384cc1d79bf8d30aad49bb0",
+    "die-reader.js": "7dc0b2046710e33683a41ba46add77f4aac83bf7d839d6282cdc4dbe9249510b",
+    "hand-model.json": "ae27248aba80ba8798d7631f7e4679bd9eecd861cff710b5b625da97d078a7d0",
+    "hand-reader.js": "44c5b7842341576968031bf0db8628389db1661f739c77f5a2ddc6c917849109",
+    "log.js": "af652fadabc79894542e1f01519d9abc11e18bbee3e80a2e3f7cfc661d74449a",
+    "route-engine.js": "d9a09740fcdf003f11cba2d1b6d7625f9df59522edef75469a03c796950203c7",
+    "screen-model.json": "4f6937eb9910440583e9e427fd75debbfada6d43f6df6cdb1d92b1fd47c0b4f9",
+    "screen-reader.js": "0143302577e6a82fb2be1f25237f88e1518c55468110a1d6eff2cfa199009346"
+  }
+}

@@ -47,13 +47,14 @@ pub fn run(args:&[String]) {
    let started=std::time::Instant::now();
    // Capture sessions start and stop per requested board, as in Smart.3.
    let image=match if now {capture.grab(game)} else {capture.grab_stable(game)}{Ok(Some(f))=>f,_=>{send(ToUi::Unbusy);event(serde_json::json!({"event":"read","kind":"no-frame"}));continue}};
+   let captured_at=std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map_or(0,|d|d.as_millis());
    let mut text=|img:&vorax_scan::pixels::Img|ocr.as_ref().and_then(|o|o.read(img).ok()).unwrap_or_default();
    let reader:crate::pipeline::TextReader=if ocr.is_some(){Some(&mut text)}else{None};
    match pipe.run(&image,trigger.as_deref(),reader){
-    Outcome::Advice{reading,advice,plan,read_ms}=>{
+    Outcome::Advice{reading,advice,diagnostics,plan,read_ms}=>{
      let (w,h)=vorax_scan::window::windowed_game(&image).map_or((image.width,image.height),|a|(a.w as usize,a.h as usize));
-     event(serde_json::json!({"event":"read","kind":"advice","readMs":read_ms,"solveMs":advice.ms,"totalMs":started.elapsed().as_millis(),"unknown":advice.unknown.len(),"round":reading.state.round,"relook":pipe.wants_relook()}));
      send(ToUi::Show(plan,w,h));
+     event(serde_json::json!({"event":"read","kind":"advice","readMs":read_ms,"solveMs":advice.ms,"totalMs":started.elapsed().as_millis(),"capturedAt":captured_at,"unknown":advice.unknown.len(),"round":reading.state.round,"relook":pipe.wants_relook(),"analysis":crate::telemetry::snapshot(&reading,&advice,diagnostics.as_ref())}));
     },
     Outcome::Animating=>{send(ToUi::Unbusy);event(serde_json::json!({"event":"read","kind":"animating"}));},
     Outcome::NotGame=>{send(ToUi::Clear);event(serde_json::json!({"event":"read","kind":"not-game"}));}

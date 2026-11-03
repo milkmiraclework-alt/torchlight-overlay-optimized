@@ -8,8 +8,9 @@
 <header><h1>Arcana</h1><button id="read">Read screen</button><button id="picture">Show picture</button><button id="new">New board</button></header>
 <p id="status">Waiting for Arcana. Select Arcana in Settings and enable game capture.</p>
 <div class="columns"><section class="panel"><h2>Current state</h2>
-<div><label>Position (1 = first) <input id="position" type="number" min="1"></label><label>Life <input id="life" type="number" min="0" max="6"></label><label>Refill die <input id="die" type="number" min="1" max="6"></label></div>
-<div><label>Path <select id="preset"><option value="80">Normal · 80 tiles</option><option value="60">Special · 60 tiles</option><option value="96">Special · 96 tiles</option><option value="56">Special · 56 tiles</option><option value="custom">Custom</option></select></label><label>Total tiles <input id="length" type="number" min="2" max="400"></label><label><input id="length-confirmed" type="checkbox"> Path type checked</label></div>
+<div><label id="position-label">Position (1 = first) <input id="position" type="number" min="1"></label><label>Life <input id="life" type="number" min="0" max="6"></label><label>Refill die <input id="die" type="number" min="1" max="6"></label></div>
+<p id="automatic-path" hidden><span id="automatic-description">Reading the route pattern automatically.</span> <button id="exact-path" type="button">Set exact path (optional)</button></p>
+<div id="path-setup"><label>Path <select id="preset"><option value="80">Normal · 80 tiles</option><option value="60">Special · 60 tiles</option><option value="96">Special · 96 tiles</option><option value="56">Special · 56 tiles</option><option value="custom">Custom</option></select></label><label>Total tiles <input id="length" type="number" min="2" max="400"></label><label><input id="length-confirmed" type="checkbox"> Path type checked</label></div>
 <div><label>Chest tiers <input id="chests" type="text" placeholder="e.g. 2 3 4 5" size="20"></label></div>
 <small>Chest tiers: 1 green · 2 blue · 3 purple · 4 gold · 5 red · 6 rainbow.</small>
 <h2>Hand</h2><small>Left to right. Drag to reorder; click a card to remove it.</small><div id="hand"></div><label>Add card <select id="card"></select></label><button id="add">Add</button>

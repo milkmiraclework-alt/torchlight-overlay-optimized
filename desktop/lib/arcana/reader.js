@@ -1,12 +1,12 @@
 'use strict';
-const E=require('./engine'),V=require('./vision'),G=require('./geometry'),Digits=require('./digits');
+const E=require('./engine'),V=require('./vision'),G=require('./geometry'),Digits=require('./digits'),FastHand=require('./fast-hand'),Route=require('./route-log');
 const crypto=require('node:crypto');
 const clone=v=>JSON.parse(JSON.stringify(v));
 function imageKey(img){
  return `${img.width}x${img.height}:`+crypto.createHash('sha256').update(img.data).digest('hex');
 }
 function stats(img,box){
- let n=0,red=0,bright=0,purple=0,dimRed=0;for(let y=Math.max(0,Math.floor(box.y));y<Math.min(img.height,box.y+box.h);y+=2)for(let x=Math.max(0,Math.floor(box.x));x<Math.min(img.width,box.x+box.w);x+=2){const p=(y*img.width+x)*4,r=img.data[p],g=img.data[p+1],b=img.data[p+2];n++;if(r>g*1.5&&r>b*1.18&&r>160)red++;if(r>g*1.45&&r>b*.95&&r>55)dimRed++;if(r+g+b>550)bright++;if(b>r*1.3&&b>g*1.5&&b>180)purple++;}return {n,red:red/Math.max(1,n),dimRed:dimRed/Math.max(1,n),bright:bright/Math.max(1,n),purple:purple/Math.max(1,n)};
+ let n=0,red=0,bright=0,purple=0,dimRed=0,warm=0;for(let y=Math.max(0,Math.floor(box.y));y<Math.min(img.height,box.y+box.h);y+=2)for(let x=Math.max(0,Math.floor(box.x));x<Math.min(img.width,box.x+box.w);x+=2){const p=(y*img.width+x)*4,r=img.data[p],g=img.data[p+1],b=img.data[p+2];n++;if(r>g*1.5&&r>b*1.18&&r>160)red++;if(r>g*1.45&&r>b*.95&&r>55)dimRed++;if(r+g+b>550)bright++;if(b>r*1.3&&b>g*1.5&&b>180)purple++;if(r>70&&g>45&&r>b*1.3&&g>b*1.3)warm++;}return {n,red:red/Math.max(1,n),dimRed:dimRed/Math.max(1,n),bright:bright/Math.max(1,n),purple:purple/Math.max(1,n),warm:warm/Math.max(1,n)};
 }
 function patch(img,point,width){
  const vector=[];for(let y=0;y<16;y++)for(let x=0;x<12;x++){const rgb=V.sample(img,point.x+(x+.5-6)*width/12,point.y-width*1.04+(y+.5)*width*.83/16)||[0,0,0];const sum=rgb[0]+rgb[1]+rgb[2]+30;vector.push(rgb[0]/sum,rgb[1]/sum,rgb[2]/sum,Math.max(...rgb)/255);}return vector;
@@ -20,34 +20,73 @@ function observation(img,p,width,corrections){
  const s=stats(img,{x:p.x-width*.4,y:p.y-width*.95,w:width*.8,h:width*.6});
  if(s.red>.018&&s.bright>.035)return {p,tile:{kind:'trap',amount:1}};
  if(!visual.unclear&&s.bright<.006&&s.red<.003&&s.dimRed<.003)return {p,tile:{kind:'empty'}};
- return {p,tile:null};
+ return {p,tile:null,emptyEvidence:s.bright<.006&&s.red<.003&&s.dimRed<.003&&s.warm<.002&&s.purple<.02};
 }
 const sameTile=(a,b)=>a?.used&&b?.kind==='empty'||a?.kind===b?.kind&&(a.kind!=='chest'||a.tier===b.tier)&&(a.kind!=='effect'||a.id===b.id)&&(!a.amount||!b.amount||a.amount===b.amount);
 const semanticKey=s=>JSON.stringify([s.position,s.life,s.die,s.hand,s.chests,s.pending]);
-function create(){
+function create({automatic=true}={}){
+ const fastHand=FastHand.create();
  let model=E.blank(),grid=null,previousSize=null,key=null,confirmedKey=null,corrections=[],lastFrame=null,newBoard=false,expectedKey=null,expectedState=null,currentPoint=null,observations=[],provisional=[],established=false,popup=null,alignmentNeedsRead=false;
  let settledCycle=false;
- function reset(fresh=false){model=E.blank();grid=null;key=null;confirmedKey=null;lastFrame=null;newBoard=fresh;expectedKey=null;expectedState=null;currentPoint=null;observations=[];provisional=[];established=false;popup=null;alignmentNeedsRead=false;settledCycle=false;}
+ let lifeExamples=[],lifeRect=null,lastReliableLife=null,lastReliableChests=null,lastRecognition=null,lastReliableHand=null,lastReliableDie=null,chestAnchor=null;
+ let editKey=null,editSignature=null,moveRevision=0;
+ let logBoard=null;
+ let recentPopup=false;
+ let pathHistory=[],historyEpoch=null,historyRevision=0;
+ function setPopup(value){value=value||null;if(value===popup)return;recentPopup=!!popup&&!value;popup=value;confirmedKey=null;model.confirmed=false;settledCycle=false;moveRevision++;editKey=null;if(!popup)model.pending=null;}
+ const signature=s=>JSON.stringify([moveRevision,s.position,s.life,s.die,s.hand,s.chests,s.path.map(t=>t&&({kind:t.kind,tier:t.tier,amount:t.amount,id:t.id,used:!!t.used,candidates:t.candidates?.slice().sort((a,b)=>a-b)})),s.pending,!!s.localHorizon,!!s.positionConfirmed]);
+ function updateEditKey(s){const value=signature(s);if(value!==editSignature||!editKey){editSignature=value;editKey=crypto.createHash('sha256').update(value).digest('hex');}}
+ function reset(fresh=false){model=E.blank();grid=null;key=null;confirmedKey=null;lastFrame=null;newBoard=fresh;expectedKey=null;expectedState=null;currentPoint=null;observations=[];provisional=[];established=false;popup=null;recentPopup=false;pathHistory=[];historyEpoch=null;historyRevision=0;alignmentNeedsRead=false;settledCycle=false;lifeRect=null;lastReliableLife=null;lastReliableChests=null;lastReliableHand=null;lastReliableDie=null;chestAnchor=null;lastRecognition=null;editKey=null;editSignature=null;moveRevision++;}
  function read(img){
   const started=performance.now(),nextKey=imageKey(img);lastFrame=img;
+  if(logBoard?.animating&&!popup&&!recentPopup){model.confirmed=false;return {model:clone(model),issues:['Waiting for the game animation to finish.'],waiting:true,ms:performance.now()-started};}
   if(expectedKey&&nextKey===expectedKey){
-   if(settledCycle){expectedKey=null;expectedState=null;settledCycle=false;model.confirmed=true;confirmedKey=key;return {model:clone(model),issues:[],unchanged:true,ms:performance.now()-started,grid};}
+   if(settledCycle){expectedKey=null;expectedState=null;settledCycle=false;model.confirmed=true;confirmedKey=key;updateEditKey(model);return {model:clone(model),issues:[],unchanged:true,ms:performance.now()-started,grid};}
    return {model:clone(model),issues:['Waiting for the move to appear in the picture.'],waiting:true,ms:performance.now()-started};
   }
   expectedKey=null;
-  if(!expectedState&&nextKey===confirmedKey)return {model:clone(model),issues:[],unchanged:true,ms:performance.now()-started,grid};
-  const card=V.cards(img),bases=V.findBases(img),life=V.findLife(img),auto=G.grid(bases),issues=[];
+  if(!expectedState&&nextKey===key&&nextKey===confirmedKey)return {model:clone(model),issues:[],unchanged:true,ms:performance.now()-started,grid};
+  if((popup||recentPopup)&&model.lifeFresh&&model.handFresh&&model.chestsFresh&&model.die!==null&&(!logBoard?.anchored||!model.positionConfirmed||logBoard.position===model.position+1)){
+   // Choosing a note blurs the board and hand. Read the offer itself while
+   // preserving the last observed board; never OCR the blurred background.
+   const offered=V.offers(img),next=clone(model),issues=[];
+   if(!popup&&recentPopup){
+    if(offered.confident){model.confirmed=false;key=nextKey;updateEditKey(model);return {model:clone(model),issues:['Waiting for the closed choice to disappear from the picture.'],waiting:true,ms:performance.now()-started,grid};}
+    recentPopup=false;
+   }else{
+   if(!offered.confident)issues.push('Waiting for all offered notes to become clear.');
+   else{
+    const sorted=xs=>xs.slice().sort((a,b)=>a-b).join(','),offer=sorted(offered.cards);
+    const sources=next.hand.flatMap((id,i)=>{const choices=E.CARDS.get(id).choices;return choices.length&&sorted(choices)===offer?[i]:[];});
+    const partial=sources.length?[]:next.hand.flatMap((id,i)=>{const choices=E.CARDS.get(id).choices;return offered.cards.length>=3&&choices.length>offered.cards.length&&offered.cards.every(id=>choices.includes(id))?[i]:[];});
+    if(sources.length)next.pending={kind:'choose',cards:offered.cards,source:sources[0]};
+    else if(partial.length===1)next.pending={kind:'choose',cards:E.CARDS.get(next.hand[partial[0]]).choices.slice(),source:partial[0]};
+    else if(offer===sorted(next.hand))next.pending={kind:'copy',cards:next.hand.slice()};
+    else next.pending={kind:'choose',cards:offered.cards};
+   }
+   next.confirmed=issues.length===0;model=next;key=nextKey;if(next.confirmed){confirmedKey=nextKey;expectedState=null;}
+   updateEditKey(next);return {model:clone(next),issues,ms:performance.now()-started,grid,popup:true};
+   }
+  }
+  const bases=V.findBases(img),auto=G.grid(bases),card=fastHand.read(img,auto)||V.cards(img),life=V.findLife(img,bases),issues=[];
   observations=[];
+  let localMode=automatic&&(!model.lengthConfirmed||model.pathMode?.source==='game-log-patterns');
   if(auto){
    const lastRow=Math.min(5,Math.max(...bases.map(b=>G.cell(auto,G.center(b))).filter(i=>i!==null).map(i=>Math.floor(i/4))));
    for(let i=0;i<(lastRow+1)*4;i++){
     let p=G.at(auto,i);const nearest=bases.map(b=>G.center(b)).sort((a,b)=>Math.hypot(a.x-p.x,a.y-p.y)-Math.hypot(b.x-p.x,b.y-p.y))[0];
+    if(localMode&&(!nearest||Math.hypot(nearest.x-p.x,nearest.y-p.y)>auto.width*.18)&&!fastHand.hasTile(img,p))continue;
     if(nearest&&Math.hypot(nearest.x-p.x,nearest.y-p.y)<auto.width*.15)p=nearest;
     if(p.x>img.width*.12&&p.x<img.width*.88&&p.y>img.height*.07&&p.y<img.height*.76)observations.push(observation(img,p,auto.width,corrections));
    }
   }
   grid=scaleGrid(grid,previousSize,img);previousSize={width:img.width,height:img.height};
-  if(auto){
+  if(localMode){
+   const aligned=G.localGrid(img,auto,bases,V.sample);
+   if(aligned)grid=aligned;
+   else if(auto&&grid?.relative&&Math.hypot(auto.origin.x-grid.origin.x,auto.origin.y-grid.origin.y)<grid.width*.25)grid={...auto,first:grid.first,trusted:grid.trusted,relative:true};
+   else grid=auto?{...auto,first:32,trusted:false,relative:true}:null;
+  }else if(auto){
    if(grid){
     // Only translation is allowed between readings. A dragged/scrolled board
     // must retain several already known cells before its absolute row can be
@@ -65,35 +104,81 @@ function create(){
    }else grid={...auto,trusted:newBoard};
   }
   const next=clone(model);next.confirmed=false;
-  next.hand=card.hand;next.die=card.die;
+  if(localMode){next.path=Array.from({length:96},()=>({kind:'unknown'}));next.localHorizon=true;next.lengthConfirmed=false;next.positionConfirmed=false;}
+  else delete next.localHorizon;
+  next.handFresh=!!card.handConfident;next.dieFresh=card.die!==null;
+  if(next.handFresh)lastReliableHand=card.hand.slice();if(next.dieFresh)lastReliableDie=card.die;
+  next.hand=next.handFresh?card.hand:lastReliableHand?.slice()||card.hand;next.die=card.die??lastReliableDie;
   if(!card.handConfident)issues.push('Check the hand: one or more card faces are unclear.');
   if(card.die===null)issues.push('Check the refill die.');
   if(life){
-   const number=Digits.life(img,{x:life.box.x+life.box.w*1.04,y:life.box.y-life.box.h*.1,w:life.box.w*1.7,h:life.box.h*1.2});
-   next.life=number?.value??null;if(next.life===null)issues.push('Check remaining life.');
-  }else{next.life=null;issues.push('The current tile / life marker is not clear.');}
+   lifeRect={x:life.box.x+life.box.w*1.04,y:life.box.y-life.box.h*.1,w:life.box.w*1.7,h:life.box.h*1.2};
+   const number=Digits.life(img,lifeRect,lifeExamples);
+   next.lifeFresh=!!number;next.life=number?.value??lastReliableLife;
+   if(number)lastReliableLife=number.value;else issues.push('Check remaining life.');
+  }else{lifeRect=null;next.lifeFresh=false;next.life=lastReliableLife;issues.push('The current tile / life marker is not clear.');}
   currentPoint=null;
   if(grid&&life){
    const badge=G.center(life),candidates=observations.filter(({p})=>Math.abs(p.x-badge.x)<grid.width*.5&&p.y-badge.y>grid.width*.55&&p.y-badge.y<grid.width*1.6).sort((a,b)=>(Math.abs(a.p.x-badge.x)+Math.abs(a.p.y-badge.y-grid.width*.85)*.3)-(Math.abs(b.p.x-badge.x)+Math.abs(b.p.y-badge.y-grid.width*.85)*.3));
-   currentPoint=candidates[0]?.p||null;const position=currentPoint?G.cell(grid,currentPoint):null;
+   currentPoint=candidates[0]?.p||null;
+   if(automatic&&!model.manualPath&&logBoard?.anchored&&currentPoint&&grid.trusted){
+    const relative=G.cell(grid,currentPoint),target=logBoard.position-1;
+    const first=relative===null?null:(Math.floor(target/4)-Math.floor((relative-grid.first)/4))*4;
+    const anchored=first===null?null:{...grid,first,relative:false,source:'game-log',trusted:true};
+    if(anchored&&first>=0&&G.cell(anchored,currentPoint)===target){
+     grid=anchored;next.positionConfirmed=true;next.routeEpoch=logBoard.epoch;
+     if(historyEpoch!==logBoard.epoch){pathHistory=[];historyEpoch=logBoard.epoch;historyRevision=logBoard.worldRevision||0;}
+     if(historyRevision!==(logBoard.worldRevision||0)){pathHistory=pathHistory.map((t,i)=>i>target||t?.kind==='chest'&&!t.used?{kind:'unknown'}:t);historyRevision=logBoard.worldRevision||0;}
+     const chests=observations.filter(o=>o.tile?.kind==='chest').map(o=>[G.cell(grid,o.p)+1,o.tile.tier]);
+     const mode=Route.infer(logBoard,chests);next.pathMode=mode;
+     if(mode.confirmed){
+      next.path=Array.from({length:mode.length},(_,i)=>clone(pathHistory[i]||{kind:'unknown'}));
+      next.lengthConfirmed=true;delete next.localHorizon;localMode=false;
+     }else{next.path=Array.from({length:96},(_,i)=>clone(pathHistory[i]||{kind:'unknown'}));next.lengthConfirmed=false;next.localHorizon=true;localMode=true;}
+     next.worldRevision=logBoard.worldRevision||0;
+    }else{
+     // A new log position with the old on-screen column is an animation or
+     // stale capture, not a new relative board to advise on.
+     model.confirmed=false;model.lifeFresh=false;model.handFresh=false;model.dieFresh=false;model.chestsFresh=false;
+     confirmedKey=null;editKey=null;
+     return {model:clone(model),issues:['Waiting for the picture to match the current game position.'],waiting:true,ms:performance.now()-started,grid};
+    }
+   }
+   const position=currentPoint?G.cell(grid,currentPoint):null;
    if(position!==null&&position<next.path.length&&grid.trusted)next.position=position;else issues.push('Check the current tile / path alignment.');
   }else issues.push('Check the current tile / path alignment.');
   provisional=[];
   if(grid){
    for(const o of observations){const i=G.cell(grid,o.p);if(i===null||i>=next.path.length)continue;
+    if(!o.tile&&logBoard?.anchored&&grid.source==='game-log'){
+     const look=logBoard.used?.includes(i+1)?'plain':logBoard.looks.find(v=>v[0]===i+1)?.[1],hint=fastHand.tileHint(img,o.p,look,o.emptyEvidence);
+     if(hint)o.tile=hint.tile;
+    }
     const isCurrent=currentPoint&&Math.hypot(currentPoint.x-o.p.x,currentPoint.y-o.p.y)<grid.width*.1;
-    let tile=isCurrent?{kind:'empty',used:true}:o.tile||{kind:'unknown'};
-    if(tile.kind==='empty'&&next.path[i]?.kind!=='unknown'&&next.path[i]?.kind!=='empty')tile={...next.path[i],used:true};
-    next.path[i]=clone(tile);provisional.push({index:i,p:o.p,tile:clone(tile)});
+    let tile=isCurrent?{kind:'empty',used:true}:o.tile||next.path[i]||{kind:'unknown'};
+    if(tile.kind==='empty'&&next.path[i]?.kind!=='unknown'&&next.path[i]?.kind!=='empty')tile={...next.path[i],...(isCurrent||logBoard?.used?.includes(i+1)?{used:true}:{})};
+    next.path[i]=clone(tile);if(next.positionConfirmed&&grid.source==='game-log'&&tile.kind!=='unknown')pathHistory[i]=clone(tile);provisional.push({index:i,p:o.p,tile:clone(tile)});
    }
   }else issues.push('Align the visible path in Check board.');
   // The left reward chain uses fixed screen anchors. Read each of seven
   // slots independently; unrecognised decoration is not a green chest.
-  const collected=V.collected(img),chests=collected.tiers,chestConfidence=collected.confident;
-  next.chests=chests;if(!chestConfidence&&!(established&&model.chests.length===0&&chests.length===0))issues.push('Check collected chests.');
-  if(chests.length<model.chests.length)issues.push('A collected chest disappeared from the reading. Check the reward chain.');
-  if(grid?.trusted&&next.position!==model.position&&model.path[next.position]?.kind==='chest'&&!model.path[next.position].used&&model.chests.length<7&&chests.length<=model.chests.length)issues.push('A chest landing is not reflected in the reward chain.');
-  if(!next.lengthConfirmed)issues.push('Confirm the total path length in Check board.');
+  const collected=V.collected(img);let chests=collected.tiers,chestConfidence=collected.confident,rewardPending=false,chestsSource='picture';
+  const observedChests=chests.slice(),events=logBoard?.chestEvents?.filter(e=>e.sequence>(chestAnchor?.sequence??Infinity))||[];
+  if(chestAnchor?.epoch===logBoard?.epoch&&events.length&&events[0].sequence===chestAnchor.sequence+1&&events.at(-1).sequence===logBoard.chestSequence){
+   const expected=chestAnchor.chests.slice();let upgrades=0,valid=true;
+   for(const event of events){if(event.kind==='collect'&&event.tier>=1&&event.tier<=6){if(expected.length<7)expected.push(event.tier);}else if(event.kind==='upgrade')upgrades+=event.count;else valid=false;}
+   if(valid){
+    if(!upgrades&&chests.length<expected.length&&chests.every((tier,i)=>tier===expected[i])){chests=expected;chestConfidence=true;chestsSource='game-log';}
+    else if(chests.length!==expected.length||upgrades&&chests.reduce((a,b)=>a+b,0)<expected.reduce((a,b)=>a+b,0)+upgrades){chestConfidence=false;rewardPending=true;}
+   }
+  }
+  const lost=lastReliableChests!==null&&chests.length<lastReliableChests.length;
+  next.chestsFresh=!!chestConfidence&&!lost;next.observedChests=observedChests;
+  if(next.chestsFresh){next.chests=chests;lastReliableChests=chests.slice();if(logBoard)chestAnchor={epoch:logBoard.epoch,sequence:logBoard.chestSequence||0,chests:chests.slice()};}
+  else{next.chests=lastReliableChests?.slice()||model.chests.slice();issues.push(rewardPending?'Waiting for the chest update to finish.':'Check collected chests.');}
+  if(lost)issues.push('A collected chest disappeared from the reading. Check the reward chain.');
+  if(grid?.trusted&&next.position!==model.position&&model.path[next.position]?.kind==='chest'&&!model.path[next.position].used&&model.chests.length<7&&chests.length<=model.chests.length){rewardPending=true;issues.push('Waiting for the new chest to reach the reward chain.');}
+  if(!next.lengthConfirmed&&!next.localHorizon)issues.push('Confirm the total path length in Check board.');
   if(popup){
    const offered=V.offers(img);
    if(!offered.confident)issues.push('Check the offered cards in Board.');
@@ -107,29 +192,35 @@ function create(){
     }
    }
   }else if(next.pending&&semanticKey({...next,pending:null})!==semanticKey({...model,pending:null}))next.pending=null;
-  if(grid?.trusted&&next.life!==null&&next.die!==null){
+  if(!next.localHorizon&&grid?.trusted&&next.life!==null&&next.die!==null){
    for(const a of E.actions(next)){
     let target=null;if(a.kind==='die')target=Math.min(next.path.length-1,next.position+next.die);
     else if(a.kind==='card'){const c=E.CARDS.get(a.selected??a.id),e=c.events.map(id=>E.DATA.events[id]).find(e=>e.fn===100&&e.a[0]===e.a[1]);if(e)target=Math.max(0,Math.min(next.path.length-1,next.position+e.a[0]));}
     if(target!==null&&target!==next.position&&next.path[target].kind==='unknown')issues.push(`Check tile ${target+1}: a current move can land there.`);
    }
   }
-  const waiting=!!expectedState&&semanticKey(next)===expectedState&&!settledCycle;
-  if(waiting)issues.push('Waiting for the move to finish. If it gave the same result, confirm the new picture.');
+  const waiting=rewardPending||!!expectedState&&semanticKey(next)===expectedState&&!settledCycle;
+  if(waiting&&!rewardPending)issues.push('Waiting for the game picture to catch up.');
   else if(!issues.length){expectedState=null;settledCycle=false;}
   next.confirmed=issues.length===0;newBoard=false;
-  model=next;key=nextKey;alignmentNeedsRead=false;
+  lastRecognition={lifeFresh:next.lifeFresh,chestsFresh:next.chestsFresh,observedChests,chestsSource,relative:!!next.localHorizon,alignmentSource:grid?.source||null,cardReader:card.source||'templates'};
+  model=next;key=nextKey;if(next.confirmed)confirmedKey=nextKey;alignmentNeedsRead=false;
+  updateEditKey(next);
   return {model:clone(model),issues:[...new Set(issues)],waiting,ms:performance.now()-started,grid,cardMatches:card.handMatches,refill:card.dieMatch,bases:bases.length,handCount:card.handCount,rowRegular:card.rowRegular,rowCentered:card.rowCentered};
  }
  function correct(value){
   if(alignmentNeedsRead)throw Error('Read the screen after aligning the path, then check the new reading.');
   if(expectedKey)throw Error('The last picture still precedes the move. Read a new picture first.');
-  if(lastFrame&&value.frameKey!==key)throw Error('The picture changed while you were editing. Read the new picture before confirming.');
+  if(lastFrame&&(!editKey||value.frameKey!==editKey))throw Error('The board changed while you were editing. Read the new state before confirming.');
   if(grid&&!grid.trusted&&!currentPoint)throw Error('The current marker was not read. Align the path and read the screen before confirming its tiles.');
-  const next=E.normalize(value);
+  const local=!!model.localHorizon&&!value.lengthConfirmed;
+  const next=E.normalize(local?{...value,lengthConfirmed:true}:value);
+  if(local){next.localHorizon=true;next.lengthConfirmed=false;}
+  if(model.positionConfirmed&&next.position===model.position&&next.path.length===model.path.length){next.positionConfirmed=true;next.pathMode=clone(model.pathMode);next.routeEpoch=model.routeEpoch;next.worldRevision=model.worldRevision||0;}
+  else if(next.lengthConfirmed)next.manualPath=true;
   if(!next.confirmed)throw Error('Check the confirmation box after correcting the reading.');
   const edited=next.path.flatMap((tile,i)=>tile.kind!=='unknown'&&JSON.stringify(tile)!==JSON.stringify(model.path[i])?[i]:[]);
-  if(grid&&currentPoint){
+  if(!local&&grid&&currentPoint){
    const local=G.cell({...grid,first:0},currentPoint),first=local===null?null:(Math.floor(next.position/4)-Math.floor(local/4))*4;
    if(first===null||first<0)throw Error('The position does not match the current marker. Check the tile number or align the path.');
    {
@@ -149,21 +240,37 @@ function create(){
    }
    corrections=corrections.slice(-128);
   }
-  model=next;established=true;confirmedKey=key;expectedState=null;settledCycle=false;return clone(model);
+  if(lastFrame&&lifeRect){const example=Digits.rememberLife(lastFrame,lifeRect,next.life);if(example)lifeExamples=lifeExamples.concat(example).slice(-24);}
+  lastReliableLife=next.life;lastReliableChests=next.chests.slice();lastReliableHand=next.hand.slice();lastReliableDie=next.die;if(logBoard)chestAnchor={epoch:logBoard.epoch,sequence:logBoard.chestSequence||0,chests:next.chests.slice()};next.lifeFresh=true;next.handFresh=true;next.dieFresh=true;next.chestsFresh=true;
+  model=next;if(next.positionConfirmed&&next.routeEpoch===historyEpoch)pathHistory=clone(next.path);editSignature=signature(next);editKey=crypto.createHash('sha256').update(editSignature).digest('hex');established=true;confirmedKey=key;expectedState=null;settledCycle=false;return clone(model);
  }
  return {read,correct,reset,
-  expectChange(){expectedKey=key;expectedState=semanticKey(model);model.confirmed=false;settledCycle=false;},
+  expectChange(){expectedKey=key;expectedState=semanticKey(model);model.confirmed=false;settledCycle=false;moveRevision++;editKey=null;},
   settleCycle(){if(expectedState&&model.position===model.path.length-1)settledCycle=true;},
-  setPopup(value){popup=value||null;confirmedKey=null;model.confirmed=false;settledCycle=false;if(!popup)model.pending=null;},
+  setPopup,
   calibrate(value){
    if(!lastFrame)throw Error('Read a picture before aligning the path.');
    const aligned=G.calibration(value,lastFrame);
    if(grid&&!grid.trusted)for(const o of provisional)if(JSON.stringify(model.path[o.index])===JSON.stringify(o.tile))model.path[o.index]={kind:'unknown'};
-   grid=aligned;confirmedKey=null;model.confirmed=false;currentPoint=null;provisional=[];alignmentNeedsRead=true;settledCycle=false;return true;
+   grid=aligned;confirmedKey=null;model.confirmed=false;currentPoint=null;provisional=[];alignmentNeedsRead=true;settledCycle=false;moveRevision++;editKey=null;return true;
   },
-  state:()=>({...clone(model),frameKey:key}),grid:()=>grid,frame:()=>lastFrame,
-  checkpoint:()=>({model:clone(model),grid,previousSize,key,confirmedKey,corrections,established,expectedState,expectedKey,popup,alignmentNeedsRead}),
-  restore(value){if(!value)return;model=clone(value.model);grid=value.grid;previousSize=value.previousSize;key=value.key;confirmedKey=value.confirmedKey;corrections=value.corrections||[];established=!!value.established;expectedState=value.expectedState||null;expectedKey=value.expectedKey||null;popup=value.popup||null;alignmentNeedsRead=!!value.alignmentNeedsRead;},
+  setLogBoard(value){
+   if(!value||!Number.isInteger(value.epoch)||!Array.isArray(value.looks)||value.looks.length>400)return false;
+   const changed=JSON.stringify(logBoard)!==JSON.stringify(value);
+   if(!changed)return false;
+   const physical=logBoard&&(logBoard.epoch!==value.epoch||logBoard.moves!==value.moves||logBoard.worldRevision!==value.worldRevision);
+   if(logBoard&&logBoard.epoch!==value.epoch&&value.anchored)reset(true);
+   confirmedKey=null;
+   if(physical&&key){if(!expectedState){expectedState=semanticKey(model);expectedKey=key;}model.confirmed=false;editKey=null;moveRevision++;}
+   logBoard=clone(value);
+   if(value.popup!==undefined)setPopup(value.popup);
+   return true;
+  },
+  state:()=>({...clone(model),frameKey:editKey}),grid:()=>grid,frame:()=>lastFrame,
+  marks:()=>!lastFrame||popup||recentPopup?[]:provisional.filter(o=>o.p.x>0&&o.p.x<lastFrame.width&&o.p.y>0&&o.p.y<lastFrame.height).map(o=>({index:o.index,label:model.localHorizon&&!model.positionConfirmed?(o.index===model.position?'YOU':`${o.index>model.position?'+':''}${o.index-model.position}`):String(o.index+1),x:o.p.x/lastFrame.width,y:(o.p.y-(grid?.width||0)*.14)/lastFrame.height,unknown:o.tile.kind==='unknown',current:o.index===model.position})),
+  recognition:()=>lastRecognition,
+  checkpoint:()=>({model:clone(model),grid,previousSize,key,confirmedKey,corrections,established,expectedState,expectedKey,popup,recentPopup,alignmentNeedsRead,lifeExamples,lastReliableLife,lastReliableChests,editKey,editSignature,moveRevision,logBoard,pathHistory,historyEpoch,historyRevision,lastReliableHand,lastReliableDie,chestAnchor}),
+  restore(value){if(!value)return;model=clone(value.model);grid=value.grid;previousSize=value.previousSize;key=value.key;confirmedKey=value.confirmedKey;corrections=value.corrections||[];established=!!value.established;expectedState=value.expectedState||null;expectedKey=value.expectedKey||null;popup=value.popup||null;alignmentNeedsRead=!!value.alignmentNeedsRead;lifeExamples=Array.isArray(value.lifeExamples)?value.lifeExamples.slice(-24):[];lastReliableLife=value.lastReliableLife??model.life??null;lastReliableChests=value.lastReliableChests?.slice()??(model.confirmed?model.chests.slice():null);editKey=value.editKey??null;editSignature=value.editSignature??null;moveRevision=value.moveRevision||0;logBoard=value.logBoard||null;pathHistory=clone(value.pathHistory||[]);historyEpoch=value.historyEpoch??null;historyRevision=value.historyRevision||0;recentPopup=!!value.recentPopup;lastReliableHand=value.lastReliableHand?.slice()??(model.handFresh?model.hand.slice():null);lastReliableDie=value.lastReliableDie??(model.dieFresh?model.die:null);chestAnchor=value.chestAnchor?clone(value.chestAnchor):null;},
   info:()=>({confirmed:!!model.confirmed,learned:corrections.length,key})
  };
 }

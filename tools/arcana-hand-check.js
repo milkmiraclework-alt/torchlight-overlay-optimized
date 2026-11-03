@@ -26,10 +26,10 @@ const counter=V.cards(source).counterMatch;assert(counter);
 const malformed={...source,data:Buffer.from(source.data)};
 for(let y=Math.floor(counter.box.y-counter.box.h*.5);y<counter.box.y+counter.box.h*1.5;y++)for(let x=Math.floor(counter.box.x+counter.box.w*3.2);x<counter.box.x+counter.box.w*4.8;x++)malformed.data.fill(0,(y*source.width+x)*4,(y*source.width+x)*4+4);
 assert.equal(require('../desktop/lib/arcana/digits').handCount(malformed,{x:counter.box.x+counter.box.w*.95,y:counter.box.y-counter.box.h*.5,w:counter.box.w*5,h:counter.box.h*2}),null,'An incomplete x/10 counter was accepted');
-const parsed=require('../desktop/lib/arcana/reader').create().read(source);
+const parsed=require('../desktop/lib/arcana/reader').create({automatic:false}).read(source);
 assert.deepEqual(parsed.model.hand,[22,13,4,21]);assert.equal(parsed.model.die,6);assert.equal(parsed.model.life,2,'The blue life digit was rejected');
 assert.equal(parsed.issues.some(issue=>issue.includes('card faces')||issue.includes('refill die')),false,'The actual reader still rejected the correctly recognised hand');
-assert(parsed.issues.some(issue=>issue.includes('path length')),'Hand recovery bypassed initial path confirmation');
+assert.equal(parsed.model.localHorizon,undefined,'Explicit manual mode silently enabled a relative horizon');assert.equal(parsed.model.lengthConfirmed,false,'An unconfirmed path became a confirmed true total length');assert(parsed.issues.some(issue=>issue.includes('path length')),'Explicit manual mode lost its length confirmation guard');
 }
 assert.equal(V.cards({width:640,height:360,data:Buffer.alloc(640*360*4)}).handConfident,false,'An empty picture passed hand confirmation');
 fs.writeFileSync(require('node:path').resolve(__dirname,'results/arcana-hand.json'),JSON.stringify({version:require('../desktop/package.json').version,checkedAt:new Date().toISOString(),source:'Existing saved hand frames; images remain outside the repository.',gameCapture:false,gameInput:false,cases,emptyFrameRejected:true,coveredCardRejected:true,completeCounterVerified:true},null,2)+'\n');

@@ -35,7 +35,7 @@ pub enum Outcome {
     /// a card flying off as it's played: the last advice still stands
     Animating,
     /// advice for the board, with its marks
-    Advice { reading: Box<Reading>, advice: Box<Advice>, plan: Plan, read_ms: f64 },
+    Advice { reading: Box<Reading>, advice: Box<Advice>, diagnostics: Option<vorax::smart::Diagnostics>, plan: Plan, read_ms: f64 },
 }
 
 pub struct Pipeline {
@@ -86,7 +86,7 @@ impl Pipeline {
             reading.state.instrument_refreshes = None;
         }
         self.fill_rerolls(&mut reading);
-        let (_, plan) = recommend(&reading, w, h);
+        let (_, plan, _) = recommend(&reading, w, h);
         Some((plan, w, h))
     }
 
@@ -139,9 +139,9 @@ impl Pipeline {
         vorax::session::enrich(&mut reading.state,self.context_frame.as_ref(),transition_sure);
         if transition_sure { self.context_frame=Some(reading.state.clone()); }
         let read_ms = t.elapsed().as_secs_f64() * 1000.0;
-        let (advice, plan) = recommend(&reading, img.width, img.height);
+        let (advice, plan, diagnostics) = recommend(&reading, img.width, img.height);
         self.last = Some((reading.clone(), img.width, img.height));
-        Outcome::Advice { reading: Box::new(reading), advice: Box::new(advice), plan, read_ms }
+        Outcome::Advice { reading: Box::new(reading), advice: Box::new(advice), diagnostics, plan, read_ms }
     }
 
     /// A pick the tracker isn't sure of yet, first seen on this board: worth another look once the icon has landed.
@@ -150,7 +150,7 @@ impl Pipeline {
     }
 }
 
-fn recommend(reading: &Reading, width: usize, height: usize) -> (Advice, Plan) {
+fn recommend(reading: &Reading, width: usize, height: usize) -> (Advice, Plan, Option<vorax::smart::Diagnostics>) {
     let missing: Vec<String> = reading.problems.iter().filter_map(|p| match p {
         Problem::UnknownArt { field, .. } if field.starts_with("hand") => Some(field.clone()),
         _ => None,
@@ -160,7 +160,7 @@ fn recommend(reading: &Reading, width: usize, height: usize) -> (Advice, Plan) {
     if !missing.is_empty() {
         let advice = Advice { best: Best::Nothing, ranking: vec![], board: 0, refresh_end: None, plan: false, final_: true, ms: 0, unknown: missing, note: Some("A card was not recognised".into()) };
         let plan = Plan { pill: Some(Pill { main: "Card not recognised".into(), sub: "Read again: Ctrl+Alt+X".into(), dim: false }), ..Plan::default() };
-        return (advice, plan);
+        return (advice, plan, None);
     }
     let evaluated = vorax::smart::configured_result(&reading.state);
     let advice = evaluated.advice;
@@ -168,7 +168,7 @@ fn recommend(reading: &Reading, width: usize, height: usize) -> (Advice, Plan) {
     if evaluated.diagnostics.close_decision {
         if let Some(pill) = &mut plan.pill { pill.sub.push_str(" · close choice"); }
     }
-    (advice, plan)
+    (advice, plan, Some(evaluated.diagnostics))
 }
 
 pub fn decode_png(path: &std::path::Path) -> Result<Img, String> {

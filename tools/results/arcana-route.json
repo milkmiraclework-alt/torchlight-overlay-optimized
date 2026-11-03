@@ -1,0 +1,44 @@
+{
+  "version": "1.3.14",
+  "checkedAt": "2026-11-03T18:30:46.719Z",
+  "patterns": {
+    "normal": {
+      "confirmed": 395,
+      "wrong": 0,
+      "ambiguous": 5
+    },
+    "special1": {
+      "confirmed": 399,
+      "wrong": 0,
+      "ambiguous": 1
+    },
+    "special2": {
+      "confirmed": 400,
+      "wrong": 0,
+      "ambiguous": 0
+    },
+    "special3": {
+      "confirmed": 400,
+      "wrong": 0,
+      "ambiguous": 0
+    },
+    "special4": {
+      "confirmed": 364,
+      "wrong": 0,
+      "ambiguous": 36
+    }
+  },
+  "generatedCases": 2000,
+  "syntheticAnimationTracking": true,
+  "unanchoredLogRejected": true,
+  "invalidPositionRejected": true,
+  "savedFrame": {
+    "position": 42,
+    "totalLength": 80,
+    "manualCorrectionRequired": false,
+    "marksUseActualTileNumbers": true
+  },
+  "realLog": null,
+  "gameCapture": false,
+  "gameInput": false
+}

@@ -1,0 +1,13 @@
+'use strict';
+// The user-provided one-card frame, with offline resize/capture-border phases.
+const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict'),V=require('../desktop/lib/arcana/vision');
+const at=process.argv.indexOf('--frame');if(at<0)throw Error('Supply --frame <saved user-193821 RGBA prefix>');const prefix=path.resolve(process.argv[at+1]),source={...JSON.parse(fs.readFileSync(prefix+'.json')),data:fs.readFileSync(prefix+'.rgba')},cases=[];
+function check(img,name){const read=V.cards(img);assert.deepEqual(read.hand,[13],name+': the three purple retreat pips changed');assert.equal(read.die,6,name+': wrong separate refill die');assert.equal(read.handCount,1,name+': wrong x/10 counter');assert.equal(read.handConfident,true,name+': a clear one-card hand remained blocked');cases.push({name,width:img.width,height:img.height,hand:read.hand,die:read.die,count:read.handCount});}
+for(const scale of [1,.75,.625]){const width=Math.round(source.width*scale),height=Math.round(source.height*scale),data=Buffer.alloc(width*height*4);for(let y=0;y<height;y++)for(let x=0;x<width;x++)data.set([...V.sample(source,Math.min(source.width-1,(x+.5)/scale-.5),Math.min(source.height-1,(y+.5)/scale-.5)),255],(y*width+x)*4);check({width,height,data},'scale '+scale);}
+// The supplied screenshot is2551x1439; the real WGC log reports2560x1440.
+// Offset4 reproduces the old all-face coarse miss with a readable1/10 counter.
+assert.equal(source.width,2551);assert.equal(source.height,1439);
+for(const offset of [0,1,2,4,7,9]){const width=2560,height=1440,data=Buffer.alloc(width*height*4);for(let y=0;y<source.height;y++)source.data.copy(data,(y*width+offset)*4,y*source.width*4,(y+1)*source.width*4);check({width,height,data},'capture-border '+offset);}
+const covered={...source,data:Buffer.from(source.data)};for(let y=1285;y<source.height;y++)for(let x=1135;x<1300;x++)covered.data.set([20,15,60,255],(y*source.width+x)*4);const blocked=V.cards(covered);assert.equal(blocked.handCount,1);assert.equal(blocked.handConfident,false,'The counter alone was accepted as a read card');assert.deepEqual(blocked.hand,[]);
+const report={version:require('../desktop/package.json').version,checkedAt:new Date().toISOString(),source:'Existing user193821 screenshot only; scales and capture-border padding composed offline.',cases,coarseMissRecoveredAtBorder4:true,coveredCardRejected:true,confidenceThresholdsRetained:true,gameCapture:false,gameInput:false};
+fs.writeFileSync(path.join(__dirname,'results/arcana-single-hand.json'),JSON.stringify(report,null,2)+'\n');console.log('PASS: one purple Retreat3 card and refill6 at three sizes and six capture-border phases; a covered face remains blocked.');

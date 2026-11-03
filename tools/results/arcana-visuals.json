@@ -1,0 +1,372 @@
+{
+  "version": "1.3.14",
+  "checkedAt": "2026-11-03T18:33:16.907Z",
+  "gameCapture": false,
+  "gameInput": false,
+  "scope": "Supplied saved game screenshots, in-memory resizes, and independent local-game texture composites. No universal layout/animation guarantee.",
+  "rainbowStripeVerified": true,
+  "emptyCaptionPositiveEvidence": true,
+  "occludedChestRejected": true,
+  "absentCaptionRejected": true,
+  "offChainCandidateIgnored": true,
+  "eyeNotQuestion": true,
+  "sharedCardOutcomeNotInvented": true,
+  "cases": [
+    {
+      "kind": "real-rainbow",
+      "width": 2551,
+      "height": 1439,
+      "chests": [
+        6,
+        6,
+        4,
+        4
+      ],
+      "confident": true
+    },
+    {
+      "kind": "real-rainbow",
+      "width": 1913,
+      "height": 1079,
+      "chests": [
+        6,
+        6,
+        4,
+        4
+      ],
+      "confident": true
+    },
+    {
+      "kind": "real-rainbow",
+      "width": 1594,
+      "height": 899,
+      "chests": [
+        6,
+        6,
+        4,
+        4
+      ],
+      "confident": true
+    },
+    {
+      "kind": "reference",
+      "width": 1600,
+      "height": 859,
+      "chests": [
+        3,
+        2,
+        2,
+        1
+      ],
+      "confident": true
+    },
+    {
+      "kind": "reference",
+      "width": 1200,
+      "height": 644,
+      "chests": [
+        3,
+        2,
+        2,
+        1
+      ],
+      "confident": true
+    },
+    {
+      "kind": "reference",
+      "width": 1000,
+      "height": 537,
+      "chests": [
+        3,
+        2,
+        2,
+        1
+      ],
+      "confident": true
+    },
+    {
+      "kind": "empty",
+      "width": 2559,
+      "height": 1439,
+      "chests": [],
+      "confident": true
+    },
+    {
+      "kind": "empty",
+      "width": 1919,
+      "height": 1079,
+      "chests": [],
+      "confident": true
+    },
+    {
+      "kind": "empty",
+      "width": 1599,
+      "height": 899,
+      "chests": [],
+      "confident": true
+    },
+    {
+      "kind": "independent-chest-textures",
+      "chests": [
+        4,
+        6,
+        3
+      ]
+    },
+    {
+      "kind": "independent-chest-textures",
+      "chests": [
+        4,
+        6,
+        3,
+        2
+      ]
+    },
+    {
+      "kind": "independent-chest-textures",
+      "chests": [
+        4,
+        6,
+        3,
+        3
+      ]
+    },
+    {
+      "kind": "independent-chest-textures",
+      "chests": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "kind": "real-tile",
+      "scale": 1,
+      "tile": {
+        "kind": "heal",
+        "amount": 1
+      }
+    },
+    {
+      "kind": "real-tile",
+      "scale": 1,
+      "tile": {
+        "kind": "heal",
+        "amount": 1
+      }
+    },
+    {
+      "kind": "real-tile",
+      "scale": 1,
+      "tile": {
+        "kind": "random"
+      }
+    },
+    {
+      "kind": "real-tile",
+      "scale": 1,
+      "tile": {
+        "kind": "random"
+      }
+    },
+    {
+      "kind": "real-tile",
+      "scale": 1,
+      "tile": {
+        "kind": "effect",
+        "id": 1021
+      }
+    },
+    {
+      "kind": "real-tile",
+      "scale": 1,
+      "tile": {
+        "kind": "effect",
+        "id": 1101
+      }
+    },
+    {
+      "kind": "real-tile",
+      "scale": 0.75,
+      "tile": {
+        "kind": "heal",
+        "amount": 1
+      }
+    },
+    {
+      "kind": "real-tile",
+      "scale": 0.75,
+      "tile": {
+        "kind": "heal",
+        "amount": 1
+      }
+    },
+    {
+      "kind": "real-tile",
+      "scale": 0.75,
+      "tile": {
+        "kind": "random"
+      }
+    },
+    {
+      "kind": "real-tile",
+      "scale": 0.75,
+      "tile": {
+        "kind": "random"
+      }
+    },
+    {
+      "kind": "real-tile",
+      "scale": 0.75,
+      "tile": {
+        "kind": "effect",
+        "id": 1021
+      }
+    },
+    {
+      "kind": "real-tile",
+      "scale": 0.75,
+      "tile": {
+        "kind": "effect",
+        "id": 1101
+      }
+    },
+    {
+      "kind": "real-tile",
+      "scale": 0.625,
+      "tile": {
+        "kind": "heal",
+        "amount": 1
+      }
+    },
+    {
+      "kind": "real-tile",
+      "scale": 0.625,
+      "tile": {
+        "kind": "heal",
+        "amount": 1
+      }
+    },
+    {
+      "kind": "real-tile",
+      "scale": 0.625,
+      "tile": {
+        "kind": "random"
+      }
+    },
+    {
+      "kind": "real-tile",
+      "scale": 0.625,
+      "tile": {
+        "kind": "random"
+      }
+    },
+    {
+      "kind": "real-tile",
+      "scale": 0.625,
+      "tile": {
+        "kind": "effect",
+        "id": 1021
+      }
+    },
+    {
+      "kind": "real-tile",
+      "scale": 0.625,
+      "tile": {
+        "kind": "effect",
+        "id": 1101
+      }
+    },
+    {
+      "kind": "independent-heal",
+      "amount": 1,
+      "scale": 0.7
+    },
+    {
+      "kind": "independent-heal",
+      "amount": 1,
+      "scale": 0.85
+    },
+    {
+      "kind": "independent-heal",
+      "amount": 1,
+      "scale": 1
+    },
+    {
+      "kind": "independent-heal",
+      "amount": 2,
+      "scale": 0.7
+    },
+    {
+      "kind": "independent-heal",
+      "amount": 2,
+      "scale": 0.85
+    },
+    {
+      "kind": "independent-heal",
+      "amount": 2,
+      "scale": 1
+    },
+    {
+      "kind": "independent-heal",
+      "amount": 3,
+      "scale": 0.7
+    },
+    {
+      "kind": "independent-heal",
+      "amount": 3,
+      "scale": 0.85
+    },
+    {
+      "kind": "independent-heal",
+      "amount": 3,
+      "scale": 1
+    },
+    {
+      "kind": "independent-note-icon",
+      "icon": "UI_S9Gameplay_Card_03",
+      "id": 1031
+    },
+    {
+      "kind": "independent-note-icon",
+      "icon": "UI_S9Gameplay_Card_04",
+      "id": 1032
+    },
+    {
+      "kind": "independent-note-icon",
+      "icon": "UI_S9Gameplay_Card_05",
+      "id": 1033
+    },
+    {
+      "kind": "independent-note-icon",
+      "icon": "UI_S9Gameplay_Card_06",
+      "id": 1201
+    },
+    {
+      "kind": "independent-note-icon",
+      "icon": "UI_S9Gameplay_Card_07",
+      "id": 1202
+    },
+    {
+      "kind": "independent-note-icon",
+      "icon": "UI_S9Gameplay_Card_35",
+      "amount": 1,
+      "uncertainOutcome": true
+    },
+    {
+      "kind": "independent-note-icon",
+      "icon": "UI_S9Gameplay_Card_08",
+      "amount": 2,
+      "uncertainOutcome": true
+    },
+    {
+      "kind": "independent-note-icon",
+      "icon": "UI_S9Gameplay_Card_28",
+      "amount": 3,
+      "uncertainOutcome": true
+    }
+  ]
+}

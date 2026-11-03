@@ -8,6 +8,7 @@ function create({game,library,notify,note=()=>{},WorkerClass=Worker,fixture=null
  const pending=new Map(),retiring=new Set();
  let animationTypes=[];
  let lastCheck='',lastCheckAt=0;
+ let routeLog=require('./arcana/route-log').create(),routeKey='';
  function publish(value){last=value;notify(value);}
  function stop(){
   cancelCapture();
@@ -18,8 +19,8 @@ function create({game,library,notify,note=()=>{},WorkerClass=Worker,fixture=null
  }
  function start(){
   if(worker||!active||closed)return;
-  const hwnd=Number(game().window);if(hwnd!==lastHwnd)resume=null;lastHwnd=hwnd;
-  const current=new WorkerClass(path.join(__dirname,'arcana/worker.js'),{workerData:{library,hwnd,fixture,resume,captureFirst}});worker=current;
+  const hwnd=Number(game().window);if(hwnd!==lastHwnd){resume=null;if(lastHwnd){routeLog=require('./arcana/route-log').create();routeKey='';}}lastHwnd=hwnd;
+  const current=new WorkerClass(path.join(__dirname,'arcana/worker.js'),{workerData:{library,hwnd,fixture,resume,captureFirst,logBoard:routeLog.snapshot()}});worker=current;
   current.on('message',message=>{
    if(current!==worker)return;
    if(message.id){const p=pending.get(message.id);if(p){pending.delete(message.id);clearTimeout(p.timer);message.error?p.reject(Error(message.error)):p.resolve(message.result);}return;}
@@ -30,14 +31,16 @@ function create({game,library,notify,note=()=>{},WorkerClass=Worker,fixture=null
     const mine=revision;
     Promise.resolve(fallback()).then(frame=>{if(mine===revision&&worker===current&&active)current.postMessage({cmd:'frame',frame,requestRevision:message.requestRevision});}).catch(error=>{if(mine===revision)publish({phase:'error',reason:error.message});});return;
    }
-   if(message.event==='status'){publish(message.state);if(message.state.phase==='error')note('Arcana:',message.state.reason);
+   if(message.event==='status'){
+    if(message.state.logRevision!==undefined&&message.state.logRevision!==routeLog.snapshot().revision){publish({phase:'reading',reason:'Waiting for the latest game state.'});if(!timer)schedule(40);return;}
+    publish(message.state);if(message.state.phase==='error')note('Arcana:',message.state.reason);
     if(message.state.phase==='check'){const detail=JSON.stringify({reason:message.state.reason,recognition:message.state.recognition});if(detail!==lastCheck&&Date.now()-lastCheckAt>1000){lastCheck=detail;lastCheckAt=Date.now();note('Arcana check:',detail);}}
    }
   });
   const gone=error=>{if(worker!==current)return;if(error)note('Arcana worker:',error.message);stop();publish({phase:'error',reason:'Arcana stopped. Read the screen again.'});};
   current.on('error',gone);current.on('exit',()=>gone(null));
  }
- function read(){if(!active||closed)return;clearTimeout(timer);timer=null;start();worker?.postMessage({cmd:'read'});}
+ function read(){if(!active||closed)return;clearTimeout(timer);timer=null;start();worker?.postMessage({cmd:'log-state',value:routeLog.snapshot()});worker?.postMessage({cmd:'read'});}
  function schedule(delay=280){clearTimeout(timer);const mine=revision;timer=setTimeout(()=>{timer=null;if(mine===revision)read();},delay);}
  function call(cmd,args={}){
   if(!active||closed)return Promise.reject(Error('Enable capture and select Arcana first.'));
@@ -47,6 +50,8 @@ function create({game,library,notify,note=()=>{},WorkerClass=Worker,fixture=null
  return {
   sync(on){on=!!on&&!closed;if(on===active){if(on&&worker&&Number(game().window)!==lastHwnd){stop();resume=null;publish({phase:'waiting'});schedule();}return;}active=on;if(!on){stop();last=null;notify(null);}else{publish({phase:'waiting'});schedule();}},
   feed(lines,{initial=false}={}){
+   if(closed)return;
+   const routeChanged=routeLog.feed(lines);
    if(!active)return;
    // Exact game UI triggers are supplied by the Arcana event parser. Asset
    // loading and unrelated gameplay must never start a screenshot loop.
@@ -62,6 +67,7 @@ function create({game,library,notify,note=()=>{},WorkerClass=Worker,fixture=null
     if(event.kind==='close'){clearTimeout(timer);timer=null;worker?.postMessage({cmd:'suspend'});}
     else{worker?.postMessage({cmd:'invalidate',changed:event.kind==='move'});publish({phase:'reading'});schedule(event.kind==='move'?380:220);}
    }
+   if(routeChanged){const value=routeLog.snapshot(),key=JSON.stringify(value);if(key!==routeKey){routeKey=key;worker?.postMessage({cmd:'log-state',value});if(!timer&&value.anchored)schedule(120);}}
    if(initial&&events.length)schedule();
   },
   read,

@@ -1,0 +1,526 @@
+{
+  "version": "1.3.14",
+  "checkedAt": "2026-11-03T18:33:10.193Z",
+  "cases": [
+    {
+      "frame": "user-193821",
+      "width": 2551,
+      "height": 1439,
+      "hand": [
+        13
+      ],
+      "die": 6
+    },
+    {
+      "frame": "user-193821",
+      "width": 1913,
+      "height": 1079,
+      "hand": [
+        13
+      ],
+      "die": 6
+    },
+    {
+      "frame": "user-193821",
+      "width": 1594,
+      "height": 899,
+      "hand": [
+        13
+      ],
+      "die": 6
+    },
+    {
+      "frame": "user-193821",
+      "border": 1,
+      "hand": [
+        13
+      ],
+      "die": 6
+    },
+    {
+      "frame": "user-193821",
+      "border": 2,
+      "hand": [
+        13
+      ],
+      "die": 6
+    },
+    {
+      "frame": "user-193821",
+      "border": 3,
+      "hand": [
+        13
+      ],
+      "die": 6
+    },
+    {
+      "frame": "user-193821",
+      "border": 4,
+      "hand": [
+        13
+      ],
+      "die": 6
+    },
+    {
+      "frame": "user-193821",
+      "border": 5,
+      "hand": [
+        13
+      ],
+      "die": 6
+    },
+    {
+      "frame": "user-193821",
+      "border": 7,
+      "hand": [
+        13
+      ],
+      "die": 6
+    },
+    {
+      "frame": "user-222100",
+      "width": 2559,
+      "height": 1439,
+      "hand": [
+        22,
+        13,
+        4,
+        21
+      ],
+      "die": 6
+    },
+    {
+      "frame": "user-222100",
+      "width": 1919,
+      "height": 1079,
+      "hand": [
+        22,
+        13,
+        4,
+        21
+      ],
+      "die": 6
+    },
+    {
+      "frame": "user-222100",
+      "width": 1599,
+      "height": 899,
+      "hand": [
+        22,
+        13,
+        4,
+        21
+      ],
+      "die": 6
+    },
+    {
+      "frame": "user-222100",
+      "border": 1,
+      "hand": [
+        22,
+        13,
+        4,
+        21
+      ],
+      "die": 6
+    },
+    {
+      "frame": "user-222100",
+      "border": 2,
+      "hand": [
+        22,
+        13,
+        4,
+        21
+      ],
+      "die": 6
+    },
+    {
+      "frame": "user-222100",
+      "border": 3,
+      "hand": [
+        22,
+        13,
+        4,
+        21
+      ],
+      "die": 6
+    },
+    {
+      "frame": "user-222100",
+      "border": 4,
+      "hand": [
+        22,
+        13,
+        4,
+        21
+      ],
+      "die": 6
+    },
+    {
+      "frame": "user-222100",
+      "border": 5,
+      "hand": [
+        22,
+        13,
+        4,
+        21
+      ],
+      "die": 6
+    },
+    {
+      "frame": "user-222100",
+      "border": 7,
+      "hand": [
+        22,
+        13,
+        4,
+        21
+      ],
+      "die": 6
+    },
+    {
+      "frame": "user-222106",
+      "width": 2556,
+      "height": 1439,
+      "hand": [
+        22,
+        13,
+        4,
+        21
+      ],
+      "die": 6
+    },
+    {
+      "frame": "user-222106",
+      "width": 1917,
+      "height": 1079,
+      "hand": [
+        22,
+        13,
+        4,
+        21
+      ],
+      "die": 6
+    },
+    {
+      "frame": "user-222106",
+      "width": 1598,
+      "height": 899,
+      "hand": [
+        22,
+        13,
+        4,
+        21
+      ],
+      "die": 6
+    },
+    {
+      "frame": "user-222106",
+      "border": 1,
+      "hand": [
+        22,
+        13,
+        4,
+        21
+      ],
+      "die": 6
+    },
+    {
+      "frame": "user-222106",
+      "border": 2,
+      "hand": [
+        22,
+        13,
+        4,
+        21
+      ],
+      "die": 6
+    },
+    {
+      "frame": "user-222106",
+      "border": 3,
+      "hand": [
+        22,
+        13,
+        4,
+        21
+      ],
+      "die": 6
+    },
+    {
+      "frame": "user-222106",
+      "border": 4,
+      "hand": [
+        22,
+        13,
+        4,
+        21
+      ],
+      "die": 6
+    },
+    {
+      "frame": "user-222106",
+      "border": 5,
+      "hand": [
+        22,
+        13,
+        4,
+        21
+      ],
+      "die": 6
+    },
+    {
+      "frame": "user-222106",
+      "border": 7,
+      "hand": [
+        22,
+        13,
+        4,
+        21
+      ],
+      "die": 6
+    },
+    {
+      "frame": "user-222112",
+      "width": 2559,
+      "height": 1439,
+      "hand": [
+        22,
+        13,
+        4,
+        21
+      ],
+      "die": 6
+    },
+    {
+      "frame": "user-222112",
+      "width": 1919,
+      "height": 1079,
+      "hand": [
+        22,
+        13,
+        4,
+        21
+      ],
+      "die": 6
+    },
+    {
+      "frame": "user-222112",
+      "width": 1599,
+      "height": 899,
+      "hand": [
+        22,
+        13,
+        4,
+        21
+      ],
+      "die": 6
+    },
+    {
+      "frame": "user-222112",
+      "border": 1,
+      "hand": [
+        22,
+        13,
+        4,
+        21
+      ],
+      "die": 6
+    },
+    {
+      "frame": "user-222112",
+      "border": 2,
+      "hand": [
+        22,
+        13,
+        4,
+        21
+      ],
+      "die": 6
+    },
+    {
+      "frame": "user-222112",
+      "border": 3,
+      "hand": [
+        22,
+        13,
+        4,
+        21
+      ],
+      "die": 6
+    },
+    {
+      "frame": "user-222112",
+      "border": 4,
+      "hand": [
+        22,
+        13,
+        4,
+        21
+      ],
+      "die": 6
+    },
+    {
+      "frame": "user-222112",
+      "border": 5,
+      "hand": [
+        22,
+        13,
+        4,
+        21
+      ],
+      "die": 6
+    },
+    {
+      "frame": "user-222112",
+      "border": 7,
+      "hand": [
+        22,
+        13,
+        4,
+        21
+      ],
+      "die": 6
+    },
+    {
+      "frame": "reference-play",
+      "width": 1600,
+      "height": 859,
+      "hand": [
+        1,
+        204,
+        213,
+        201
+      ],
+      "die": 1
+    },
+    {
+      "frame": "reference-play",
+      "width": 1200,
+      "height": 644,
+      "hand": [
+        1,
+        204,
+        213,
+        201
+      ],
+      "die": 1
+    },
+    {
+      "frame": "reference-play",
+      "width": 1685,
+      "height": 905,
+      "hand": [
+        1,
+        204,
+        213,
+        201
+      ],
+      "die": 1
+    },
+    {
+      "frame": "reference-play",
+      "border": 1,
+      "hand": [
+        1,
+        204,
+        213,
+        201
+      ],
+      "die": 1
+    },
+    {
+      "frame": "reference-play",
+      "border": 2,
+      "hand": [
+        1,
+        204,
+        213,
+        201
+      ],
+      "die": 1
+    },
+    {
+      "frame": "reference-play",
+      "border": 3,
+      "hand": [
+        1,
+        204,
+        213,
+        201
+      ],
+      "die": 1
+    },
+    {
+      "frame": "reference-play",
+      "border": 4,
+      "hand": [
+        1,
+        204,
+        213,
+        201
+      ],
+      "die": 1
+    },
+    {
+      "frame": "reference-play",
+      "border": 5,
+      "hand": [
+        1,
+        204,
+        213,
+        201
+      ],
+      "die": 1
+    },
+    {
+      "frame": "reference-play",
+      "border": 7,
+      "hand": [
+        1,
+        204,
+        213,
+        201
+      ],
+      "die": 1
+    }
+  ],
+  "benchmarks": [
+    {
+      "frame": "user-193821",
+      "scope": "Hand and refill only; warm calibrated reader, same saved pixels",
+      "trainedMedianMs": 348.7551999999996,
+      "templateMedianMs": 938.1099999999997
+    },
+    {
+      "frame": "user-222100",
+      "scope": "Hand and refill only; warm calibrated reader, same saved pixels",
+      "trainedMedianMs": 179.83039999999892,
+      "templateMedianMs": 757.8611999999994
+    },
+    {
+      "frame": "user-222106",
+      "scope": "Hand and refill only; warm calibrated reader, same saved pixels",
+      "trainedMedianMs": 215.08629999999903,
+      "templateMedianMs": 757.0669000000016
+    },
+    {
+      "frame": "user-222112",
+      "scope": "Hand and refill only; warm calibrated reader, same saved pixels",
+      "trainedMedianMs": 182.84480000000622,
+      "templateMedianMs": 779.665700000005
+    },
+    {
+      "frame": "reference-play",
+      "scope": "Hand and refill only; warm calibrated reader, same saved pixels",
+      "trainedMedianMs": 240.90320000000065,
+      "templateMedianMs": 273.4105999999956
+    }
+  ],
+  "coveredFaceRejected": true,
+  "unreadableCountRejected": true,
+  "blankRejected": true,
+  "gameCapture": false,
+  "gameInput": false
+}

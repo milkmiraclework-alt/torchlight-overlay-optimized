@@ -21,6 +21,7 @@ const OPTIMIZED = true;
 const FAST = true;
 let suite = null;
 let arcana = null;
+let arcanaMarks = null;
 let lastArcanaState = null;
 let nativeReader = null;
 const nativeAllowed = () => settings.consent?.version === 4 && !settings.consent.withdrawn && game.running && suite?.mode === 'tartarus';
@@ -389,6 +390,9 @@ const win32 = (() => {
     const koffi = localDependency('koffi');
     const user32 = koffi.load('user32.dll');
     const RECT = koffi.struct('RECT', { left: 'long', top: 'long', right: 'long', bottom: 'long' });
+    const POINT = koffi.struct('OVERLAY_POINT', {x:'long',y:'long'});
+    const client = user32.func('__stdcall','GetClientRect','bool',['intptr',koffi.out(koffi.pointer(RECT))]);
+    const clientOrigin = user32.func('__stdcall','ClientToScreen','bool',['intptr',koffi.inout(koffi.pointer(POINT))]);
     const foreground = user32.func('__stdcall', 'GetForegroundWindow', 'intptr', []);
     const rect = user32.func('__stdcall', 'GetWindowRect', 'bool', ['intptr', koffi.out(koffi.pointer(RECT))]);
     const iconic = user32.func('__stdcall', 'IsIconic', 'bool', ['intptr']);
@@ -451,6 +455,7 @@ const win32 = (() => {
         const r = {};
         return rect(hwnd, r) ? { x: r.left, y: r.top, width: r.right - r.left, height: r.bottom - r.top } : null;
       },
+      clientRect(hwnd){const r={},p={x:0,y:0};return client(hwnd,r)&&clientOrigin(hwnd,p)?{x:p.x,y:p.y,width:r.right-r.left,height:r.bottom-r.top}:null;},
       minimized: (hwnd) => !!iconic(hwnd),
     };
   } catch (e) {
@@ -719,6 +724,7 @@ function overlayWanted() {
   return front === hwndOf(wins.overlay);
 }
 function updateOverlay() {
+  arcanaMarks?.sync();
   const win = wins.overlay;
   if (!win || win.isDestroyed()) return;
   const want = overlayWanted();
@@ -833,7 +839,7 @@ ipcMain.on('fast:set-settings', (e, patch) => {
   publishFastConfig(); rebuildMenu();
 });
 ipcMain.handle('suite:info', e => (TEST || DEV) && fromPage(e, 'analyzer') ? {
-  ...suite?.info(), nativeReader: nativeReader?.info(), profile: app.getPath('userData'),
+  ...suite?.info(), nativeReader: nativeReader?.info(), arcanaMarks:arcanaMarks?.info(), profile: app.getPath('userData'),
   windows: { settings: !!wins.follow?.isVisible(), board: !!wins.analyzer?.isVisible() }
 } : null);
 ipcMain.on('suite:read', e => { if (fromPage(e, 'follow')) command('capture'); });
@@ -1189,7 +1195,12 @@ function registerHotkeys() {
   app.on('before-quit', () => {
     quitting = true;
   });
-  app.on('will-quit', () => { globalShortcut.unregisterAll(); updates?.close(); suite?.close(); nativeReader?.stop(); });
+  let quitFlushed=false,quitFlushing=false;
+  app.on('will-quit', (event) => {
+    globalShortcut.unregisterAll();updates?.close();arcanaMarks?.close();nativeReader?.stop();
+    const drained=suite?.close();
+    if(!quitFlushed&&drained?.then){event.preventDefault();if(!quitFlushing){quitFlushing=true;Promise.race([drained,new Promise(resolve=>setTimeout(resolve,1500))]).catch(error=>note('journal flush:',error.message)).finally(()=>{quitFlushed=true;setImmediate(()=>app.quit());});}}
+  });
 
   // Tests stop the app with "quit" on its input, as the tray's Quit does,
   // so the pages' storage is written out.
@@ -1230,11 +1241,15 @@ function registerHotkeys() {
     }
     note(`start: version ${app.getVersion()}, site ${SITE}${DEV ? ', debug' : ''}${TEST ? ', test' : ''}, foreground check ${win32 ? 'on' : 'off'}`);
     const arcanaCapture=require('./lib/window-capture').create(path.join(STANDALONE ? process.resourcesPath : __dirname,'native','vorax-backend.exe'));
+    arcanaMarks=require('./lib/arcana-marks').create({BrowserWindow,icon:ICON,
+      active:()=>settings.overlayOn&&settings.consent?.version===4&&!settings.consent.withdrawn&&game.running&&suite?.mode==='arcana',
+      visible:()=>TEST||!!win32&&win32.foreground()===game.hwnd&&!win32.minimized(game.hwnd),
+      bounds:()=>{const rect=game.hwnd&&win32?.clientRect(game.hwnd);return rect&&rect.width>100&&rect.height>100?screen.screenToDipRect(null,rect):null;}});
     arcana = require('./lib/arcana-runtime').create({
       captureFirst:true,cancelCapture:()=>arcanaCapture.cancel(),captureInfo:()=>arcanaCapture.info(),
       game:()=>gameInfo(),library:TEST&&flag('arcana-test-fallback')?path.join(__dirname,'owned-test-missing.dll'):path.join(STANDALONE ? process.resourcesPath : __dirname,'native','tartarus-reader.dll'),
       fixture:TEST ? arg('arcana-fixture') : null,note,
-      notify:state=>{lastArcanaState=state;send('overlay','arcana:state',state);send('arcana','arcana:state',state);},
+      notify:state=>{lastArcanaState=state;arcanaMarks.update(state);send('overlay','arcana:state',state);send('arcana','arcana:state',state);},
       fallback:async()=>{
         if(!game.running||suite?.mode!=='arcana'||settings.consent?.withdrawn)throw Error('Capture stopped');
         if(win32?.minimized(game.hwnd))throw Error('Restore the game window before reading Arcana.');

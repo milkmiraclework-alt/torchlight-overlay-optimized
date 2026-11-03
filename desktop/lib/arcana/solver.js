@@ -380,6 +380,7 @@ function terminalJob(s){
  return {step:()=>true,result:()=>result};
 }
 function createJob(model,options={}){
+ if(model.localHorizon)return require('./local-solver').createJob(model,{...options,helpers:{usefulActions,policy,potential:s=>potentialEntry(s).base,target}});
  if(options.verify<=0)return createSampledJob(model,options);
  const s=E.normalize(model);if(!s.confirmed)throw Error('Check the Arcana reading before calculating.');if(!s.lengthConfirmed)throw Error('Confirm the total path length.');
  const terminal=terminalJob(s);if(terminal)return terminal;

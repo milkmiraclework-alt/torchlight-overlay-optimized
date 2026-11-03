@@ -28,10 +28,18 @@ async function connect(url){const ws=new WebSocket(url),pending=new Map();let id
   fs.appendFileSync(log,'S13GamePlayMain Run\n');
   info=await wait(()=>page.evaluate(`TartarusDesktop.suiteInfo().then(s=>s.mode==='vorax'&&s.ready&&s.lastStatus?.event==='read'&&s.lastStatus.kind==='advice'?s:null)`),'Vorax did not advise its fake window',600);
   nativePid=info.voraxPid;assert.ok(nativePid>0);assert.equal(info.threads,2);assert.equal(info.lastStatus.unknown,0);
+  assert.equal(info.lastStatus.analysis,undefined,'Public status retained the full analysis payload');
+  const journalPath=path.join(profile,'logs','vorax');
+  const journalRows=()=>{try{return fs.readdirSync(journalPath).filter(n=>n.endsWith('.jsonl')).flatMap(n=>fs.readFileSync(path.join(journalPath,n),'utf8').split('\n').flatMap(line=>{try{return line?[JSON.parse(line)]:[]}catch{return []}}));}catch{return []}};
+  const recorded=await wait(()=>journalRows().find(r=>r.type==='observation'),'Native board and ranking were not saved');
+  assert(recorded.state.tanks.length===6&&recorded.state.hand.length>0&&recorded.advice.ranking.length>0);assert(recorded.diagnostics&&Number.isInteger(recorded.diagnostics.totalFutures));
+  assert.equal(recorded.activity.kind,'observed_board_not_terminal_result');assert.equal(recorded.state.round,info.lastStatus.round);assert(Number.isFinite(recorded.capturedAt));
+  const startRecord=journalRows().find(r=>r.type==='run_start');assert(startRecord.backend.backendSha256&&startRecord.backend.sourceManifestSha256);assert.equal(startRecord.dataPolicy.screenshots,false);
   assert.equal(await page.evaluate('TartarusCapture.state.window'),'off');assert.equal(await page.evaluate('__suiteWorkers.size'),0,'Tartarus workers ran in Vorax mode');
   console.log('PASS: automatic Vorax mode, actual WGC/native OCR/Smart advice on the isolated fixture window, no Tartarus workers.');
   fs.appendFileSync(log,'S16BoardMain Run\n');
   await wait(()=>page.evaluate(`TartarusDesktop.suiteInfo().then(s=>s.mode==='tartarus'&&s.children===0&&s.voraxPid===0)`),'Vorax did not stop on Tartarus entry');
+  const runEnd=await wait(()=>journalRows().find(r=>r.type==='run_end'),'Mode switching did not flush the Vorax journal');assert.equal(runEnd.finalActivity,null);assert.equal(runEnd.finalActivityStatus,'not_observed');
   await wait(()=>page.evaluate(`TartarusCapture.state.window==='on'&&__suiteWorkers.size>0`),'Tartarus did not wake');
   console.log('PASS: switching to Tartarus terminates the native Vorax process and wakes only Tartarus workers.');
   await page.evaluate(`TartarusDesktop.setConsent({withdrawn:true,at:new Date().toISOString()})`);
@@ -45,7 +53,7 @@ async function connect(url){const ws=new WebSocket(url),pending=new Map();let id
   console.log('PASS: common capture stop releases both backends; manual selection and CPU setting work.');
   assert.ok(!/adapter error|runtime error|ReferenceError|TypeError/.test(output),output);
   assert.equal(fs.existsSync(path.join(profile,'records')),false,'Screenshot history should not exist');
-  const report={version,checkedAt:new Date().toISOString(),actualNativeCapture:true,nativeAdvice:true,manualNativeCapture:true,modeSwitching:true,zeroInactiveWorkers:true,sharedCaptureStop:true,automaticCpuBudget:true,recordingExcluded:true,gameCapture:false,gameInput:false};
+  const report={version,checkedAt:new Date().toISOString(),actualNativeCapture:true,nativeAdvice:true,manualNativeCapture:true,modeSwitching:true,zeroInactiveWorkers:true,sharedCaptureStop:true,automaticCpuBudget:true,recordingExcluded:true,voraxJournalRecorded:true,voraxNativeRankingRecorded:true,voraxUnknownResultPreserved:true,voraxPublicStatusBounded:true,gameCapture:false,gameInput:false};
   fs.mkdirSync(path.join(root,'tools/results'),{recursive:true});fs.writeFileSync(path.join(root,'tools/results/suite-e2e.json'),JSON.stringify(report,null,2)+'\n');
  }finally{
   child.stdin.write('quit\n');page?.ws.close();browser?.ws.close();for(let i=0;child.exitCode===null&&i<100;i++)await pause(100);if(child.exitCode===null)child.kill();

@@ -1,14 +1,23 @@
 {
-  "version": "1.3.12",
-  "checkedAt": "2026-11-02T15:54:00.516Z",
-  "sourceGroups": 48,
-  "packagedGroups": 12,
+  "version": "1.3.14",
+  "checkedAt": "2026-11-03T18:35:07.693Z",
+  "sourceGroups": 57,
+  "packagedGroups": 13,
   "arcana": {
     "freshGpuCapture": true,
     "updatesBehindBlackCover": true,
     "minimizedRejected": true,
     "userHandChecksCleared": true,
-    "adviceAfterInitialPathConfirmation": true,
+    "automaticAdvice": true,
+    "clickThroughAnnotations": true,
+    "routePatternCases": 2000,
+    "replayedFrames": 49,
+    "automaticallyConfirmed": 39,
+    "automaticWaits": 10,
+    "wrongConfirmed": 0,
+    "manualChecksInReplay": 0,
+    "life4Holdout": true,
+    "authorisedReferenceFiles": 10,
     "exactEndgameOracleAgreement": true,
     "improvedCounterexamples": [
       {
@@ -26,7 +35,27 @@
     ],
     "refillDiceCases": 18,
     "oddRefillGpuChecked": true,
-    "blueLifeAcrossRefillCases": true
+    "blueLifeAcrossRefillCases": true,
+    "warmHandAndDieBenchmarks": [
+      {
+        "frame": "user-193821",
+        "trainedMedianMs": 163.1884,
+        "templateMedianMs": 601.1061,
+        "ratio": 3.6835099798760202
+      },
+      {
+        "frame": "user-222112",
+        "trainedMedianMs": 172.51469999999972,
+        "templateMedianMs": 611.2945,
+        "ratio": 3.5434342696593446
+      },
+      {
+        "frame": "reference-play",
+        "trainedMedianMs": 96.27469999999994,
+        "templateMedianMs": 161.9362999999994,
+        "ratio": 1.6820234184058687
+      }
+    ]
   },
   "tartarus": {
     "terminalRewardCorrected": true,
@@ -37,7 +66,9 @@
   "vorax": {
     "finalObjectivePreferenceCorrected": true,
     "fastBalancedProfileRetained": true,
-    "nativeTests": 37,
+    "localBoundedJournal": true,
+    "brainAndRulesUnchangedInThisRelease": true,
+    "nativeTests": 38,
     "kitAndPendingPickContextFixed": true,
     "pairedSampleGuardFixed": true,
     "terminalPolicy": "original primary model, engine evaluation only for equal final-round estimates",
@@ -69,17 +100,17 @@
   },
   "artifacts": [
     {
-      "file": "Torchlight-Overlay-Portable-1.3.12-x64.exe",
-      "bytes": 129525174,
-      "sha256": "8de76dd7468d7a53562cc541e0ef12f4b1d6763513accd00d36c43cafd4187f9"
+      "file": "Torchlight-Overlay-Portable-1.3.14-x64.exe",
+      "bytes": 132570660,
+      "sha256": "224f3316662903e0bc79daf66432be6c9527fa6bd302c4bf0cc6c71d077fd06d"
     },
     {
-      "file": "Torchlight-Overlay-Setup-1.3.12-x64.exe",
-      "bytes": 129691037,
-      "sha256": "6083ab307458db4d649552202aba7f9fccd3c89cbec70af86ee443a362e49d36"
+      "file": "Torchlight-Overlay-Setup-1.3.14-x64.exe",
+      "bytes": 132736531,
+      "sha256": "61c42a6148fb0ba42a1d0cbe946ff2c285062318087eb02187a8a2064cfe76ad"
     }
   ],
-  "appAsarSha256": "f6e9f8e3249207e5b1746775c1e222e560ffe2efebdf3806dbde6ef59336e3c1",
+  "appAsarSha256": "80ebef11ebd4a523e512b8e04db4098329fb123bfe34db81144e3f7bc60ce45b",
   "portableDoubleLaunchVerified": true,
-  "scope": "Saved frames, owned GPU test windows and local-rule simulations. No live-game capture/input, no claim of universal hardware/screen support or verified profit increase. Initial Arcana board confirmation remains required."
+  "scope": "Saved frames, owned GPU test windows and local-rule simulations. Automatic local advice while absolute route is ambiguous; inferred length only with evidence. Replay verifies position/life/chest counts, not every card/tile. No live-game capture/input, universal hardware/screen support or verified profit claim."
 }

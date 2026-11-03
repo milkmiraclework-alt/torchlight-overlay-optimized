@@ -1,0 +1,45 @@
+'use strict';
+// Existing saved frames and independent game textures only. Never captures a
+// real window; generated test composites and raw images remain in sandbox.
+const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict'),cp=require('node:child_process');
+if(!process.versions.electron){const env={...process.env};delete env.ELECTRON_RUN_AS_NODE;const r=cp.spawnSync(require('../desktop/node_modules/electron'),[__filename,...process.argv.slice(2)],{env,encoding:'utf8',windowsHide:true});process.stdout.write(r.stdout||'');process.stderr.write(r.stderr||'');process.exit(r.status??1);}
+const {app,nativeImage}=require('electron');
+app.whenReady().then(()=>{
+ const arg=(key,required=true)=>{const at=process.argv.indexOf(key);if(at<0){if(required)throw Error('Supply '+key);return null;}return path.resolve(process.argv[at+1]);};
+ const textures=arg('--textures'),emptyPrefix=arg('--empty-frame'),realPrefix=arg('--frame'),referencePrefix=arg('--reference-frame'),files=[];
+ const V=require('../desktop/lib/arcana/vision'),G=require('../desktop/lib/arcana/geometry'),cases=[];
+ function visit(dir){for(const e of fs.readdirSync(dir,{withFileTypes:true})){const f=path.join(dir,e.name);if(e.isDirectory())visit(f);else if(e.name.endsWith('.png'))files.push(f);}}visit(textures);
+ const read=prefix=>({...JSON.parse(fs.readFileSync(prefix+'.json','utf8').replace(/^\uFEFF/,'')),data:Buffer.from(fs.readFileSync(prefix+'.rgba'))});
+ const resize=(img,scale)=>{if(scale===1)return {...img,data:Buffer.from(img.data)};const width=Math.round(img.width*scale),height=Math.round(img.height*scale),data=Buffer.alloc(width*height*4);for(let y=0;y<height;y++)for(let x=0;x<width;x++){const rgb=V.sample(img,Math.min(img.width-1,(x+.5)/scale-.5),Math.min(img.height-1,(y+.5)/scale-.5));data.set([...rgb,255],(y*width+x)*4);}return {width,height,data};};
+ function fill(img,x0,y0,w,h,color=[31,20,69,255]){for(let y=Math.max(0,Math.floor(y0));y<Math.min(img.height,y0+h);y++)for(let x=Math.max(0,Math.floor(x0));x<Math.min(img.width,x0+w);x++)img.data.set(color,(y*img.width+x)*4);}
+ function paint(img,name,box){const file=files.find(f=>path.basename(f,'.png').replace(/_Sprite$/,'')===name);assert(file,'Missing texture '+name);const original=nativeImage.createFromPath(file),size=original.getSize(),w=Math.round(box.w),h=Math.round(box.h??w*size.height/size.width),pixels=original.resize({width:w,height:h,quality:'best'}).toBitmap(),x0=Math.round(box.x),y0=Math.round(box.y);for(let y=0;y<h;y++)for(let x=0;x<w;x++){if(x+x0<0||x+x0>=img.width||y+y0<0||y+y0>=img.height)continue;const a=(y*w+x)*4,p=((y+y0)*img.width+x+x0)*4,alpha=pixels[a+3]/255;for(let c=0;c<3;c++)img.data[p+c]=pixels[a+2-c]*(alpha)+img.data[p+c]*(1-alpha);}return {x:x0,y:y0,w,h};}
+ const empty=read(emptyPrefix),real=read(realPrefix),reference=read(referencePrefix);
+ for(const [name,source,expected]of [['real-rainbow',real,[6,6,4,4]],['reference',reference,[3,2,2,1]],['empty',empty,[]]])for(const scale of [1,.75,.625]){
+  const img=resize(source,scale),r=V.collected(img);assert.deepEqual(r.tiers,expected,name+' tiers at '+scale);assert.equal(r.confident,true,name+' blocked at '+scale);
+  if(!expected.length)assert.equal(r.emptyEvidence?.kind,'game_give_up_caption');
+  cases.push({kind:name,width:img.width,height:img.height,chests:r.tiers,confident:r.confident});
+ }
+ // The actual frame has two independent rainbow stripes. Full-image margins
+ // are only .03, whereas the rarity-stripe comparisons clearly distinguish 6.
+ const realChests=V.collected(real);assert(realChests.matches.filter(m=>m.tier===6).every(m=>m.stripe.sure&&m.stripe.margin>.2));
+ const covered={...real,data:Buffer.from(real.data)},rainbow=realChests.matches.find(m=>m.slot===1).box;fill(covered,rainbow.x-5,rainbow.y-5,rainbow.w+10,rainbow.h+40);assert.equal(V.collected(covered).confident,false,'Covered rainbow was silently removed');
+ const coveredCaption={...empty,data:Buffer.from(empty.data)};fill(coveredCaption,0,empty.height*.28,empty.height*.21,empty.height*.12);assert.equal(V.collected(coveredCaption).confident,false,'No chest matches were treated as proof of empty inventory');
+ const mock={...real,data:Buffer.from(real.data)};fill(mock,0,real.height*.38,real.height*.24,real.height*.48);
+ function chestChain(tiers){const img={...mock,data:Buffer.from(mock.data)},s=img.height/2250,w=168*s;for(let i=0;i<tiers.length;i++){const x=(i%2?286.08:113.28)*s,y=img.height/2+(-167.04+[0,105.6,209.28,314.88,420.48,526.08,629.76][i])*s;paint(img,'UI_S9Gameplay_03_ICON_TRBOX0'+tiers[i],{x:x-w/2,y:y-w/1.2791666667/2,w});}return img;}
+ for(const tiers of [[4,6,3],[4,6,3,2],[4,6,3,3],[1,2,3,4,5,6]]){const img=chestChain(tiers),r=V.collected(img);assert.deepEqual(r.tiers,tiers,'Independent game chest textures '+tiers);assert(r.confident);cases.push({kind:'independent-chest-textures',chests:tiers});}
+ const stray=chestChain([4,6,3]);paint(stray,'UI_S9Gameplay_03_ICON_TRBOX04',{x:real.width*.125,y:real.height*.40,w:real.height*.075});assert.deepEqual(V.collected(stray).tiers,[4,6,3],'Off-chain decoration poisoned the chest inventory');
+ // Manually labelled centers in the supplied screenshot, not model indices.
+ const labels=[{x:1440.54,y:271.98,tile:{kind:'heal',amount:1}},{x:1657.37,y:613.47,tile:{kind:'heal',amount:1}},{x:1708.36,y:426.73,tile:{kind:'random'}},{x:1387.17,y:456.19,tile:{kind:'random'}},{x:1471.11,y:720.59,tile:{kind:'effect',id:1021}},{x:1843.62,y:505.68,tile:{kind:'effect',id:1101}}];
+ for(const scale of [1,.75,.625]){const img=resize(real,scale),width=154.83870967741936*scale;for(const label of labels){const p={x:label.x*scale,y:label.y*scale},r=V.tileAt(img,p,width);assert.deepEqual(r.tile,label.tile,'Saved icon at '+JSON.stringify(p));cases.push({kind:'real-tile',scale,tile:r.tile});}}
+ const base={width:640,height:500,data:Buffer.alloc(640*500*4)};fill(base,0,0,640,500);const point={x:320,y:310},width=155;
+ for(let amount=1;amount<=3;amount++)for(const scale of [.7,.85,1]){const img={...base,data:Buffer.from(base.data)},w=width*.79;paint(img,'UI_S9Gameplay_00_Dikuaihp0'+amount,{x:point.x-w/2,y:point.y-width*.43-w/2,w,h:w});const scaled=resize(img,scale),r=V.tileAt(scaled,{x:point.x*scale,y:point.y*scale},width*scale);assert.deepEqual(r.tile,{kind:'heal',amount},'Independent heal '+amount+' at '+scale);cases.push({kind:'independent-heal',amount,scale});}
+ const question={...base,data:Buffer.from(base.data)},qw=width*.44;paint(question,'UI_S9Gameplay_00_ICON_SHIJIAN01',{x:point.x-qw/2,y:point.y-width*.45-qw/.65/2,w:qw});for(const dx of [-.26,.26])paint(question,'UI_S9Gameplay_00_ICON_wenhao128',{x:point.x+width*dx-12,y:point.y-width*.4,w:24});assert.equal(V.tileAt(question,point,width).tile?.kind,'random','Three-question appearance was rejected');
+ const eye={...base,data:Buffer.from(base.data)};paint(eye,'UI_S9Gameplay_00_ICON_SHIJIAN02',{x:point.x-qw/2,y:point.y-width*.45-qw/.65/2,w:qw});assert.notEqual(V.tileAt(eye,point,width).tile?.kind,'random','Copy/eye icon was guessed to be a random question');
+ const unique=[['UI_S9Gameplay_Card_03',1031],['UI_S9Gameplay_Card_04',1032],['UI_S9Gameplay_Card_05',1033],['UI_S9Gameplay_Card_06',1201],['UI_S9Gameplay_Card_07',1202]];
+ for(const [icon,id]of unique){const img={...base,data:Buffer.from(base.data)},w=width*.4,h=w/(24/40);paint(img,icon,{x:point.x-w/2,y:point.y-width*.45-h/2,w,h});const r=V.tileAt(img,point,width);assert.deepEqual(r.tile,{kind:'effect',id},'Unique card tile '+icon);cases.push({kind:'independent-note-icon',icon,id});}
+ for(const [icon,amount]of [['UI_S9Gameplay_Card_35',1],['UI_S9Gameplay_Card_08',2],['UI_S9Gameplay_Card_28',3]]){const img={...base,data:Buffer.from(base.data)},w=width*.4,h=w/(24/40);paint(img,icon,{x:point.x-w/2,y:point.y-width*.45-h/2,w,h});const r=V.tileAt(img,point,width);assert.equal(r.tile?.kind,'note','Shared card tile identity lost '+icon);assert.equal(r.tile.amount,amount);assert.equal(r.uncertainOutcome,true);assert.equal(r.tile.candidates.length,2);cases.push({kind:'independent-note-icon',icon,amount,uncertainOutcome:true});}
+ assert.equal(V.collected({width:640,height:360,data:Buffer.alloc(640*360*4)}).confident,false);
+ assert.equal(V.tileAt(base,point,width).tile,null,'Blank purple background became a known tile');
+ const report={version:require('../desktop/package.json').version,checkedAt:new Date().toISOString(),gameCapture:false,gameInput:false,scope:'Supplied saved game screenshots, in-memory resizes, and independent local-game texture composites. No universal layout/animation guarantee.',rainbowStripeVerified:true,emptyCaptionPositiveEvidence:true,occludedChestRejected:true,absentCaptionRejected:true,offChainCandidateIgnored:true,eyeNotQuestion:true,sharedCardOutcomeNotInvented:true,cases};
+ fs.writeFileSync(path.resolve(__dirname,'results/arcana-visuals.json'),JSON.stringify(report,null,2)+'\n');console.log('PASS: rainbow and partial chest inventories, empty-caption evidence, heal counts, question variants and all card-on-tile icon families.');app.quit();
+}).catch(error=>{console.error(error);app.exit(1);});

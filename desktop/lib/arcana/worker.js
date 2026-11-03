@@ -3,12 +3,13 @@ const {parentPort,workerData}=require('node:worker_threads'),fs=require('node:fs
 const E=require('./engine'),Solver=require('./solver'),Reader=require('./reader');
 const reader=Reader.create();
 reader.restore(workerData.resume);
+if(workerData.logBoard)reader.setLogBoard(workerData.logBoard);
 let capture=null,handle=null,revision=0,retryTimer=null,job=null,lastAdvice=null,lastSolvedKey=null,frame=null,fallbackPending=false,fallbackAttempt=0,closed=false;
 let preferFallback=!!workerData.captureFirst;
-let cycleContext=null,cycleAttempts=0,cycleCounted=false;
+let cycleContext=null,cycleAttempts=0,cycleCounted=false,lastRecognition=null,lastReadingMs=null;
 const cards=E.DATA.cards.filter(c=>c.tag!==99).map(c=>({id:c.id,name:c.name,sort:c.sort,choices:c.choices})).sort((a,b)=>a.sort-b.sort||a.id-b.id);
 const tileEffects=Object.entries(E.DATA.tiles).filter(([id,t])=>t.events.length&&![1000,1051,1052,1053].includes(Number(id))).map(([id,t])=>({id:Number(id),name:t.events.map(e=>E.DATA.events[e]?.text).filter(Boolean).join('; ')||(Number(id)===1001?'Draw 1–3 random notes':'')})).filter(t=>t.name);
-const status=state=>{parentPort.postMessage({event:'checkpoint',value:reader.checkpoint()});parentPort.postMessage({event:'status',state:{...state,cards,tileEffects,model:reader.state()}});};
+const status=state=>{const checkpoint=reader.checkpoint();parentPort.postMessage({event:'checkpoint',value:checkpoint});parentPort.postMessage({event:'status',state:{...state,logRevision:checkpoint.logBoard?.revision,recognition:state.recognition??lastRecognition,readingMs:state.readingMs??lastReadingMs,cards,tileEffects,model:reader.state(),marks:['advice','check','thinking'].includes(state.phase)?reader.marks():[],reading:reader.recognition()}});};
 function invalidate(){revision++;job=null;fallbackPending=false;clearTimeout(retryTimer);retryTimer=null;}
 function grab(){
  if(workerData.fixture){const m=JSON.parse(fs.readFileSync(workerData.fixture+'.json','utf8').replace(/^\uFEFF/,'')),data=new Uint8ClampedArray(fs.readFileSync(workerData.fixture+'.rgba'));if(!Number.isInteger(m.width)||!Number.isInteger(m.height)||m.width<64||m.height<64||data.length!==m.width*m.height*4)throw Error('Invalid Arcana saved frame');return {...m,data};}
@@ -28,7 +29,7 @@ function solve(){
   const context=model.position===model.path.length-1?JSON.stringify([model.position,model.hand,model.chests,model.pending]):null;
   if(context!==cycleContext||context===null){cycleAttempts=0;cycleContext=context;cycleCounted=false;}
   if(model.life<=0){status({phase:'advice',move:'Start Fateful Contest',why:'Life is depleted. The collected chests are kept.',expected:`${E.score(model)} collected rarity points.`});return;}
-  const modelKey=JSON.stringify(E.normalize(model))+'|cycles:'+cycleAttempts;
+  const modelKey=JSON.stringify(E.normalize(model))+'|local:'+!!model.localHorizon+'|cycles:'+cycleAttempts;
   if(lastAdvice&&modelKey===lastSolvedKey){status({...lastAdvice,calculationMs:0,cached:true});return;}
   job=Solver.createJob(model,{samples:128,allowReroll:cycleAttempts<3,rerollBudget:Math.max(0,3-cycleAttempts)});status({phase:'thinking'});
   function step(){
@@ -36,11 +37,13 @@ function solve(){
    try{
     const done=job.step(4);if(!done){setImmediate(step);return;}
     const result=job.result();job=null;
-    cycleCounted=false;lastAdvice={phase:'advice',action:result.best.action,cycleAttempts,move:result.best.label,target:result.target,summary:`Tile ${model.position+1} · ${model.life} life · ${model.chests.length}/7 chests`,
+    cycleCounted=false;lastAdvice={phase:'advice',action:result.best.action,cycleAttempts,move:result.best.label,target:result.target,summary:`${model.localHorizon?'Visible path':'Tile '+(model.position+1)} · ${model.life} life · ${model.chests.length}/7 chests`,
      why:result.best.guaranteedExit?'Use the remaining chest upgrades before finishing; ending now would leave rarity points unused.':result.exactEndgame?'Compares every remaining card play and refill result on the known final tiles.':result.exact?'Uses the best order of the remaining chest upgrades.':'Compares alternative continuations, chest rarity, available notes and remaining life.',
      expected:`${result.best.guaranteedExit?'After upgrades then finish:':result.exactEndgame?'Expected':result.exact?'Final':'Estimated'} ${result.best.mean.toFixed(2)} rarity points · ${result.best.rainbows.toFixed(2)} rainbow chests · ${Math.round(result.best.deathRisk*100)}% life-depletion risk`,
      notice:result.best.guaranteedExit?'This chest total assumes you apply the remaining upgrades, then finish.':result.exactEndgame?'The known final section is calculated exactly, including refill dice. Read again after each move.':result.exact?'The remaining upgrades are calculated exactly.':result.unknownEvents?'Preview: question outcomes use equally weighted effects from local game data; server odds are unknown. Read again after the event.':result.estimatedHidden?'Preview: hidden tiles use the observed board plus a small independent prior. Server layout odds are not calibrated.':'Preview: strategy needs live-game validation.',
-     options:result.options,calculationMs:performance.now()-start,samples:result.samples,totalRollouts:result.totalRollouts,verifiedCandidates:result.verifiedCandidates,learningRollouts:result.learningRollouts||0,screenSamples:result.screenSamples||0,continuationStates:result.continuationStates||0,exact:!!result.exact,exactEndgame:!!result.exactEndgame};lastSolvedKey=modelKey;status(lastAdvice);
+     options:result.options,calculationMs:performance.now()-start,samples:result.samples,totalRollouts:result.totalRollouts,verifiedCandidates:result.verifiedCandidates,learningRollouts:result.learningRollouts||0,screenSamples:result.screenSamples||0,continuationStates:result.continuationStates||0,exact:!!result.exact,exactEndgame:!!result.exactEndgame,localHorizon:!!result.localHorizon};
+    if(result.localHorizon){lastAdvice.why='Compares the visible path and the next three decisions. The total path length is not assumed.';lastAdvice.expected=`Local outlook: ${result.best.mean.toFixed(2)} rarity points · ${Math.round(result.best.deathRisk*100)}% near-term life-depletion risk`;lastAdvice.notice=model.positionConfirmed?'Cell labels use game tile numbers. The route type is still being identified automatically.':'Automatic local advice. Labels show distance from YOU while the route is being identified.';}
+    lastSolvedKey=modelKey;status(lastAdvice);
    }catch(error){job=null;status({phase:'error',reason:error.message});}
   }
   setImmediate(step);
@@ -51,13 +54,15 @@ function processFrame(img,attempt=0,source='native'){
  if(!img||!Number.isInteger(img.width)||!Number.isInteger(img.height)||img.width<64||img.height<64||img.width*img.height>16777216||img.data?.length!==img.width*img.height*4)throw Error('Invalid Arcana frame dimensions');
  const before=structuredClone(reader.checkpoint());
  frame={width:img.width,height:img.height,data:new Uint8ClampedArray(img.data)};const reading=reader.read(frame);
- const noAnchors=!reading.model.hand.length&&reading.model.die===null&&reading.model.life===null;
+ const noAnchors=!reading.model.handFresh&&!reading.model.dieFresh&&!reading.model.lifeFresh;
  // BitBlt may succeed on a GPU window while returning a bright, unusable
  // picture. Try the independent capture path once, without relaxing OCR.
- if(source==='native'&&!workerData.fixture&&noAnchors){reader.restore(before);requestFallback(attempt,'Native picture has no Arcana hand, refill die or life marker');return;}
- if(source!=='native'&&reading.model.hand.length&&reading.model.die!==null&&reading.model.life!==null)preferFallback=true;
+ if(source==='native'&&!workerData.fixture&&noAnchors&&!reading.waiting){reader.restore(before);requestFallback(attempt,'Native picture has no Arcana hand, refill die or life marker');return;}
+ if(source!=='native'&&reading.model.handFresh&&reading.model.dieFresh&&reading.model.lifeFresh)preferFallback=true;
+ lastReadingMs=reading.ms;
+ lastRecognition={capture:source,bases:reading.bases,width:img.width,height:img.height,hand:reading.model.hand,count:reading.handCount,regular:reading.rowRegular,centered:reading.rowCentered,die:reading.model.die,faces:reading.cardMatches?.map(m=>({icon:m.name,score:+m.score.toFixed(4),margin:+m.margin.toFixed(4),box:m.box}))};
  if(reading.model.confirmed){solve();return;}
- status({phase:'check',reason:reading.issues.slice(0,3).join(' ')+(reading.issues.length>3?` ${reading.issues.length-3} more checks in Board.`:''),readingMs:reading.ms,issues:reading.issues,recognition:{capture:source,bases:reading.bases,width:img.width,height:img.height,hand:reading.model.hand,count:reading.handCount,regular:reading.rowRegular,centered:reading.rowCentered,die:reading.model.die,faces:reading.cardMatches?.map(m=>({icon:m.name,score:+m.score.toFixed(4),margin:+m.margin.toFixed(4),box:m.box}))}});
+ status({phase:reading.waiting?'waiting':'check',reason:reading.issues.slice(0,3).join(' ')+(reading.issues.length>3?` ${reading.issues.length-3} more checks in Board.`:''),issues:reading.issues});
  // A fixed, bounded retry waits for entering animations; unclear recognition
  // cannot create an endless background screenshot loop.
  if(attempt<2&&!workerData.fixture&&(reading.waiting||reading.bases<5)){const mine=revision;retryTimer=setTimeout(()=>{if(mine===revision)read(attempt+1);},220);}
@@ -72,10 +77,11 @@ parentPort.on('message',message=>{
  try{
   let result=true;
   if(cmd==='read')read();
+  else if(cmd==='log-state'){if(reader.setLogBoard(value))invalidate();}
   else if(cmd==='frame'){if(message.requestRevision!==revision||!fallbackPending)return;fallbackPending=false;processFrame(message.frame,fallbackAttempt,message.frame.captureSource||'fallback');}
   else if(cmd==='invalidate'){if(message.changed&&!cycleCounted&&cycleContext&&lastAdvice?.action?.kind==='reroll'){cycleAttempts++;cycleCounted=true;}invalidate();if(message.changed)reader.expectChange();}
   else if(cmd==='settled'){if(value?.refillOnly&&cycleCounted&&cycleContext&&lastAdvice?.action?.kind==='reroll')reader.settleCycle();}
-  else if(cmd==='reset'){invalidate();reader.reset(!!message.fresh);lastAdvice=null;lastSolvedKey=null;cycleContext=null;cycleAttempts=0;cycleCounted=false;status({phase:'waiting'});}
+  else if(cmd==='reset'){invalidate();reader.reset(!!message.fresh);lastAdvice=null;lastSolvedKey=null;lastRecognition=null;lastReadingMs=null;cycleContext=null;cycleAttempts=0;cycleCounted=false;status({phase:'waiting'});}
   else if(cmd==='suspend'){invalidate();status({phase:'waiting'});}
   else if(cmd==='popup'){invalidate();reader.setPopup(value);}
   else if(cmd==='correct'){invalidate();result=reader.correct(value);solve();}

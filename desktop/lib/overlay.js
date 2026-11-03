@@ -96,6 +96,7 @@
         if(a.notice)out.push(line('warn',a.notice));
       }else if(a?.phase==='thinking'||a?.phase==='reading')out.push(line('busy',a.phase==='thinking'?'Comparing the remaining paths…':'Reading the Arcana picture…'));
       else if(a?.phase==='error'||a?.phase==='check')out.push(line('warn',a.reason||'Check the Arcana reading.',button('Check board','arcana',true),button('Picture','capture')));
+      else if(a?.phase==='waiting'&&a.reason)out.push(line('busy',a.reason));
       else out.push(line('info','Waiting for the Tarot Path board.',button('Picture','capture'),button('Check board','arcana')));
       body.replaceChildren(...out);
       $('dot-log').className='dot '+(state.game.log?'is-on':'is-off');
